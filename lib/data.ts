@@ -1,9 +1,9 @@
-import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry } from "./types";
+import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Currency } from "./types";
 
 export const USER = {
-  name: "Dr Patience T.",
-  short: "Dr Patience",
-  email: "patience.t@email.com",
+  name: "Dr PT",
+  short: "Dr PT",
+  email: "drpt@email.com",
   location: "London, UK",
 };
 
@@ -96,6 +96,23 @@ export const NAV_ITEMS = [
   { id: "profile", label: "Profile", icon: "user-circle" },
 ];
 
+export const ADMIN_NAV_ITEMS = [
+  { id: "admin", label: "Operations", icon: "shield" },
+  { id: "dashboard", label: "Dashboard", icon: "layout-dashboard" },
+  { id: "income", label: "Income", icon: "wallet" },
+  { id: "expenses", label: "Expenses", icon: "shopping-bag" },
+  { id: "transactions", label: "Transactions", icon: "list" },
+  { id: "budget", label: "Budget Planner", icon: "pie-chart" },
+  { id: "savings", label: "Savings Goals", icon: "target" },
+  { id: "bills", label: "Bills", icon: "receipt" },
+  { id: "reports", label: "Reports", icon: "file-text" },
+  { id: "analytics", label: "Analytics", icon: "bar-chart-3" },
+  { id: "ai", label: "AI Assistant", icon: "sparkles" },
+  { id: "calendar", label: "Calendar", icon: "calendar" },
+  { id: "settings", label: "Settings", icon: "settings" },
+  { id: "profile", label: "Profile", icon: "user-circle" },
+];
+
 export const INCOME_CATEGORIES = ["Salary", "Private Practice", "Locum", "Investments", "Bonus", "Gift"];
 export const INCOME_ICONS: Record<string, string> = {
   Salary: "briefcase",
@@ -129,6 +146,24 @@ export const EXPENSE_ICONS: Record<string, string> = {
 };
 
 export const PAYMENT_METHODS = ["Debit Card", "Credit Card", "Direct Debit", "Bank Transfer", "Cash"];
+
+export const CURRENCIES: Currency[] = [
+  "GBP", "USD", "EUR", "ZAR", "AUD", "CAD", "JPY", "CNY", "INR", "BWP", "ZWL"
+];
+
+export const CURRENCY_SYMBOLS: Record<Currency, string> = {
+  GBP: "£",
+  USD: "$",
+  EUR: "€",
+  ZAR: "R",
+  AUD: "A$",
+  CAD: "C$",
+  JPY: "¥",
+  CNY: "¥",
+  INR: "₹",
+  BWP: "P",
+  ZWL: "$",
+};
 
 export const REPORTS = [
   { name: "Income Report", desc: "View your income summary", icon: "trending-up" },

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { CURRENCIES, CURRENCY_SYMBOLS } from "@/lib/data";
+import { Currency } from "@/lib/types";
 
 function Switch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -15,7 +17,7 @@ function Switch({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 }
 
 export default function SettingsPage() {
-  const { theme, toggleTheme, toast } = useAppData();
+  const { theme, toggleTheme, toast, currency, setCurrency } = useAppData();
   const [emailNotifs, setEmailNotifs] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
 
@@ -39,10 +41,16 @@ export default function SettingsPage() {
             <div className="label">Currency</div>
             <div className="sub">Used across the app</div>
           </div>
-          <select className="settings-select" defaultValue="GBP">
-            <option value="GBP">GBP (£)</option>
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
+          <select 
+            className="settings-select" 
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value as Currency)}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c} value={c}>
+                {c} ({CURRENCY_SYMBOLS[c]})
+              </option>
+            ))}
           </select>
         </div>
         <div className="settings-row">

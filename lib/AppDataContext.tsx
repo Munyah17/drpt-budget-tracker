@@ -18,7 +18,7 @@ import {
   INITIAL_GOALS,
   INITIAL_INCOME,
 } from "./data";
-import { Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole } from "./types";
+import { Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole, Currency } from "./types";
 import { supabase } from "./supabase";
 
 export interface ToastItem {
@@ -31,7 +31,7 @@ export interface ToastItem {
 interface AppDataContextValue {
   isAuthenticated: boolean;
   user: UserProfile | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; role?: UserRole }>;
   logout: () => void;
 
   theme: "light" | "dark";
@@ -45,6 +45,9 @@ interface AppDataContextValue {
 
   toasts: ToastItem[];
   toast: (message: string, icon?: string) => void;
+
+  currency: Currency;
+  setCurrency: (c: Currency) => void;
 
   accounts: typeof ACCOUNTS;
   budgets: Budget[];
@@ -81,6 +84,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [month, setMonth] = useState("May 2025");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [currency, setCurrency] = useState<Currency>("GBP");
   const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   const [income, setIncome] = useState<IncomeEntry[]>(INITIAL_INCOME);
@@ -110,6 +114,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
             email: session.user.email!,
             name: profile.name || 'User',
             role: profile.role || 'user',
+            currency: profile.currency || 'GBP',
+            isPaid: profile.is_paid || false,
           });
           setIsAuthenticated(true);
         }
@@ -208,7 +214,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     return [...inc, ...exp].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [income, expenses]);
 
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; role?: UserRole }> => {
     try {
       // For demo purposes, check hardcoded credentials first
       const ADMIN_EMAIL = "munyamuzvidziwa19@gmail.com";
@@ -223,11 +229,13 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: ADMIN_EMAIL,
           name: "Admin User",
           role: "admin",
+          currency: "GBP",
+          isPaid: true,
         };
         setUser(userProfile);
         setIsAuthenticated(true);
         localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
-        return true;
+        return { success: true, role: "admin" };
       }
 
       if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
@@ -237,11 +245,13 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: DEMO_EMAIL,
           name: "Demo User",
           role: "user",
+          currency: "GBP",
+          isPaid: true,
         };
         setUser(userProfile);
         setIsAuthenticated(true);
         localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
-        return true;
+        return { success: true, role: "user" };
       }
 
       // Try Supabase auth for other users
@@ -252,7 +262,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         console.error('Login error:', error);
-        return false;
+        return { success: false };
       }
 
       if (data.user) {
@@ -262,22 +272,25 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           .eq('id', data.user.id)
           .single();
 
+        const userRole: UserRole = profile?.role || 'user';
         const userProfile: UserProfile = {
           id: data.user.id,
           email: data.user.email!,
           name: profile?.name || 'User',
-          role: profile?.role || 'user',
+          role: userRole,
+          currency: profile?.currency || 'GBP',
+          isPaid: profile?.is_paid || false,
         };
         setUser(userProfile);
         setIsAuthenticated(true);
         localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
-        return true;
+        return { success: true, role: userRole };
       }
 
-      return false;
+      return { success: false };
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      return { success: false };
     }
   }, []);
 
@@ -301,6 +314,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setSidebarOpen,
     toasts,
     toast,
+    currency,
+    setCurrency,
     accounts: ACCOUNTS,
     budgets,
     bills,

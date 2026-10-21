@@ -1,6 +1,6 @@
-# Dr Patie ❤ — Personal Budget Tracker
+# Dr PT ❤ — Personal Budget Tracker
 
-A Next.js (App Router + TypeScript) port of the Dr Patie personal budget tracker prototype — same UI/UX, same features, rebuilt as a proper Next.js app instead of a single static HTML file.
+A Next.js (App Router + TypeScript) port of the Dr PT personal budget tracker prototype — same UI/UX, same features, rebuilt as a proper Next.js app instead of a single static HTML file.
 
 ## Stack
 

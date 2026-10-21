@@ -57,6 +57,7 @@ export const ICON_SVGS: Record<string, string> = {
   'utensils':'<path d="M7 2v7a2 2 0 0 0 4 0V2"/><line x1="9" y1="9" x2="9" y2="22"/><path d="M17 2v6a3 3 0 0 1-3 3"/><line x1="17" y1="11" x2="17" y2="22"/>',
   'heart-pulse':'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6Z"/><polyline points="4.5 12 8 12 10 8 13 16 15 12 19.5 12"/>',
   'users':'<circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M17 8a4 4 0 0 1 0 7.9"/><path d="M22 21a6 6 0 0 0-5-5.9"/>',
+  'user-plus':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="23" y2="8"/><line x1="21" y1="6" x2="21" y2="10"/>',
   'graduation-cap':'<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>',
   'more-horizontal':'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
   'circle':'<circle cx="12" cy="12" r="9"/>',

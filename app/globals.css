@@ -1,5 +1,5 @@
 /* ============================================================
-   DR PATIE — DESIGN TOKENS
+   DR PT — DESIGN TOKENS
    ============================================================ */
 :root{
   --rose-900:#5c0a2b;
@@ -27,7 +27,7 @@
   --radius-md:18px;
   --radius-sm:12px;
   --font-display:Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-  --font-body:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-body:"Source Sans 3 Variable", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --sidebar-w:264px;
   --transition:0.35s cubic-bezier(.2,.8,.2,1);
 }

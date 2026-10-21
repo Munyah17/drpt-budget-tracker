@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "@fontsource-variable/source-sans-3";
 import { AppDataProvider } from "@/lib/AppDataContext";
 import ToastHost from "@/components/ToastHost";
 
 export const metadata: Metadata = {
-  title: "Dr Patie ❤ — Personal Budget Tracker",
+  title: "Dr PT ❤ — Personal Budget Tracker",
   description: "Track income, expenses and savings goals in one calm, beautiful place.",
 };
 

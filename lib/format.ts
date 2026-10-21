@@ -1,7 +1,14 @@
-export function gbp(n: number): string {
+import { Currency, CURRENCY_SYMBOLS } from "./data";
+
+export function formatCurrency(n: number, currency: Currency = "GBP"): string {
   const neg = n < 0;
   n = Math.abs(n);
-  return (neg ? "-" : "") + "£" + n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
+  return (neg ? "-" : "") + symbol + n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+export function gbp(n: number): string {
+  return formatCurrency(n, "GBP");
 }
 
 export function ukDate(iso: string): string {

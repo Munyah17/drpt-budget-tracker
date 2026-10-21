@@ -6,26 +6,61 @@ import { useAppData } from "@/lib/AppDataContext";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, toast } = useAppData();
+  const { login, toast, user } = useAppData();
   const [submitting, setSubmitting] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSignup, setIsSignup] = useState(false);
+  const [name, setName] = useState("");
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
 
-    const success = await login(email, password);
+    if (isSignup) {
+      // Guest signup - create account with restricted access
+      const { data, error } = await (await import("@/lib/supabase")).supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    if (success) {
-      setFadingOut(true);
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 350);
+      if (error) {
+        setSubmitting(false);
+        toast(error.message, "x");
+        return;
+      }
+
+      if (data.user) {
+        // Create profile with isPaid = false
+        await (await import("@/lib/supabase")).supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            email: email,
+            name: name || email.split('@')[0],
+            role: 'user',
+            currency: 'GBP',
+            is_paid: false,
+          });
+
+        toast("Account created! Please sign in to continue.", "check-circle");
+        setIsSignup(false);
+        setSubmitting(false);
+      }
     } else {
-      setSubmitting(false);
-      toast("Invalid email or password", "x");
+      const result = await login(email, password);
+
+      if (result.success) {
+        setFadingOut(true);
+        setTimeout(() => {
+          const redirectPath = result.role === "admin" ? "/admin" : "/dashboard";
+          router.push(redirectPath);
+        }, 350);
+      } else {
+        setSubmitting(false);
+        toast("Invalid email or password", "x");
+      }
     }
   }
 
@@ -50,10 +85,23 @@ export default function LoginPage() {
         </div>
         <div className="login-form">
           <div className="login-logo">
-            Dr Patie <span style={{ color: "var(--rose-500)" }}>❤</span>
+            Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
           </div>
-          <h2>Welcome back! Sign in to continue to your account</h2>
+          <h2>{isSignup ? "Create your account" : "Welcome back! Sign in to continue to your account"}</h2>
           <form onSubmit={handleSubmit}>
+            {isSignup && (
+              <div className="field">
+                <label htmlFor="name">Full Name</label>
+                <input 
+                  id="name" 
+                  type="text" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name"
+                  required 
+                />
+              </div>
+            )}
             <div className="field">
               <label htmlFor="email">Email address</label>
               <input 
@@ -76,18 +124,23 @@ export default function LoginPage() {
                 required 
               />
             </div>
-            <div className="field-row">
-              <label className="remember">
-                <input type="checkbox" defaultChecked style={{ accentColor: "var(--rose-500)" }} /> Remember me
-              </label>
-              <a href="#">Forgot password?</a>
-            </div>
+            {!isSignup && (
+              <div className="field-row">
+                <label className="remember">
+                  <input type="checkbox" defaultChecked style={{ accentColor: "var(--rose-500)" }} /> Remember me
+                </label>
+                <a href="#">Forgot password?</a>
+              </div>
+            )}
             <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>
-              {submitting ? "Signing in…" : "Sign In"}
+              {submitting ? (isSignup ? "Creating account…" : "Signing in…") : (isSignup ? "Create Account" : "Sign In")}
             </button>
           </form>
           <div className="login-footer">
-            Don&apos;t have an account? <a href="#">Sign up</a>
+            {isSignup ? "Already have an account? " : "Don't have an account? "}
+            <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); }}>
+              {isSignup ? "Sign in" : "Sign up"}
+            </a>
           </div>
         </div>
       </div>

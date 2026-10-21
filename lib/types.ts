@@ -61,9 +61,13 @@ export interface Transaction {
 
 export type UserRole = "admin" | "user";
 
+export type Currency = "GBP" | "USD" | "EUR" | "ZAR" | "AUD" | "CAD" | "JPY" | "CNY" | "INR" | "BWP" | "ZWL";
+
 export interface UserProfile {
   id: string;
   email: string;
   name: string;
   role: UserRole;
+  currency: Currency;
+  isPaid: boolean;
 }

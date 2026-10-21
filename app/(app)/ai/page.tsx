@@ -24,7 +24,7 @@ let msgSeq = 1;
 export default function AiPage() {
   const { totalIncome, totalExpenses } = useAppData();
   const [messages, setMessages] = useState<ChatMsg[]>([
-    { id: msgSeq++, who: "ai", text: "Hi Dr Patience, I'm your financial assistant. Ask me anything about your income, spending or savings goals." },
+    { id: msgSeq++, who: "ai", text: "Hi Dr PT, I'm your financial assistant. Ask me anything about your income, spending or savings goals." },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
