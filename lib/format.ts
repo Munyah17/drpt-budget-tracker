@@ -1,4 +1,5 @@
-import { Currency, CURRENCY_SYMBOLS } from "./data";
+import { Currency } from "./types";
+import { CURRENCY_SYMBOLS } from "./data";
 
 export function formatCurrency(n: number, currency: Currency = "GBP"): string {
   const neg = n < 0;

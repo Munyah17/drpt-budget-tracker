@@ -5,17 +5,19 @@ import { useEffect, useRef, useState } from "react";
 export default function CountUp({
   end,
   prefix = "",
+  suffix = "",
   decimals = 2,
   duration = 1100,
   className,
 }: {
   end: number;
   prefix?: string;
+  suffix?: string;
   decimals?: number;
   duration?: number;
   className?: string;
 }) {
-  const [display, setDisplay] = useState(() => prefix + (0).toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
+  const [display, setDisplay] = useState(() => prefix + (0).toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix);
   const raf = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -24,14 +26,14 @@ export default function CountUp({
       const p = Math.min(1, (now - startTime) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
       const val = end * eased;
-      setDisplay(prefix + val.toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
+      setDisplay(prefix + val.toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix);
       if (p < 1) raf.current = requestAnimationFrame(step);
     }
     raf.current = requestAnimationFrame(step);
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, [end, prefix, decimals, duration]);
+  }, [end, prefix, suffix, decimals, duration]);
 
   return <span className={"count-up " + (className || "")}>{display}</span>;
 }
