@@ -58,3 +58,12 @@ export interface Transaction {
   type: "income" | "expense";
   account: string;
 }
+
+export type UserRole = "admin" | "user";
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+}

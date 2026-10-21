@@ -18,7 +18,8 @@ import {
   INITIAL_GOALS,
   INITIAL_INCOME,
 } from "./data";
-import { Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction } from "./types";
+import { Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole } from "./types";
+import { supabase } from "./supabase";
 
 export interface ToastItem {
   id: number;
@@ -29,7 +30,8 @@ export interface ToastItem {
 
 interface AppDataContextValue {
   isAuthenticated: boolean;
-  login: () => void;
+  user: UserProfile | null;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 
   theme: "light" | "dark";
@@ -74,6 +76,7 @@ let toastSeq = 1;
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [month, setMonth] = useState("May 2025");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -90,6 +93,29 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("drpatie-theme");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from browser storage on mount
     if (saved === "dark" || saved === "light") setTheme(saved);
+
+    // Check for existing session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email!,
+            name: profile.name || 'User',
+            role: profile.role || 'user',
+          });
+          setIsAuthenticated(true);
+        }
+      }
+    };
+    checkSession();
   }, []);
 
   useEffect(() => {
@@ -182,10 +208,91 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     return [...inc, ...exp].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [income, expenses]);
 
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+    try {
+      // For demo purposes, check hardcoded credentials first
+      const ADMIN_EMAIL = "munyamuzvidziwa19@gmail.com";
+      const ADMIN_PASSWORD = "@@Griezmann177#$";
+      const DEMO_EMAIL = "user@demo.com";
+      const DEMO_PASSWORD = "demo123";
+
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Admin login
+        const userProfile: UserProfile = {
+          id: "admin-001",
+          email: ADMIN_EMAIL,
+          name: "Admin User",
+          role: "admin",
+        };
+        setUser(userProfile);
+        setIsAuthenticated(true);
+        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        return true;
+      }
+
+      if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+        // Demo user login
+        const userProfile: UserProfile = {
+          id: "demo-001",
+          email: DEMO_EMAIL,
+          name: "Demo User",
+          role: "user",
+        };
+        setUser(userProfile);
+        setIsAuthenticated(true);
+        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        return true;
+      }
+
+      // Try Supabase auth for other users
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Login error:', error);
+        return false;
+      }
+
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
+        const userProfile: UserProfile = {
+          id: data.user.id,
+          email: data.user.email!,
+          name: profile?.name || 'User',
+          role: profile?.role || 'user',
+        };
+        setUser(userProfile);
+        setIsAuthenticated(true);
+        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem("drpatie-user");
+  }, []);
+
   const value: AppDataContextValue = {
     isAuthenticated,
-    login: () => setIsAuthenticated(true),
-    logout: () => setIsAuthenticated(false),
+    user,
+    login,
+    logout,
     theme,
     toggleTheme,
     month,

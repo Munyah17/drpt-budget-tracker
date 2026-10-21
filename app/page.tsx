@@ -6,20 +6,27 @@ import { useAppData } from "@/lib/AppDataContext";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAppData();
+  const { login, toast } = useAppData();
   const [submitting, setSubmitting] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+
+    const success = await login(email, password);
+
+    if (success) {
       setFadingOut(true);
       setTimeout(() => {
-        login();
         router.push("/dashboard");
       }, 350);
-    }, 700);
+    } else {
+      setSubmitting(false);
+      toast("Invalid email or password", "x");
+    }
   }
 
   return (
@@ -49,11 +56,25 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit}>
             <div className="field">
               <label htmlFor="email">Email address</label>
-              <input id="email" type="email" defaultValue="dr.patie@email.com" required />
+              <input 
+                id="email" 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required 
+              />
             </div>
             <div className="field">
               <label htmlFor="password">Password</label>
-              <input id="password" type="password" defaultValue="••••••••" required />
+              <input 
+                id="password" 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required 
+              />
             </div>
             <div className="field-row">
               <label className="remember">
@@ -61,7 +82,7 @@ export default function LoginPage() {
               </label>
               <a href="#">Forgot password?</a>
             </div>
-            <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }}>
+            <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>
               {submitting ? "Signing in…" : "Sign In"}
             </button>
           </form>

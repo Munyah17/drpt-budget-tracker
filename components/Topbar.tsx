@@ -1,14 +1,13 @@
 "use client";
 
 import { useAppData } from "@/lib/AppDataContext";
-import { USER } from "@/lib/data";
 import { initials } from "@/lib/format";
 import Icon from "./Icon";
 
 const MONTH_OPTIONS = ["May 2025", "April 2025", "March 2025", "June 2025"];
 
 export default function Topbar() {
-  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, month, setMonth, toast } = useAppData();
+  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, month, setMonth, toast, user } = useAppData();
 
   return (
     <header className="topbar">
@@ -21,7 +20,7 @@ export default function Topbar() {
           <Icon name="menu" />
         </button>
         <div className="topbar-greeting">
-          <h1>Good morning, Dr Patience 👋</h1>
+          <h1>Good morning, {user?.name || "User"} 👋</h1>
           <p>Here&apos;s your financial overview</p>
         </div>
       </div>
@@ -49,7 +48,7 @@ export default function Topbar() {
         <button className="icon-btn" data-tip="Toggle theme" onClick={toggleTheme}>
           <Icon name={theme === "dark" ? "sun" : "moon"} />
         </button>
-        <div className="avatar">{initials(USER.name)}</div>
+        <div className="avatar" title={user?.email}>{initials(user?.name || "User")}</div>
       </div>
     </header>
   );
