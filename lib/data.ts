@@ -97,20 +97,31 @@ export const NAV_ITEMS = [
 ];
 
 export const ADMIN_NAV_ITEMS = [
-  { id: "admin", label: "Operations", icon: "shield" },
-  { id: "dashboard", label: "Dashboard", icon: "layout-dashboard" },
-  { id: "income", label: "Income", icon: "wallet" },
-  { id: "expenses", label: "Expenses", icon: "shopping-bag" },
+  { id: "admin", label: "Dashboard", icon: "layout-dashboard" },
   { id: "transactions", label: "Transactions", icon: "list" },
-  { id: "budget", label: "Budget Planner", icon: "pie-chart" },
-  { id: "savings", label: "Savings Goals", icon: "target" },
-  { id: "bills", label: "Bills", icon: "receipt" },
   { id: "reports", label: "Reports", icon: "file-text" },
   { id: "analytics", label: "Analytics", icon: "bar-chart-3" },
   { id: "ai", label: "AI Assistant", icon: "sparkles" },
   { id: "calendar", label: "Calendar", icon: "calendar" },
   { id: "settings", label: "Settings", icon: "settings" },
   { id: "profile", label: "Profile", icon: "user-circle" },
+  { id: "users", label: "User Management", icon: "users" },
+  { id: "staff", label: "Staff Management", icon: "user-plus" },
+  { id: "accounting", label: "Accounting", icon: "calculator" },
+  { id: "pricing", label: "Pricing", icon: "tag" },
+  { id: "support", label: "Support", icon: "help-circle" },
+  { id: "subscriptions", label: "Subscriptions", icon: "credit-card" },
+  { id: "system-health", label: "System Health", icon: "activity" },
+  { id: "system-settings", label: "System Settings", icon: "sliders" },
+  { id: "configurations", label: "Configurations", icon: "settings" },
+  { id: "documentation", label: "Documentation", icon: "book" },
+  { id: "billing", label: "Billing & Revenue", icon: "dollar-sign" },
+  { id: "notifications", label: "Notifications", icon: "bell" },
+  { id: "marketing", label: "Marketing", icon: "megaphone" },
+  { id: "audit-logs", label: "Audit Logs", icon: "file-check" },
+  { id: "live-chat", label: "Live Chat", icon: "message-square" },
+  { id: "announcements", label: "Announcements", icon: "radio" },
+  { id: "version-control", label: "Version Control", icon: "git-branch" },
 ];
 
 export const INCOME_CATEGORIES = ["Salary", "Private Practice", "Locum", "Investments", "Bonus", "Gift"];
