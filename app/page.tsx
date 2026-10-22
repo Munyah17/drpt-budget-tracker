@@ -23,6 +23,9 @@ export default function LoginPage() {
       const { data, error } = await (await import("@/lib/supabase")).supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : 'https://drpt-budget-tracker.vercel.app',
+        },
       });
 
       if (error) {
@@ -44,9 +47,20 @@ export default function LoginPage() {
             is_paid: false,
           });
 
-        toast("Account created! Please sign in to continue.", "check-circle");
-        setIsSignup(false);
-        setSubmitting(false);
+        // Automatically sign in the user after successful signup
+        const loginResult = await login(email, password);
+        
+        if (loginResult.success) {
+          setFadingOut(true);
+          setTimeout(() => {
+            const redirectPath = loginResult.role === "admin" ? "/admin" : "/dashboard";
+            router.push(redirectPath);
+          }, 350);
+        } else {
+          toast("Account created! Please sign in to continue.", "check-circle");
+          setIsSignup(false);
+          setSubmitting(false);
+        }
       }
     } else {
       const result = await login(email, password);
