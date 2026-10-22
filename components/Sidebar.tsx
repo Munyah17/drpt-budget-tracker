@@ -19,11 +19,12 @@ export default function Sidebar() {
       </div>
       <nav className="nav-group">
         {navItems.map((n) => {
-          const active = pathname === `/${n.id}`;
+          const href = user?.role === "admin" ? `/admin/${n.id}` : `/${n.id}`;
+          const active = pathname === href;
           return (
             <Link
               key={n.id}
-              href={`/${n.id}`}
+              href={href}
               className={"nav-item" + (active ? " active" : "")}
               onClick={() => setSidebarOpen(false)}
             >
