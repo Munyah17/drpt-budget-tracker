@@ -4,6 +4,17 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
 export default function AdminIntegrationsPage() {
+  const handleConfigure = (item: string) => {
+    alert(`Configuring ${item}...`);
+  };
+
+  const handleMonitor = (item: string) => {
+    alert(`Monitoring ${item}...`);
+  };
+
+  const handleConnect = (item: string) => {
+    alert(`Connecting to ${item}...`);
+  };
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -56,8 +67,8 @@ export default function AdminIntegrationsPage() {
               <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 15:30</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>5,230</td>
               <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="activity" size={14} style={{ marginRight: 4 }} />Monitor</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleConfigure("Gusto Payroll")}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleMonitor("Gusto Payroll")}><Icon name="activity" size={14} style={{ marginRight: 4 }} />Monitor</button>
               </td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -67,8 +78,8 @@ export default function AdminIntegrationsPage() {
               <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 14:15</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>3,450</td>
               <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="activity" size={14} style={{ marginRight: 4 }} />Monitor</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleConfigure("QuickBooks")}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleMonitor("QuickBooks")}><Icon name="activity" size={14} style={{ marginRight: 4 }} />Monitor</button>
               </td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -78,8 +89,8 @@ export default function AdminIntegrationsPage() {
               <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 13:00</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>3,770</td>
               <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="activity" size={14} style={{ marginRight: 4 }} />Monitor</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleConfigure("Stripe")}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleMonitor("Stripe")}><Icon name="activity" size={14} style={{ marginRight: 4 }} />Monitor</button>
               </td>
             </tr>
             <tr>
@@ -89,8 +100,8 @@ export default function AdminIntegrationsPage() {
               <td style={{ padding: "12px 8px", fontSize: 13 }}>-</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>0</td>
               <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
-                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="link" size={14} style={{ marginRight: 4 }} />Connect</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleConfigure("SAP SuccessFactors")}><Icon name="settings" size={14} style={{ marginRight: 4 }} />Configure</button>
+                <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleConnect("SAP SuccessFactors")}><Icon name="link" size={14} style={{ marginRight: 4 }} />Connect</button>
               </td>
             </tr>
           </tbody>

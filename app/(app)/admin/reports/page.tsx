@@ -4,6 +4,10 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
 export default function AdminReportsPage() {
+  const handleGenerateReport = (reportName: string) => {
+    alert(`Generating ${reportName}...`);
+  };
+
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -32,7 +36,7 @@ export default function AdminReportsPage() {
                 <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{report.desc}</div>
               </div>
             </div>
-            <button className="btn btn-ghost" style={{ width: "100%" }}>
+            <button className="btn btn-ghost" style={{ width: "100%" }} onClick={() => handleGenerateReport(report.name)}>
               Generate Report
             </button>
           </div>

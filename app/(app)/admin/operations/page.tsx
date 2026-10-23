@@ -7,6 +7,26 @@ import Icon from "@/components/Icon";
 export default function AdminOperationsPage() {
   const [activeTab, setActiveTab] = useState<"payroll" | "payslips" | "exceptions">("payroll");
 
+  const handleDownload = (item: string) => {
+    alert(`Downloading ${item}...`);
+  };
+
+  const handleView = (item: string) => {
+    alert(`Viewing ${item}...`);
+  };
+
+  const handleRetry = (item: string) => {
+    alert(`Retrying ${item}...`);
+  };
+
+  const handleSend = (item: string) => {
+    alert(`Sending ${item}...`);
+  };
+
+  const handleResolve = (item: string) => {
+    alert(`Resolving ${item}...`);
+  };
+
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -78,7 +98,7 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-blue">Processing</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 14:30</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("BCH-2025-0526-001")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
                 <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -88,7 +108,7 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Completed</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 12:15</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("BCH-2025-0526-002")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
                 <tr>
@@ -98,8 +118,8 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Failed</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 10:45</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Retry</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("BCH-2025-0526-003")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleRetry("BCH-2025-0526-003")}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Retry</button>
                   </td>
                 </tr>
               </tbody>
@@ -129,8 +149,8 @@ export default function AdminOperationsPage() {
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Delivered</span></td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 15:00</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="send" size={14} style={{ marginRight: 4 }} />Resend</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload("Emma Wilson - May 2025")}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend("Emma Wilson - May 2025")}><Icon name="send" size={14} style={{ marginRight: 4 }} />Resend</button>
                 </td>
               </tr>
               <tr>
@@ -140,7 +160,7 @@ export default function AdminOperationsPage() {
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Pending</span></td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>-</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="send" size={14} style={{ marginRight: 4 }} />Send</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend("David Brown - May 2025")}><Icon name="send" size={14} style={{ marginRight: 4 }} />Send</button>
                 </td>
               </tr>
             </tbody>
@@ -189,8 +209,8 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>John Smith</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">In Progress</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Integration Failure")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleResolve("Integration Failure")}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
                   </td>
                 </tr>
                 <tr>
@@ -200,8 +220,8 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>Sarah Jones</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-blue">Assigned</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Data Mismatch")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleResolve("Data Mismatch")}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
                   </td>
                 </tr>
               </tbody>

@@ -7,6 +7,14 @@ import Icon from "@/components/Icon";
 export default function AdminPeoplePage() {
   const [activeTab, setActiveTab] = useState<"individuals" | "employees" | "staff">("individuals");
 
+  const handleView = (item: string) => {
+    alert(`Viewing ${item}...`);
+  };
+
+  const handleEdit = (item: string) => {
+    alert(`Editing ${item}...`);
+  };
+
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -59,8 +67,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-12-31</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("John Doe")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("John Doe")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -70,8 +78,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-15</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Expired</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Sarah Smith")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("Sarah Smith")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -81,8 +89,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2026-01-20</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Mike Johnson")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("Mike Johnson")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
@@ -111,8 +119,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Engineering</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Emma Wilson")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("Emma Wilson")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -122,8 +130,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Sales</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("David Brown")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("David Brown")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
@@ -152,8 +160,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Operations</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("John Smith")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("John Smith")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -163,8 +171,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Finance</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Sarah Jones")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("Sarah Jones")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -174,8 +182,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Support</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView("Mike Davis")}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit("Mike Davis")}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>

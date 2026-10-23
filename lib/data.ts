@@ -99,7 +99,7 @@ export const NAV_ITEMS = [
 export const ADMIN_NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: "layout-dashboard" },
   { id: "organisations", label: "Organisations", icon: "building-2" },
-  { id: "people", label: "People", icon: "users" },
+  { id: "people", label: "User Management", icon: "users" },
   { id: "operations", label: "Operations", icon: "activity" },
   { id: "finance", label: "Finance", icon: "dollar-sign" },
   { id: "integrations", label: "Integrations", icon: "link" },

@@ -6,6 +6,10 @@ import { useAppData } from "@/lib/AppDataContext";
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<"general" | "security" | "payroll" | "billing" | "notifications">("general");
 
+  const handleSaveSettings = () => {
+    alert("Settings saved successfully!");
+  };
+
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -325,7 +329,7 @@ export default function AdminSettingsPage() {
       )}
 
       <div style={{ marginTop: 20 }}>
-        <button className="btn btn-primary">Save Settings</button>
+        <button className="btn btn-primary" onClick={handleSaveSettings}>Save Settings</button>
       </div>
     </>
   );
