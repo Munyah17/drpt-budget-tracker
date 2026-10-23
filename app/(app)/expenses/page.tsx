@@ -8,6 +8,7 @@ import { ExpenseEntry } from "@/lib/types";
 import Icon from "@/components/Icon";
 import CountUp from "@/components/CountUp";
 import ExpenseModal from "@/components/modals/ExpenseModal";
+import FilterBar from "@/components/FilterBar";
 
 export default function ExpensesPage() {
   const { expenses, deleteExpense, toast, totalExpenses } = useAppData();
@@ -75,20 +76,12 @@ export default function ExpensesPage() {
       </div>
 
       <div className="glass-card card-pad">
-        <div className="card-head">
-          <div className="search-box" style={{ width: 260 }}>
-            <Icon name="search" />
-            <input placeholder="Search expenses…" value={search} onChange={(e) => setSearch(e.target.value)} />
-          </div>
-          <div className="filters-row">
-            <select value={catFilter} onChange={(e) => setCatFilter(e.target.value)}>
-              <option value="">All Categories</option>
-              {EXPENSE_CATS.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <FilterBar
+          searchPlaceholder="Search expenses..."
+          categoryOptions={EXPENSE_CATS.map((c) => ({ value: c, label: c }))}
+          onSearchChange={setSearch}
+          onCategoryChange={setCatFilter}
+        />
         <div className="table-wrap">
           <table>
             <thead>

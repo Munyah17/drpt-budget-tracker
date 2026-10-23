@@ -99,13 +99,67 @@ export const NAV_ITEMS = [
 
 export const ADMIN_NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: "layout-dashboard" },
-  { id: "organisations", label: "Organisations", icon: "building-2" },
-  { id: "people", label: "User Management", icon: "users" },
-  { id: "operations", label: "Operations", icon: "activity" },
-  { id: "finance", label: "Finance", icon: "dollar-sign" },
-  { id: "integrations", label: "Integrations", icon: "link" },
+  { 
+    id: "organisations", 
+    label: "Organisations", 
+    icon: "building-2",
+    subItems: [
+      { id: "corporates", label: "Corporate Clients" },
+      { id: "contracts", label: "Contracts" },
+      { id: "onboarding", label: "Onboarding" }
+    ]
+  },
+  { 
+    id: "people", 
+    label: "User Management", 
+    icon: "users",
+    subItems: [
+      { id: "individuals", label: "Individual Clients" },
+      { id: "employees", label: "Corporate Employees" },
+      { id: "staff", label: "Internal Staff" }
+    ]
+  },
+  { 
+    id: "operations", 
+    label: "Operations", 
+    icon: "activity",
+    subItems: [
+      { id: "payroll", label: "Payroll Batches" },
+      { id: "payslips", label: "Payslip Delivery" },
+      { id: "exceptions", label: "Exceptions & Incidents" }
+    ]
+  },
+  { 
+    id: "finance", 
+    label: "Finance", 
+    icon: "dollar-sign",
+    subItems: [
+      { id: "invoices", label: "Invoices" },
+      { id: "payments", label: "Payments" },
+      { id: "subscriptions", label: "Subscriptions" }
+    ]
+  },
+  { 
+    id: "integrations", 
+    label: "Integrations", 
+    icon: "link",
+    subItems: [
+      { id: "banks", label: "Bank Connections" },
+      { id: "payroll", label: "Payroll Providers" },
+      { id: "accounting", label: "Accounting" }
+    ]
+  },
   { id: "reports", label: "Reports", icon: "file-text" },
-  { id: "risk-security", label: "Risk & Security", icon: "shield" },
+  { 
+    id: "risk-security", 
+    label: "Risk & Security", 
+    icon: "shield",
+    subItems: [
+      { id: "audit", label: "Audit Logs" },
+      { id: "access", label: "Access Control" },
+      { id: "incidents", label: "Incidents" }
+    ]
+  },
   { id: "settings", label: "Settings", icon: "settings" },
 ];
 

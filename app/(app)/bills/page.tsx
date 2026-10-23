@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { gbp, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
+import FilterBar from "@/components/FilterBar";
 
 type Tab = "upcoming" | "overdue" | "paid";
 
 export default function BillsPage() {
   const { bills, toast } = useAppData();
   const [tab, setTab] = useState<Tab>("upcoming");
-  const filtered = bills.filter((b) => b.status === tab);
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    return bills.filter((b) => 
+      b.status === tab && 
+      b.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [bills, tab, search]);
 
   return (
     <>
@@ -27,6 +35,10 @@ export default function BillsPage() {
           </button>
         ))}
       </div>
+      <FilterBar
+        searchPlaceholder="Search bills..."
+        onSearchChange={setSearch}
+      />
       <div className="grid grid-2">
         {filtered.length === 0 && <p style={{ color: "var(--ink-500)" }}>No bills in this tab.</p>}
         {filtered.map((b) => {

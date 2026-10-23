@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS, ADMIN_NAV_ITEMS } from "@/lib/data";
@@ -10,7 +11,22 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen, logout, user } = useAppData();
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  
   const navItems = user?.role === "admin" ? ADMIN_NAV_ITEMS : NAV_ITEMS;
+
+  const toggleExpanded = (id: string) => {
+    setExpandedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const hasSubItems = (item: any): item is { subItems: { id: string; label: string }[] } => {
+    return 'subItems' in item && Array.isArray(item.subItems);
+  };
 
   return (
     <aside className={"sidebar" + (sidebarOpen ? " open" : "")} id="sidebar">
@@ -21,16 +37,60 @@ export default function Sidebar() {
         {navItems.map((n) => {
           const href = user?.role === "admin" ? `/admin/${n.id}` : `/${n.id}`;
           const active = pathname === href;
+          const isExpanded = expandedItems.has(n.id);
+          const hasSub = hasSubItems(n);
+
           return (
-            <Link
-              key={n.id}
-              href={href}
-              className={"nav-item" + (active ? " active" : "")}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <Icon name={n.icon} />
-              {n.label}
-            </Link>
+            <div key={n.id}>
+              <button
+                className={"nav-item" + (active ? " active" : "")}
+                onClick={() => {
+                  if (hasSub) {
+                    toggleExpanded(n.id);
+                  } else {
+                    router.push(href);
+                    setSidebarOpen(false);
+                  }
+                }}
+                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Icon name={n.icon} />
+                  {n.label}
+                </div>
+                {hasSub && (
+                  <Icon 
+                    name={isExpanded ? "chevron-down" : "chevron-right"} 
+                    size={14} 
+                    style={{ transition: "transform 0.2s", transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)" }}
+                  />
+                )}
+              </button>
+              {hasSub && isExpanded && (
+                <div style={{ marginLeft: 16, marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+                  {n.subItems.map((sub) => {
+                    const subHref = user?.role === "admin" ? `/admin/${n.id}/${sub.id}` : `/${n.id}/${sub.id}`;
+                    const subActive = pathname === subHref;
+                    return (
+                      <Link
+                        key={sub.id}
+                        href={subHref}
+                        className="nav-item"
+                        style={{ 
+                          fontSize: 13, 
+                          paddingLeft: 26,
+                          background: subActive ? "var(--pink-100)" : "transparent",
+                          color: subActive ? "var(--rose-600)" : "var(--ink-500)"
+                        }}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        {sub.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>

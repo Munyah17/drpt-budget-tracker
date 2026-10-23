@@ -8,6 +8,7 @@ import { IncomeEntry } from "@/lib/types";
 import Icon from "@/components/Icon";
 import CountUp from "@/components/CountUp";
 import IncomeModal from "@/components/modals/IncomeModal";
+import FilterBar from "@/components/FilterBar";
 
 export default function IncomePage() {
   const { income, deleteIncome, toast, totalIncome } = useAppData();
@@ -76,20 +77,12 @@ export default function IncomePage() {
       </div>
 
       <div className="glass-card card-pad">
-        <div className="card-head">
-          <div className="search-box" style={{ width: 260 }}>
-            <Icon name="search" />
-            <input placeholder="Search income…" value={search} onChange={(e) => setSearch(e.target.value)} />
-          </div>
-          <div className="filters-row">
-            <select value={catFilter} onChange={(e) => setCatFilter(e.target.value)}>
-              <option value="">All Categories</option>
-              {categories.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <FilterBar
+          searchPlaceholder="Search income..."
+          categoryOptions={categories.map((c) => ({ value: c, label: c }))}
+          onSearchChange={setSearch}
+          onCategoryChange={setCatFilter}
+        />
         <div className="table-wrap">
           <table>
             <thead>

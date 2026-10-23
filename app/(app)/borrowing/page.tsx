@@ -1,10 +1,37 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import FilterBar from "@/components/FilterBar";
+
+interface Loan {
+  type: string;
+  lender: string;
+  amount: string;
+  interestRate: string;
+  monthlyPayment: string;
+  remaining: string;
+  status: string;
+}
+
+const LOANS_DATA: Loan[] = [
+  { type: "Personal Loan", lender: "Barclays", amount: "$10,000", interestRate: "5.9% APR", monthlyPayment: "$300", remaining: "$7,500", status: "Active" },
+  { type: "Car Loan", lender: "Lloyds", amount: "$15,000", interestRate: "4.5% APR", monthlyPayment: "$280", remaining: "$4,950", status: "Active" },
+  { type: "Credit Card", lender: "Monzo", amount: "$12,450", interestRate: "18.9% APR", monthlyPayment: "$150", remaining: "$12,450", status: "High Balance" },
+];
 
 export default function BorrowingPage() {
   const { toast } = useAppData();
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  const filteredLoans = useMemo(() => {
+    return LOANS_DATA.filter((loan) =>
+      (!statusFilter || loan.status === statusFilter) &&
+      (loan.type.toLowerCase().includes(search.toLowerCase()) || loan.lender.toLowerCase().includes(search.toLowerCase()))
+    );
+  }, [search, statusFilter]);
 
   const handleApply = (loanType: string) => {
     toast(`Applying for ${loanType}...`, "credit-card");
@@ -46,6 +73,12 @@ export default function BorrowingPage() {
         <div className="card-head">
           <h3>Active Loans</h3>
         </div>
+        <FilterBar
+          searchPlaceholder="Search loans..."
+          statusOptions={[{ value: "Active", label: "Active" }, { value: "High Balance", label: "High Balance" }]}
+          onSearchChange={setSearch}
+          onStatusChange={setStatusFilter}
+        />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
@@ -59,33 +92,24 @@ export default function BorrowingPage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>Personal Loan</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Barclays</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$10,000</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>5.9% APR</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$300</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$7,500</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>Car Loan</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Lloyds</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$15,000</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>4.5% APR</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$280</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$4,950</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
-            </tr>
-            <tr>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>Credit Card</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Monzo</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$12,450</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>18.9% APR</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$150</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>$12,450</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">High Balance</span></td>
-            </tr>
+            {filteredLoans.length === 0 && (
+              <tr>
+                <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
+                  No loans match your search.
+                </td>
+              </tr>
+            )}
+            {filteredLoans.map((loan, idx) => (
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
+                <td style={{ padding: "12px 8px", fontWeight: 600 }}>{loan.type}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.lender}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.amount}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.interestRate}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.monthlyPayment}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.remaining}</td>
+                <td style={{ padding: "12px 8px" }}><span className={`badge ${loan.status === "Active" ? "badge-green" : "badge-amber"}`}>{loan.status}</span></td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

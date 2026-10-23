@@ -25,6 +25,9 @@ export default function LoginPage() {
         password,
         options: {
           emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : 'https://drpt-budget-tracker.vercel.app',
+          data: {
+            name: name || email.split('@')[0],
+          }
         },
       });
 
@@ -36,7 +39,7 @@ export default function LoginPage() {
 
       if (data.user) {
         // Create profile with isPaid = false
-        await (await import("@/lib/supabase")).supabase
+        const { error: profileError } = await (await import("@/lib/supabase")).supabase
           .from('profiles')
           .insert({
             id: data.user.id,
@@ -46,6 +49,10 @@ export default function LoginPage() {
             currency: 'GBP',
             is_paid: false,
           });
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+        }
 
         // Automatically sign in the user after successful signup
         const loginResult = await login(email, password);

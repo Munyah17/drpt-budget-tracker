@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import { ACCOUNTS } from "@/lib/data";
 import { gbp, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
+import FilterBar from "@/components/FilterBar";
 
 type SortKey = "date-desc" | "date-asc" | "amt-desc" | "amt-asc";
 
@@ -65,31 +66,25 @@ export default function TransactionsPage() {
         </div>
       </div>
       <div className="glass-card card-pad">
-        <div className="card-head" style={{ flexWrap: "wrap", gap: 12 }}>
-          <div className="search-box" style={{ width: 260 }}>
-            <Icon name="search" />
-            <input placeholder="Search transactions…" value={search} onChange={(e) => setSearch(e.target.value)} />
-          </div>
-          <div className="filters-row">
-            <select value={accFilter} onChange={(e) => setAccFilter(e.target.value)}>
-              <option value="">All Accounts</option>
-              {ACCOUNTS.map((a) => (
-                <option key={a.name}>{a.name}</option>
-              ))}
-            </select>
-            <select value={catFilter} onChange={(e) => setCatFilter(e.target.value)}>
-              <option value="">All Categories</option>
-              {categories.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-            <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
-              <option value="date-desc">Newest first</option>
-              <option value="date-asc">Oldest first</option>
-              <option value="amt-desc">Highest amount</option>
-              <option value="amt-asc">Lowest amount</option>
-            </select>
-          </div>
+        <FilterBar
+          searchPlaceholder="Search transactions..."
+          categoryOptions={categories.map((c) => ({ value: c, label: c }))}
+          onSearchChange={setSearch}
+          onCategoryChange={setCatFilter}
+        />
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <select value={accFilter} onChange={(e) => setAccFilter(e.target.value)} style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", minWidth: 150 }}>
+            <option value="">All Accounts</option>
+            {ACCOUNTS.map((a) => (
+              <option key={a.name}>{a.name}</option>
+            ))}
+          </select>
+          <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", minWidth: 150 }}>
+            <option value="date-desc">Newest first</option>
+            <option value="date-asc">Oldest first</option>
+            <option value="amt-desc">Highest amount</option>
+            <option value="amt-asc">Lowest amount</option>
+          </select>
         </div>
         <div className="table-wrap">
           <table>
