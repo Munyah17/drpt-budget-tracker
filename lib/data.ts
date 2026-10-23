@@ -87,6 +87,7 @@ export const NAV_ITEMS = [
   { id: "transactions", label: "Transactions", icon: "list" },
   { id: "budget", label: "Budget Planner", icon: "pie-chart" },
   { id: "savings", label: "Savings Goals", icon: "target" },
+  { id: "borrowing", label: "Borrowing", icon: "credit-card" },
   { id: "bills", label: "Bills", icon: "receipt" },
   { id: "reports", label: "Reports", icon: "file-text" },
   { id: "analytics", label: "Analytics", icon: "bar-chart-3" },
