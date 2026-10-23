@@ -5,10 +5,8 @@ import { useAppData } from "@/lib/AppDataContext";
 import { initials } from "@/lib/format";
 import Icon from "./Icon";
 
-const MONTH_OPTIONS = ["May 2025", "April 2025", "March 2025", "June 2025"];
-
 export default function Topbar() {
-  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, month, setMonth, toast, user } = useAppData();
+  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, toast, user } = useAppData();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -68,18 +66,6 @@ export default function Topbar() {
           <Icon name="search" />
           <input placeholder="Search transactions, bills…" />
         </div>
-        <select
-          className="month-select"
-          value={month}
-          onChange={(e) => {
-            setMonth(e.target.value);
-            toast("Showing data for " + e.target.value, "calendar");
-          }}
-        >
-          {MONTH_OPTIONS.map((m) => (
-            <option key={m}>{m}</option>
-          ))}
-        </select>
         <button className="icon-btn" data-tip="Notifications">
           <Icon name="bell" />
           <span className="dot" />
