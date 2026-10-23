@@ -78,7 +78,7 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-blue">Processing</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 14:30</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
                 <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -88,7 +88,7 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Completed</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 12:15</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
                 <tr>
@@ -98,8 +98,8 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Failed</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 10:45</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="refresh-cw" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Retry</button>
                   </td>
                 </tr>
               </tbody>
@@ -129,8 +129,8 @@ export default function AdminOperationsPage() {
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Delivered</span></td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26 15:00</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="download" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="send" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="send" size={14} style={{ marginRight: 4 }} />Resend</button>
                 </td>
               </tr>
               <tr>
@@ -140,7 +140,7 @@ export default function AdminOperationsPage() {
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Pending</span></td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>-</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="send" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="send" size={14} style={{ marginRight: 4 }} />Send</button>
                 </td>
               </tr>
             </tbody>
@@ -189,8 +189,8 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>John Smith</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">In Progress</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="check" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
                   </td>
                 </tr>
                 <tr>
@@ -200,8 +200,8 @@ export default function AdminOperationsPage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>Sarah Jones</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-blue">Assigned</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="check" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
                   </td>
                 </tr>
               </tbody>

@@ -79,7 +79,7 @@ export default function AdminFinancePage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-06-15</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Paid</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="download" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
                   </td>
                 </tr>
                 <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -89,8 +89,8 @@ export default function AdminFinancePage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-11</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Overdue</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="download" size={16} /></button>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="send" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="send" size={14} style={{ marginRight: 4 }} />Remind</button>
                   </td>
                 </tr>
                 <tr>
@@ -100,8 +100,8 @@ export default function AdminFinancePage() {
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-06-30</td>
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-blue">Pending</span></td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="download" size={16} /></button>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="send" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="send" size={14} style={{ marginRight: 4 }} />Remind</button>
                   </td>
                 </tr>
               </tbody>
@@ -166,7 +166,7 @@ export default function AdminFinancePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-12-31</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -176,8 +176,8 @@ export default function AdminFinancePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-15</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Expired</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="refresh-cw" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Renew</button>
                 </td>
               </tr>
             </tbody>

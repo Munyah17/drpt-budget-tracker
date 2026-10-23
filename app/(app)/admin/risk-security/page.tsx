@@ -97,7 +97,7 @@ export default function AdminRiskSecurityPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Full platform access</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -105,7 +105,7 @@ export default function AdminRiskSecurityPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Payroll, exceptions, reconciliation</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>5</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -113,7 +113,7 @@ export default function AdminRiskSecurityPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Invoices, payments, reconciliation</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>3</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -121,7 +121,7 @@ export default function AdminRiskSecurityPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Organisation management, employees</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>12</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
@@ -170,7 +170,7 @@ export default function AdminRiskSecurityPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Investigating</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>Security Team</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
                 <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -180,7 +180,7 @@ export default function AdminRiskSecurityPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-blue">Open</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>Tech Team</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
                 <tr>
@@ -190,7 +190,7 @@ export default function AdminRiskSecurityPage() {
                   <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Resolved</span></td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>Ops Team</td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   </td>
                 </tr>
               </tbody>

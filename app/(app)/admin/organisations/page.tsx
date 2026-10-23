@@ -62,8 +62,8 @@ export default function AdminOrganisationsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Enterprise</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Connected</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -73,8 +73,8 @@ export default function AdminOrganisationsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Professional</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Degraded</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -84,8 +84,8 @@ export default function AdminOrganisationsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Enterprise</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Pending</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
@@ -149,8 +149,8 @@ export default function AdminOrganisationsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>60%</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>John Smith</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -160,8 +160,8 @@ export default function AdminOrganisationsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>30%</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Sarah Jones</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>

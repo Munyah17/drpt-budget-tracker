@@ -59,8 +59,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-12-31</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -70,8 +70,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-15</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Expired</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -81,8 +81,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>2026-01-20</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
@@ -111,8 +111,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Engineering</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -122,8 +122,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Sales</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
@@ -152,8 +152,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Operations</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
@@ -163,8 +163,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Finance</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
               <tr>
@@ -174,8 +174,8 @@ export default function AdminPeoplePage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>Support</td>
                 <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="eye" size={16} /></button>
-                  <button className="btn btn-ghost" style={{ padding: 4 }}><Icon name="edit" size={16} /></button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             </tbody>
