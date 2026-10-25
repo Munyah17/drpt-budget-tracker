@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppData } from "@/lib/AppDataContext";
 
 export default function AdminAnalyticsPage() {
   return (

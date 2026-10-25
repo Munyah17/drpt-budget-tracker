@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 interface PayrollRun {
   runId: string;
@@ -20,17 +22,45 @@ const RUNS_DATA: PayrollRun[] = [
 ];
 
 export default function CorporatePayrollRunsPage() {
+  const { toast } = useAppData();
+  const [runs, setRuns] = useState<PayrollRun[]>(RUNS_DATA);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [modal, setModal] = useState<{ mode: "view" | "edit" | "create"; record: RowRecord; index: number } | null>(null);
 
   const filteredData = useMemo(() => {
-    return RUNS_DATA.filter((run) =>
+    return runs.filter((run) =>
       (!statusFilter || run.status === statusFilter) &&
       (run.runId.toLowerCase().includes(search.toLowerCase()) || run.period.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [runs, search, statusFilter]);
 
-  const handleView = (item: string) => alert(`Viewing ${item}...`);
+  const openModal = (mode: "view" | "edit" | "create", run?: PayrollRun, index?: number) => {
+    const record: RowRecord = run
+      ? { runId: run.runId, period: run.period, employees: run.employees, totalAmount: run.totalAmount, status: run.status, payDate: run.payDate }
+      : { runId: `RUN-2025-${String(runs.length + 7).padStart(2, "0")}`, period: "", employees: "", totalAmount: "", status: "Scheduled", payDate: "" };
+    setModal({ mode, record, index: index ?? -1 });
+  };
+
+  const handleSave = (values: RowRecord) => {
+    if (!modal) return;
+    const run: PayrollRun = { runId: values.runId, period: values.period, employees: values.employees, totalAmount: values.totalAmount, status: values.status || "Scheduled", payDate: values.payDate };
+    if (modal.mode === "create") {
+      setRuns((prev) => [run, ...prev]);
+      toast(`Payroll run ${run.runId} created`);
+    } else {
+      setRuns((prev) => prev.map((e, i) => (i === modal.index ? run : e)));
+      toast(`Payroll run ${run.runId} updated`);
+    }
+    setModal(null);
+  };
+
+  const handleDelete = () => {
+    if (!modal) return;
+    setRuns((prev) => prev.filter((_, i) => i !== modal.index));
+    toast(`${modal.record.runId} deleted`, "trash-2");
+    setModal(null);
+  };
 
   return (
     <>
@@ -39,7 +69,7 @@ export default function CorporatePayrollRunsPage() {
           <h2 className="section-title">Payroll Runs</h2>
           <p className="section-sub">Manage and track payroll processing</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           New Payroll Run
         </button>
@@ -85,13 +115,24 @@ export default function CorporatePayrollRunsPage() {
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{run.payDate}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(run.runId)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", run, runs.indexOf(run))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", run, runs.indexOf(run))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {modal && (
+        <RecordModal
+          mode={modal.mode}
+          title={modal.mode === "create" ? "New Payroll Run" : modal.mode === "edit" ? "Edit Payroll Run" : "Payroll Run Details"}
+          record={modal.record}
+          onClose={() => setModal(null)}
+          onSave={handleSave}
+          onDelete={modal.mode === "view" ? handleDelete : undefined}
+        />
+      )}
     </>
   );
 }

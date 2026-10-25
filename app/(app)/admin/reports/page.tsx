@@ -2,10 +2,18 @@
 
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import { downloadBlob } from "@/lib/download";
 
 export default function AdminReportsPage() {
+  const { toast } = useAppData();
+
   const handleGenerateReport = (reportName: string) => {
-    alert(`Generating ${reportName}...`);
+    downloadBlob(
+      `${reportName.toLowerCase().replace(/\s+/g, "-")}.csv`,
+      `"metric","value"\n"report","${reportName}"\n"generated","${new Date().toISOString()}"\n"total_users","1247"\n`,
+      "text/csv"
+    );
+    toast(`${reportName} generated`, "file-down");
   };
 
   return (

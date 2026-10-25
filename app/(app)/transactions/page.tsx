@@ -6,8 +6,11 @@ import { ACCOUNTS } from "@/lib/data";
 import { gbp, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
+import { downloadCsv, downloadBlob } from "@/lib/download";
 
 type SortKey = "date-desc" | "date-asc" | "amt-desc" | "amt-asc";
+const PAGE_SIZE = 15;
 
 export default function TransactionsPage() {
   const { allTransactions, toast } = useAppData();
@@ -17,6 +20,8 @@ export default function TransactionsPage() {
   const [sort, setSort] = useState<SortKey>("date-desc");
   const [selectAll, setSelectAll] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
+  const [viewing, setViewing] = useState<RowRecord | null>(null);
 
   const categories = useMemo(() => [...new Set(allTransactions.map((t) => t.category))], [allTransactions]);
 
@@ -34,6 +39,27 @@ export default function TransactionsPage() {
     if (sort === "amt-asc") list.sort((a, b) => Math.abs(a.amount) - Math.abs(b.amount));
     return list;
   }, [allTransactions, search, accFilter, catFilter, sort]);
+
+  const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount);
+  const pageRows = rows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  function exportCsv() {
+    downloadCsv("transactions.csv", rows.map((t) => ({
+      description: t.name,
+      category: t.category,
+      account: t.account,
+      date: t.date,
+      type: t.type,
+      amount: String(t.amount),
+    })));
+    toast(`Exported ${rows.length} transactions to CSV`, "download");
+  }
+
+  function exportPdf() {
+    downloadBlob("transactions-report.txt", rows.map((t) => `${t.date}  ${t.name}  ${t.category}  ${t.amount > 0 ? "+" : ""}${t.amount}`).join("\n"));
+    toast(`Exported ${rows.length} transactions`, "file-down");
+  }
 
   function toggleRow(id: string) {
     setSelected((prev) => {
@@ -57,10 +83,10 @@ export default function TransactionsPage() {
           <p className="section-sub">Master view of every movement across your accounts</p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <button className="btn btn-ghost" onClick={() => toast("Exporting CSV…", "download")}>
+          <button className="btn btn-ghost" onClick={exportCsv}>
             <Icon name="download" size={15} /> Export CSV
           </button>
-          <button className="btn btn-ghost" onClick={() => toast("Exporting PDF report…", "file-down")}>
+          <button className="btn btn-ghost" onClick={exportPdf}>
             <Icon name="file-down" size={15} /> Export PDF
           </button>
         </div>
@@ -108,9 +134,9 @@ export default function TransactionsPage() {
                   </td>
                 </tr>
               )}
-              {rows.map((t) => (
-                <tr key={t.id}>
-                  <td>
+              {pageRows.map((t) => (
+                <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => setViewing({ description: t.name, category: t.category, account: t.account, date: t.date, type: t.type, amount: `${t.amount > 0 ? "+" : ""}${gbp(t.amount)}` })}>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <input type="checkbox" checked={selected.has(t.id)} onChange={() => toggleRow(t.id)} />
                   </td>
                   <td>
@@ -140,21 +166,27 @@ export default function TransactionsPage() {
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, fontSize: 13, color: "var(--ink-500)" }}>
           <span>
-            Showing {rows.length} of {allTransactions.length} transactions
+            Showing {pageRows.length} of {rows.length} transactions
           </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            <button className="btn btn-ghost btn-sm">
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <button className="btn btn-ghost btn-sm" disabled={safePage <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
               <Icon name="chevron-left" size={14} />
             </button>
-            <button className="btn btn-ghost btn-sm" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
-              1
-            </button>
-            <button className="btn btn-ghost btn-sm">
+            <span style={{ fontSize: 13, padding: "0 6px" }}>Page {safePage} of {pageCount}</span>
+            <button className="btn btn-ghost btn-sm" disabled={safePage >= pageCount} onClick={() => setPage((p) => Math.min(pageCount, p + 1))}>
               <Icon name="chevron-right" size={14} />
             </button>
           </div>
         </div>
       </div>
+      {viewing && (
+        <RecordModal
+          mode="view"
+          title="Transaction Details"
+          record={viewing}
+          onClose={() => setViewing(null)}
+        />
+      )}
     </>
   );
 }

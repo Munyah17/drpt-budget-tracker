@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import { downloadCsv } from "@/lib/download";
 
 interface AuditLog {
   id: string;
@@ -14,6 +15,7 @@ interface AuditLog {
 }
 
 export default function AuditLogsPage() {
+  const { toast } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
 
   const mockLogs: AuditLog[] = [
@@ -46,7 +48,10 @@ export default function AuditLogsPage() {
           <h2 className="section-title">Audit Logs</h2>
           <p className="section-sub">Track all system activities</p>
         </div>
-        <button className="btn btn-ghost">
+        <button className="btn btn-ghost" onClick={() => {
+          downloadCsv("audit-logs.csv", filteredLogs.map((l) => ({ timestamp: l.timestamp, action: l.action, user: l.user, details: l.details, ip: l.ip })));
+          toast(`${filteredLogs.length} log entries exported`, "download");
+        }}>
           <Icon name="download" size={16} style={{ marginRight: 8 }} />
           Export Logs
         </button>

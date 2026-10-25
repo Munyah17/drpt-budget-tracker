@@ -184,7 +184,22 @@ export const CORPORATE_NAV_ITEMS = [
     ]
   },
   { id: "benefits", label: "Benefits", icon: "heart-pulse" },
+  {
+    id: "hr",
+    label: "HR",
+    icon: "clipboard-check",
+    subItems: [
+      { id: "leave", label: "Leave Management" },
+      { id: "attendance", label: "Attendance" },
+      { id: "recruitment", label: "Recruitment" },
+      { id: "performance", label: "Performance" },
+      { id: "documents", label: "Documents" },
+      { id: "offboarding", label: "Offboarding" }
+    ]
+  },
   { id: "reports", label: "Reports", icon: "file-text" },
+  { id: "integrations", label: "Integrations", icon: "plug" },
+  { id: "developer", label: "Developer & API", icon: "key" },
   { id: "settings", label: "Settings", icon: "settings" },
 ];
 

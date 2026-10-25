@@ -9,7 +9,7 @@ type PaymentMethod = "paynow" | "stripe" | "zipit" | "ecocash";
 
 export default function PaymentPage() {
   const router = useRouter();
-  const { toast, user } = useAppData();
+  const { toast } = useAppData();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
   const [popFile, setPopFile] = useState<File | null>(null);

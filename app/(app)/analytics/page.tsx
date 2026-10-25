@@ -8,7 +8,7 @@ import DonutChart from "@/components/charts/DonutChart";
 import LineChart from "@/components/charts/LineChart";
 
 export default function AnalyticsPage() {
-  const { totalIncome, totalExpenses, expenses, categorySpend, allTransactions } = useAppData();
+  const { totalIncome, totalExpenses, expenses, categorySpend, allTransactions, month, setMonth } = useAppData();
   const savingsRate = totalIncome ? Math.round(((totalIncome - totalExpenses) / totalIncome) * 100) : 0;
   const largestExpense = expenses.length ? Math.max(...expenses.map((e) => e.amount)) : 0;
 
@@ -25,8 +25,9 @@ export default function AnalyticsPage() {
           <h2 className="section-title">Analytics</h2>
           <p className="section-sub">Deeper insight into your financial patterns</p>
         </div>
-        <select className="month-select">
+        <select className="month-select" value={month} onChange={(e) => setMonth(e.target.value)}>
           <option>May 2025</option>
+          <option>June 2025</option>
         </select>
       </div>
       <div className="grid grid-4" style={{ marginBottom: 20 }}>

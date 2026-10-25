@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
+import { downloadCsv } from "@/lib/download";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
@@ -21,15 +23,22 @@ const AUDIT_DATA: AuditLog[] = [
 ];
 
 export default function AdminAuditPage() {
+  const { toast } = useAppData();
   const [search, setSearch] = useState("");
+  const crud = useCrud(AUDIT_DATA, "Audit Log");
 
   const filteredData = useMemo(() => {
-    return AUDIT_DATA.filter((log) =>
+    return crud.items.filter((log) =>
       log.user.toLowerCase().includes(search.toLowerCase()) ||
       log.action.toLowerCase().includes(search.toLowerCase()) ||
       log.resource.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [crud.items, search]);
+
+  const exportLogs = () => {
+    downloadCsv("risk-audit-logs.csv", filteredData.map((l) => ({ ...l })));
+    toast(`${filteredData.length} audit logs exported`, "download");
+  };
 
   return (
     <>
@@ -38,7 +47,7 @@ export default function AdminAuditPage() {
           <h2 className="section-title">Audit Logs</h2>
           <p className="section-sub">Track all system activity</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={exportLogs}>
           <Icon name="download" size={16} style={{ marginRight: 8 }} />
           Export Logs
         </button>
@@ -68,7 +77,7 @@ export default function AdminAuditPage() {
               </tr>
             )}
             {filteredData.map((log, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => crud.openModal("view", log, crud.items.indexOf(log))}>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{log.timestamp}</td>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{log.user}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{log.action}</td>
@@ -79,6 +88,7 @@ export default function AdminAuditPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

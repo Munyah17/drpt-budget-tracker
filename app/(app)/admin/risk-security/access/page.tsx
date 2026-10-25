@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface AccessRole {
   role: string;
   permissions: string;
@@ -20,17 +20,14 @@ const ACCESS_DATA: AccessRole[] = [
 
 export default function AdminAccessPage() {
   const [search, setSearch] = useState("");
+  const crud = useCrud(ACCESS_DATA, "Access Rule");
 
   const filteredData = useMemo(() => {
-    return ACCESS_DATA.filter((role) =>
+    return crud.items.filter((role) =>
       role.role.toLowerCase().includes(search.toLowerCase()) ||
       role.permissions.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
-
-  const handleEdit = (item: string) => {
-    alert(`Editing ${item}...`);
-  };
+  }, [crud.items, search]);
 
   return (
     <>
@@ -39,7 +36,7 @@ export default function AdminAccessPage() {
           <h2 className="section-title">Access Control</h2>
           <p className="section-sub">Manage roles and permissions</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Role
         </button>
@@ -73,13 +70,14 @@ export default function AdminAccessPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{role.permissions}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{role.users}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(role.role)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", role, crud.items.indexOf(role))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

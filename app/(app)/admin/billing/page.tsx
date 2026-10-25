@@ -1,7 +1,5 @@
 "use client";
 
-import { useAppData } from "@/lib/AppDataContext";
-import Icon from "@/components/Icon";
 
 export default function BillingRevenuePage() {
   return (

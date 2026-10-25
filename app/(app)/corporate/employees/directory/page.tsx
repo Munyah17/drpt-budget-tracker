@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 interface Employee {
   name: string;
@@ -20,18 +22,46 @@ const EMPLOYEES_DATA: Employee[] = [
 ];
 
 export default function CorporateEmployeesDirectoryPage() {
+  const { toast } = useAppData();
+  const [employees, setEmployees] = useState<Employee[]>(EMPLOYEES_DATA);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [modal, setModal] = useState<{ mode: "view" | "edit" | "create"; record: RowRecord; index: number } | null>(null);
 
   const filteredData = useMemo(() => {
-    return EMPLOYEES_DATA.filter((emp) =>
+    return employees.filter((emp) =>
       (!statusFilter || emp.status === statusFilter) &&
       (emp.name.toLowerCase().includes(search.toLowerCase()) || emp.email.toLowerCase().includes(search.toLowerCase()) || emp.department.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [employees, search, statusFilter]);
 
-  const handleView = (item: string) => alert(`Viewing ${item}...`);
-  const handleEdit = (item: string) => alert(`Editing ${item}...`);
+  const openModal = (mode: "view" | "edit" | "create", emp?: Employee, index?: number) => {
+    const record: RowRecord = emp
+      ? { name: emp.name, email: emp.email, department: emp.department, role: emp.role, status: emp.status }
+      : { name: "", email: "", department: "", role: "", status: "Active" };
+    setModal({ mode, record, index: index ?? -1 });
+  };
+
+  const handleSave = (values: RowRecord) => {
+    if (!modal) return;
+    const emp: Employee = { name: values.name, email: values.email, department: values.department, role: values.role, status: values.status || "Active" };
+    if (modal.mode === "create") {
+      setEmployees((prev) => [...prev, emp]);
+      toast(`${emp.name} added to directory`);
+    } else {
+      setEmployees((prev) => prev.map((e, i) => (i === modal.index ? emp : e)));
+      toast(`${emp.name} updated`);
+    }
+    setModal(null);
+  };
+
+  const handleDelete = () => {
+    if (!modal) return;
+    const name = modal.record.name;
+    setEmployees((prev) => prev.filter((_, i) => i !== modal.index));
+    toast(`${name} removed`, "trash-2");
+    setModal(null);
+  };
 
   return (
     <>
@@ -40,7 +70,7 @@ export default function CorporateEmployeesDirectoryPage() {
           <h2 className="section-title">Employee Directory</h2>
           <p className="section-sub">All employees in your organisation</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Employee
         </button>
@@ -80,14 +110,24 @@ export default function CorporateEmployeesDirectoryPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{emp.role}</td>
                 <td style={{ padding: "12px 8px" }}><span className={`badge ${emp.status === "Active" ? "badge-green" : "badge-amber"}`}>{emp.status}</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(emp.name)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(emp.name)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", emp, employees.indexOf(emp))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", emp, employees.indexOf(emp))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {modal && (
+        <RecordModal
+          mode={modal.mode}
+          title={modal.mode === "create" ? "Add Employee" : modal.mode === "edit" ? "Edit Employee" : "Employee Details"}
+          record={modal.record}
+          onClose={() => setModal(null)}
+          onSave={handleSave}
+          onDelete={modal.mode === "view" ? handleDelete : undefined}
+        />
+      )}
     </>
   );
 }

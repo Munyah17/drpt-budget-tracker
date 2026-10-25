@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface Exception {
   type: string;
   description: string;
@@ -20,21 +21,19 @@ const EXCEPTIONS_DATA: Exception[] = [
 
 export default function AdminExceptionsPage() {
   const [search, setSearch] = useState("");
+  const crud = useCrud(EXCEPTIONS_DATA, "Exception");
+  const { toast } = useAppData();
   const [priorityFilter, setPriorityFilter] = useState("");
 
   const filteredData = useMemo(() => {
-    return EXCEPTIONS_DATA.filter((exception) =>
+    return crud.items.filter((exception) =>
       (!priorityFilter || exception.priority === priorityFilter) &&
       (exception.type.toLowerCase().includes(search.toLowerCase()) || exception.description.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, priorityFilter]);
-
-  const handleView = (item: string) => {
-    alert(`Viewing ${item}...`);
-  };
+  }, [crud.items, search, priorityFilter]);
 
   const handleResolve = (item: string) => {
-    alert(`Resolving ${item}...`);
+    toast(`Resolving ${item}...`);
   };
 
   return (
@@ -44,7 +43,7 @@ export default function AdminExceptionsPage() {
           <h2 className="section-title">Exceptions & Incidents</h2>
           <p className="section-sub">Track and resolve operational issues</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Report Exception
         </button>
@@ -111,7 +110,7 @@ export default function AdminExceptionsPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(exception.type)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", exception, crud.items.indexOf(exception))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleResolve(exception.type)}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
                 </td>
               </tr>
@@ -119,6 +118,7 @@ export default function AdminExceptionsPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

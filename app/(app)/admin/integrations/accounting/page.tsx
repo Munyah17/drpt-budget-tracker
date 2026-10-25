@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface AccountingIntegration {
   name: string;
   category: string;
@@ -22,20 +23,18 @@ const ACCOUNTING_DATA: AccountingIntegration[] = [
 export default function AdminAccountingPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(ACCOUNTING_DATA, "Integration");
 
+  const { toast } = useAppData();
   const filteredData = useMemo(() => {
-    return ACCOUNTING_DATA.filter((integration) =>
+    return crud.items.filter((integration) =>
       (!statusFilter || integration.status === statusFilter) &&
       (integration.name.toLowerCase().includes(search.toLowerCase()) || integration.category.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [crud.items, search, statusFilter]);
 
   const handleSync = (item: string) => {
-    alert(`Syncing ${item}...`);
-  };
-
-  const handleEdit = (item: string) => {
-    alert(`Editing ${item}...`);
+    toast(`Syncing ${item}...`);
   };
 
   return (
@@ -45,7 +44,7 @@ export default function AdminAccountingPage() {
           <h2 className="section-title">Accounting Integrations</h2>
           <p className="section-sub">Manage accounting software connections</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Integration
         </button>
@@ -90,13 +89,14 @@ export default function AdminAccountingPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{integration.syncFrequency}</td>
                 <td style={{ padding: "12px 8px" }}>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSync(integration.name)}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Sync</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(integration.name)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", integration, crud.items.indexOf(integration))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

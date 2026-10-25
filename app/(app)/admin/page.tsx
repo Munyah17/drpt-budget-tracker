@@ -1,11 +1,9 @@
 "use client";
 
 import { useAppData } from "@/lib/AppDataContext";
-import { gbp } from "@/lib/format";
 import CountUp from "@/components/CountUp";
 import Icon from "@/components/Icon";
 import BarChart from "@/components/charts/BarChart";
-import DonutChart from "@/components/charts/DonutChart";
 
 export default function AdminDashboardPage() {
   const { user } = useAppData();

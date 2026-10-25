@@ -6,7 +6,7 @@ import { useAppData } from "@/lib/AppDataContext";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, toast, user } = useAppData();
+  const { login, toast } = useAppData();
   const [submitting, setSubmitting] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [email, setEmail] = useState("");

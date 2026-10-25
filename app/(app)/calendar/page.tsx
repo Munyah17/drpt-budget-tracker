@@ -6,15 +6,31 @@ import { gbp, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 
 const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const FIRST_DOW = 3; // May 1 2025 is a Thursday -> index (Mon=0) => Thu=3
-const DAYS_IN_MONTH = 31;
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 export default function CalendarPage() {
   const [selected, setSelected] = useState<string | null>(null);
+  const [year, setYear] = useState(2025);
+  const [mon, setMon] = useState(4); // 0-indexed, May 2025 default
+
+  const daysInMonth = new Date(year, mon + 1, 0).getDate();
+  // Day of week for the 1st, converted to Mon=0..Sun=6
+  const firstDow = (new Date(year, mon, 1).getDay() + 6) % 7;
 
   const cells: (string | null)[] = [];
-  for (let i = 0; i < FIRST_DOW; i++) cells.push(null);
-  for (let d = 1; d <= DAYS_IN_MONTH; d++) cells.push(`2025-05-${String(d).padStart(2, "0")}`);
+  for (let i = 0; i < firstDow; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(`${year}-${String(mon + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`);
+  }
+
+  const prevMonth = () => {
+    setSelected(null);
+    if (mon === 0) { setMon(11); setYear((y) => y - 1); } else setMon((m) => m - 1);
+  };
+  const nextMonth = () => {
+    setSelected(null);
+    if (mon === 11) { setMon(0); setYear((y) => y + 1); } else setMon((m) => m + 1);
+  };
 
   const selectedEvents = selected ? CAL_EVENTS[selected] : undefined;
 
@@ -28,11 +44,11 @@ export default function CalendarPage() {
       </div>
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div className="card-head">
-          <button className="btn btn-ghost btn-icon">
+          <button className="btn btn-ghost btn-icon" onClick={prevMonth} aria-label="Previous month">
             <Icon name="chevron-left" size={16} />
           </button>
-          <h3>May 2025</h3>
-          <button className="btn btn-ghost btn-icon">
+          <h3>{MONTH_NAMES[mon]} {year}</h3>
+          <button className="btn btn-ghost btn-icon" onClick={nextMonth} aria-label="Next month">
             <Icon name="chevron-right" size={16} />
           </button>
         </div>
@@ -65,12 +81,14 @@ export default function CalendarPage() {
           {cells.map((iso, idx) => {
             if (!iso) return <div className="cal-day muted" key={idx} />;
             const isToday = iso === "2025-05-28";
+            const isSelected = iso === selected;
             const ev = CAL_EVENTS[iso];
             const day = parseInt(iso.slice(-2), 10);
             return (
               <div
                 key={iso}
-                className={"cal-day" + (isToday ? " today" : "")}
+                className={"cal-day" + (isToday ? " today" : "") + (isSelected ? " selected" : "")}
+                style={isSelected ? { outline: "2px solid var(--rose-500)", borderRadius: 6 } : undefined}
                 onClick={() => setSelected(iso)}
               >
                 {day}

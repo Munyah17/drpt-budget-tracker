@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 const BENEFITS = [
   { name: "Health Insurance", provider: "Vitality Health", status: "Enrolled", detail: "Family cover — £0 employee cost" },
@@ -12,9 +14,19 @@ const BENEFITS = [
 ];
 
 export default function EmployeeBenefitsPage() {
-  const { user } = useAppData();
-  const handleAction = (name: string, status: string) =>
-    alert(status === "Enrolled" ? `Managing ${name}...` : `Enrolling in ${name}...`);
+  const { user, toast } = useAppData();
+  const [benefits, setBenefits] = useState(BENEFITS);
+  const [managing, setManaging] = useState<RowRecord | null>(null);
+
+  const handleAction = (name: string, status: string) => {
+    if (status === "Enrolled") {
+      const b = benefits.find((x) => x.name === name);
+      if (b) setManaging({ name: b.name, provider: b.provider, status: b.status, detail: b.detail });
+    } else {
+      setBenefits((prev) => prev.map((x) => (x.name === name ? { ...x, status: "Enrolled" } : x)));
+      toast(`Enrolled in ${name}`);
+    }
+  };
 
   return (
     <>
@@ -26,7 +38,7 @@ export default function EmployeeBenefitsPage() {
       </div>
 
       <div className="grid grid-2">
-        {BENEFITS.map((b) => (
+        {benefits.map((b) => (
           <div key={b.name} className="glass-card card-pad" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{
@@ -50,6 +62,7 @@ export default function EmployeeBenefitsPage() {
           </div>
         ))}
       </div>
+      {managing && <RecordModal mode="view" title="Benefit Details" record={managing} onClose={() => setManaging(null)} />}
     </>
   );
 }

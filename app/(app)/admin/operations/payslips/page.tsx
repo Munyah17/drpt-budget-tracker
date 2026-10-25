@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface Payslip {
   employee: string;
   organisation: string;
@@ -21,20 +22,22 @@ const PAYSLIPS_DATA: Payslip[] = [
 export default function AdminPayslipsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(PAYSLIPS_DATA, "Payslip");
 
+  const { toast } = useAppData();
   const filteredData = useMemo(() => {
-    return PAYSLIPS_DATA.filter((payslip) =>
+    return crud.items.filter((payslip) =>
       (!statusFilter || payslip.status === statusFilter) &&
       (payslip.employee.toLowerCase().includes(search.toLowerCase()) || payslip.organisation.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [crud.items, search, statusFilter]);
 
   const handleDownload = (item: string) => {
-    alert(`Downloading ${item}...`);
+    toast(`Downloading ${item}...`);
   };
 
   const handleSend = (item: string) => {
-    alert(`Sending ${item}...`);
+    toast(`Sending ${item}...`);
   };
 
   return (
@@ -44,7 +47,7 @@ export default function AdminPayslipsPage() {
           <h2 className="section-title">Payslip Delivery</h2>
           <p className="section-sub">Manage payslip distribution</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Generate Payslips
         </button>
@@ -102,6 +105,7 @@ export default function AdminPayslipsPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

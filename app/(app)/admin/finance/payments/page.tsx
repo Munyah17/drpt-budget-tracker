@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
@@ -23,12 +23,14 @@ export default function AdminPaymentsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
+  const crud = useCrud(PAYMENTS_DATA, "Payment");
+
   const filteredData = useMemo(() => {
-    return PAYMENTS_DATA.filter((payment) =>
+    return crud.items.filter((payment) =>
       (!statusFilter || payment.status === statusFilter) &&
       (payment.paymentId.toLowerCase().includes(search.toLowerCase()) || payment.organisation.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [crud.items, search, statusFilter]);
 
   return (
     <>
@@ -37,7 +39,7 @@ export default function AdminPaymentsPage() {
           <h2 className="section-title">Payments</h2>
           <p className="section-sub">View payment transactions</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Record Payment
         </button>
@@ -70,7 +72,7 @@ export default function AdminPaymentsPage() {
               </tr>
             )}
             {filteredData.map((payment, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => crud.openModal("view", payment, crud.items.indexOf(payment))}>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{payment.paymentId}</td>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{payment.organisation}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>{payment.amount}</td>
@@ -86,6 +88,7 @@ export default function AdminPaymentsPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

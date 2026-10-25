@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 
 export default function AdminSettingsPage() {
+  const { toast } = useAppData();
   const [activeTab, setActiveTab] = useState<"general" | "security" | "payroll" | "billing" | "notifications">("general");
 
   const handleSaveSettings = () => {
-    alert("Settings saved successfully!");
+    toast("Settings saved successfully", "check-circle");
   };
 
   return (

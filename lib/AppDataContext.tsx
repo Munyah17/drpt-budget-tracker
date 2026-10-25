@@ -18,7 +18,7 @@ import {
   INITIAL_GOALS,
   INITIAL_INCOME,
 } from "./data";
-import { Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole, Currency } from "./types";
+import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole, Currency } from "./types";
 import { supabase } from "./supabase";
 
 export interface ToastItem {
@@ -49,9 +49,14 @@ interface AppDataContextValue {
   currency: Currency;
   setCurrency: (c: Currency) => void;
 
-  accounts: typeof ACCOUNTS;
+  accounts: Account[];
+  addAccount: (account: Account) => void;
+  updateUser: (patch: Partial<UserProfile>) => void;
   budgets: Budget[];
+  updateBudget: (category: string, amount: number) => void;
   bills: Bill[];
+  addBill: (bill: Omit<Bill, "id" | "status" | "daysLeft">) => void;
+  markBillPaid: (id: number) => void;
 
   income: IncomeEntry[];
   addIncome: (entry: Omit<IncomeEntry, "id">) => void;
@@ -65,6 +70,8 @@ interface AppDataContextValue {
 
   goals: Goal[];
   addGoal: (goal: Omit<Goal, "id">) => void;
+  updateGoal: (id: number, goal: Omit<Goal, "id">) => void;
+  deleteGoal: (id: number) => void;
 
   totalIncome: number;
   totalExpenses: number;
@@ -87,11 +94,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrency] = useState<Currency>("GBP");
   const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
+  const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS);
   const [income, setIncome] = useState<IncomeEntry[]>(INITIAL_INCOME);
   const [expenses, setExpenses] = useState<ExpenseEntry[]>(INITIAL_EXPENSES);
   const [goals, setGoals] = useState<Goal[]>(INITIAL_GOALS);
-  const [bills] = useState<Bill[]>(INITIAL_BILLS);
-  const [budgets] = useState<Budget[]>(BUDGETS);
+  const [bills, setBills] = useState<Bill[]>(INITIAL_BILLS);
+  const [budgets, setBudgets] = useState<Budget[]>(BUDGETS);
 
   useEffect(() => {
     const saved = localStorage.getItem("drpatie-theme");
@@ -179,6 +187,38 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   const addGoal = useCallback((goal: Omit<Goal, "id">) => {
     setGoals((prev) => [...prev, { id: Date.now(), ...goal }]);
+  }, []);
+  const updateGoal = useCallback((id: number, goal: Omit<Goal, "id">) => {
+    setGoals((prev) => prev.map((g) => (g.id === id ? { id, ...goal } : g)));
+  }, []);
+  const deleteGoal = useCallback((id: number) => {
+    setGoals((prev) => prev.filter((g) => g.id !== id));
+  }, []);
+
+  const updateBudget = useCallback((category: string, amount: number) => {
+    setBudgets((prev) => prev.map((b) => (b.category === category ? { ...b, budget: amount } : b)));
+  }, []);
+
+  const addAccount = useCallback((account: Account) => {
+    setAccounts((prev) => [...prev, account]);
+  }, []);
+
+  const updateUser = useCallback((patch: Partial<UserProfile>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev, ...patch };
+      localStorage.setItem("drpatie-user", JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const addBill = useCallback((bill: Omit<Bill, "id" | "status" | "daysLeft">) => {
+    const daysLeft = Math.max(0, Math.ceil((new Date(bill.due).getTime() - Date.now()) / 86400000));
+    setBills((prev) => [...prev, { id: Date.now(), status: "upcoming" as const, daysLeft, ...bill }]);
+  }, []);
+
+  const markBillPaid = useCallback((id: number) => {
+    setBills((prev) => prev.map((b) => (b.id === id ? { ...b, status: "paid" as const, daysLeft: 0 } : b)));
   }, []);
 
   const totalIncome = useMemo(() => income.reduce((s, i) => s + i.amount, 0), [income]);
@@ -352,9 +392,14 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     toast,
     currency,
     setCurrency,
-    accounts: ACCOUNTS,
+    accounts,
+    addAccount,
+    updateUser,
     budgets,
+    updateBudget,
     bills,
+    addBill,
+    markBillPaid,
     income,
     addIncome,
     updateIncome,
@@ -365,6 +410,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     deleteExpense,
     goals,
     addGoal,
+    updateGoal,
+    deleteGoal,
     totalIncome,
     totalExpenses,
     totalBalance,

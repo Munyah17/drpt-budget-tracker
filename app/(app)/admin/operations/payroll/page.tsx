@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface PayrollBatch {
   batchId: string;
   organisation: string;
@@ -22,20 +23,18 @@ const PAYROLL_DATA: PayrollBatch[] = [
 export default function AdminPayrollPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(PAYROLL_DATA, "Payroll Run");
 
+  const { toast } = useAppData();
   const filteredData = useMemo(() => {
-    return PAYROLL_DATA.filter((batch) =>
+    return crud.items.filter((batch) =>
       (!statusFilter || batch.status === statusFilter) &&
       (batch.batchId.toLowerCase().includes(search.toLowerCase()) || batch.organisation.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
-
-  const handleView = (item: string) => {
-    alert(`Viewing ${item}...`);
-  };
+  }, [crud.items, search, statusFilter]);
 
   const handleRetry = (item: string) => {
-    alert(`Retrying ${item}...`);
+    toast(`Retrying ${item}...`);
   };
 
   return (
@@ -45,7 +44,7 @@ export default function AdminPayrollPage() {
           <h2 className="section-title">Payroll Batches</h2>
           <p className="section-sub">Manage payroll processing batches</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           New Batch
         </button>
@@ -108,7 +107,7 @@ export default function AdminPayrollPage() {
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{batch.submitted}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(batch.batchId)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", batch, crud.items.indexOf(batch))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                   {batch.status === "Failed" && (
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleRetry(batch.batchId)}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Retry</button>
                   )}
@@ -118,6 +117,7 @@ export default function AdminPayrollPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

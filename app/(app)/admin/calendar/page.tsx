@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
 interface PlatformEvent {

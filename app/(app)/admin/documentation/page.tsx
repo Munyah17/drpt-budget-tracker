@@ -1,9 +1,22 @@
 "use client";
 
-import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 
+interface Article {
+  title: string;
+  desc: string;
+  updated: string;
+}
+
+const ARTICLES_DATA: Article[] = [
+  { title: "User Guide", desc: "How to use the platform", updated: "2d ago" },
+  { title: "Admin Guide", desc: "Platform administration", updated: "1w ago" },
+  { title: "API Documentation", desc: "API reference and examples", updated: "3d ago" },
+];
+
 export default function DocumentationPage() {
+  const crud = useCrud(ARTICLES_DATA, "Article");
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -11,7 +24,7 @@ export default function DocumentationPage() {
           <h2 className="section-title">Documentation</h2>
           <p className="section-sub">Platform documentation and guides</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Article
         </button>
@@ -23,12 +36,8 @@ export default function DocumentationPage() {
             <h3>Getting Started</h3>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {[
-              { title: "User Guide", desc: "How to use the platform", updated: "2d ago" },
-              { title: "Admin Guide", desc: "Platform administration", updated: "1w ago" },
-              { title: "API Documentation", desc: "API reference and examples", updated: "3d ago" },
-            ].map((doc, idx) => (
-              <div key={idx} style={{ padding: 12, borderRadius: "var(--radius-sm)", background: "var(--pink-100)", cursor: "pointer" }}>
+            {crud.items.map((doc, idx) => (
+              <div key={idx} onClick={() => crud.openModal("view", doc, idx)} style={{ padding: 12, borderRadius: "var(--radius-sm)", background: "var(--pink-100)", cursor: "pointer" }}>
                 <div style={{ fontWeight: 600, marginBottom: 4 }}>{doc.title}</div>
                 <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{doc.desc}</div>
                 <div style={{ fontSize: 11, color: "var(--ink-500)", marginTop: 4 }}>Updated {doc.updated}</div>
@@ -55,6 +64,7 @@ export default function DocumentationPage() {
           </div>
         </div>
       </div>
+      {crud.modalNode}
     </>
   );
 }

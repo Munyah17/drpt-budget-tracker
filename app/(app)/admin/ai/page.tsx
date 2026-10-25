@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
 export default function AdminAIPage() {
-  const { toast } = useAppData();
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hi! I'm the Dr PT Platform AI. I can provide insights about platform performance, user behavior, revenue trends, and operational metrics. What would you like to know?" }

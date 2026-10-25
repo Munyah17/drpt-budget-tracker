@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
+import { downloadBlob } from "@/lib/download";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
@@ -23,19 +25,26 @@ export default function AdminInvoicesPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
+  const crud = useCrud(INVOICES_DATA, "Invoice");
+  const { toast } = useAppData();
+
   const filteredData = useMemo(() => {
-    return INVOICES_DATA.filter((invoice) =>
+    return crud.items.filter((invoice) =>
       (!statusFilter || invoice.status === statusFilter) &&
       (invoice.invoiceId.toLowerCase().includes(search.toLowerCase()) || invoice.organisation.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [crud.items, search, statusFilter]);
 
-  const handleDownload = (item: string) => {
-    alert(`Downloading ${item}...`);
+  const handleDownload = (invoice: Invoice) => {
+    downloadBlob(
+      `invoice-${invoice.invoiceId}.txt`,
+      `INVOICE ${invoice.invoiceId}\nOrganisation: ${invoice.organisation}\nAmount: ${invoice.amount}\nDue: ${invoice.dueDate}\nStatus: ${invoice.status}\n`
+    );
+    toast(`Invoice ${invoice.invoiceId} downloaded`, "download");
   };
 
-  const handleSend = (item: string) => {
-    alert(`Sending reminder for ${item}...`);
+  const handleSend = (invoice: Invoice) => {
+    toast(`Payment reminder sent for ${invoice.invoiceId}`, "send");
   };
 
   return (
@@ -45,7 +54,7 @@ export default function AdminInvoicesPage() {
           <h2 className="section-title">Invoices</h2>
           <p className="section-sub">Manage client invoices</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Create Invoice
         </button>
@@ -108,16 +117,18 @@ export default function AdminInvoicesPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(invoice.invoiceId)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(invoice)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
                   {invoice.status !== "Paid" && (
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(invoice.invoiceId)}><Icon name="send" size={14} style={{ marginRight: 4 }} />Remind</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(invoice)}><Icon name="send" size={14} style={{ marginRight: 4 }} />Remind</button>
                   )}
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", invoice, crud.items.indexOf(invoice))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

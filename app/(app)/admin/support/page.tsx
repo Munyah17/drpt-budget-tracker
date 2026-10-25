@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
 interface Ticket {
@@ -14,8 +13,7 @@ interface Ticket {
 }
 
 export default function SupportPage() {
-  const { toast } = useAppData();
-  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [, setSelectedTicket] = useState<Ticket | null>(null);
 
   const mockTickets: Ticket[] = [
     { id: "1", subject: "Payment not processing", user: "john.doe@email.com", status: "open", priority: "urgent", created: "2h ago" },

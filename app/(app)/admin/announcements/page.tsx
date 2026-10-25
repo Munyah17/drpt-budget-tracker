@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 interface Announcement {
   id: string;
@@ -15,15 +16,52 @@ interface Announcement {
   active: boolean;
 }
 
+const INITIAL_ANNOUNCEMENTS: Announcement[] = [
+  { id: "1", title: "Scheduled Maintenance", content: "Platform will be down for maintenance on June 1st from 2-4 AM UTC", type: "warning", target: "all", published: "2025-05-26", expires: "2025-06-02", active: true },
+  { id: "2", title: "New Feature Launch", content: "AI Assistant is now available for all premium users!", type: "info", target: "paid", published: "2025-05-25", expires: "2025-06-25", active: true },
+  { id: "3", title: "Security Update", content: "Please update your passwords for enhanced security", type: "urgent", target: "all", published: "2025-05-20", expires: "2025-06-20", active: false },
+];
+
 export default function AnnouncementsPage() {
   const { toast } = useAppData();
+  const [announcements, setAnnouncements] = useState<Announcement[]>(INITIAL_ANNOUNCEMENTS);
   const [showCompose, setShowCompose] = useState(false);
+  const [editing, setEditing] = useState<{ record: RowRecord; id: string } | null>(null);
 
-  const mockAnnouncements: Announcement[] = [
-    { id: "1", title: "Scheduled Maintenance", content: "Platform will be down for maintenance on June 1st from 2-4 AM UTC", type: "warning", target: "all", published: "2025-05-26", expires: "2025-06-02", active: true },
-    { id: "2", title: "New Feature Launch", content: "AI Assistant is now available for all premium users!", type: "info", target: "paid", published: "2025-05-25", expires: "2025-06-25", active: true },
-    { id: "3", title: "Security Update", content: "Please update your passwords for enhanced security", type: "urgent", target: "all", published: "2025-05-20", expires: "2025-06-20", active: false },
-  ];
+  const [fTitle, setFTitle] = useState("");
+  const [fContent, setFContent] = useState("");
+  const [fType, setFType] = useState("info");
+  const [fTarget, setFTarget] = useState("all");
+  const [fExpires, setFExpires] = useState("");
+
+  const publish = () => {
+    if (!fTitle.trim()) { toast("Title is required", "x"); return; }
+    setAnnouncements((prev) => [...prev, {
+      id: String(Date.now()), title: fTitle, content: fContent,
+      type: fType as Announcement["type"], target: fTarget as Announcement["target"],
+      published: new Date().toISOString().slice(0, 10), expires: fExpires, active: true,
+    }]);
+    setFTitle(""); setFContent(""); setFType("info"); setFTarget("all"); setFExpires("");
+    toast("Announcement published", "check-circle");
+    setShowCompose(false);
+  };
+
+  const openEdit = (ann: Announcement) =>
+    setEditing({ record: { title: ann.title, content: ann.content, type: ann.type, target: ann.target, expires: ann.expires, active: String(ann.active) }, id: ann.id });
+
+  const saveEdit = (values: RowRecord) => {
+    if (!editing) return;
+    setAnnouncements((prev) => prev.map((a) => a.id === editing.id
+      ? { ...a, title: values.title, content: values.content, type: values.type as Announcement["type"], target: values.target as Announcement["target"], expires: values.expires, active: values.active === "true" }
+      : a));
+    toast("Announcement updated");
+    setEditing(null);
+  };
+
+  const remove = (ann: Announcement) => {
+    setAnnouncements((prev) => prev.filter((a) => a.id !== ann.id));
+    toast("Announcement deleted", "trash-2");
+  };
 
   const getTypeBadge = (type: string) => {
     const colors = {
@@ -52,34 +90,34 @@ export default function AnnouncementsPage() {
           <h3 style={{ marginBottom: 16 }}>Create Announcement</h3>
           <div className="field">
             <label>Title</label>
-            <input type="text" placeholder="Announcement title" style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }} />
+            <input type="text" placeholder="Announcement title" value={fTitle} onChange={(e) => setFTitle(e.target.value)} style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }} />
           </div>
           <div className="field">
             <label>Content</label>
-            <textarea placeholder="Announcement content" rows={4} style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", resize: "vertical" }} />
+            <textarea placeholder="Announcement content" rows={4} value={fContent} onChange={(e) => setFContent(e.target.value)} style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", resize: "vertical" }} />
           </div>
           <div className="field">
             <label>Type</label>
-            <select style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
-              <option>Info</option>
-              <option>Warning</option>
-              <option>Urgent</option>
+            <select value={fType} onChange={(e) => setFType(e.target.value)} style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
+              <option value="info">Info</option>
+              <option value="warning">Warning</option>
+              <option value="urgent">Urgent</option>
             </select>
           </div>
           <div className="field">
             <label>Target Audience</label>
-            <select style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
-              <option>All Users</option>
-              <option>Paid Users Only</option>
-              <option>Free Users Only</option>
+            <select value={fTarget} onChange={(e) => setFTarget(e.target.value)} style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
+              <option value="all">All Users</option>
+              <option value="paid">Paid Users Only</option>
+              <option value="free">Free Users Only</option>
             </select>
           </div>
           <div className="field">
             <label>Expires On</label>
-            <input type="date" style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }} />
+            <input type="date" value={fExpires} onChange={(e) => setFExpires(e.target.value)} style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }} />
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <button className="btn btn-primary" onClick={() => { toast("Announcement published", "check-circle"); setShowCompose(false); }}>Publish</button>
+            <button className="btn btn-primary" onClick={publish}>Publish</button>
             <button className="btn btn-ghost" onClick={() => setShowCompose(false)}>Cancel</button>
           </div>
         </div>
@@ -100,7 +138,7 @@ export default function AnnouncementsPage() {
             </tr>
           </thead>
           <tbody>
-            {mockAnnouncements.map((ann) => (
+            {announcements.map((ann) => (
               <tr key={ann.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{ann.title}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{ann.content}</td>
@@ -115,10 +153,10 @@ export default function AnnouncementsPage() {
                 </td>
                 <td style={{ padding: "12px 8px" }}>
                   <div style={{ display: "flex", gap: 8 }}>
-                    <button className="btn btn-ghost" style={{ padding: "6px 10px" }}>
+                    <button className="btn btn-ghost" style={{ padding: "6px 10px" }} onClick={() => openEdit(ann)}>
                       <Icon name="edit-2" size={16} />
                     </button>
-                    <button className="btn btn-ghost" style={{ padding: "6px 10px", color: "var(--red)" }}>
+                    <button className="btn btn-ghost" style={{ padding: "6px 10px", color: "var(--red)" }} onClick={() => remove(ann)}>
                       <Icon name="trash-2" size={16} />
                     </button>
                   </div>
@@ -128,6 +166,9 @@ export default function AnnouncementsPage() {
           </tbody>
         </table>
       </div>
+      {editing && (
+        <RecordModal mode="edit" title="Edit Announcement" record={editing.record} onClose={() => setEditing(null)} onSave={saveEdit} />
+      )}
     </>
   );
 }

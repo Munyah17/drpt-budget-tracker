@@ -1,6 +1,8 @@
 "use client";
 
+import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import { downloadBlob } from "@/lib/download";
 
 const REPORTS = [
   { name: "Headcount Report", desc: "Employee count by department and location", icon: "users" },
@@ -11,7 +13,16 @@ const REPORTS = [
 ];
 
 export default function CorporateReportsPage() {
-  const handleDownload = (item: string) => alert(`Generating ${item}...`);
+  const { toast } = useAppData();
+
+  const handleDownload = (name: string) => {
+    downloadBlob(
+      `${name.toLowerCase().replace(/\s+/g, "-")}.csv`,
+      `"metric","value"\n"report","${name}"\n"generated","${new Date().toISOString()}"\n"employees","450"\n` ,
+      "text/csv"
+    );
+    toast(`${name} generated`, "file-down");
+  };
 
   return (
     <>

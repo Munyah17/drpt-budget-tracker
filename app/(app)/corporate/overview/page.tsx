@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Icon from "@/components/Icon";
 
 export default function CorporateOverviewPage() {
+  const router = useRouter();
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -10,7 +12,7 @@ export default function CorporateOverviewPage() {
           <h2 className="section-title">Corporate Dashboard</h2>
           <p className="section-sub">Acme Corporation — workforce overview</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => router.push("/corporate/employees/onboarding")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Employee
         </button>

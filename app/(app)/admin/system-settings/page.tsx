@@ -1,8 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 
 export default function SystemSettingsPage() {
+  const { toast } = useAppData();
+  const [maintenance, setMaintenance] = useState(false);
+  const [debug, setDebug] = useState(true);
+  const [rateLimit, setRateLimit] = useState("100");
+  const [timeout, setTimeout_] = useState("30 minutes");
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -19,7 +25,7 @@ export default function SystemSettingsPage() {
             <div className="sub">Disable the platform for maintenance</div>
           </div>
           <label className="switch">
-            <input type="checkbox" />
+            <input type="checkbox" checked={maintenance} onChange={(e) => setMaintenance(e.target.checked)} />
             <span className="track"><span className="knob" /></span>
           </label>
         </div>
@@ -29,7 +35,7 @@ export default function SystemSettingsPage() {
             <div className="sub">Enable detailed logging</div>
           </div>
           <label className="switch">
-            <input type="checkbox" defaultChecked />
+            <input type="checkbox" checked={debug} onChange={(e) => setDebug(e.target.checked)} />
             <span className="track"><span className="knob" /></span>
           </label>
         </div>
@@ -38,7 +44,7 @@ export default function SystemSettingsPage() {
             <div className="label">API Rate Limit</div>
             <div className="sub">Requests per minute per user</div>
           </div>
-          <select className="settings-select" defaultValue="100">
+          <select className="settings-select" value={rateLimit} onChange={(e) => setRateLimit(e.target.value)}>
             <option>50</option>
             <option>100</option>
             <option>200</option>
@@ -50,14 +56,14 @@ export default function SystemSettingsPage() {
             <div className="label">Session Timeout</div>
             <div className="sub">Auto-logout after inactivity</div>
           </div>
-          <select className="settings-select" defaultValue="30">
+          <select className="settings-select" value={timeout} onChange={(e) => setTimeout_(e.target.value)}>
             <option>15 minutes</option>
             <option>30 minutes</option>
             <option>1 hour</option>
             <option>24 hours</option>
           </select>
         </div>
-        <button className="btn btn-primary" style={{ marginTop: 20 }}>Save Settings</button>
+        <button className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => toast("System settings saved", "check-circle")}>Save Settings</button>
       </div>
     </>
   );

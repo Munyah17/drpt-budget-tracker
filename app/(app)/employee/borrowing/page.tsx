@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { FormEvent, useState, useMemo } from "react";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
+import Modal from "@/components/Modal";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
 import { useAppData } from "@/lib/AppDataContext";
 
 interface Advance {
@@ -20,19 +22,64 @@ const ADVANCES_DATA: Advance[] = [
   { id: "ADV-003", type: "Salary Advance", amount: "£400", repayment: "Deducted April payroll", status: "Settled", date: "2025-03-15" },
 ];
 
+function RequestAdvanceModal({ onSubmit, onClose }: { onSubmit: (type: string, amount: string) => void; onClose: () => void }) {
+  const [type, setType] = useState("Salary Advance");
+  const [amount, setAmount] = useState("");
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    onSubmit(type, amount);
+  }
+
+  return (
+    <Modal title="Request Advance" onClose={onClose}>
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Type</label>
+          <select className="settings-select" style={{ width: "100%" }} value={type} onChange={(e) => setType(e.target.value)}>
+            <option>Salary Advance</option>
+            <option>Employee Loan</option>
+          </select>
+        </div>
+        <div className="field">
+          <label>Amount (£)</label>
+          <input required type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 500" />
+        </div>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Submit Request</button>
+      </form>
+    </Modal>
+  );
+}
+
 export default function EmployeeBorrowingPage() {
-  const { user } = useAppData();
+  const { user, toast } = useAppData();
+  const [advances, setAdvances] = useState<Advance[]>(ADVANCES_DATA);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [requestOpen, setRequestOpen] = useState(false);
+  const [viewing, setViewing] = useState<RowRecord | null>(null);
 
   const filteredData = useMemo(() => {
-    return ADVANCES_DATA.filter((a) =>
+    return advances.filter((a) =>
       (!statusFilter || a.status === statusFilter) &&
       (a.id.toLowerCase().includes(search.toLowerCase()) || a.type.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [advances, search, statusFilter]);
 
-  const handleView = (item: string) => alert(`Viewing ${item}...`);
+  const handleView = (a: Advance) => setViewing({ reference: a.id, type: a.type, amount: a.amount, repayment: a.repayment, status: a.status, date: a.date });
+
+  const handleRequest = (type: string, amount: string) => {
+    setAdvances((prev) => [...prev, {
+      id: `ADV-${String(prev.length + 1).padStart(3, "0")}`,
+      type,
+      amount: `£${Number(amount).toLocaleString()}`,
+      repayment: "Pending approval",
+      status: "Pending",
+      date: new Date().toISOString().slice(0, 10),
+    }]);
+    toast(`${type} request submitted`, "check-circle");
+    setRequestOpen(false);
+  };
 
   return (
     <>
@@ -41,7 +88,7 @@ export default function EmployeeBorrowingPage() {
           <h2 className="section-title">Borrowing & Advances</h2>
           <p className="section-sub">Salary advances and employee loans via {user?.organisation ?? "your organisation"}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => alert("Requesting advance...")}>
+        <button className="btn btn-primary" onClick={() => setRequestOpen(true)}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Request Advance
         </button>
@@ -102,13 +149,15 @@ export default function EmployeeBorrowingPage() {
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{a.date}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(a.id)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(a)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {requestOpen && <RequestAdvanceModal onSubmit={handleRequest} onClose={() => setRequestOpen(false)} />}
+      {viewing && <RecordModal mode="view" title="Advance Details" record={viewing} onClose={() => setViewing(null)} />}
     </>
   );
 }

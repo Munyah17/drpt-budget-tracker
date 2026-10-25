@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 
 interface Staff {
@@ -13,18 +13,18 @@ interface Staff {
   status: "active" | "on-leave" | "inactive";
 }
 
+const STAFF_DATA: Staff[] = [
+  { id: "1", name: "Admin User", email: "munyamuzvidziwa19@gmail.com", role: "admin", department: "Management", status: "active" },
+  { id: "2", name: "Jane Cooper", email: "jane.cooper@drpt.com", role: "moderator", department: "Support", status: "active" },
+  { id: "3", name: "Robert Fox", email: "robert.fox@drpt.com", role: "support", department: "Support", status: "on-leave" },
+  { id: "4", name: "Cody Fisher", email: "cody.fisher@drpt.com", role: "moderator", department: "Operations", status: "active" },
+];
+
 export default function StaffManagementPage() {
-  const { toast } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
+  const crud = useCrud(STAFF_DATA, "Staff Member");
 
-  const mockStaff: Staff[] = [
-    { id: "1", name: "Admin User", email: "munyamuzvidziwa19@gmail.com", role: "admin", department: "Management", status: "active" },
-    { id: "2", name: "Jane Cooper", email: "jane.cooper@drpt.com", role: "moderator", department: "Support", status: "active" },
-    { id: "3", name: "Robert Fox", email: "robert.fox@drpt.com", role: "support", department: "Support", status: "on-leave" },
-    { id: "4", name: "Cody Fisher", email: "cody.fisher@drpt.com", role: "moderator", department: "Operations", status: "active" },
-  ];
-
-  const filteredStaff = mockStaff.filter(staff => 
+  const filteredStaff = crud.items.filter(staff => 
     staff.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     staff.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -45,7 +45,7 @@ export default function StaffManagementPage() {
           <h2 className="section-title">Staff Management</h2>
           <p className="section-sub">Manage platform staff and permissions</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Staff
         </button>
@@ -86,11 +86,11 @@ export default function StaffManagementPage() {
                 </td>
                 <td style={{ padding: "12px 8px" }}>
                   <div style={{ display: "flex", gap: 8 }}>
-                    <button className="btn btn-ghost" style={{ padding: "6px 10px" }}>
+                    <button className="btn btn-ghost" style={{ padding: "6px 10px" }} onClick={() => crud.openModal("edit", staff, crud.items.indexOf(staff))}>
                       <Icon name="edit-2" size={16} />
                     </button>
-                    <button className="btn btn-ghost" style={{ padding: "6px 10px", color: "var(--red)" }}>
-                      <Icon name="trash-2" size={16} />
+                    <button className="btn btn-ghost" style={{ padding: "6px 10px", color: "var(--red)" }} onClick={() => crud.openModal("view", staff, crud.items.indexOf(staff))}>
+                      <Icon name="eye" size={16} />
                     </button>
                   </div>
                 </td>
@@ -114,6 +114,7 @@ export default function StaffManagementPage() {
           <div className="stat-value">2</div>
         </div>
       </div>
+      {crud.modalNode}
     </>
   );
 }

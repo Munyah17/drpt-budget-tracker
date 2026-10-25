@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface Onboarding {
   organisation: string;
   contact: string;
@@ -20,22 +20,16 @@ const ONBOARDING_DATA: Onboarding[] = [
 
 export default function AdminOnboardingPage() {
   const [search, setSearch] = useState("");
+  const crud = useCrud(ONBOARDING_DATA, "Onboarding Item");
+
   const [stageFilter, setStageFilter] = useState("");
 
   const filteredData = useMemo(() => {
-    return ONBOARDING_DATA.filter((item) =>
+    return crud.items.filter((item) =>
       (!stageFilter || item.stage === stageFilter) &&
       item.organisation.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search, stageFilter]);
-
-  const handleView = (item: string) => {
-    alert(`Viewing ${item}...`);
-  };
-
-  const handleEdit = (item: string) => {
-    alert(`Editing ${item}...`);
-  };
+  }, [crud.items, search, stageFilter]);
 
   return (
     <>
@@ -44,7 +38,7 @@ export default function AdminOnboardingPage() {
           <h2 className="section-title">Onboarding</h2>
           <p className="section-sub">Manage organisation onboarding process</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Onboarding
         </button>
@@ -84,14 +78,15 @@ export default function AdminOnboardingPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{item.progress}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{item.assigned}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(item.organisation)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(item.organisation)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", item, crud.items.indexOf(item))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", item, crud.items.indexOf(item))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

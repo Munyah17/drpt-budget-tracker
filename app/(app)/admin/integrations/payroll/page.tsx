@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface PayrollProvider {
   name: string;
   type: string;
@@ -22,20 +23,18 @@ const PAYROLL_DATA: PayrollProvider[] = [
 export default function AdminPayrollProvidersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(PAYROLL_DATA, "Integration");
 
+  const { toast } = useAppData();
   const filteredData = useMemo(() => {
-    return PAYROLL_DATA.filter((provider) =>
+    return crud.items.filter((provider) =>
       (!statusFilter || provider.status === statusFilter) &&
       (provider.name.toLowerCase().includes(search.toLowerCase()) || provider.type.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [crud.items, search, statusFilter]);
 
   const handleSync = (item: string) => {
-    alert(`Syncing ${item}...`);
-  };
-
-  const handleEdit = (item: string) => {
-    alert(`Editing ${item}...`);
+    toast(`Syncing ${item}...`);
   };
 
   return (
@@ -45,7 +44,7 @@ export default function AdminPayrollProvidersPage() {
           <h2 className="section-title">Payroll Providers</h2>
           <p className="section-sub">Manage payroll system integrations</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Provider
         </button>
@@ -94,13 +93,14 @@ export default function AdminPayrollProvidersPage() {
                 </td>
                 <td style={{ padding: "12px 8px" }}>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSync(provider.name)}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Sync</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(provider.name)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", provider, crud.items.indexOf(provider))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

@@ -2,9 +2,18 @@
 
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import { downloadBlob } from "@/lib/download";
 
 export default function EmployeeSalaryPage() {
-  const { user } = useAppData();
+  const { user, toast } = useAppData();
+
+  const downloadP60 = () => {
+    downloadBlob(
+      "p60-2024-25.txt",
+      `P60 END OF YEAR CERTIFICATE 2024/25\nEmployer: ${user?.organisation ?? "Organisation"}\nEmployee: ${user?.name ?? "Employee"}\n\nTotal Gross Pay: £62,400\nTotal Tax Deducted: £8,940\nNational Insurance: £3,720\nPension Contributions: £3,060\n`
+    );
+    toast("P60 downloaded", "file-down");
+  };
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -82,7 +91,7 @@ export default function EmployeeSalaryPage() {
               </tr>
             </tbody>
           </table>
-          <button className="btn btn-ghost" style={{ marginTop: 14, fontSize: 13 }} onClick={() => alert("Opening tax documents...")}>
+          <button className="btn btn-ghost" style={{ marginTop: 14, fontSize: 13 }} onClick={downloadP60}>
             <Icon name="file-text" size={14} style={{ marginRight: 6 }} />View P60 / Tax Documents
           </button>
         </div>

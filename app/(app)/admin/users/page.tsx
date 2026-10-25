@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 
 interface User {
@@ -14,20 +15,21 @@ interface User {
   lastActive: string;
 }
 
+const USERS_DATA: User[] = [
+  { id: "1", name: "John Doe", email: "john.doe@email.com", status: "active", plan: "paid", joined: "2025-01-15", lastActive: "2h ago" },
+  { id: "2", name: "Sarah Smith", email: "sarah.smith@email.com", status: "active", plan: "paid", joined: "2025-02-20", lastActive: "5m ago" },
+  { id: "3", name: "Mike Wilson", email: "mike.wilson@email.com", status: "suspended", plan: "free", joined: "2025-03-10", lastActive: "3d ago" },
+  { id: "4", name: "Emma Jones", email: "emma.jones@email.com", status: "active", plan: "free", joined: "2025-04-05", lastActive: "1h ago" },
+  { id: "5", name: "Tom Brown", email: "tom.brown@email.com", status: "inactive", plan: "free", joined: "2025-04-12", lastActive: "7d ago" },
+];
+
 export default function UserManagementPage() {
   const { toast } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "suspended">("all");
+  const crud = useCrud(USERS_DATA, "User");
 
-  const mockUsers: User[] = [
-    { id: "1", name: "John Doe", email: "john.doe@email.com", status: "active", plan: "paid", joined: "2025-01-15", lastActive: "2h ago" },
-    { id: "2", name: "Sarah Smith", email: "sarah.smith@email.com", status: "active", plan: "paid", joined: "2025-02-20", lastActive: "5m ago" },
-    { id: "3", name: "Mike Wilson", email: "mike.wilson@email.com", status: "suspended", plan: "free", joined: "2025-03-10", lastActive: "3d ago" },
-    { id: "4", name: "Emma Jones", email: "emma.jones@email.com", status: "active", plan: "free", joined: "2025-04-05", lastActive: "1h ago" },
-    { id: "5", name: "Tom Brown", email: "tom.brown@email.com", status: "inactive", plan: "free", joined: "2025-04-12", lastActive: "7d ago" },
-  ];
-
-  const filteredUsers = mockUsers.filter(user => {
+  const filteredUsers = crud.items.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || user.status === statusFilter;
@@ -50,7 +52,7 @@ export default function UserManagementPage() {
           <h2 className="section-title">User Management</h2>
           <p className="section-sub">Manage all platform users</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add User
         </button>
@@ -69,7 +71,7 @@ export default function UserManagementPage() {
           </div>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
+            onChange={(e) => setStatusFilter(e.target.value as "all" | "active" | "inactive" | "suspended")}
             style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}
           >
             <option value="all">All Status</option>
@@ -110,21 +112,24 @@ export default function UserManagementPage() {
                     <button
                       className="btn btn-ghost"
                       style={{ padding: "6px 10px" }}
-                      onClick={() => toast(`Viewing ${user.name}`, "eye")}
+                      onClick={() => crud.openModal("view", user, crud.items.indexOf(user))}
                     >
                       <Icon name="eye" size={16} />
                     </button>
                     <button
                       className="btn btn-ghost"
                       style={{ padding: "6px 10px" }}
-                      onClick={() => toast(`Editing ${user.name}`, "edit")}
+                      onClick={() => crud.openModal("edit", user, crud.items.indexOf(user))}
                     >
                       <Icon name="edit-2" size={16} />
                     </button>
                     <button
                       className="btn btn-ghost"
-                      style={{ padding: "6px 10px", color: "var(--red)" }}
-                      onClick={() => toast(`Suspended ${user.name}`, "x-circle")}
+                      style={{ padding: "6px 10px", color: user.status === "suspended" ? "var(--green)" : "var(--red)" }}
+                      onClick={() => {
+                        crud.setItems((prev) => prev.map((u) => (u.id === user.id ? { ...u, status: u.status === "suspended" ? "active" : "suspended" } : u)));
+                        toast(user.status === "suspended" ? `${user.name} reactivated` : `${user.name} suspended`, "x-circle");
+                      }}
                     >
                       <Icon name="x-circle" size={16} />
                     </button>
@@ -154,6 +159,7 @@ export default function UserManagementPage() {
           <div className="stat-value">23</div>
         </div>
       </div>
+      {crud.modalNode}
     </>
   );
 }

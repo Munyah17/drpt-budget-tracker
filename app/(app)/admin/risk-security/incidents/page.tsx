@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface Incident {
   incidentId: string;
   type: string;
@@ -23,18 +23,15 @@ export default function AdminIncidentsPage() {
   const [search, setSearch] = useState("");
   const [severityFilter, setSeverityFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(INCIDENTS_DATA, "Incident");
 
   const filteredData = useMemo(() => {
-    return INCIDENTS_DATA.filter((incident) =>
+    return crud.items.filter((incident) =>
       (!severityFilter || incident.severity === severityFilter) &&
       (!statusFilter || incident.status === statusFilter) &&
       (incident.incidentId.toLowerCase().includes(search.toLowerCase()) || incident.type.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, severityFilter, statusFilter]);
-
-  const handleView = (item: string) => {
-    alert(`Viewing ${item}...`);
-  };
+  }, [crud.items, search, severityFilter, statusFilter]);
 
   return (
     <>
@@ -43,7 +40,7 @@ export default function AdminIncidentsPage() {
           <h2 className="section-title">Security Incidents</h2>
           <p className="section-sub">Track and manage security incidents</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Report Incident
         </button>
@@ -112,13 +109,14 @@ export default function AdminIncidentsPage() {
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{incident.assigned}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleView(incident.incidentId)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", incident, crud.items.indexOf(incident))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

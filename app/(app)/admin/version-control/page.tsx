@@ -1,9 +1,32 @@
 "use client";
 
 import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 
+interface Version {
+  version: string;
+  released: string;
+  changes: string;
+  status: string;
+}
+
+const VERSIONS_DATA: Version[] = [
+  { version: "v2.0.5", released: "May 20, 2025", changes: "Bug fixes and performance improvements", status: "Deprecated" },
+  { version: "v2.0.4", released: "May 15, 2025", changes: "Payment gateway integration", status: "Deprecated" },
+  { version: "v2.0.0", released: "May 1, 2025", changes: "Major release - Multi-currency support", status: "Archived" },
+];
+
 export default function VersionControlPage() {
+  const crud = useCrud(VERSIONS_DATA, "Version");
+  const { toast } = useAppData();
+
+  const deploy = () => {
+    const next = `v2.${crud.items.length + 1}.0`;
+    crud.setItems((prev) => [{ version: next, released: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }), changes: "New deployment", status: "Live" }, ...prev]);
+    toast(`${next} deployed`, "check-circle");
+  };
+
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -11,7 +34,7 @@ export default function VersionControlPage() {
           <h2 className="section-title">Version Control</h2>
           <p className="section-sub">Manage application versions and deployments</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={deploy}>
           <Icon name="upload" size={16} style={{ marginRight: 8 }} />
           Deploy New Version
         </button>
@@ -66,42 +89,23 @@ export default function VersionControlPage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>v2.0.5</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>May 20, 2025</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Bug fixes and performance improvements</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Deprecated</span></td>
-              <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "6px 10px" }}>
-                  <Icon name="eye" size={16} />
-                </button>
-              </td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>v2.0.4</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>May 15, 2025</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Payment gateway integration</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-amber">Deprecated</span></td>
-              <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "6px 10px" }}>
-                  <Icon name="eye" size={16} />
-                </button>
-              </td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>v2.0.0</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>May 1, 2025</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Major release - Multi-currency support</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-red">Archived</span></td>
-              <td style={{ padding: "12px 8px" }}>
-                <button className="btn btn-ghost" style={{ padding: "6px 10px" }}>
-                  <Icon name="eye" size={16} />
-                </button>
-              </td>
-            </tr>
+            {crud.items.map((v, idx) => (
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
+                <td style={{ padding: "12px 8px", fontWeight: 600 }}>{v.version}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{v.released}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{v.changes}</td>
+                <td style={{ padding: "12px 8px" }}><span className={`badge ${v.status === "Live" ? "badge-green" : v.status === "Archived" ? "badge-red" : "badge-amber"}`}>{v.status}</span></td>
+                <td style={{ padding: "12px 8px" }}>
+                  <button className="btn btn-ghost" style={{ padding: "6px 10px" }} onClick={() => crud.openModal("view", v, idx)}>
+                    <Icon name="eye" size={16} />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

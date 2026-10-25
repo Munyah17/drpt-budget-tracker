@@ -5,6 +5,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
+import { useCrud } from "@/lib/useCrud";
 interface Subscription {
   user: string;
   plan: string;
@@ -21,20 +22,18 @@ const SUBSCRIPTIONS_DATA: Subscription[] = [
 export default function AdminSubscriptionsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(SUBSCRIPTIONS_DATA, "Subscription");
 
+  const { toast } = useAppData();
   const filteredData = useMemo(() => {
-    return SUBSCRIPTIONS_DATA.filter((subscription) =>
+    return crud.items.filter((subscription) =>
       (!statusFilter || subscription.status === statusFilter) &&
       (subscription.user.toLowerCase().includes(search.toLowerCase()) || subscription.plan.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
-
-  const handleEdit = (item: string) => {
-    alert(`Editing ${item}...`);
-  };
+  }, [crud.items, search, statusFilter]);
 
   const handleRenew = (item: string) => {
-    alert(`Renewing ${item}...`);
+    toast(`Renewing ${item}...`);
   };
 
   return (
@@ -44,7 +43,7 @@ export default function AdminSubscriptionsPage() {
           <h2 className="section-title">Subscriptions</h2>
           <p className="section-sub">Manage user subscriptions</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Subscription
         </button>
@@ -88,7 +87,7 @@ export default function AdminSubscriptionsPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleEdit(subscription.user)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", subscription, crud.items.indexOf(subscription))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
                   {subscription.status === "Expired" && (
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleRenew(subscription.user)}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Renew</button>
                   )}
@@ -98,6 +97,7 @@ export default function AdminSubscriptionsPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { FormEvent, useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
+import Modal from "@/components/Modal";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 interface Loan {
   type: string;
@@ -21,20 +23,67 @@ const LOANS_DATA: Loan[] = [
   { type: "Credit Card", lender: "Monzo", amount: "$12,450", interestRate: "18.9% APR", monthlyPayment: "$150", remaining: "$12,450", status: "High Balance" },
 ];
 
+function ApplyModal({ loanType, onApply, onClose }: { loanType: string; onApply: (amount: string, term: string) => void; onClose: () => void }) {
+  const [amount, setAmount] = useState("");
+  const [term, setTerm] = useState("");
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    onApply(amount, term);
+  }
+
+  return (
+    <Modal title={`Apply — ${loanType}`} onClose={onClose}>
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Amount (£)</label>
+          <input required type="number" min="100" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 5000" />
+        </div>
+        <div className="field">
+          <label>Term</label>
+          <select className="settings-select" style={{ width: "100%" }} value={term} onChange={(e) => setTerm(e.target.value)} required>
+            <option value="" disabled>Select term</option>
+            <option>1 year</option>
+            <option>3 years</option>
+            <option>5 years</option>
+            <option>7 years</option>
+          </select>
+        </div>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Submit Application</button>
+      </form>
+    </Modal>
+  );
+}
+
 export default function BorrowingPage() {
   const { toast } = useAppData();
+  const [loans, setLoans] = useState<Loan[]>(LOANS_DATA);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [applying, setApplying] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<RowRecord | null>(null);
 
   const filteredLoans = useMemo(() => {
-    return LOANS_DATA.filter((loan) =>
+    return loans.filter((loan) =>
       (!statusFilter || loan.status === statusFilter) &&
       (loan.type.toLowerCase().includes(search.toLowerCase()) || loan.lender.toLowerCase().includes(search.toLowerCase()))
     );
-  }, [search, statusFilter]);
+  }, [loans, search, statusFilter]);
 
-  const handleApply = (loanType: string) => {
-    toast(`Applying for ${loanType}...`, "credit-card");
+  const handleApply = (amount: string, term: string) => {
+    if (!applying) return;
+    const formatted = `£${Number(amount).toLocaleString()}`;
+    setLoans((prev) => [...prev, {
+      type: applying,
+      lender: "Dr PT Credit",
+      amount: formatted,
+      interestRate: "TBC",
+      monthlyPayment: `${term} months`,
+      remaining: formatted,
+      status: "Pending",
+    }]);
+    toast(`${applying} application submitted`, "check-circle");
+    setApplying(null);
   };
 
   return (
@@ -100,14 +149,14 @@ export default function BorrowingPage() {
               </tr>
             )}
             {filteredLoans.map((loan, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => setViewing({ type: loan.type, lender: loan.lender, amount: loan.amount, "interest rate": loan.interestRate, "monthly payment": loan.monthlyPayment, remaining: loan.remaining, status: loan.status })}>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{loan.type}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.lender}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.amount}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.interestRate}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.monthlyPayment}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.remaining}</td>
-                <td style={{ padding: "12px 8px" }}><span className={`badge ${loan.status === "Active" ? "badge-green" : "badge-amber"}`}>{loan.status}</span></td>
+                <td style={{ padding: "12px 8px" }}><span className={`badge ${loan.status === "Active" ? "badge-green" : loan.status === "Pending" ? "badge-blue" : "badge-amber"}`}>{loan.status}</span></td>
               </tr>
             ))}
           </tbody>
@@ -133,7 +182,7 @@ export default function BorrowingPage() {
               <div>From 5.9% APR</div>
               <div>1-7 year terms</div>
             </div>
-            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => handleApply("Personal Loan")}>
+            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying("Personal Loan")}>
               Apply Now
             </button>
           </div>
@@ -151,7 +200,7 @@ export default function BorrowingPage() {
               <div>From 4.5% APR</div>
               <div>5-20 year terms</div>
             </div>
-            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => handleApply("Home Equity Loan")}>
+            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying("Home Equity Loan")}>
               Apply Now
             </button>
           </div>
@@ -169,12 +218,14 @@ export default function BorrowingPage() {
               <div>From 6.5% APR</div>
               <div>1-5 year terms</div>
             </div>
-            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => handleApply("Debt Consolidation")}>
+            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying("Debt Consolidation")}>
               Apply Now
             </button>
           </div>
         </div>
       </div>
+      {applying && <ApplyModal loanType={applying} onApply={handleApply} onClose={() => setApplying(null)} />}
+      {viewing && <RecordModal mode="view" title="Loan Details" record={viewing} onClose={() => setViewing(null)} />}
     </>
   );
 }

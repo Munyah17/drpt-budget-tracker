@@ -1,9 +1,23 @@
 "use client";
 
-import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 
+interface Campaign {
+  name: string;
+  platform: string;
+  reach: string;
+  conversions: string;
+  status: string;
+}
+
+const CAMPAIGNS_DATA: Campaign[] = [
+  { name: "Summer Promo", platform: "Facebook", reach: "5,200", conversions: "412", status: "Active" },
+  { name: "Email Blast", platform: "Email", reach: "3,100", conversions: "287", status: "Active" },
+];
+
 export default function MarketingPage() {
+  const crud = useCrud(CAMPAIGNS_DATA, "Campaign");
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
@@ -11,7 +25,7 @@ export default function MarketingPage() {
           <h2 className="section-title">Marketing</h2>
           <p className="section-sub">Manage marketing campaigns</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           New Campaign
         </button>
@@ -51,23 +65,19 @@ export default function MarketingPage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>Summer Promo</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Facebook</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>5,200</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>412</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontWeight: 600 }}>Email Blast</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Email</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>3,100</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>287</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
-            </tr>
+            {crud.items.map((c, idx) => (
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => crud.openModal("view", c, idx)}>
+                <td style={{ padding: "12px 8px", fontWeight: 600 }}>{c.name}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{c.platform}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{c.reach}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{c.conversions}</td>
+                <td style={{ padding: "12px 8px" }}><span className={`badge ${c.status === "Active" ? "badge-green" : "badge-amber"}`}>{c.status}</span></td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }

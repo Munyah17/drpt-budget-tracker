@@ -1,9 +1,12 @@
 "use client";
 
+import { FormEvent, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { gbp } from "@/lib/format";
 import Icon from "@/components/Icon";
 import ProgressBar from "@/components/ProgressBar";
+import Modal from "@/components/Modal";
+import type { Budget } from "@/lib/types";
 
 function budgetStatus(pct: number) {
   if (pct >= 100) return { color: "var(--red)", badge: "badge-red" };
@@ -11,8 +14,35 @@ function budgetStatus(pct: number) {
   return { color: "var(--green)", badge: "badge-green" };
 }
 
+function EditBudgetModal({ budget, onClose }: { budget: Budget; onClose: () => void }) {
+  const { updateBudget, toast } = useAppData();
+  const [amount, setAmount] = useState(String(budget.budget));
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    updateBudget(budget.category, parseFloat(amount) || 0);
+    toast(`Budget for ${budget.category} updated`);
+    onClose();
+  }
+
+  return (
+    <Modal title={`Edit ${budget.category} Budget`} onClose={onClose}>
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Monthly budget (£)</label>
+          <input required type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        </div>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">
+          Save Budget
+        </button>
+      </form>
+    </Modal>
+  );
+}
+
 export default function BudgetPage() {
-  const { budgets } = useAppData();
+  const { budgets, month, setMonth } = useAppData();
+  const [editing, setEditing] = useState<Budget | null>(null);
   const totalBudget = budgets.reduce((s, b) => s + b.budget, 0);
   const totalSpent = budgets.reduce((s, b) => s + b.spent, 0);
 
@@ -21,9 +51,9 @@ export default function BudgetPage() {
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
           <h2 className="section-title">Budget Planner</h2>
-          <p className="section-sub">May 2025 — track spending against your monthly plan</p>
+          <p className="section-sub">{month} — track spending against your monthly plan</p>
         </div>
-        <select className="month-select">
+        <select className="month-select" value={month} onChange={(e) => setMonth(e.target.value)}>
           <option>May 2025</option>
           <option>June 2025</option>
         </select>
@@ -59,7 +89,7 @@ export default function BudgetPage() {
                       </div>
                     </td>
                     <td>
-                      <button className="btn btn-ghost btn-sm" data-tip="Edit budget">
+                      <button className="btn btn-ghost btn-sm" data-tip="Edit budget" onClick={() => setEditing(b)}>
                         <Icon name="pencil" size={14} />
                       </button>
                     </td>
@@ -77,6 +107,7 @@ export default function BudgetPage() {
           </table>
         </div>
       </div>
+      {editing && <EditBudgetModal budget={editing} onClose={() => setEditing(null)} />}
     </>
   );
 }

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
+import RecordModal, { RowRecord } from "@/components/RecordModal";
+import { downloadCsv } from "@/lib/download";
 
 interface PlatformTransaction {
   id: string;
@@ -15,8 +17,10 @@ interface PlatformTransaction {
 }
 
 export default function AdminTransactionsPage() {
+  const { toast } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">("all");
+  const [viewing, setViewing] = useState<RowRecord | null>(null);
 
   const mockTransactions: PlatformTransaction[] = [
     { id: "1", user: "john.doe@email.com", type: "income", category: "Salary", amount: 4120.0, date: "2025-05-26", method: "Bank Transfer" },
@@ -44,7 +48,10 @@ export default function AdminTransactionsPage() {
           <h2 className="section-title">Platform Transactions</h2>
           <p className="section-sub">Monitor all user transactions across the platform</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => {
+          downloadCsv("platform-transactions.csv", filteredTransactions.map((t) => ({ id: t.id, user: t.user, type: t.type, category: t.category, amount: String(t.amount), date: t.date, method: t.method })));
+          toast(`${filteredTransactions.length} transactions exported`, "download");
+        }}>
           <Icon name="download" size={16} style={{ marginRight: 8 }} />
           Export Data
         </button>
@@ -82,7 +89,7 @@ export default function AdminTransactionsPage() {
           </div>
           <select
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as any)}
+            onChange={(e) => setTypeFilter(e.target.value as "all" | "income" | "expense")}
             style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}
           >
             <option value="all">All Types</option>
@@ -104,7 +111,7 @@ export default function AdminTransactionsPage() {
           </thead>
           <tbody>
             {filteredTransactions.map((t) => (
-              <tr key={t.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
+              <tr key={t.id} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => setViewing({ user: t.user, type: t.type, category: t.category, amount: `£${t.amount.toFixed(2)}`, date: t.date, method: t.method })}>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{t.user}</td>
                 <td style={{ padding: "12px 8px" }}>
                   <span className={`badge ${t.type === "income" ? "badge-green" : "badge-red"}`}>
@@ -122,6 +129,7 @@ export default function AdminTransactionsPage() {
           </tbody>
         </table>
       </div>
+      {viewing && <RecordModal mode="view" title="Transaction Details" record={viewing} onClose={() => setViewing(null)} />}
     </>
   );
 }

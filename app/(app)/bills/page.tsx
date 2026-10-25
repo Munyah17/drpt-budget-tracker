@@ -1,17 +1,53 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { FormEvent, useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { gbp, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
+import Modal from "@/components/Modal";
 
 type Tab = "upcoming" | "overdue" | "paid";
 
+function AddBillModal({ onClose }: { onClose: () => void }) {
+  const { addBill, toast } = useAppData();
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [due, setDue] = useState("");
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    addBill({ name, amount: parseFloat(amount) || 0, due, icon: "receipt" });
+    toast(`Bill "${name}" added`);
+    onClose();
+  }
+
+  return (
+    <Modal title="Add Bill" onClose={onClose}>
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Bill name</label>
+          <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Council Tax" />
+        </div>
+        <div className="field">
+          <label>Amount (£)</label>
+          <input required type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        </div>
+        <div className="field">
+          <label>Due date</label>
+          <input required type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+        </div>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Add Bill</button>
+      </form>
+    </Modal>
+  );
+}
+
 export default function BillsPage() {
-  const { bills, toast } = useAppData();
+  const { bills, markBillPaid, toast } = useAppData();
   const [tab, setTab] = useState<Tab>("upcoming");
   const [search, setSearch] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return bills.filter((b) => 
@@ -64,16 +100,26 @@ export default function BillsPage() {
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontWeight: 800, marginBottom: 4 }}>{gbp(b.amount)}</div>
                 {badge}
+                {b.status !== "paid" && (
+                  <button
+                    className="btn btn-ghost"
+                    style={{ padding: "4px 10px", fontSize: 12, marginTop: 6 }}
+                    onClick={() => { markBillPaid(b.id); toast(`${b.name} marked as paid`); }}
+                  >
+                    Mark paid
+                  </button>
+                )}
               </div>
             </div>
           );
         })}
       </div>
       <div style={{ marginTop: 20 }}>
-        <button className="btn btn-primary" onClick={() => toast("Add Bill form would open here", "receipt")}>
+        <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
           <Icon name="plus" size={16} /> Add Bill
         </button>
       </div>
+      {modalOpen && <AddBillModal onClose={() => setModalOpen(false)} />}
     </>
   );
 }

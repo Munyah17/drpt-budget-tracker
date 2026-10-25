@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useAppData } from "@/lib/AppDataContext";
+import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
@@ -22,13 +22,14 @@ const CONTRACTS_DATA: Contract[] = [
 export default function AdminContractsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const crud = useCrud(CONTRACTS_DATA, "Contract");
 
   const filteredData = useMemo(() => {
-    return CONTRACTS_DATA.filter((contract) =>
+    return crud.items.filter((contract) =>
       (!statusFilter || contract.status === statusFilter) &&
       contract.organisation.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search, statusFilter]);
+  }, [crud.items, search, statusFilter]);
 
   return (
     <>
@@ -37,7 +38,7 @@ export default function AdminContractsPage() {
           <h2 className="section-title">Contracts</h2>
           <p className="section-sub">Manage organisation contracts</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           Add Contract
         </button>
@@ -70,7 +71,7 @@ export default function AdminContractsPage() {
               </tr>
             )}
             {filteredData.map((contract, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => crud.openModal("view", contract, crud.items.indexOf(contract))}>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{contract.organisation}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{contract.plan}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{contract.monthlyFee}</td>
@@ -82,6 +83,7 @@ export default function AdminContractsPage() {
           </tbody>
         </table>
       </div>
+      {crud.modalNode}
     </>
   );
 }
