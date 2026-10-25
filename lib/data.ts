@@ -266,7 +266,7 @@ export const CURRENCIES: Currency[] = [
   "SHP", "SLE", "SOS", "SRD", "SSP", "STN", "SYP", "SZL", "THB", "TJS",
   "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "UYU",
   "UZS", "VES", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER",
-  "ZAR", "ZMW", "ZWL",
+  "ZAR", "ZMW",
 ];
 
 export const REPORTS = [
