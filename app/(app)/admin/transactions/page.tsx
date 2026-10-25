@@ -60,15 +60,15 @@ export default function AdminTransactionsPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Volume</div>
-          <div className="stat-value">£{totalVolume.toLocaleString()}</div>
+          <div className="stat-value">${totalVolume.toLocaleString()}</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Income</div>
-          <div className="stat-value">£{totalIncome.toLocaleString()}</div>
+          <div className="stat-value">${totalIncome.toLocaleString()}</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Expenses</div>
-          <div className="stat-value">£{totalExpenses.toLocaleString()}</div>
+          <div className="stat-value">${totalExpenses.toLocaleString()}</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Transaction Count</div>
@@ -111,7 +111,7 @@ export default function AdminTransactionsPage() {
           </thead>
           <tbody>
             {filteredTransactions.map((t) => (
-              <tr key={t.id} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => setViewing({ user: t.user, type: t.type, category: t.category, amount: `£${t.amount.toFixed(2)}`, date: t.date, method: t.method })}>
+              <tr key={t.id} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => setViewing({ user: t.user, type: t.type, category: t.category, amount: `$${t.amount.toFixed(2)}`, date: t.date, method: t.method })}>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{t.user}</td>
                 <td style={{ padding: "12px 8px" }}>
                   <span className={`badge ${t.type === "income" ? "badge-green" : "badge-red"}`}>
@@ -120,7 +120,7 @@ export default function AdminTransactionsPage() {
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{t.category}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>
-                  {t.type === "income" ? "+" : "-"}£{t.amount.toFixed(2)}
+                  {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{t.date}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{t.method}</td>

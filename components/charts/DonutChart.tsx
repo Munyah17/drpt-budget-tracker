@@ -1,4 +1,4 @@
-import { gbp } from "@/lib/format";
+﻿import { fmt } from "@/lib/format";
 import { LegendCategories } from "./ChartLegend";
 
 export default function DonutChart({
@@ -49,7 +49,7 @@ export default function DonutChart({
           <div style={{ fontSize: 11, color: "var(--ink-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".03em" }}>
             Total
           </div>
-          <div style={{ fontSize: 17, fontWeight: 800 }}>{gbp(total)}</div>
+          <div style={{ fontSize: 17, fontWeight: 800 }}>{fmt(total)}</div>
         </div>
       </div>
       {legend && <LegendCategories data={data} colors={colors} />}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAppData } from "@/lib/AppDataContext";
 import { CATEGORY_COLORS } from "@/lib/data";
-import { gbp, ukDate } from "@/lib/format";
+import {  fmt, ukDate , sym } from "@/lib/format";
 import CountUp from "@/components/CountUp";
 import Icon from "@/components/Icon";
 import BarChart from "@/components/charts/BarChart";
@@ -26,7 +26,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={totalBalance} prefix="£" />
+            <CountUp end={totalBalance} prefix={sym()} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>
             Across 4 accounts
@@ -40,7 +40,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={totalIncome} prefix="£" />
+            <CountUp end={totalIncome} prefix={sym()} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>
             +4.2% vs April
@@ -54,7 +54,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={totalExpenses} prefix="£" />
+            <CountUp end={totalExpenses} prefix={sym()} />
           </div>
           <span className="stat-delta" style={{ color: "var(--red)" }}>
             -8% vs April
@@ -68,7 +68,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={remaining} prefix="£" />
+            <CountUp end={remaining} prefix={sym()} />
           </div>
           <span className="stat-delta" style={{ color: "var(--ink-500)" }}>
             On track for May
@@ -118,7 +118,7 @@ export default function DashboardPage() {
                 {e.merchant}
               </div>
               <div style={{ textAlign: "right" }}>
-                <div className="amt-neg">-{gbp(e.amount)}</div>
+                <div className="amt-neg">-{fmt(e.amount)}</div>
                 <div style={{ fontSize: 11, color: "var(--ink-500)" }}>{ukDate(e.date)}</div>
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
                 <div style={{ fontSize: 11.5, color: "var(--ink-500)" }}>Due {ukDate(b.due)}</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontWeight: 700 }}>{gbp(b.amount)}</div>
+                <div style={{ fontWeight: 700 }}>{fmt(b.amount)}</div>
                 <span className="badge badge-amber">
                   {b.daysLeft} day{b.daysLeft === 1 ? "" : "s"} left
                 </span>

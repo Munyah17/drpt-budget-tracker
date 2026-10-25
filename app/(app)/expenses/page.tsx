@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { EXPENSE_CATS, EXPENSE_ICONS } from "@/lib/data";
-import { gbp, ukDate } from "@/lib/format";
+import {  fmt, ukDate , sym } from "@/lib/format";
 import { ExpenseEntry } from "@/lib/types";
 import Icon from "@/components/Icon";
 import CountUp from "@/components/CountUp";
@@ -52,7 +52,7 @@ export default function ExpensesPage() {
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Total Spent</span>
           <div className="stat-value">
-            <CountUp end={totalExpenses} prefix="£" />
+            <CountUp end={totalExpenses} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
@@ -70,7 +70,7 @@ export default function ExpensesPage() {
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Largest Expense</span>
           <div className="stat-value">
-            <CountUp end={expenses.length ? Math.max(...expenses.map((e) => e.amount)) : 0} prefix="£" />
+            <CountUp end={expenses.length ? Math.max(...expenses.map((e) => e.amount)) : 0} prefix={sym()} />
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function ExpensesPage() {
                   <td>{e.method}</td>
                   <td>{ukDate(e.date)}</td>
                   <td style={{ textAlign: "right" }} className="amt-neg">
-                    -{gbp(e.amount)}
+                    -{fmt(e.amount)}
                   </td>
                   <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                     <button className="btn btn-ghost btn-sm" data-tip="Edit" onClick={() => openEdit(e)}>

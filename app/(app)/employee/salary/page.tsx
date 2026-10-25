@@ -10,7 +10,7 @@ export default function EmployeeSalaryPage() {
   const downloadP60 = () => {
     downloadBlob(
       "p60-2024-25.txt",
-      `P60 END OF YEAR CERTIFICATE 2024/25\nEmployer: ${user?.organisation ?? "Organisation"}\nEmployee: ${user?.name ?? "Employee"}\n\nTotal Gross Pay: £62,400\nTotal Tax Deducted: £8,940\nNational Insurance: £3,720\nPension Contributions: £3,060\n`
+      `P60 END OF YEAR CERTIFICATE 2024/25\nEmployer: ${user?.organisation ?? "Organisation"}\nEmployee: ${user?.name ?? "Employee"}\n\nTotal Gross Pay: $62,400\nTotal Tax Deducted: $8,940\nNational Insurance: $3,720\nPension Contributions: $3,060\n`
     );
     toast("P60 downloaded", "file-down");
   };
@@ -26,15 +26,15 @@ export default function EmployeeSalaryPage() {
       <div className="grid grid-3" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Annual Gross</div>
-          <div className="stat-value">£62,400</div>
+          <div className="stat-value">$62,400</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Monthly Gross</div>
-          <div className="stat-value">£5,200</div>
+          <div className="stat-value">$5,200</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Monthly Net</div>
-          <div className="stat-value">£3,890</div>
+          <div className="stat-value">$3,890</div>
         </div>
       </div>
 
@@ -45,19 +45,19 @@ export default function EmployeeSalaryPage() {
             <tbody>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>Income Tax (PAYE)</td>
-                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 600 }}>£745</td>
+                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 600 }}>$745</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>National Insurance</td>
-                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 600 }}>£310</td>
+                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 600 }}>$310</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>Pension Contribution</td>
-                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 600 }}>£255</td>
+                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 600 }}>$255</td>
               </tr>
               <tr>
                 <td style={{ padding: "10px 6px", fontWeight: 600 }}>Total Deductions</td>
-                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 700 }}>£1,310</td>
+                <td style={{ padding: "10px 6px", textAlign: "right", fontWeight: 700 }}>$1,310</td>
               </tr>
             </tbody>
           </table>
@@ -76,17 +76,17 @@ export default function EmployeeSalaryPage() {
             <tbody>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>2025-04-01</td>
-                <td style={{ padding: "10px 6px" }}>£62,400</td>
+                <td style={{ padding: "10px 6px" }}>$62,400</td>
                 <td style={{ padding: "10px 6px" }}><span className="badge badge-green">+4.2%</span></td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>2024-04-01</td>
-                <td style={{ padding: "10px 6px" }}>£59,900</td>
+                <td style={{ padding: "10px 6px" }}>$59,900</td>
                 <td style={{ padding: "10px 6px" }}><span className="badge badge-green">+3.0%</span></td>
               </tr>
               <tr>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>2023-04-01</td>
-                <td style={{ padding: "10px 6px" }}>£58,150</td>
+                <td style={{ padding: "10px 6px" }}>$58,150</td>
                 <td style={{ padding: "10px 6px" }}><span className="badge badge-blue">Promotion</span></td>
               </tr>
             </tbody>

@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
-import { gbp } from "@/lib/format";
+import {  fmt , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import CircleProgress from "@/components/charts/CircleProgress";
 import Modal from "@/components/Modal";
@@ -36,11 +36,11 @@ function NewGoalModal({ onClose }: { onClose: () => void }) {
           <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. New Laptop" />
         </div>
         <div className="field">
-          <label>Target amount (£)</label>
+          <label>Target amount ({sym()})</label>
           <input required type="number" step="0.01" value={target} onChange={(e) => setTarget(e.target.value)} placeholder="0.00" />
         </div>
         <div className="field">
-          <label>Already saved (£)</label>
+          <label>Already saved ({sym()})</label>
           <input type="number" step="0.01" value={saved} onChange={(e) => setSaved(e.target.value)} />
         </div>
         <div className="field">
@@ -92,11 +92,11 @@ function EditGoalModal({ goal, onClose }: { goal: Goal; onClose: () => void }) {
           <input required value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="field">
-          <label>Target amount (£)</label>
+          <label>Target amount ({sym()})</label>
           <input required type="number" step="0.01" value={target} onChange={(e) => setTarget(e.target.value)} />
         </div>
         <div className="field">
-          <label>Already saved (£)</label>
+          <label>Already saved ({sym()})</label>
           <input type="number" step="0.01" value={saved} onChange={(e) => setSaved(e.target.value)} />
         </div>
         <div className="field">
@@ -140,8 +140,8 @@ export default function SavingsPage() {
                 <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{g.name}</div>
                 <div style={{ fontSize: 12.5, color: "var(--ink-500)", marginBottom: 8 }}>Target {g.deadline}</div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 600 }}>
-                  <span>{gbp(g.saved)} saved</span>
-                  <span style={{ color: "var(--ink-500)", fontWeight: 500 }}>of {gbp(g.target)}</span>
+                  <span>{fmt(g.saved)} saved</span>
+                  <span style={{ color: "var(--ink-500)", fontWeight: 500 }}>of {fmt(g.target)}</span>
                 </div>
               </div>
               <button className="btn btn-ghost btn-sm" data-tip="Edit goal" onClick={(e) => { e.stopPropagation(); setEditing(g); }}>

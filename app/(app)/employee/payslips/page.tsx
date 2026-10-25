@@ -16,10 +16,10 @@ interface Payslip {
 }
 
 const PAYSLIPS_DATA: Payslip[] = [
-  { period: "May 2025", gross: "£5,200", deductions: "£1,310", net: "£3,890", payDate: "2025-05-28", status: "Paid" },
-  { period: "April 2025", gross: "£5,200", deductions: "£1,310", net: "£3,890", payDate: "2025-04-28", status: "Paid" },
-  { period: "March 2025", gross: "£5,150", deductions: "£1,295", net: "£3,855", payDate: "2025-03-28", status: "Paid" },
-  { period: "February 2025", gross: "£5,150", deductions: "£1,295", net: "£3,855", payDate: "2025-02-28", status: "Paid" },
+  { period: "May 2025", gross: "$5,200", deductions: "$1,310", net: "$3,890", payDate: "2025-05-28", status: "Paid" },
+  { period: "April 2025", gross: "$5,200", deductions: "$1,310", net: "$3,890", payDate: "2025-04-28", status: "Paid" },
+  { period: "March 2025", gross: "$5,150", deductions: "$1,295", net: "$3,855", payDate: "2025-03-28", status: "Paid" },
+  { period: "February 2025", gross: "$5,150", deductions: "$1,295", net: "$3,855", payDate: "2025-02-28", status: "Paid" },
 ];
 
 export default function EmployeePayslipsPage() {

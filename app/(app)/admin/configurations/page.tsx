@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { CURRENCIES } from "@/lib/data";
+import { DEFAULT_CURRENCY, currencySymbol } from "@/lib/format";
 
 export default function ConfigurationsPage() {
   const { toast } = useAppData();
-  const [currency, setCurrency] = useState("GBP (£)");
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
   const [language, setLanguage] = useState("English (UK)");
   const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
   return (
@@ -24,10 +26,9 @@ export default function ConfigurationsPage() {
             <div className="sub">Default currency for new users</div>
           </div>
           <select className="settings-select" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-            <option>GBP (£)</option>
-            <option>USD ($)</option>
-            <option>EUR (€)</option>
-            <option>ZAR (R)</option>
+            {CURRENCIES.map((c) => (
+              <option key={c} value={c}>{c} ({currencySymbol(c)})</option>
+            ))}
           </select>
         </div>
         <div className="settings-row">

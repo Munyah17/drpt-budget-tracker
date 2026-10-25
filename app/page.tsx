@@ -61,7 +61,7 @@ export default function LoginPage() {
             email: email,
             name: name || email.split('@')[0],
             role: 'user',
-            currency: 'GBP',
+            currency: 'USD',
             is_paid: false,
           });
 
@@ -89,19 +89,11 @@ export default function LoginPage() {
       if (result.success) {
         setFadingOut(true);
         setTimeout(() => {
-          const redirectPath =
-            result.role === "admin"
-              ? "/admin"
-              : result.role === "corporate"
-                ? "/corporate/overview"
-                : result.role === "employee"
-                  ? "/employee"
-                  : "/dashboard";
-          router.push(redirectPath);
+          router.push(rolePath(result.role));
         }, 350);
       } else {
         setSubmitting(false);
-        toast("Invalid email or password", "x");
+        toast(result.error || "Invalid email or password", "x");
       }
     }
   }

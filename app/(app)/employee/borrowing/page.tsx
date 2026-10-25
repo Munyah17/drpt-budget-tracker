@@ -1,4 +1,5 @@
 "use client";
+import { sym } from "@/lib/format";
 
 import { FormEvent, useState, useMemo } from "react";
 import Icon from "@/components/Icon";
@@ -17,9 +18,9 @@ interface Advance {
 }
 
 const ADVANCES_DATA: Advance[] = [
-  { id: "ADV-001", type: "Salary Advance", amount: "£800", repayment: "Deducted June payroll", status: "Approved", date: "2025-05-20" },
-  { id: "ADV-002", type: "Employee Loan", amount: "£2,500", repayment: "£208/mo × 12", status: "Active", date: "2025-02-10" },
-  { id: "ADV-003", type: "Salary Advance", amount: "£400", repayment: "Deducted April payroll", status: "Settled", date: "2025-03-15" },
+  { id: "ADV-001", type: "Salary Advance", amount: "$800", repayment: "Deducted June payroll", status: "Approved", date: "2025-05-20" },
+  { id: "ADV-002", type: "Employee Loan", amount: "$2,500", repayment: "$208/mo × 12", status: "Active", date: "2025-02-10" },
+  { id: "ADV-003", type: "Salary Advance", amount: "$400", repayment: "Deducted April payroll", status: "Settled", date: "2025-03-15" },
 ];
 
 function RequestAdvanceModal({ onSubmit, onClose }: { onSubmit: (type: string, amount: string) => void; onClose: () => void }) {
@@ -42,7 +43,7 @@ function RequestAdvanceModal({ onSubmit, onClose }: { onSubmit: (type: string, a
           </select>
         </div>
         <div className="field">
-          <label>Amount (£)</label>
+          <label>Amount ({sym()})</label>
           <input required type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 500" />
         </div>
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Submit Request</button>
@@ -72,7 +73,7 @@ export default function EmployeeBorrowingPage() {
     setAdvances((prev) => [...prev, {
       id: `ADV-${String(prev.length + 1).padStart(3, "0")}`,
       type,
-      amount: `£${Number(amount).toLocaleString()}`,
+      amount: `$${Number(amount).toLocaleString()}`,
       repayment: "Pending approval",
       status: "Pending",
       date: new Date().toISOString().slice(0, 10),
@@ -97,15 +98,15 @@ export default function EmployeeBorrowingPage() {
       <div className="grid grid-3" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Available to Borrow</div>
-          <div className="stat-value">£1,950</div>
+          <div className="stat-value">$1,950</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Outstanding Balance</div>
-          <div className="stat-value">£1,664</div>
+          <div className="stat-value">$1,664</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Next Repayment</div>
-          <div className="stat-value">£208</div>
+          <div className="stat-value">$208</div>
         </div>
       </div>
 

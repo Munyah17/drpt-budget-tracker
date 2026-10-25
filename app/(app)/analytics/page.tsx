@@ -1,4 +1,5 @@
 "use client";
+import { sym } from "@/lib/format";
 
 import { useEffect, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
@@ -34,7 +35,7 @@ export default function AnalyticsPage() {
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Average Daily Spend</span>
           <div className="stat-value">
-            <CountUp end={totalExpenses / 31} prefix="£" />
+            <CountUp end={totalExpenses / 31} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
@@ -49,7 +50,7 @@ export default function AnalyticsPage() {
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Largest Expense</span>
           <div className="stat-value">
-            <CountUp end={largestExpense} prefix="£" />
+            <CountUp end={largestExpense} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">

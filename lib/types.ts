@@ -61,7 +61,8 @@ export interface Transaction {
 
 export type UserRole = "admin" | "user" | "corporate" | "employee";
 
-export type Currency = "GBP" | "USD" | "EUR" | "ZAR" | "AUD" | "CAD" | "JPY" | "CNY" | "INR" | "BWP" | "ZWL";
+/** ISO 4217 currency code — all world currencies supported */
+export type Currency = string;
 
 export interface UserProfile {
   id: string;

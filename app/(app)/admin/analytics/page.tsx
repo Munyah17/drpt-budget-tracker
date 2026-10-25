@@ -77,19 +77,19 @@ export default function AdminAnalyticsPage() {
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>Housing</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>2,450</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>£1,245,000</td>
+              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$1,245,000</td>
               <td style={{ padding: "12px 8px" }}><span className="badge badge-green">+12%</span></td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>Food</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>3,890</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>£456,000</td>
+              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$456,000</td>
               <td style={{ padding: "12px 8px" }}><span className="badge badge-green">+8%</span></td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>Transport</td>
               <td style={{ padding: "12px 8px", fontSize: 13 }}>1,820</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>£234,000</td>
+              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$234,000</td>
               <td style={{ padding: "12px 8px" }}><span className="badge badge-red">-3%</span></td>
             </tr>
           </tbody>

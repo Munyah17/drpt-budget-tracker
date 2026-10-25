@@ -1,4 +1,5 @@
 "use client";
+import { sym } from "@/lib/format";
 
 import { useAppData } from "@/lib/AppDataContext";
 import CountUp from "@/components/CountUp";
@@ -91,7 +92,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={kpiData.mrr} prefix="£" />
+            <CountUp end={kpiData.mrr} prefix={sym()} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>
             +8.4% vs last month

@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { CAL_EVENTS, EVENT_COLOR } from "@/lib/data";
-import { gbp, ukDate } from "@/lib/format";
+import { fmt, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 
 const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -139,7 +139,7 @@ export default function CalendarPage() {
                 </div>
                 <span style={{ fontWeight: 700, color: e.amount > 0 ? "var(--green)" : "var(--ink-900)" }}>
                   {e.amount > 0 ? "+" : ""}
-                  {gbp(e.amount)}
+                  {fmt(e.amount)}
                 </span>
               </div>
             ))}

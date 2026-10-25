@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
-import { gbp } from "@/lib/format";
+import {  fmt , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import ProgressBar from "@/components/ProgressBar";
 import Modal from "@/components/Modal";
@@ -29,7 +29,7 @@ function EditBudgetModal({ budget, onClose }: { budget: Budget; onClose: () => v
     <Modal title={`Edit ${budget.category} Budget`} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Monthly budget (£)</label>
+          <label>Monthly budget ({sym()})</label>
           <input required type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">
@@ -51,7 +51,7 @@ export default function BudgetPage() {
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
           <h2 className="section-title">Budget Planner</h2>
-          <p className="section-sub">{month} — track spending against your monthly plan</p>
+          <p className="section-sub">{month} â€” track spending against your monthly plan</p>
         </div>
         <select className="month-select" value={month} onChange={(e) => setMonth(e.target.value)}>
           <option>May 2025</option>
@@ -79,9 +79,9 @@ export default function BudgetPage() {
                 return (
                   <tr key={b.category}>
                     <td style={{ fontWeight: 700 }}>{b.category}</td>
-                    <td>{gbp(b.budget)}</td>
-                    <td>{gbp(b.spent)}</td>
-                    <td style={{ color: remaining < 0 ? "var(--red)" : "var(--ink-900)" }}>{gbp(remaining)}</td>
+                    <td>{fmt(b.budget)}</td>
+                    <td>{fmt(b.spent)}</td>
+                    <td style={{ color: remaining < 0 ? "var(--red)" : "var(--ink-900)" }}>{fmt(remaining)}</td>
                     <td>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <ProgressBar pct={Math.min(pct, 100)} color={st.color} />
@@ -98,9 +98,9 @@ export default function BudgetPage() {
               })}
               <tr style={{ fontWeight: 800 }}>
                 <td>Total</td>
-                <td>{gbp(totalBudget)}</td>
-                <td>{gbp(totalSpent)}</td>
-                <td>{gbp(totalBudget - totalSpent)}</td>
+                <td>{fmt(totalBudget)}</td>
+                <td>{fmt(totalSpent)}</td>
+                <td>{fmt(totalBudget - totalSpent)}</td>
                 <td colSpan={2}></td>
               </tr>
             </tbody>

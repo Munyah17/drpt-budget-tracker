@@ -1,4 +1,5 @@
 "use client";
+import { sym } from "@/lib/format";
 
 import { FormEvent, useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
@@ -36,7 +37,7 @@ function ApplyModal({ loanType, onApply, onClose }: { loanType: string; onApply:
     <Modal title={`Apply — ${loanType}`} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Amount (£)</label>
+          <label>Amount ({sym()})</label>
           <input required type="number" min="100" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 5000" />
         </div>
         <div className="field">
@@ -72,7 +73,7 @@ export default function BorrowingPage() {
 
   const handleApply = (amount: string, term: string) => {
     if (!applying) return;
-    const formatted = `£${Number(amount).toLocaleString()}`;
+    const formatted = `$${Number(amount).toLocaleString()}`;
     setLoans((prev) => [...prev, {
       type: applying,
       lender: "Dr PT Credit",

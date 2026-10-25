@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { INCOME_ICONS } from "@/lib/data";
-import { gbp, ukDate } from "@/lib/format";
+import {  fmt, ukDate , sym } from "@/lib/format";
 import { IncomeEntry } from "@/lib/types";
 import Icon from "@/components/Icon";
 import CountUp from "@/components/CountUp";
@@ -53,7 +53,7 @@ export default function IncomePage() {
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Total Income</span>
           <div className="stat-value">
-            <CountUp end={totalIncome} prefix="£" />
+            <CountUp end={totalIncome} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
@@ -71,7 +71,7 @@ export default function IncomePage() {
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Avg per source</span>
           <div className="stat-value">
-            <CountUp end={income.length ? totalIncome / income.length : 0} prefix="£" />
+            <CountUp end={income.length ? totalIncome / income.length : 0} prefix={sym()} />
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default function IncomePage() {
                   <td>{ukDate(i.date)}</td>
                   <td>{i.recurring === "None" ? <span style={{ color: "var(--ink-500)" }}>One-off</span> : i.recurring}</td>
                   <td style={{ textAlign: "right" }} className="amt-pos">
-                    +{gbp(i.amount)}
+                    +{fmt(i.amount)}
                   </td>
                   <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                     <button className="btn btn-ghost btn-sm" data-tip="Edit" onClick={() => openEdit(i)}>

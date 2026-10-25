@@ -20,6 +20,7 @@ import {
 } from "./data";
 import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole, Currency } from "./types";
 import { supabase } from "./supabase";
+import { DEFAULT_CURRENCY, formatCurrency, setActiveCurrency } from "./format";
 
 export interface ToastItem {
   id: number;
@@ -50,6 +51,8 @@ interface AppDataContextValue {
 
   currency: Currency;
   setCurrency: (c: Currency) => void;
+  /** Format an amount in the active currency (user profile or selected) */
+  fmt: (n: number) => string;
 
   accounts: Account[];
   addAccount: (account: Account) => void;
@@ -94,7 +97,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [month, setMonth] = useState("May 2025");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const [currency, setCurrency] = useState<Currency>("GBP");
+  const [currency, setCurrencyState] = useState<Currency>(DEFAULT_CURRENCY);
   const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS);
@@ -108,6 +111,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("drpatie-theme");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from browser storage on mount
     if (saved === "dark" || saved === "light") setTheme(saved);
+
+    // Restore chosen display currency
+    const savedCurrency = localStorage.getItem("drpatie-currency");
+    if (savedCurrency) setCurrencyState(savedCurrency);
 
     // Restore locally persisted profile (demo/admin/corporate/employee logins
     // have no Supabase session, so this is the only thing that survives reload)
@@ -138,7 +145,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
               email: session.user.email!,
               name: profile.name || 'User',
               role: profile.role || 'user',
-              currency: profile.currency || 'GBP',
+              currency: profile.currency || DEFAULT_CURRENCY,
               isPaid: profile.is_paid || false,
             });
             setIsAuthenticated(true);
@@ -156,6 +163,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
+
+  // Keep module-level active currency in sync for the shorthand formatters
+  useEffect(() => {
+    setActiveCurrency(user?.currency || currency);
+  }, [user?.currency, currency]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
@@ -294,7 +306,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: EMPLOYEE_EMAIL,
           name: "Emma Wilson",
           role: "employee",
-          currency: "GBP",
+          currency: DEFAULT_CURRENCY,
           isPaid: true,
           organisation: "Acme Corporation",
         };
@@ -310,7 +322,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: CORPORATE_EMAIL,
           name: "Corporate Admin",
           role: "corporate",
-          currency: "GBP",
+          currency: DEFAULT_CURRENCY,
           isPaid: true,
         };
         setUser(userProfile);
@@ -326,7 +338,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: ADMIN_EMAIL,
           name: "Admin User",
           role: "admin",
-          currency: "GBP",
+          currency: DEFAULT_CURRENCY,
           isPaid: true,
         };
         setUser(userProfile);
@@ -342,7 +354,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: DEMO_EMAIL,
           name: "Demo User",
           role: "user",
-          currency: "GBP",
+          currency: DEFAULT_CURRENCY,
           isPaid: true,
         };
         setUser(userProfile);
@@ -375,7 +387,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           email: data.user.email!,
           name: profile?.name || 'User',
           role: userRole,
-          currency: profile?.currency || 'GBP',
+          currency: profile?.currency || DEFAULT_CURRENCY,
           isPaid: profile?.is_paid || false,
         };
         setUser(userProfile);
@@ -390,6 +402,17 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       return { success: false, error: error instanceof Error ? error.message : "Sign-in failed. Please try again." };
     }
   }, []);
+
+  const setCurrency = useCallback((c: Currency) => {
+    setCurrencyState(c);
+    localStorage.setItem("drpatie-currency", c);
+    setUser((prev) => (prev ? { ...prev, currency: c } : prev));
+  }, []);
+
+  const fmt = useCallback(
+    (n: number) => formatCurrency(n, user?.currency || currency),
+    [user?.currency, currency]
+  );
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -414,6 +437,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     toast,
     currency,
     setCurrency,
+    fmt,
     accounts,
     addAccount,
     updateUser,

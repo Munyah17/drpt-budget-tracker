@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { ACCOUNTS } from "@/lib/data";
-import { gbp, ukDate } from "@/lib/format";
+import { fmt, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import RecordModal, { RowRecord } from "@/components/RecordModal";
@@ -135,7 +135,7 @@ export default function TransactionsPage() {
                 </tr>
               )}
               {pageRows.map((t) => (
-                <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => setViewing({ description: t.name, category: t.category, account: t.account, date: t.date, type: t.type, amount: `${t.amount > 0 ? "+" : ""}${gbp(t.amount)}` })}>
+                <tr key={t.id} style={{ cursor: "pointer" }} onClick={() => setViewing({ description: t.name, category: t.category, account: t.account, date: t.date, type: t.type, amount: `${t.amount > 0 ? "+" : ""}${fmt(t.amount)}` })}>
                   <td onClick={(e) => e.stopPropagation()}>
                     <input type="checkbox" checked={selected.has(t.id)} onChange={() => toggleRow(t.id)} />
                   </td>
@@ -157,7 +157,7 @@ export default function TransactionsPage() {
                   <td>{ukDate(t.date)}</td>
                   <td style={{ textAlign: "right" }} className={t.amount > 0 ? "amt-pos" : "amt-neg"}>
                     {t.amount > 0 ? "+" : "-"}
-                    {gbp(Math.abs(t.amount))}
+                    {fmt(Math.abs(t.amount))}
                   </td>
                 </tr>
               ))}

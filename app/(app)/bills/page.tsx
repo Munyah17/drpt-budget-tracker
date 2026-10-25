@@ -2,7 +2,7 @@
 
 import { FormEvent, useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
-import { gbp, ukDate } from "@/lib/format";
+import {  fmt, ukDate , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
@@ -30,7 +30,7 @@ function AddBillModal({ onClose }: { onClose: () => void }) {
           <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Council Tax" />
         </div>
         <div className="field">
-          <label>Amount (£)</label>
+          <label>Amount ({sym()})</label>
           <input required type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <div className="field">
@@ -98,7 +98,7 @@ export default function BillsPage() {
                 <div style={{ fontSize: 12, color: "var(--ink-500)" }}>Due {ukDate(b.due)}</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontWeight: 800, marginBottom: 4 }}>{gbp(b.amount)}</div>
+                <div style={{ fontWeight: 800, marginBottom: 4 }}>{fmt(b.amount)}</div>
                 {badge}
                 {b.status !== "paid" && (
                   <button

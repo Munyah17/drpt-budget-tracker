@@ -6,11 +6,11 @@ import Icon from "@/components/Icon";
 import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 const BENEFITS = [
-  { name: "Health Insurance", provider: "Vitality Health", status: "Enrolled", detail: "Family cover — £0 employee cost" },
+  { name: "Health Insurance", provider: "Vitality Health", status: "Enrolled", detail: "Family cover — $0 employee cost" },
   { name: "Pension Scheme", provider: "Nest Pensions", status: "Enrolled", detail: "5% employee / 4% employer match" },
   { name: "Life Insurance", provider: "Aviva", status: "Enrolled", detail: "4× annual salary cover" },
-  { name: "Dental Cover", provider: "Bupa", status: "Available", detail: "£12/mo employee contribution" },
-  { name: "Cycle to Work", provider: "Cyclescheme", status: "Available", detail: "Tax-free bike up to £1,000" },
+  { name: "Dental Cover", provider: "Bupa", status: "Available", detail: "$12/mo employee contribution" },
+  { name: "Cycle to Work", provider: "Cyclescheme", status: "Available", detail: "Tax-free bike up to $1,000" },
 ];
 
 export default function EmployeeBenefitsPage() {

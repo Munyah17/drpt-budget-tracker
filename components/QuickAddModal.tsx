@@ -1,4 +1,5 @@
 "use client";
+import { sym } from "@/lib/format";
 
 import { FormEvent, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
@@ -47,7 +48,7 @@ export default function QuickAddModal({ onClose }: { onClose: () => void }) {
     <Modal title="Add Transaction" onClose={onClose} tabs={tabs}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Amount (£)</label>
+          <label>Amount ({sym()})</label>
           <input required type="number" step="0.01" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <div className="field">

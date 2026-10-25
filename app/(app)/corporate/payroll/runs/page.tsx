@@ -16,9 +16,9 @@ interface PayrollRun {
 }
 
 const RUNS_DATA: PayrollRun[] = [
-  { runId: "RUN-2025-06", period: "June 2025", employees: "450", totalAmount: "£415,700", status: "Scheduled", payDate: "2025-06-28" },
-  { runId: "RUN-2025-05", period: "May 2025", employees: "448", totalAmount: "£412,300", status: "Paid", payDate: "2025-05-28" },
-  { runId: "RUN-2025-04", period: "April 2025", employees: "445", totalAmount: "£408,950", status: "Paid", payDate: "2025-04-28" },
+  { runId: "RUN-2025-06", period: "June 2025", employees: "450", totalAmount: "$415,700", status: "Scheduled", payDate: "2025-06-28" },
+  { runId: "RUN-2025-05", period: "May 2025", employees: "448", totalAmount: "$412,300", status: "Paid", payDate: "2025-05-28" },
+  { runId: "RUN-2025-04", period: "April 2025", employees: "445", totalAmount: "$408,950", status: "Paid", payDate: "2025-04-28" },
 ];
 
 export default function CorporatePayrollRunsPage() {

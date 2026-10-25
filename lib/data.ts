@@ -248,23 +248,26 @@ export const EXPENSE_ICONS: Record<string, string> = {
 
 export const PAYMENT_METHODS = ["Debit Card", "Credit Card", "Direct Debit", "Bank Transfer", "Cash"];
 
+/** All active ISO 4217 currency codes — USD first as the app default */
 export const CURRENCIES: Currency[] = [
-  "GBP", "USD", "EUR", "ZAR", "AUD", "CAD", "JPY", "CNY", "INR", "BWP", "ZWL"
+  "USD",
+  "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+  "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+  "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY",
+  "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP",
+  "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD",
+  "GNF", "GTQ", "GYD", "HKD", "HNL", "HTG", "HUF", "IDR", "ILS", "INR",
+  "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF",
+  "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL",
+  "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR",
+  "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR",
+  "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR",
+  "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD",
+  "SHP", "SLE", "SOS", "SRD", "SSP", "STN", "SYP", "SZL", "THB", "TJS",
+  "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "UYU",
+  "UZS", "VES", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER",
+  "ZAR", "ZMW", "ZWL",
 ];
-
-export const CURRENCY_SYMBOLS: Record<Currency, string> = {
-  GBP: "£",
-  USD: "$",
-  EUR: "€",
-  ZAR: "R",
-  AUD: "A$",
-  CAD: "C$",
-  JPY: "¥",
-  CNY: "¥",
-  INR: "₹",
-  BWP: "P",
-  ZWL: "$",
-};
 
 export const REPORTS = [
   { name: "Income Report", desc: "View your income summary", icon: "trending-up" },
@@ -275,9 +278,9 @@ export const REPORTS = [
 ];
 
 export const AI_RESPONSES: Record<string, string> = {
-  "where did my money go this month?": `You spent £3,214.75 this month. The largest expenses were:<ul><li>Housing: £1,120.00 (34.9%)</li><li>Transport: £540.00 (16.8%)</li><li>Food: £410.00 (12.8%)</li><li>Utilities: £280.00 (8.7%)</li></ul>Tip: you spent 27% more on dining out compared to April. Would you like tips to reduce this?`,
-  "summarise june": `June is projected to bring in £5,700 in income against roughly £3,050 in expenses — a healthier month than May, mostly thanks to lower fuel and shopping spend.`,
-  "can i afford a holiday?": `Based on your Emergency Fund (54% funded) and current savings rate of 43%, a £1,400 holiday in December looks affordable — you're already 56% of the way to your Vacation to Dubai goal.`,
+  "where did my money go this month?": `You spent $3,214.75 this month. The largest expenses were:<ul><li>Housing: $1,120.00 (34.9%)</li><li>Transport: $540.00 (16.8%)</li><li>Food: $410.00 (12.8%)</li><li>Utilities: $280.00 (8.7%)</li></ul>Tip: you spent 27% more on dining out compared to April. Would you like tips to reduce this?`,
+  "summarise june": `June is projected to bring in $5,700 in income against roughly $3,050 in expenses — a healthier month than May, mostly thanks to lower fuel and shopping spend.`,
+  "can i afford a holiday?": `Based on your Emergency Fund (54% funded) and current savings rate of 43%, a $1,400 holiday in December looks affordable — you're already 56% of the way to your Vacation to Dubai goal.`,
   "how much should i save?": `A good target for your income level is 20–25% of take-home pay. You're currently saving around 43%, well above that benchmark — nicely done.`,
 };
 

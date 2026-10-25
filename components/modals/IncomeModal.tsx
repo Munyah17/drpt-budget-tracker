@@ -1,4 +1,5 @@
 "use client";
+import { sym } from "@/lib/format";
 
 import { FormEvent, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
@@ -43,7 +44,7 @@ export default function IncomeModal({ editing, onClose }: { editing?: IncomeEntr
           </select>
         </div>
         <div className="field">
-          <label>Amount (£)</label>
+          <label>Amount ({sym()})</label>
           <input required type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" />
         </div>
         <div className="field">

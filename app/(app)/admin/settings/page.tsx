@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { CURRENCIES } from "@/lib/data";
+import { DEFAULT_CURRENCY, currencySymbol } from "@/lib/format";
 
 export default function AdminSettingsPage() {
   const { toast } = useAppData();
+  const [defaultCurrency, setDefaultCurrency] = useState(DEFAULT_CURRENCY);
   const [activeTab, setActiveTab] = useState<"general" | "security" | "payroll" | "billing" | "notifications">("general");
 
   const handleSaveSettings = () => {
@@ -65,11 +68,10 @@ export default function AdminSettingsPage() {
               <div className="label">Default Currency</div>
               <div className="sub">Default currency for new users</div>
             </div>
-            <select className="settings-select" defaultValue="GBP">
-              <option>GBP (£)</option>
-              <option>USD ($)</option>
-              <option>EUR (€)</option>
-              <option>ZAR (R)</option>
+            <select className="settings-select" value={defaultCurrency} onChange={(e) => setDefaultCurrency(e.target.value)}>
+              {CURRENCIES.map((c) => (
+                <option key={c} value={c}>{c} ({currencySymbol(c)})</option>
+              ))}
             </select>
           </div>
           <div className="settings-row">

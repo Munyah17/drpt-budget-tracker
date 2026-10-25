@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
+import { CURRENCIES } from "@/lib/data";
+import { currencySymbol } from "@/lib/format";
 import Icon from "@/components/Icon";
 
 export default function CorporateSettingsPage() {
-  const { toast } = useAppData();
+  const { toast, currency, setCurrency } = useAppData();
   const [companyName, setCompanyName] = useState("Acme Corporation");
   const [contactEmail, setContactEmail] = useState("hr@acme.com");
   const [payrollDay, setPayrollDay] = useState("28");
-  const [currency, setCurrency] = useState("GBP");
 
   const handleSave = () => {
     toast("Settings saved", "check-circle");
@@ -40,10 +41,9 @@ export default function CorporateSettingsPage() {
         <div className="field">
           <label htmlFor="currency">Currency</label>
           <select id="currency" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-            <option value="GBP">GBP (£)</option>
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="ZAR">ZAR (R)</option>
+            {CURRENCIES.map((c) => (
+              <option key={c} value={c}>{c} ({currencySymbol(c)})</option>
+            ))}
           </select>
         </div>
         <button className="btn btn-primary" onClick={handleSave}>

@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
-import { gbp, initials } from "@/lib/format";
+import {  fmt, initials , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 
@@ -55,7 +55,7 @@ function AddAccountModal({ onClose }: { onClose: () => void }) {
           <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Barclays Current" />
         </div>
         <div className="field">
-          <label>Current balance (£)</label>
+          <label>Current balance ({sym()})</label>
           <input required type="number" step="0.01" value={balance} onChange={(e) => setBalance(e.target.value)} />
         </div>
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Link Account</button>
@@ -121,7 +121,7 @@ export default function ProfilePage() {
                 </div>
                 <span style={{ fontWeight: 600 }}>{a.name}</span>
               </div>
-              <span style={{ fontWeight: 800 }}>{gbp(a.balance)}</span>
+              <span style={{ fontWeight: 800 }}>{fmt(a.balance)}</span>
             </div>
           ))}
         </div>

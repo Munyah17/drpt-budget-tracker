@@ -16,10 +16,10 @@ interface Payslip {
 }
 
 const PAYSLIPS_DATA: Payslip[] = [
-  { employee: "Emma Wilson", period: "May 2025", gross: "£5,200", net: "£3,890", status: "Delivered" },
-  { employee: "David Brown", period: "May 2025", gross: "£4,100", net: "£3,120", status: "Delivered" },
-  { employee: "Lisa Chen", period: "May 2025", gross: "£3,600", net: "£2,780", status: "Pending" },
-  { employee: "James Patel", period: "May 2025", gross: "£3,900", net: "£2,960", status: "Delivered" },
+  { employee: "Emma Wilson", period: "May 2025", gross: "$5,200", net: "$3,890", status: "Delivered" },
+  { employee: "David Brown", period: "May 2025", gross: "$4,100", net: "$3,120", status: "Delivered" },
+  { employee: "Lisa Chen", period: "May 2025", gross: "$3,600", net: "$2,780", status: "Pending" },
+  { employee: "James Patel", period: "May 2025", gross: "$3,900", net: "$2,960", status: "Delivered" },
 ];
 
 function GenerateModal({ onGenerate, onClose }: { onGenerate: (period: string) => void; onClose: () => void }) {
@@ -70,7 +70,7 @@ export default function CorporatePayslipsPage() {
     const existing = new Set(payslips.map((p) => `${p.employee}|${p.period}`));
     const additions = ["Emma Wilson", "David Brown", "Lisa Chen", "James Patel"]
       .filter((e) => !existing.has(`${e}|${period}`))
-      .map((employee) => ({ employee, period, gross: "£4,200", net: "£3,180", status: "Pending" }));
+      .map((employee) => ({ employee, period, gross: "$4,200", net: "$3,180", status: "Pending" }));
     setPayslips((prev) => [...prev, ...additions]);
     toast(`${additions.length} payslips generated for ${period}`);
     setGenOpen(false);

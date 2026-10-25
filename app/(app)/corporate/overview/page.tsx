@@ -29,7 +29,7 @@ export default function CorporateOverviewPage() {
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Payroll This Month</div>
-          <div className="stat-value">£1.24M</div>
+          <div className="stat-value">$1.24M</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Pending Onboarding</div>
@@ -51,17 +51,17 @@ export default function CorporateOverviewPage() {
             <tbody>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>May 2025</td>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>£412,300</td>
+                <td style={{ padding: "10px 6px", fontSize: 13 }}>$412,300</td>
                 <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>April 2025</td>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>£408,950</td>
+                <td style={{ padding: "10px 6px", fontSize: 13 }}>$408,950</td>
                 <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
               </tr>
               <tr>
                 <td style={{ padding: "10px 6px", fontSize: 13 }}>June 2025</td>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>£415,700</td>
+                <td style={{ padding: "10px 6px", fontSize: 13 }}>$415,700</td>
                 <td style={{ padding: "10px 6px" }}><span className="badge badge-blue">Scheduled</span></td>
               </tr>
             </tbody>

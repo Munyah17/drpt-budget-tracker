@@ -15,10 +15,10 @@ interface Benefit {
 }
 
 const BENEFITS_DATA: Benefit[] = [
-  { name: "Health Insurance", provider: "Vitality Health", enrolled: "412", cost: "£18,500/mo", status: "Active" },
-  { name: "Pension Scheme", provider: "Nest Pensions", enrolled: "445", cost: "£62,400/mo", status: "Active" },
-  { name: "Life Insurance", provider: "Aviva", enrolled: "380", cost: "£4,200/mo", status: "Active" },
-  { name: "Dental Cover", provider: "Bupa", enrolled: "210", cost: "£3,150/mo", status: "Review" },
+  { name: "Health Insurance", provider: "Vitality Health", enrolled: "412", cost: "$18,500/mo", status: "Active" },
+  { name: "Pension Scheme", provider: "Nest Pensions", enrolled: "445", cost: "$62,400/mo", status: "Active" },
+  { name: "Life Insurance", provider: "Aviva", enrolled: "380", cost: "$4,200/mo", status: "Active" },
+  { name: "Dental Cover", provider: "Bupa", enrolled: "210", cost: "$3,150/mo", status: "Review" },
 ];
 
 export default function CorporateBenefitsPage() {

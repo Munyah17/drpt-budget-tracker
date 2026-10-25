@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
-import { CURRENCIES, CURRENCY_SYMBOLS } from "@/lib/data";
+import { CURRENCIES } from "@/lib/data";
 import { Currency } from "@/lib/types";
+import { currencySymbol } from "@/lib/format";
 import { downloadBlob } from "@/lib/download";
 import Icon from "@/components/Icon";
 
@@ -83,7 +84,7 @@ export default function SettingsPage() {
           >
             {CURRENCIES.map((c) => (
               <option key={c} value={c}>
-                {c} ({CURRENCY_SYMBOLS[c]})
+                {c} ({currencySymbol(c)})
               </option>
             ))}
           </select>

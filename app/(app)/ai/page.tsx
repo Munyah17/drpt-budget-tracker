@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { AI_RESPONSES } from "@/lib/data";
-import { gbp } from "@/lib/format";
+import { fmt } from "@/lib/format";
 import Icon from "@/components/Icon";
 
 interface ChatMsg {
@@ -43,7 +43,7 @@ export default function AiPage() {
       setTyping(false);
       const reply =
         AI_RESPONSES[text.trim().toLowerCase()] ||
-        `That's a great question. Based on your current income of ${gbp(totalIncome)} and expenses of ${gbp(totalExpenses)}, you're in a solid financial position this month.`;
+        `That's a great question. Based on your current income of ${fmt(totalIncome)} and expenses of ${fmt(totalExpenses)}, you're in a solid financial position this month.`;
       setMessages((prev) => [...prev, { id: msgSeq++, who: "ai", text: reply }]);
     }, 1200);
   }
@@ -91,7 +91,7 @@ export default function AiPage() {
           </div>
           <div className="chat-input-row">
             <input
-              placeholder="Ask me anything about your finances…"
+              placeholder="Ask me anything about your financesâ€¦"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {

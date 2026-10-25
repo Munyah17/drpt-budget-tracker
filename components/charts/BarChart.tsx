@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
-import { gbp } from "@/lib/format";
+import { fmt } from "@/lib/format";
 import { LegendSeries } from "./ChartLegend";
 
 export interface BarSeries {
@@ -32,7 +32,7 @@ export default function BarChart({ labels, series, maxVal }: { labels: string[];
                     background: s.color,
                     height: animated ? ((s.data[i] / max) * 100).toFixed(1) + "%" : "0%",
                   }}
-                  data-tip={`${s.name}: ${gbp(s.data[i])}`}
+                  data-tip={`${s.name}: ${fmt(s.data[i])}`}
                 />
               ))}
             </div>
