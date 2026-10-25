@@ -30,8 +30,10 @@ export interface ToastItem {
 
 interface AppDataContextValue {
   isAuthenticated: boolean;
+  /** True once the initial session restore (localStorage + Supabase) has settled */
+  authReady: boolean;
   user: UserProfile | null;
-  login: (email: string, password: string) => Promise<{ success: boolean; role?: UserRole }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; role?: UserRole; error?: string }>;
   logout: () => void;
 
   theme: "light" | "dark";
@@ -86,6 +88,7 @@ let toastSeq = 1;
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [month, setMonth] = useState("May 2025");
@@ -106,27 +109,45 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from browser storage on mount
     if (saved === "dark" || saved === "light") setTheme(saved);
 
-    // Check for existing session
+    // Restore locally persisted profile (demo/admin/corporate/employee logins
+    // have no Supabase session, so this is the only thing that survives reload)
+    try {
+      const raw = localStorage.getItem("drpatie-user");
+      if (raw) {
+        const profile = JSON.parse(raw) as UserProfile;
+        setUser(profile);
+        setIsAuthenticated(true);
+      }
+    } catch {
+      localStorage.removeItem("drpatie-user");
+    }
+
+    // Check for existing Supabase session
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        
-        if (profile) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email!,
-            name: profile.name || 'User',
-            role: profile.role || 'user',
-            currency: profile.currency || 'GBP',
-            isPaid: profile.is_paid || false,
-          });
-          setIsAuthenticated(true);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          if (profile) {
+            setUser({
+              id: session.user.id,
+              email: session.user.email!,
+              name: profile.name || 'User',
+              role: profile.role || 'user',
+              currency: profile.currency || 'GBP',
+              isPaid: profile.is_paid || false,
+            });
+            setIsAuthenticated(true);
+          }
         }
+      } catch (err) {
+        console.error('Session check failed:', err);
+      } finally {
+        setAuthReady(true);
       }
     };
     checkSession();
@@ -254,7 +275,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     return [...inc, ...exp].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [income, expenses]);
 
-  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; role?: UserRole }> => {
+  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; role?: UserRole; error?: string }> => {
     try {
       // For demo purposes, check hardcoded credentials first
       const ADMIN_EMAIL = "munyamuzvidziwa19@gmail.com";
@@ -338,7 +359,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         console.error('Login error:', error);
-        return { success: false };
+        return { success: false, error: error.message };
       }
 
       if (data.user) {
@@ -363,10 +384,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         return { success: true, role: userRole };
       }
 
-      return { success: false };
+      return { success: false, error: "Sign-in failed. Please try again." };
     } catch (error) {
       console.error('Login error:', error);
-      return { success: false };
+      return { success: false, error: error instanceof Error ? error.message : "Sign-in failed. Please try again." };
     }
   }, []);
 
@@ -379,6 +400,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   const value: AppDataContextValue = {
     isAuthenticated,
+    authReady,
     user,
     login,
     logout,

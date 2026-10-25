@@ -8,16 +8,16 @@ import Topbar from "@/components/Topbar";
 import Fab from "@/components/Fab";
 
 export default function AppShellLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, logout } = useAppData();
+  const { isAuthenticated, authReady, user, logout } = useAppData();
   const router = useRouter();
   const pathname = usePathname();
   const [showSubscribe, setShowSubscribe] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) router.replace("/");
-  }, [isAuthenticated, router]);
+    if (authReady && !isAuthenticated) router.replace("/");
+  }, [authReady, isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  if (!authReady || !isAuthenticated) return null;
 
   const isUnpaid = user?.role === "user" && !user?.isPaid;
 

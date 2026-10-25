@@ -1,18 +1,33 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
+import { UserRole } from "@/lib/types";
+
+const rolePath = (role?: UserRole) =>
+  role === "admin"
+    ? "/admin"
+    : role === "corporate"
+      ? "/corporate/overview"
+      : role === "employee"
+        ? "/employee"
+        : "/dashboard";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, toast } = useAppData();
+  const { login, toast, isAuthenticated, authReady, user } = useAppData();
   const [submitting, setSubmitting] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [name, setName] = useState("");
+
+  // Already signed in? Go straight to the right portal.
+  useEffect(() => {
+    if (authReady && isAuthenticated) router.replace(rolePath(user?.role));
+  }, [authReady, isAuthenticated, user, router]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -56,19 +71,11 @@ export default function LoginPage() {
 
         // Automatically sign in the user after successful signup
         const loginResult = await login(email, password);
-        
+
         if (loginResult.success) {
           setFadingOut(true);
           setTimeout(() => {
-            const redirectPath =
-              loginResult.role === "admin"
-                ? "/admin"
-                : loginResult.role === "corporate"
-                  ? "/corporate/overview"
-                  : loginResult.role === "employee"
-                    ? "/employee"
-                    : "/dashboard";
-            router.push(redirectPath);
+            router.push(rolePath(loginResult.role));
           }, 350);
         } else {
           toast("Account created! Please sign in to continue.", "check-circle");
