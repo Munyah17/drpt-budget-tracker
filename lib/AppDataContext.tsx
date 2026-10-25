@@ -221,6 +221,42 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       const ADMIN_PASSWORD = "@@Griezmann177#$";
       const DEMO_EMAIL = "user@demo.com";
       const DEMO_PASSWORD = "demo123";
+      const CORPORATE_EMAIL = "corp@demo.com";
+      const CORPORATE_PASSWORD = "corp123";
+      const EMPLOYEE_EMAIL = "employee@acme.com";
+      const EMPLOYEE_PASSWORD = "emp123";
+
+      if (email === EMPLOYEE_EMAIL && password === EMPLOYEE_PASSWORD) {
+        // Employee accounts are issued by a corporate company — tied to an organisation
+        const userProfile: UserProfile = {
+          id: "emp-001",
+          email: EMPLOYEE_EMAIL,
+          name: "Emma Wilson",
+          role: "employee",
+          currency: "GBP",
+          isPaid: true,
+          organisation: "Acme Corporation",
+        };
+        setUser(userProfile);
+        setIsAuthenticated(true);
+        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        return { success: true, role: "employee" };
+      }
+
+      if (email === CORPORATE_EMAIL && password === CORPORATE_PASSWORD) {
+        const userProfile: UserProfile = {
+          id: "corp-001",
+          email: CORPORATE_EMAIL,
+          name: "Corporate Admin",
+          role: "corporate",
+          currency: "GBP",
+          isPaid: true,
+        };
+        setUser(userProfile);
+        setIsAuthenticated(true);
+        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        return { success: true, role: "corporate" };
+      }
 
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         // Admin login

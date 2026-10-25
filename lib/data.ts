@@ -163,6 +163,42 @@ export const ADMIN_NAV_ITEMS = [
   { id: "settings", label: "Settings", icon: "settings" },
 ];
 
+export const CORPORATE_NAV_ITEMS = [
+  { id: "overview", label: "Dashboard", icon: "layout-dashboard" },
+  {
+    id: "employees",
+    label: "Employees",
+    icon: "users",
+    subItems: [
+      { id: "directory", label: "Directory" },
+      { id: "onboarding", label: "Onboarding" }
+    ]
+  },
+  {
+    id: "payroll",
+    label: "Payroll",
+    icon: "dollar-sign",
+    subItems: [
+      { id: "runs", label: "Payroll Runs" },
+      { id: "payslips", label: "Payslips" }
+    ]
+  },
+  { id: "benefits", label: "Benefits", icon: "heart-pulse" },
+  { id: "reports", label: "Reports", icon: "file-text" },
+  { id: "settings", label: "Settings", icon: "settings" },
+];
+
+// Corporate employees get the full general app plus an Employment section
+// that is only available because their account was issued by an organisation.
+export const EMPLOYEE_NAV_ITEMS = [
+  { id: "employment", label: "Employment", icon: "briefcase", href: "/employee" },
+  { id: "payslips", label: "Payslips", icon: "file-text", href: "/employee/payslips" },
+  { id: "salary", label: "Salary Management", icon: "dollar-sign", href: "/employee/salary" },
+  { id: "borrowing-emp", label: "Borrowing", icon: "credit-card", href: "/employee/borrowing" },
+  { id: "benefits", label: "Benefits", icon: "heart-pulse", href: "/employee/benefits" },
+  ...NAV_ITEMS.filter((n) => n.id !== "borrowing"),
+];
+
 export const INCOME_CATEGORIES = ["Salary", "Private Practice", "Locum", "Investments", "Bonus", "Gift"];
 export const INCOME_ICONS: Record<string, string> = {
   Salary: "briefcase",

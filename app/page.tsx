@@ -60,7 +60,14 @@ export default function LoginPage() {
         if (loginResult.success) {
           setFadingOut(true);
           setTimeout(() => {
-            const redirectPath = loginResult.role === "admin" ? "/admin" : "/dashboard";
+            const redirectPath =
+              loginResult.role === "admin"
+                ? "/admin"
+                : loginResult.role === "corporate"
+                  ? "/corporate/overview"
+                  : loginResult.role === "employee"
+                    ? "/employee"
+                    : "/dashboard";
             router.push(redirectPath);
           }, 350);
         } else {
@@ -75,7 +82,14 @@ export default function LoginPage() {
       if (result.success) {
         setFadingOut(true);
         setTimeout(() => {
-          const redirectPath = result.role === "admin" ? "/admin" : "/dashboard";
+          const redirectPath =
+            result.role === "admin"
+              ? "/admin"
+              : result.role === "corporate"
+                ? "/corporate/overview"
+                : result.role === "employee"
+                  ? "/employee"
+                  : "/dashboard";
           router.push(redirectPath);
         }, 350);
       } else {

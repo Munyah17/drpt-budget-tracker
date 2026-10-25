@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { NAV_ITEMS, ADMIN_NAV_ITEMS } from "@/lib/data";
+import { NAV_ITEMS, ADMIN_NAV_ITEMS, CORPORATE_NAV_ITEMS, EMPLOYEE_NAV_ITEMS } from "@/lib/data";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "./Icon";
 
@@ -12,8 +12,22 @@ export default function Sidebar() {
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen, logout, user } = useAppData();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  
-  const navItems = user?.role === "admin" ? ADMIN_NAV_ITEMS : NAV_ITEMS;
+
+  const navItems =
+    user?.role === "admin"
+      ? ADMIN_NAV_ITEMS
+      : user?.role === "corporate"
+        ? CORPORATE_NAV_ITEMS
+        : user?.role === "employee"
+          ? EMPLOYEE_NAV_ITEMS
+          : NAV_ITEMS;
+
+  const rolePrefix =
+    user?.role === "admin"
+      ? "/admin"
+      : user?.role === "corporate"
+        ? "/corporate"
+        : "";
 
   const toggleExpanded = (id: string) => {
     setExpandedItems((prev) => {
@@ -24,8 +38,10 @@ export default function Sidebar() {
     });
   };
 
-  const hasSubItems = (item: any): item is { subItems: { id: string; label: string }[] } => {
-    return 'subItems' in item && Array.isArray(item.subItems);
+  const hasSubItems = (
+    item: object
+  ): item is { subItems: { id: string; label: string }[] } => {
+    return "subItems" in item && Array.isArray(item.subItems);
   };
 
   return (
@@ -35,7 +51,7 @@ export default function Sidebar() {
       </div>
       <nav className="nav-group">
         {navItems.map((n) => {
-          const href = user?.role === "admin" ? `/admin/${n.id}` : `/${n.id}`;
+          const href = (n as { href?: string }).href ?? `${rolePrefix}/${n.id}`;
           const active = pathname === href;
           const isExpanded = expandedItems.has(n.id);
           const hasSub = hasSubItems(n);
@@ -61,7 +77,7 @@ export default function Sidebar() {
                 {hasSub && (
                   <Icon 
                     name={isExpanded ? "chevron-down" : "chevron-right"} 
-                    size={14} 
+                    size={14}
                     style={{ transition: "transform 0.2s", transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)" }}
                   />
                 )}
@@ -69,7 +85,7 @@ export default function Sidebar() {
               {hasSub && isExpanded && (
                 <div style={{ marginLeft: 16, marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
                   {n.subItems.map((sub) => {
-                    const subHref = user?.role === "admin" ? `/admin/${n.id}/${sub.id}` : `/${n.id}/${sub.id}`;
+                    const subHref = `${rolePrefix}/${n.id}/${sub.id}`;
                     const subActive = pathname === subHref;
                     return (
                       <Link

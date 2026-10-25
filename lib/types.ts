@@ -59,7 +59,7 @@ export interface Transaction {
   account: string;
 }
 
-export type UserRole = "admin" | "user";
+export type UserRole = "admin" | "user" | "corporate" | "employee";
 
 export type Currency = "GBP" | "USD" | "EUR" | "ZAR" | "AUD" | "CAD" | "JPY" | "CNY" | "INR" | "BWP" | "ZWL";
 
@@ -70,4 +70,6 @@ export interface UserProfile {
   role: UserRole;
   currency: Currency;
   isPaid: boolean;
+  /** Set for corporate-issued employee accounts — ties the account to an organisation */
+  organisation?: string;
 }
