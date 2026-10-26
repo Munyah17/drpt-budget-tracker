@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
+import { trackEvent } from "@/lib/analytics";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import Fab from "@/components/Fab";
@@ -21,11 +22,20 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   useEffect(() => {
     if (!authReady) return;
     if (!isAuthenticated) {
-      router.replace("/login?next=" + encodeURIComponent(pathname));
+      // Guests land on the marketing page — they sign up & pay or leave.
+      router.replace("/");
     } else if (isUnpaid) {
       router.replace("/payment");
     }
   }, [authReady, isAuthenticated, isUnpaid, pathname, router]);
+
+  // Product analytics: one event per in-app page view
+  const uid = user?.id;
+  useEffect(() => {
+    if (authReady && isAuthenticated && !isUnpaid) {
+      trackEvent("page_view", { path: pathname });
+    }
+  }, [authReady, isAuthenticated, isUnpaid, pathname, uid]);
 
   if (!authReady || !isAuthenticated || isUnpaid) return null;
 

@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
+import { trackEvent } from "@/lib/analytics";
 import Icon from "@/components/Icon";
 
 type Phase = "verifying" | "paid" | "pending" | "error";
@@ -40,6 +41,7 @@ function SuccessInner() {
         const data = await res.json();
         if (data.paid) {
           updateUser({ isPaid: true });
+          trackEvent("payment", { provider }, user);
           setPhase("paid");
           toast("Payment confirmed — welcome aboard!", "check-circle");
           setTimeout(() => router.push("/dashboard"), 1600);
@@ -69,6 +71,7 @@ function SuccessInner() {
       const data = await res.json();
       if (data.paid) {
         updateUser({ isPaid: true });
+        trackEvent("payment", { provider }, user);
         setPhase("paid");
         setTimeout(() => router.push("/dashboard"), 1600);
       } else {

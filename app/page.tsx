@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
+import { trackEvent } from "@/lib/analytics";
 import { UserRole } from "@/lib/types";
 import Icon from "@/components/Icon";
 
@@ -73,7 +74,13 @@ export default function LandingPage() {
     if (authReady && isAuthenticated) router.replace(rolePath(user?.role));
   }, [authReady, isAuthenticated, user, router]);
 
+  // Count every landing-page visit for the admin analytics funnel
+  useEffect(() => {
+    trackEvent("landing_view");
+  }, []);
+
   function handleDemo() {
+    trackEvent("demo_start");
     loginDemo();
     toast("Welcome to the demo — explore freely, nothing is saved.", "sparkles");
     router.push("/dashboard");
@@ -91,9 +98,9 @@ export default function LandingPage() {
           <a href="#how" className="nav-link">How it works</a>
           <a href="#pricing" className="nav-link">Pricing</a>
           <Link href="/login" className="btn btn-ghost btn-sm">Sign in</Link>
-          <button className="btn btn-primary btn-sm" onClick={handleDemo}>
-            <Icon name="sparkles" size={15} /> See Demo
-          </button>
+          <Link href="/login?signup=1" className="btn btn-primary btn-sm">
+            Get Started — $1
+          </Link>
         </div>
       </nav>
 
@@ -111,15 +118,25 @@ export default function LandingPage() {
           bills, goals and insights — everything in one place, for less than a bottle of water.
         </p>
         <div className="hero-ctas">
-          <button className="btn btn-primary" onClick={handleDemo} style={{ padding: "14px 26px", fontSize: 15 }}>
-            <Icon name="sparkles" size={17} /> See Demo — no signup
-          </button>
-          <Link href="/login?signup=1" className="btn btn-ghost" style={{ padding: "14px 26px", fontSize: 15 }}>
+          <Link href="/login?signup=1" className="btn btn-primary" style={{ padding: "14px 26px", fontSize: 15 }}>
             Get Started — $1 <Icon name="arrow-up-right" size={16} />
           </Link>
+          <button
+            className="btn"
+            onClick={handleDemo}
+            style={{
+              padding: "14px 26px",
+              fontSize: 15,
+              background: "#fff",
+              color: "#111",
+              border: "1px solid var(--card-border)",
+            }}
+          >
+            See Demo
+          </button>
         </div>
         <div className="hero-note">
-          The demo is a full working preview — nothing you do is saved.
+          One-time $1 payment · Every feature unlocked forever · Paynow, card, Ecocash or bank.
         </div>
 
         {/* App preview mock */}
@@ -199,9 +216,6 @@ export default function LandingPage() {
             <Link href="/login?signup=1" className="btn btn-primary" style={{ width: "100%" }}>
               Create account & pay $1
             </Link>
-            <button className="btn btn-ghost" style={{ width: "100%", marginTop: 10 }} onClick={handleDemo}>
-              <Icon name="sparkles" size={15} /> Try the demo first
-            </button>
           </div>
         </div>
       </section>
@@ -211,15 +225,11 @@ export default function LandingPage() {
         <h2>Ready to see where your money goes?</h2>
         <p>
           Registration completes with a one-time $1 payment — then the whole app is yours.
-          Or take the demo for a spin first.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <Link href="/login?signup=1" className="btn btn-white" style={{ padding: "13px 26px" }}>
             Get Started — $1
           </Link>
-          <button className="btn btn-ghost" onClick={handleDemo} style={{ padding: "13px 26px" }}>
-            See Demo
-          </button>
         </div>
       </section>
 
@@ -234,6 +244,7 @@ export default function LandingPage() {
           <Link href="/login">Sign in</Link>
         </div>
         <div>© {new Date().getFullYear()} WellSpend Budget Tracker. All rights reserved.</div>
+        <div>Powered By Global Space Web +263718560128</div>
       </footer>
     </div>
   );

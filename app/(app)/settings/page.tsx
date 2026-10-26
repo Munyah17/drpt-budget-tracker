@@ -22,7 +22,7 @@ function Switch({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 }
 
 export default function SettingsPage() {
-  const { theme, toggleTheme, toast, currency, setCurrency, user, logout, allTransactions } = useAppData();
+  const { theme, toggleTheme, toast, currency, setCurrency, user, logout, allTransactions, syncIntervalMin, setSyncIntervalMin } = useAppData();
   const [tab, setTab] = useState<SettingsTab>("preferences");
   const [emailNotifs, setEmailNotifs] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
@@ -30,7 +30,6 @@ export default function SettingsPage() {
   const [budgetAlerts, setBudgetAlerts] = useState(false);
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
-  const [backupFreq, setBackupFreq] = useState("Weekly");
 
   const exportBackup = () => {
     downloadBlob(
@@ -188,13 +187,18 @@ export default function SettingsPage() {
         <div className="glass-card card-pad" style={{ maxWidth: 640 }}>
           <div className="settings-row">
             <div>
-              <div className="label">Backup Frequency</div>
-              <div className="sub">Automatic data backup</div>
+              <div className="label">Cloud Sync</div>
+              <div className="sub">Your data is saved to the cloud automatically</div>
             </div>
-            <select className="settings-select" value={backupFreq} onChange={(e) => setBackupFreq(e.target.value)}>
-              <option>Weekly</option>
-              <option>Daily</option>
-              <option>Monthly</option>
+            <select
+              className="settings-select"
+              value={syncIntervalMin}
+              onChange={(e) => setSyncIntervalMin(Number(e.target.value))}
+            >
+              <option value={15}>Every 15 minutes</option>
+              <option value={30}>Every 30 minutes</option>
+              <option value={60}>Every hour</option>
+              <option value={360}>Every 6 hours</option>
             </select>
           </div>
           <div className="settings-row">

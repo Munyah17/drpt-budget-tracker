@@ -58,6 +58,10 @@ interface AppDataContextValue {
   /** Format an amount in the active currency (user profile or selected) */
   fmt: (n: number) => string;
 
+  /** Cloud-sync interval in minutes — how often data is pushed to the server */
+  syncIntervalMin: number;
+  setSyncIntervalMin: (m: number) => void;
+
   accounts: Account[];
   addAccount: (account: Account) => void;
   updateUser: (patch: Partial<UserProfile>) => void;
@@ -92,6 +96,8 @@ interface AppDataContextValue {
 const AppDataContext = createContext<AppDataContextValue | null>(null);
 
 let toastSeq = 1;
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** Profile used for the public "See Demo" walkthrough — regular user, paid, unsaved */
 const DEMO_USER_PROFILE: UserProfile = {
@@ -130,6 +136,13 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     // Restore chosen display currency
     const savedCurrency = localStorage.getItem("drpatie-currency");
     if (savedCurrency) setCurrencyState(savedCurrency);
+
+    // Restore cloud-sync interval preference
+    const savedSync = parseInt(localStorage.getItem("drpatie-sync-interval") || "15", 10);
+    if ([15, 30, 60, 360].includes(savedSync)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore on mount
+      setSyncIntervalMinState(savedSync);
+    }
 
     // Restore locally persisted profile (demo/admin/corporate/employee logins
     // have no Supabase session, so this is the only thing that survives reload)
@@ -209,6 +222,106 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       })
       .catch(() => {});
   }, [authReady, isAuthenticated, user]);
+
+  // ---- Cloud sync (paid, real accounts only — demo/admin ids aren't uuids) ----
+  const [syncIntervalMin, setSyncIntervalMinState] = useState(15);
+  const hydrated = useRef(false); // pull completed → safe to push
+  const syncing = useRef(false);
+  const suppressPush = useRef(false); // skip the push echo after hydration
+  const dataSynced = useRef(false); // initial pull ran this mount
+  const userRef = useRef<UserProfile | null>(null);
+  const tokenRef = useRef<string | null>(null);
+  const snapRef = useRef({ accounts, income, expenses, goals, bills, budgets });
+
+  useEffect(() => { userRef.current = user; }, [user]);
+
+  const applySnapshot = useCallback((d: Record<string, unknown>) => {
+    suppressPush.current = true;
+    if (Array.isArray(d.accounts)) setAccounts(d.accounts as Account[]);
+    if (Array.isArray(d.income)) setIncome(d.income as IncomeEntry[]);
+    if (Array.isArray(d.expenses)) setExpenses(d.expenses as ExpenseEntry[]);
+    if (Array.isArray(d.goals)) setGoals(d.goals as Goal[]);
+    if (Array.isArray(d.bills)) setBills(d.bills as Bill[]);
+    if (Array.isArray(d.budgets)) setBudgets(d.budgets as Budget[]);
+  }, []);
+
+  const pullNow = useCallback(async () => {
+    const u = userRef.current;
+    if (!u || syncing.current || !UUID_RE.test(u.id)) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      tokenRef.current = session.access_token;
+      const res = await fetch(`/api/sync?uid=${encodeURIComponent(u.id)}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const d = await res.json();
+      hydrated.current = true;
+      if (d?.data && typeof d.data === "object") applySnapshot(d.data as Record<string, unknown>);
+    } catch { /* offline — next interval retries */ }
+  }, [applySnapshot]);
+
+  const pushNow = useCallback(async () => {
+    const u = userRef.current;
+    if (!u || syncing.current || !hydrated.current || !UUID_RE.test(u.id)) return;
+    syncing.current = true;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      tokenRef.current = session.access_token;
+      await fetch(`/api/sync?uid=${encodeURIComponent(u.id)}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ data: snapRef.current }),
+      });
+    } catch { /* offline — next interval retries */ }
+    finally { syncing.current = false; }
+  }, []);
+
+  // Initial pull — once per mount, only for real paid users
+  useEffect(() => {
+    if (dataSynced.current || !authReady || !isAuthenticated || !user?.isPaid) return;
+    if (!UUID_RE.test(user.id)) return;
+    dataSynced.current = true;
+    pullNow();
+  }, [authReady, isAuthenticated, user, pullNow]);
+
+  // Periodic failsafe — push if hydrated, otherwise retry the initial pull
+  useEffect(() => {
+    if (!authReady || !isAuthenticated || !user?.isPaid || !UUID_RE.test(user.id)) return;
+    const t = setInterval(() => { (hydrated.current ? pushNow : pullNow)(); }, Math.max(1, syncIntervalMin) * 60_000);
+    return () => clearInterval(t);
+  }, [authReady, isAuthenticated, user?.isPaid, user?.id, syncIntervalMin, pushNow, pullNow]);
+
+  // Keep the snapshot ref current; push 30s after the last edit
+  useEffect(() => {
+    snapRef.current = { accounts, income, expenses, goals, bills, budgets };
+    if (suppressPush.current) { suppressPush.current = false; return; }
+    const t = setTimeout(pushNow, 30_000);
+    return () => clearTimeout(t);
+  }, [accounts, income, expenses, goals, bills, budgets, pushNow]);
+
+  // Flush on tab close — keepalive fetch survives page unload
+  useEffect(() => {
+    const flush = () => {
+      const u = userRef.current;
+      const tok = tokenRef.current;
+      if (!u || !tok || !hydrated.current || !UUID_RE.test(u.id)) return;
+      fetch(`/api/sync?uid=${encodeURIComponent(u.id)}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${tok}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ data: snapRef.current }),
+        keepalive: true,
+      }).catch(() => {});
+    };
+    window.addEventListener("pagehide", flush);
+    return () => window.removeEventListener("pagehide", flush);
+  }, []);
+
+  const setSyncIntervalMin = useCallback((m: number) => {
+    setSyncIntervalMinState(m);
+    localStorage.setItem("drpatie-sync-interval", String(m));
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -342,6 +455,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; role?: UserRole; error?: string }> => {
     try {
+      // Drop any pre-existing session first — a stale session would otherwise
+      // override this identity on the next refresh via checkSession().
+      await supabase.auth.signOut();
+
       // For demo purposes, check hardcoded credentials first
       const ADMIN_EMAIL = "munyamuzvidziwa19@gmail.com";
       const ADMIN_PASSWORD = "@@Griezmann177#$";
@@ -481,6 +598,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(false);
     setIsDemo(false);
     localStorage.removeItem("drpatie-user");
+    // Reset sync state so the next login re-pulls its own snapshot
+    hydrated.current = false;
+    dataSynced.current = false;
+    tokenRef.current = null;
   }, [isDemo]);
 
   const value: AppDataContextValue = {
@@ -502,6 +623,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     currency,
     setCurrency,
     fmt,
+    syncIntervalMin,
+    setSyncIntervalMin,
     accounts,
     addAccount,
     updateUser,

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
+import { trackEvent } from "@/lib/analytics";
 import { minPriceLabel } from "@/lib/pricing";
 import { UserRole } from "@/lib/types";
-import Icon from "@/components/Icon";
 
 const rolePath = (role?: UserRole) =>
   role === "admin"
@@ -21,7 +21,7 @@ const rolePath = (role?: UserRole) =>
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, loginDemo, toast, isAuthenticated, authReady, user } = useAppData();
+  const { login, toast, isAuthenticated, authReady, user } = useAppData();
   const [submitting, setSubmitting] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [email, setEmail] = useState("");
@@ -59,6 +59,7 @@ function LoginForm() {
         setSubmitting(false);
         toast(error.message, "x");
         notifyEvent("signup_failed", { email, name, detail: error.message });
+        trackEvent("signup_failed", { detail: error.message }, { email });
         return;
       }
 
@@ -78,8 +79,10 @@ function LoginForm() {
         if (profileError) {
           console.error('Profile creation error:', profileError);
           notifyEvent("signup_failed", { email, name, detail: "profile insert failed" });
+          trackEvent("signup_failed", { detail: "profile insert failed" }, { email });
         } else {
           notifyEvent("signup_success", { email, name });
+          trackEvent("signup", {}, { email });
         }
 
         // Sign in, then finish registration with the $1 payment
@@ -101,6 +104,7 @@ function LoginForm() {
       const result = await login(email, password);
 
       if (result.success) {
+        trackEvent("login", { role: result.role }, { email });
         setFadingOut(true);
         setTimeout(() => {
           router.push(nextPath ?? rolePath(result.role));
@@ -110,12 +114,6 @@ function LoginForm() {
         toast(result.error || "Invalid email or password", "x");
       }
     }
-  }
-
-  function handleDemo() {
-    loginDemo();
-    toast("Welcome to the demo — explore freely, nothing is saved.", "sparkles");
-    router.push(nextPath ?? "/dashboard");
   }
 
   return (
@@ -190,15 +188,6 @@ function LoginForm() {
               {submitting ? (isSignup ? "Creating account…" : "Signing in…") : (isSignup ? "Create Account & Pay $1" : "Sign In")}
             </button>
           </form>
-
-          <button
-            type="button"
-            className="btn btn-ghost"
-            style={{ width: "100%", marginTop: 10 }}
-            onClick={handleDemo}
-          >
-            <Icon name="sparkles" size={16} /> See Demo — no signup needed
-          </button>
 
           <div className="login-footer">
             {isSignup ? "Already have an account? " : "Don't have an account? "}
