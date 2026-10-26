@@ -90,57 +90,111 @@ function PaymentInner() {
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 16,
-        padding: 16,
-        border: `2px solid ${selectedMethod === id ? "var(--rose-500)" : "var(--card-border)"}`,
-        borderRadius: "var(--radius-md)",
+        gap: 14,
+        padding: "14px 16px",
+        border: `1.5px solid ${selectedMethod === id ? "var(--rose-500)" : "var(--card-border)"}`,
+        borderRadius: 14,
         background: selectedMethod === id ? "var(--pink-100)" : "var(--card-solid)",
         cursor: "pointer",
         width: "100%",
         textAlign: "left",
+        transition: "border-color .15s, background .15s, transform .1s",
+        fontFamily: "inherit",
       }}
     >
       <div
         style={{
-          width: 48, height: 48, borderRadius: 12, flexShrink: 0,
-          background: "var(--pink-100)", display: "flex",
-          alignItems: "center", justifyContent: "center",
+          width: 44, height: 44, borderRadius: 11, flexShrink: 0,
+          background: selectedMethod === id ? "var(--rose-600)" : "var(--pink-100)",
+          color: selectedMethod === id ? "#fff" : "var(--rose-600)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "background .15s, color .15s",
         }}
       >
-        <Icon name={icon} size={24} />
+        <Icon name={icon} size={21} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontWeight: 700, marginBottom: 4 }}>{title}</div>
-        <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{sub}</div>
+        <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{title}</div>
+        <div style={{ fontSize: 12.5, color: "var(--ink-500)" }}>{sub}</div>
       </div>
-      {selectedMethod === id && (
-        <Icon name="check-circle" size={20} style={{ color: "var(--rose-500)", flexShrink: 0 }} />
-      )}
+      <div
+        style={{
+          width: 20, height: 20, borderRadius: "50%", flexShrink: 0,
+          border: `2px solid ${selectedMethod === id ? "var(--rose-500)" : "var(--card-border)"}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: selectedMethod === id ? "var(--rose-500)" : "transparent",
+          transition: "all .15s",
+        }}
+      >
+        {selectedMethod === id && <Icon name="check" size={12} style={{ color: "#fff" }} />}
+      </div>
     </button>
   );
 
   const detailRow = (label: string, value: string) => (
-    <div>
-      <strong>{label}:</strong> {value}
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "5px 0" }}>
+      <span style={{ color: "var(--ink-500)", flexShrink: 0 }}>{label}</span>
+      <strong style={{ textAlign: "right" }}>{value}</strong>
     </div>
   );
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <div className="glass-card card-pad" style={{ maxWidth: 520, width: "100%", background: "var(--card-solid)" }}>
-        <div style={{ textAlign: "center", marginBottom: 26 }}>
-          <div className="login-logo" style={{ marginBottom: 16, justifyContent: "center" }}>
-            Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+        background:
+          "radial-gradient(1200px 600px at 80% -10%, rgba(233,30,99,.18), transparent 60%)," +
+          "radial-gradient(900px 500px at -10% 110%, rgba(200,16,87,.14), transparent 55%)," +
+          "var(--bg)",
+      }}
+    >
+      <div
+        className="glass-card"
+        style={{
+          maxWidth: 520,
+          width: "100%",
+          background: "var(--card-solid)",
+          overflow: "hidden",
+          boxShadow: "0 24px 70px rgba(200,16,87,.16), 0 4px 18px rgba(0,0,0,.08)",
+          borderRadius: 22,
+        }}
+      >
+        {/* hero band */}
+        <div
+          style={{
+            background: "linear-gradient(135deg, var(--rose-600), var(--rose-500) 60%, var(--rose-400))",
+            color: "#fff",
+            padding: "30px 28px 26px",
+            textAlign: "center",
+          }}
+        >
+          <div className="login-logo" style={{ marginBottom: 10, justifyContent: "center", color: "#fff" }}>
+            Dr PT <span style={{ color: "#ffd7e4" }}>❤</span>
           </div>
-          <h2 style={{ marginBottom: 8 }}>Activate your account</h2>
-          <p style={{ color: "var(--ink-500)" }}>
-            One-time payment of ${PRICE} unlocks everything — forever.
+          <h2 style={{ marginBottom: 6, color: "#fff" }}>Activate your account</h2>
+          <div style={{ display: "inline-flex", alignItems: "baseline", gap: 6, margin: "6px 0 8px" }}>
+            <span style={{ fontSize: 15, opacity: .85 }}>once, not monthly</span>
+          </div>
+          <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
+            ${PRICE.toFixed(2)}
+          </div>
+          <p style={{ fontSize: 13.5, opacity: .9, marginTop: 8, marginBottom: 0 }}>
+            One payment unlocks everything — forever.
           </p>
           {cancelled && (
-            <p style={{ color: "var(--red)", fontSize: 13, marginTop: 8 }}>
+            <p style={{ fontSize: 13, marginTop: 10, background: "rgba(255,255,255,.18)", borderRadius: 8, padding: "7px 12px", display: "inline-block" }}>
               Payment was cancelled — pick a method to try again.
             </p>
           )}
+        </div>
+
+        <div style={{ padding: "24px 26px 26px" }}>
+        <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 12 }}>
+          Choose how to pay
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
@@ -221,6 +275,11 @@ function PaymentInner() {
         >
           Cancel
         </button>
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 16, fontSize: 11.5, color: "var(--ink-500)" }}>
+          <Icon name="shield" size={12} /> Secure checkout — your card details never touch our servers
+        </div>
+        </div>
       </div>
     </div>
   );

@@ -14,8 +14,10 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   const [showSubscribe, setShowSubscribe] = useState(false);
 
   useEffect(() => {
-    if (authReady && !isAuthenticated) router.replace("/login");
-  }, [authReady, isAuthenticated, router]);
+    if (authReady && !isAuthenticated) {
+      router.replace("/login?next=" + encodeURIComponent(pathname));
+    }
+  }, [authReady, isAuthenticated, pathname, router]);
 
   if (!authReady || !isAuthenticated) return null;
 

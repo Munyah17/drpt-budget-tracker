@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     "line_items[0][price_data][unit_amount]": "100",
     "line_items[0][price_data][product_data][name]": "Dr PT — Lifetime Access",
     client_reference_id: userId ?? "",
-    payment_method_types: "card",
+    "payment_method_types[0]": "card",
   });
   if (email) body.set("customer_email", email);
 

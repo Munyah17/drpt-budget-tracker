@@ -27,10 +27,14 @@ function LoginForm() {
   const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
   const [name, setName] = useState("");
 
-  // Already signed in? Go straight to the right portal.
+  // Where the user was headed before the auth guard sent them here
+  const nextParam = searchParams.get("next");
+  const nextPath = nextParam && nextParam.startsWith("/") ? nextParam : null;
+
+  // Already signed in? Go back where they wanted, else to their portal.
   useEffect(() => {
-    if (authReady && isAuthenticated) router.replace(rolePath(user?.role));
-  }, [authReady, isAuthenticated, user, router]);
+    if (authReady && isAuthenticated) router.replace(nextPath ?? rolePath(user?.role));
+  }, [authReady, isAuthenticated, user, router, nextPath]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -93,7 +97,7 @@ function LoginForm() {
       if (result.success) {
         setFadingOut(true);
         setTimeout(() => {
-          router.push(rolePath(result.role));
+          router.push(nextPath ?? rolePath(result.role));
         }, 350);
       } else {
         setSubmitting(false);
@@ -105,7 +109,7 @@ function LoginForm() {
   function handleDemo() {
     loginDemo();
     toast("Welcome to the demo — explore freely, nothing is saved.", "sparkles");
-    router.push("/dashboard");
+    router.push(nextPath ?? "/dashboard");
   }
 
   return (
