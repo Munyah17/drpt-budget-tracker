@@ -175,6 +175,35 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, []);
 
+  // DB-truth sync: once booted, pull is_paid/role straight from the profiles
+  // table (service-role endpoint) so a locally tampered drpatie-user can never
+  // fake paid access. Runs once per mount; hardcoded demo/admin ids skip it.
+  const dbSynced = useRef(false);
+  useEffect(() => {
+    if (dbSynced.current || !authReady || !isAuthenticated || !user) return;
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id)) return;
+    dbSynced.current = true;
+    const uid = user.id;
+    fetch(`/api/me?uid=${encodeURIComponent(uid)}`)
+      .then((r) => r.json())
+      .then((d: { paid?: boolean; role?: UserRole; name?: string; currency?: string; error?: string }) => {
+        if (d.error) return; // server unreachable — keep stored values
+        setUser((prev) => {
+          if (!prev || prev.id !== uid) return prev;
+          const next: UserProfile = {
+            ...prev,
+            isPaid: d.paid === true,
+            role: d.role ?? prev.role,
+            name: d.name || prev.name,
+            currency: (d.currency as UserProfile["currency"]) || prev.currency,
+          };
+          localStorage.setItem("drpatie-user", JSON.stringify(next));
+          return next;
+        });
+      })
+      .catch(() => {});
+  }, [authReady, isAuthenticated, user]);
+
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
