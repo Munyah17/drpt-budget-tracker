@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { priceCents } from "@/lib/pricing";
 
 /**
- * Creates a Stripe Checkout Session for the $1 lifetime unlock and returns
- * the hosted checkout URL. No stripe SDK needed — plain REST.
+ * Creates a Stripe Checkout Session for the lifetime unlock and returns the
+ * hosted checkout URL. Price is grossed up for Stripe's fee so we net $1.
+ * No stripe SDK needed — plain REST.
  */
 export async function POST(req: NextRequest) {
   const secret = process.env.STRIPE_SECRET_KEY;
@@ -19,7 +21,7 @@ export async function POST(req: NextRequest) {
     cancel_url: `${origin}/payment?cancelled=1`,
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "usd",
-    "line_items[0][price_data][unit_amount]": "100",
+    "line_items[0][price_data][unit_amount]": String(priceCents("stripe")),
     "line_items[0][price_data][product_data][name]": "WellSpend — Lifetime Access",
     client_reference_id: userId ?? "",
     "payment_method_types[0]": "card",

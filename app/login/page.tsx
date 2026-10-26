@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
+import { minPriceLabel } from "@/lib/pricing";
 import { UserRole } from "@/lib/types";
 import Icon from "@/components/Icon";
 
@@ -86,12 +87,12 @@ function LoginForm() {
 
         if (loginResult.success) {
           setFadingOut(true);
-          toast("Account created — one last step: pay $1 to activate.", "check-circle");
+          toast(`Account created — one last step: pay from ${minPriceLabel()} to activate.`, "check-circle");
           setTimeout(() => {
             router.push("/payment");
           }, 350);
         } else {
-          toast("Account created! Sign in, then pay $1 to activate.", "check-circle");
+          toast(`Account created! Sign in to pay from ${minPriceLabel()} and activate.`, "check-circle");
           setIsSignup(false);
           setSubmitting(false);
         }

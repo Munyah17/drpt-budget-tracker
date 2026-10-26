@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { priceUsd } from "@/lib/pricing";
 
 const INITIATE_URL = "https://www.paynow.co.zw/interface/initiatetransaction";
 
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
   const fields: [string, string][] = [
     ["id", id],
     ["reference", reference],
-    ["amount", "1.00"],
+    ["amount", priceUsd("paynow").toFixed(2)],
     ["additionalinfo", `WellSpend lifetime access${userId ? ` (${userId})` : ""}`],
     ["returnurl", `${origin}/payment/success?provider=paynow&uid=${encodeURIComponent(userId ?? "")}`],
     ["resulturl", `${origin}/api/paynow/result`],

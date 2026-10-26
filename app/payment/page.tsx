@@ -4,12 +4,11 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
+import { priceUsd, priceLabel, minPriceUsd, minPriceLabel, TRANSFER_FEE_USD } from "@/lib/pricing";
 import Icon from "@/components/Icon";
 
 type PaymentMethod = "paynow" | "stripe" | "ecocash" | "bank";
 
-const PRICE = 1; // $1 once-off
-const TRANSFER_FEE = 0.5; // withdrawal/processing fee on direct transfers
 const WHATSAPP_POP = "263718560128";
 
 function paymentMethodLabel(m: PaymentMethod) {
@@ -31,7 +30,7 @@ function PaymentInner() {
   const cancelled = searchParams.get("cancelled") === "1";
 
   const isDirect = selectedMethod === "ecocash" || selectedMethod === "bank";
-  const total = isDirect ? PRICE + TRANSFER_FEE : PRICE;
+  const total = selectedMethod ? priceUsd(selectedMethod) : minPriceUsd();
 
   const whatsappHref = () => {
     const text =
@@ -185,11 +184,11 @@ function PaymentInner() {
             WellSpend <span style={{ color: "#ffd7e4" }}>❤</span>
           </div>
           <h2 style={{ marginBottom: 6, color: "#fff" }}>Activate your account</h2>
+          <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
+            from {minPriceLabel()}
+          </div>
           <div style={{ display: "inline-flex", alignItems: "baseline", gap: 6, margin: "6px 0 8px" }}>
             <span style={{ fontSize: 15, opacity: .85 }}>once, not monthly</span>
-          </div>
-          <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
-            ${PRICE.toFixed(2)}
           </div>
           <p style={{ fontSize: 13.5, opacity: .9, marginTop: 8, marginBottom: 0 }}>
             One payment unlocks everything — forever.
@@ -207,10 +206,10 @@ function PaymentInner() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-          {methodBtn("paynow", "smartphone", "Paynow", "Ecocash, Omari, InnBucks — instant")}
-          {methodBtn("stripe", "credit-card", "Card payment", "Visa, Mastercard, AmEx via Stripe")}
-          {methodBtn("ecocash", "banknote", "Ecocash / InnBucks", `Direct transfer — $${PRICE.toFixed(2)} + $${TRANSFER_FEE.toFixed(2)} fee`)}
-          {methodBtn("bank", "landmark", "Bank Transfer", `FBC USD account — $${PRICE.toFixed(2)} + $${TRANSFER_FEE.toFixed(2)} fee`)}
+          {methodBtn("paynow", "smartphone", "Paynow", `Ecocash, Omari, InnBucks — ${priceLabel("paynow")} instant`)}
+          {methodBtn("stripe", "credit-card", "Card payment", `Visa, Mastercard, AmEx — ${priceLabel("stripe")}`)}
+          {methodBtn("ecocash", "banknote", "Ecocash / InnBucks", `Direct transfer — ${priceLabel("ecocash")}`)}
+          {methodBtn("bank", "landmark", "Bank Transfer", `FBC USD account — ${priceLabel("bank")}`)}
         </div>
 
         {/* Direct transfer details */}
@@ -220,7 +219,7 @@ function PaymentInner() {
             <div style={{ fontSize: 13, lineHeight: 1.7 }}>
               {detailRow("Number", "+263 77 390 9307")}
               {detailRow("Name", "Munyaradzi J Muzvidziwa")}
-              {detailRow("Amount", `$${total.toFixed(2)} (includes $0.50 withdrawal fee)`)}
+              {detailRow("Amount", `$${total.toFixed(2)} (includes $${TRANSFER_FEE_USD.toFixed(2)} withdrawal fee)`)}
             </div>
           </div>
         )}
@@ -233,7 +232,7 @@ function PaymentInner() {
               {detailRow("Bank", "FBC Bank")}
               {detailRow("Branch", "FBC Center Branch")}
               {detailRow("USD Account", "6870465460146")}
-              {detailRow("Amount", `$${total.toFixed(2)} (includes $0.50 fee)`)}
+              {detailRow("Amount", `$${total.toFixed(2)} (includes $${TRANSFER_FEE_USD.toFixed(2)} fee)`)}
             </div>
           </div>
         )}
@@ -268,7 +267,7 @@ function PaymentInner() {
               ? popSent
                 ? "Waiting for PoP verification"
                 : `I've sent $${total.toFixed(2)} — continue`
-              : `Pay $${PRICE.toFixed(2)}`}
+              : `Pay ${priceLabel(selectedMethod ?? "paynow")}`}
         </button>
 
         {popSent && (
