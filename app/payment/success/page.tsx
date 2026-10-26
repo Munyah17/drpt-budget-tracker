@@ -90,7 +90,7 @@ function SuccessInner() {
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
       <div className="glass-card card-pad" style={{ maxWidth: 440, width: "100%", textAlign: "center", background: "var(--card-solid)" }}>
         <div className="login-logo" style={{ justifyContent: "center", marginBottom: 18 }}>
-          Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+          WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
         </div>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
           <Icon
@@ -110,7 +110,7 @@ function SuccessInner() {
           <a
             className="btn btn-ghost"
             style={{ width: "100%", marginTop: 10, textDecoration: "none" }}
-            href={`https://wa.me/263718560128?text=${encodeURIComponent("Hi, my Dr PT payment needs a manual check.\nEmail: " + (user?.email ?? "") + "\nRef: ")}`}
+            href={`https://wa.me/263718560128?text=${encodeURIComponent("Hi, my WellSpend payment needs a manual check.\nEmail: " + (user?.email ?? "") + "\nRef: ")}`}
             target="_blank"
             rel="noreferrer"
           >

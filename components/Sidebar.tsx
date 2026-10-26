@@ -47,7 +47,7 @@ export default function Sidebar() {
   return (
     <aside className={"sidebar" + (sidebarOpen ? " open" : "")} id="sidebar">
       <div className="sidebar-logo">
-        Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+        WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
         <button
           className="sidebar-close"
           aria-label="Close menu"

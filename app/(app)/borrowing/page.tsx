@@ -72,7 +72,7 @@ export default function BorrowingPage() {
     const formatted = `$${Number(amount).toLocaleString()}`;
     setLoans((prev) => [...prev, {
       type: applying,
-      lender: "Dr PT Credit",
+      lender: "WellSpend Credit",
       amount: formatted,
       interestRate: "TBC",
       monthlyPayment: `${term} months`,

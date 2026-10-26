@@ -61,7 +61,7 @@ export default function AdminSettingsPage() {
               <div className="label">Platform Name</div>
               <div className="sub">Display name for the platform</div>
             </div>
-            <input type="text" defaultValue="Dr PT Budget Tracker" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 200 }} />
+            <input type="text" defaultValue="WellSpend Budget Tracker" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 200 }} />
           </div>
           <div className="settings-row">
             <div>

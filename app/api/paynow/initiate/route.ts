@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
 
   const { userId, email } = await req.json().catch(() => ({}));
   const origin = req.nextUrl.origin;
-  const reference = `DRPT-${Date.now()}`;
+  const reference = `WSPD-${Date.now()}`;
 
   // Field order matters for the hash
   const fields: [string, string][] = [
     ["id", id],
     ["reference", reference],
     ["amount", "1.00"],
-    ["additionalinfo", `Dr PT lifetime access${userId ? ` (${userId})` : ""}`],
+    ["additionalinfo", `WellSpend lifetime access${userId ? ` (${userId})` : ""}`],
     ["returnurl", `${origin}/payment/success?provider=paynow&uid=${encodeURIComponent(userId ?? "")}`],
     ["resulturl", `${origin}/api/paynow/result`],
     ["authemail", email ?? ""],

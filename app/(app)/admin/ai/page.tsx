@@ -6,7 +6,7 @@ import Icon from "@/components/Icon";
 export default function AdminAIPage() {
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I'm the Dr PT Platform AI. I can provide insights about platform performance, user behavior, revenue trends, and operational metrics. What would you like to know?" }
+    { role: "assistant", content: "Hi! I'm the WellSpend AI. I can provide insights about platform performance, user behavior, revenue trends, and operational metrics. What would you like to know?" }
   ]);
 
   const [sending, setSending] = useState(false);

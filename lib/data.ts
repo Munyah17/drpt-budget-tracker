@@ -1,9 +1,9 @@
 import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Currency } from "./types";
 
 export const USER = {
-  name: "Dr PT",
-  short: "Dr PT",
-  email: "drpt@email.com",
+  name: "WellSpend",
+  short: "WellSpend",
+  email: "wellspend@email.com",
   location: "London, UK",
 };
 

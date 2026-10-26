@@ -34,7 +34,7 @@ export default function SettingsPage() {
 
   const exportBackup = () => {
     downloadBlob(
-      "drpt-backup.json",
+      "wellspend-backup.json",
       JSON.stringify({ exportedAt: new Date().toISOString(), user, currency, transactions: allTransactions }, null, 2),
       "application/json"
     );

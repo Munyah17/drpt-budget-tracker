@@ -34,7 +34,7 @@ function PaymentInner() {
 
   const whatsappHref = () => {
     const text =
-      `Hi, I've paid for Dr PT access.\n` +
+      `Hi, I've paid for WellSpend access.\n` +
       `Name: ${user?.name ?? ""}\n` +
       `Email: ${user?.email ?? ""}\n` +
       `Phone: \n` +
@@ -173,7 +173,7 @@ function PaymentInner() {
           }}
         >
           <div className="login-logo" style={{ marginBottom: 10, justifyContent: "center", color: "#fff" }}>
-            Dr PT <span style={{ color: "#ffd7e4" }}>❤</span>
+            WellSpend <span style={{ color: "#ffd7e4" }}>❤</span>
           </div>
           <h2 style={{ marginBottom: 6, color: "#fff" }}>Activate your account</h2>
           <div style={{ display: "inline-flex", alignItems: "baseline", gap: 6, margin: "6px 0 8px" }}>

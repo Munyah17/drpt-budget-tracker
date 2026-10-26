@@ -7,7 +7,7 @@ import ToastHost from "@/components/ToastHost";
 import PwaRegister from "@/components/PwaRegister";
 
 export const metadata: Metadata = {
-  title: "Dr PT ❤ — Personal Budget Tracker",
+  title: "WellSpend Budget Tracker ❤",
   description: "Track income, expenses and savings goals in one calm, beautiful place.",
   themeColor: "#c81057",
 };

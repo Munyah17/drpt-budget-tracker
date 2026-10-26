@@ -8,7 +8,7 @@ const SAMPLE_DOC: PrintDocData = {
   kind: "QUOTATION",
   number: "QUO-000000-0000",
   date: new Date().toLocaleDateString("en-GB"),
-  companyName: "Dr PT",
+  companyName: "WellSpend",
   companyLines: ["Harare, Zimbabwe", "+263 77 390 9307"],
   billToName: "Client Name",
   billToLines: ["client@email.com", "0773 000 000", "Client Address"],

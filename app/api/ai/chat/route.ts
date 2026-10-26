@@ -33,7 +33,7 @@ Rules:
 - "warn" = something they're overspending on or should cut down; "tip" = spending advice; "action" = a concrete next step; "praise" = what they're doing well.
 - Reference actual numbers, payees and categories from the data. Keep each text under 40 words. Plain text only — no markdown, no emojis.
 - If the data is empty or tiny, give general advice for starting out instead.`
-      : `You are the friendly AI financial assistant inside the Dr PT budget app. Use the financial context provided to answer questions about the user's income, expenses and savings. Be concise (under 120 words), warm and practical. Use <ul><li> for lists and <b> for figures — the client renders them as HTML. Never make up numbers that aren't in the context.`;
+      : `You are the friendly AI financial assistant inside the WellSpend Budget Tracker app. Use the financial context provided to answer questions about the user's income, expenses and savings. Be concise (under 120 words), warm and practical. Use <ul><li> for lists and <b> for figures — the client renders them as HTML. Never make up numbers that aren't in the context.`;
 
   const payload = {
     model: MODEL,

@@ -46,7 +46,7 @@ export default function DeveloperPage() {
     });
 
   const generateKey = () => {
-    const full = `drpt_live_${Array.from(crypto.getRandomValues(new Uint8Array(24))).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+    const full = `wellspend_live_${Array.from(crypto.getRandomValues(new Uint8Array(24))).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
     keys.setItems((prev) => [...prev, {
       id: String(Date.now()),
       label: label || "Untitled key",
@@ -168,7 +168,7 @@ export default function DeveloperPage() {
       <div className="glass-card card-pad" style={{ maxWidth: 560 }}>
         <div className="card-head"><h3>API Access</h3></div>
         <p style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-          Base URL: <code>https://api.drpt.example/v1</code> — authenticate with <code>Authorization: Bearer &lt;key&gt;</code>. Requests are rate-limited per key and every call is recorded in the audit log.
+          Base URL: <code>https://api.wellspend.example/v1</code> — authenticate with <code>Authorization: Bearer &lt;key&gt;</code>. Requests are rate-limited per key and every call is recorded in the audit log.
         </p>
         <p style={{ fontSize: 12, color: "var(--ink-500)" }}>
           Note: for production, issue and verify keys server-side; this page is a UI demo and keys are held in memory only.

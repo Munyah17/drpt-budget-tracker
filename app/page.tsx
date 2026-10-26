@@ -84,7 +84,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="landing-nav">
         <div className="landing-logo">
-          Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+          WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
         </div>
         <div className="landing-nav-links">
           <a href="#features" className="nav-link">Features</a>
@@ -107,7 +107,7 @@ export default function LandingPage() {
           <em>finally clear.</em>
         </h1>
         <p className="lead">
-          Dr PT is a calm, beautiful budget tracker for real life. Income, expenses,
+          WellSpend Budget Tracker is a calm, beautiful budget tracker for real life. Income, expenses,
           bills, goals and insights — everything in one place, for less than a bottle of water.
         </p>
         <div className="hero-ctas">
@@ -226,14 +226,14 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="landing-footer">
         <div className="landing-logo" style={{ fontSize: 18 }}>
-          Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+          WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
         </div>
         <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
           <a href="#features">Features</a>
           <a href="#pricing">Pricing</a>
           <Link href="/login">Sign in</Link>
         </div>
-        <div>© {new Date().getFullYear()} Dr PT. All rights reserved.</div>
+        <div>© {new Date().getFullYear()} WellSpend Budget Tracker. All rights reserved.</div>
       </footer>
     </div>
   );

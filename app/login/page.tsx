@@ -133,7 +133,7 @@ function LoginForm() {
         </div>
         <div className="login-form">
           <div className="login-logo">
-            Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+            WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
           </div>
           <h2>{isSignup ? "Create your account — $1 unlocks everything, forever" : "Welcome back! Sign in to continue to your account"}</h2>
           <form onSubmit={handleSubmit}>

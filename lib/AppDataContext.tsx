@@ -96,7 +96,7 @@ let toastSeq = 1;
 /** Profile used for the public "See Demo" walkthrough — regular user, paid, unsaved */
 const DEMO_USER_PROFILE: UserProfile = {
   id: "demo-preview",
-  email: "demo@drpt.app",
+  email: "demo@wellspend.app",
   name: "Demo User",
   role: "user",
   currency: DEFAULT_CURRENCY,
