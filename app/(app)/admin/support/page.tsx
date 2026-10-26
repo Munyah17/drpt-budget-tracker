@@ -15,12 +15,7 @@ interface Ticket {
 export default function SupportPage() {
   const [, setSelectedTicket] = useState<Ticket | null>(null);
 
-  const mockTickets: Ticket[] = [
-    { id: "1", subject: "Payment not processing", user: "john.doe@email.com", status: "open", priority: "urgent", created: "2h ago" },
-    { id: "2", subject: "Cannot access dashboard", user: "sarah.smith@email.com", status: "in-progress", priority: "high", created: "5h ago" },
-    { id: "3", subject: "Feature request: export data", user: "mike.wilson@email.com", status: "open", priority: "low", created: "1d ago" },
-    { id: "4", subject: "Billing inquiry", user: "emma.jones@email.com", status: "resolved", priority: "medium", created: "2d ago" },
-  ];
+  const mockTickets: Ticket[] = [];
 
   const getStatusBadge = (status: string) => {
     const colors = {
@@ -54,19 +49,19 @@ export default function SupportPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Open Tickets</div>
-          <div className="stat-value">12</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">In Progress</div>
-          <div className="stat-value">5</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Resolved Today</div>
-          <div className="stat-value">8</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Avg Response Time</div>
-          <div className="stat-value">2.5h</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

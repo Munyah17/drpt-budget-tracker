@@ -15,13 +15,7 @@ interface User {
   lastActive: string;
 }
 
-const USERS_DATA: User[] = [
-  { id: "1", name: "John Doe", email: "john.doe@email.com", status: "active", plan: "paid", joined: "2025-01-15", lastActive: "2h ago" },
-  { id: "2", name: "Sarah Smith", email: "sarah.smith@email.com", status: "active", plan: "paid", joined: "2025-02-20", lastActive: "5m ago" },
-  { id: "3", name: "Mike Wilson", email: "mike.wilson@email.com", status: "suspended", plan: "free", joined: "2025-03-10", lastActive: "3d ago" },
-  { id: "4", name: "Emma Jones", email: "emma.jones@email.com", status: "active", plan: "free", joined: "2025-04-05", lastActive: "1h ago" },
-  { id: "5", name: "Tom Brown", email: "tom.brown@email.com", status: "inactive", plan: "free", joined: "2025-04-12", lastActive: "7d ago" },
-];
+const USERS_DATA: User[] = [];
 
 export default function UserManagementPage() {
   const { toast } = useAppData();
@@ -144,19 +138,19 @@ export default function UserManagementPage() {
       <div className="grid grid-4">
         <div className="glass-card card-pad">
           <div className="stat-label">Total Users</div>
-          <div className="stat-value">1,247</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Active Users</div>
-          <div className="stat-value">892</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Paid Users</div>
-          <div className="stat-value">456</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Suspended</div>
-          <div className="stat-value">23</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
       {crud.modalNode}

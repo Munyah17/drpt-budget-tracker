@@ -13,11 +13,7 @@ interface Organisation {
   integration: string;
 }
 
-const CORPORATES_DATA: Organisation[] = [
-  { name: "Acme Corporation", employees: "450", status: "Active", plan: "Enterprise", integration: "Connected" },
-  { name: "TechCorp Ltd", employees: "320", status: "Active", plan: "Professional", integration: "Degraded" },
-  { name: "GlobalHealth Inc", employees: "477", status: "Onboarding", plan: "Enterprise", integration: "Pending" },
-];
+const CORPORATES_DATA: Organisation[] = [];
 
 export default function AdminCorporatesPage() {
   const [search, setSearch] = useState("");

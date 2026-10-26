@@ -14,20 +14,7 @@ interface Plan {
   features: string[];
 }
 
-const PLANS_DATA: Plan[] = [
-  {
-    name: "Free", price: "$0", tagline: "Limited access to basic features", status: "Active", popular: false,
-    features: ["Basic dashboard", "1 account", "Advanced analytics"],
-  },
-  {
-    name: "Premium", price: "$1", tagline: "One-time payment, full access", status: "Popular", popular: true,
-    features: ["Full dashboard", "Unlimited accounts", "Advanced analytics", "AI Assistant"],
-  },
-  {
-    name: "Enterprise", price: "$9.99", tagline: "Monthly, team features", status: "Coming Soon", popular: false,
-    features: ["Everything in Premium", "Team collaboration", "Priority support"],
-  },
-];
+const PLANS_DATA: Plan[] = [];
 
 export default function PricingPage() {
   const { toast } = useAppData();

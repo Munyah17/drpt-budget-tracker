@@ -9,11 +9,7 @@ interface Article {
   updated: string;
 }
 
-const ARTICLES_DATA: Article[] = [
-  { title: "User Guide", desc: "How to use the platform", updated: "2d ago" },
-  { title: "Admin Guide", desc: "Platform administration", updated: "1w ago" },
-  { title: "API Documentation", desc: "API reference and examples", updated: "3d ago" },
-];
+const ARTICLES_DATA: Article[] = [];
 
 export default function DocumentationPage() {
   const crud = useCrud(ARTICLES_DATA, "Article");

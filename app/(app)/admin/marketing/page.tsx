@@ -11,10 +11,7 @@ interface Campaign {
   status: string;
 }
 
-const CAMPAIGNS_DATA: Campaign[] = [
-  { name: "Summer Promo", platform: "Facebook", reach: "5,200", conversions: "412", status: "Active" },
-  { name: "Email Blast", platform: "Email", reach: "3,100", conversions: "287", status: "Active" },
-];
+const CAMPAIGNS_DATA: Campaign[] = [];
 
 export default function MarketingPage() {
   const crud = useCrud(CAMPAIGNS_DATA, "Campaign");
@@ -34,19 +31,19 @@ export default function MarketingPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Active Campaigns</div>
-          <div className="stat-value">5</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Reach</div>
-          <div className="stat-value">12.5K</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Conversions</div>
-          <div className="stat-value">8.2%</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Spend</div>
-          <div className="stat-value">$2,450</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

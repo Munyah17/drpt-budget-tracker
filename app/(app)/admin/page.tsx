@@ -66,9 +66,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.totalUsers} decimals={0} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            +12% vs last month
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
@@ -80,9 +78,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.activeUsers} decimals={0} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            71.5% of total
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
@@ -94,9 +90,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.mrr} prefix={sym()} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            +8.4% vs last month
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
@@ -108,9 +102,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.churnRate} decimals={1} suffix="%" />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            -0.5% vs last month
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
       </div>
 
@@ -126,9 +118,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.newSignups} decimals={0} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            +23% vs previous week
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
@@ -140,9 +130,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.systemUptime} decimals={1} suffix="%" />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            Last 30 days
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
@@ -154,9 +142,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.apiLatency} decimals={0} suffix="ms" />
           </div>
-          <span className="stat-delta" style={{ color: "var(--amber)" }}>
-            +5ms vs baseline
-          </span>
+          <span className="stat-delta" style={{ color: "var(--amber)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
@@ -168,9 +154,7 @@ export default function AdminDashboardPage() {
           <div className="stat-value">
             <CountUp end={kpiData.errorRate} decimals={2} suffix="%" />
           </div>
-          <span className="stat-delta" style={{ color: "var(--green)" }}>
-            Within SLA
-          </span>
+          <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
       </div>
 

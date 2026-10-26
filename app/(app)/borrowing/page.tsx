@@ -18,11 +18,7 @@ interface Loan {
   status: string;
 }
 
-const LOANS_DATA: Loan[] = [
-  { type: "Personal Loan", lender: "Barclays", amount: "$10,000", interestRate: "5.9% APR", monthlyPayment: "$300", remaining: "$7,500", status: "Active" },
-  { type: "Car Loan", lender: "Lloyds", amount: "$15,000", interestRate: "4.5% APR", monthlyPayment: "$280", remaining: "$4,950", status: "Active" },
-  { type: "Credit Card", lender: "Monzo", amount: "$12,450", interestRate: "18.9% APR", monthlyPayment: "$150", remaining: "$12,450", status: "High Balance" },
-];
+const LOANS_DATA: Loan[] = [];
 
 function ApplyModal({ loanType, onApply, onClose }: { loanType: string; onApply: (amount: string, term: string) => void; onClose: () => void }) {
   const [amount, setAmount] = useState("");
@@ -99,22 +95,22 @@ export default function BorrowingPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Outstanding</div>
-          <div className="stat-value">$12,450</div>
+          <div className="stat-value">—</div>
           <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>Across all loans</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Monthly Payment</div>
-          <div className="stat-value">$450</div>
+          <div className="stat-value">—</div>
           <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>Next due: Jun 1</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Credit Score</div>
-          <div className="stat-value">742</div>
+          <div className="stat-value">—</div>
           <div style={{ fontSize: 12, color: "var(--green-500)", marginTop: 4 }}>Good</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Available Credit</div>
-          <div className="stat-value">$8,550</div>
+          <div className="stat-value">—</div>
           <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>Of $21,000 limit</div>
         </div>
       </div>

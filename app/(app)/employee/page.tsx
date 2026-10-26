@@ -18,19 +18,19 @@ export default function EmployeeHomePage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Net Pay (May)</div>
-          <div className="stat-value">$3,890</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Next Pay Date</div>
-          <div className="stat-value">28 Jun</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Leave Balance</div>
-          <div className="stat-value">18 days</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Benefits Enrolled</div>
-          <div className="stat-value">3</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 
@@ -47,19 +47,19 @@ export default function EmployeeHomePage() {
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>Department</td>
-              <td style={{ padding: "10px 6px" }}>Engineering</td>
+              <td style={{ padding: "10px 6px" }}>—</td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>Job Title</td>
-              <td style={{ padding: "10px 6px" }}>Senior Engineer</td>
+              <td style={{ padding: "10px 6px" }}>—</td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>Contract Type</td>
-              <td style={{ padding: "10px 6px" }}>Permanent, Full-time</td>
+              <td style={{ padding: "10px 6px" }}>—</td>
             </tr>
             <tr>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>Start Date</td>
-              <td style={{ padding: "10px 6px" }}>2022-03-14</td>
+              <td style={{ padding: "10px 6px" }}>—</td>
             </tr>
           </tbody>
         </table>
@@ -76,20 +76,10 @@ export default function EmployeeHomePage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "10px 6px", fontSize: 13 }}>May 2025</td>
-              <td style={{ padding: "10px 6px", fontSize: 13 }}>$3,890</td>
-              <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "10px 6px", fontSize: 13 }}>April 2025</td>
-              <td style={{ padding: "10px 6px", fontSize: 13 }}>$3,890</td>
-              <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
-            </tr>
             <tr>
-              <td style={{ padding: "10px 6px", fontSize: 13 }}>March 2025</td>
-              <td style={{ padding: "10px 6px", fontSize: 13 }}>$3,855</td>
-              <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
+              <td colSpan={3} style={{ padding: "24px 8px", fontSize: 13, color: "var(--ink-500)", textAlign: "center" }}>
+                No payslips yet — they'll appear here once payroll runs.
+              </td>
             </tr>
           </tbody>
         </table>

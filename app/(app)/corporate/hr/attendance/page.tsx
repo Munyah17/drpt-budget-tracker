@@ -16,12 +16,7 @@ interface AttendanceRecord {
   status: string;
 }
 
-const ATTENDANCE_DATA: AttendanceRecord[] = [
-  { employee: "Emma Wilson", date: "2025-05-26", clockIn: "08:55", clockOut: "17:10", hours: "8.25", status: "Present" },
-  { employee: "David Brown", date: "2025-05-26", clockIn: "09:02", clockOut: "17:00", hours: "7.97", status: "Present" },
-  { employee: "Lisa Chen", date: "2025-05-26", clockIn: "-", clockOut: "-", hours: "0", status: "On Leave" },
-  { employee: "James Patel", date: "2025-05-26", clockIn: "09:45", clockOut: "17:05", hours: "7.33", status: "Late" },
-];
+const ATTENDANCE_DATA: AttendanceRecord[] = [];
 
 export default function AttendancePage() {
   const { toast } = useAppData();
@@ -79,7 +74,7 @@ export default function AttendancePage() {
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Avg. Hours</div>
-          <div className="stat-value">7.8</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

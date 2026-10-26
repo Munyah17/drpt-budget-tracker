@@ -1,201 +1,195 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
-type PaymentMethod = "paynow" | "stripe" | "zipit" | "ecocash";
+type PaymentMethod = "paynow" | "stripe" | "ecocash" | "bank";
 
-export default function PaymentPage() {
+const PRICE = 1; // $1 once-off
+const TRANSFER_FEE = 0.5; // withdrawal/processing fee on direct transfers
+const WHATSAPP_POP = "263718560128";
+
+function paymentMethodLabel(m: PaymentMethod) {
+  switch (m) {
+    case "paynow": return "Paynow";
+    case "stripe": return "Card (Stripe)";
+    case "ecocash": return "Ecocash / InnBucks";
+    case "bank": return "Bank Transfer";
+  }
+}
+
+function PaymentInner() {
   const router = useRouter();
-  const { toast } = useAppData();
+  const searchParams = useSearchParams();
+  const { toast, user, isDemo } = useAppData();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [popFile, setPopFile] = useState<File | null>(null);
+  const [popSent, setPopSent] = useState(false);
+  const cancelled = searchParams.get("cancelled") === "1";
 
-  const PAYMENT_PRICE = 1; // $1 once off
+  const isDirect = selectedMethod === "ecocash" || selectedMethod === "bank";
+  const total = isDirect ? PRICE + TRANSFER_FEE : PRICE;
 
-  function handlePayment() {
+  const whatsappHref = () => {
+    const text =
+      `Hi, I've paid for Dr PT access.\n` +
+      `Name: ${user?.name ?? ""}\n` +
+      `Email: ${user?.email ?? ""}\n` +
+      `Phone: \n` +
+      `Method: ${selectedMethod ? paymentMethodLabel(selectedMethod) : ""}\n` +
+      `Transaction Ref: `;
+    return `https://wa.me/${WHATSAPP_POP}?text=${encodeURIComponent(text)}`;
+  };
+
+  async function handlePayment() {
     if (!selectedMethod) {
       toast("Please select a payment method", "x");
       return;
     }
-
-    if ((selectedMethod === "zipit" || selectedMethod === "ecocash") && !popFile) {
-      toast("Please upload proof of payment", "x");
+    if (isDemo) {
+      toast("Demo mode — payments are simulated, nothing is charged.", "sparkles");
       return;
     }
 
     setProcessing(true);
+    try {
+      if (selectedMethod === "stripe" || selectedMethod === "paynow") {
+        const endpoint =
+          selectedMethod === "stripe" ? "/api/checkout/stripe" : "/api/paynow/initiate";
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user?.id, email: user?.email, name: user?.name }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.url) {
+          throw new Error(data.error || "Could not start payment");
+        }
+        // Paynow returns a poll URL we need later to confirm status
+        if (data.pollUrl) sessionStorage.setItem("drpt-paynow-poll", data.pollUrl);
+        window.location.href = data.url;
+        return;
+      }
 
-    // Simulate payment processing
-    setTimeout(() => {
-      // Update user to paid status
-      toast("Payment successful! You now have full access.", "check-circle");
-      router.push("/dashboard");
-    }, 2000);
+      // Direct transfers: user pays manually, then sends PoP on WhatsApp
+      setPopSent(true);
+      toast("Send your proof of payment on WhatsApp to activate your account.", "send");
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Payment failed to start", "x");
+    } finally {
+      setProcessing(false);
+    }
   }
+
+  const methodBtn = (id: PaymentMethod, icon: string, title: string, sub: string) => (
+    <button
+      className={`payment-method ${selectedMethod === id ? "selected" : ""}`}
+      onClick={() => setSelectedMethod(id)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: 16,
+        border: `2px solid ${selectedMethod === id ? "var(--rose-500)" : "var(--card-border)"}`,
+        borderRadius: "var(--radius-md)",
+        background: selectedMethod === id ? "var(--pink-100)" : "var(--card-solid)",
+        cursor: "pointer",
+        width: "100%",
+        textAlign: "left",
+      }}
+    >
+      <div
+        style={{
+          width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+          background: "var(--pink-100)", display: "flex",
+          alignItems: "center", justifyContent: "center",
+        }}
+      >
+        <Icon name={icon} size={24} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 700, marginBottom: 4 }}>{title}</div>
+        <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{sub}</div>
+      </div>
+      {selectedMethod === id && (
+        <Icon name="check-circle" size={20} style={{ color: "var(--rose-500)", flexShrink: 0 }} />
+      )}
+    </button>
+  );
+
+  const detailRow = (label: string, value: string) => (
+    <div>
+      <strong>{label}:</strong> {value}
+    </div>
+  );
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <div className="glass-card card-pad" style={{ maxWidth: 500, width: "100%", background: "var(--card-solid)" }}>
-        <div style={{ textAlign: "center", marginBottom: 30 }}>
-          <div className="login-logo" style={{ marginBottom: 16 }}>
+      <div className="glass-card card-pad" style={{ maxWidth: 520, width: "100%", background: "var(--card-solid)" }}>
+        <div style={{ textAlign: "center", marginBottom: 26 }}>
+          <div className="login-logo" style={{ marginBottom: 16, justifyContent: "center" }}>
             Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
           </div>
-          <h2 style={{ marginBottom: 8 }}>Unlock Full Access</h2>
+          <h2 style={{ marginBottom: 8 }}>Activate your account</h2>
           <p style={{ color: "var(--ink-500)" }}>
-            One-time payment of ${PAYMENT_PRICE} to access all features
+            One-time payment of ${PRICE} unlocks everything — forever.
           </p>
+          {cancelled && (
+            <p style={{ color: "var(--red)", fontSize: 13, marginTop: 8 }}>
+              Payment was cancelled — pick a method to try again.
+            </p>
+          )}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
-          {/* Paynow */}
-          <button
-            className={`payment-method ${selectedMethod === "paynow" ? "selected" : ""}`}
-            onClick={() => setSelectedMethod("paynow")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              padding: 16,
-              border: `2px solid ${selectedMethod === "paynow" ? "var(--rose-500)" : "var(--card-border)"}`,
-              borderRadius: "var(--radius-md)",
-              background: selectedMethod === "paynow" ? "var(--pink-100)" : "transparent",
-              cursor: "pointer",
-              width: "100%",
-              textAlign: "left",
-            }}
-          >
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "var(--pink-100)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="smartphone" size={24} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>Paynow</div>
-              <div style={{ fontSize: 13, color: "var(--ink-500)" }}>Ecocash, Omari, Innbucks</div>
-            </div>
-            {selectedMethod === "paynow" && <Icon name="check-circle" size={20} style={{ color: "var(--rose-500)" }} />}
-          </button>
-
-          {/* Stripe */}
-          <button
-            className={`payment-method ${selectedMethod === "stripe" ? "selected" : ""}`}
-            onClick={() => setSelectedMethod("stripe")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              padding: 16,
-              border: `2px solid ${selectedMethod === "stripe" ? "var(--rose-500)" : "var(--card-border)"}`,
-              borderRadius: "var(--radius-md)",
-              background: selectedMethod === "stripe" ? "var(--pink-100)" : "transparent",
-              cursor: "pointer",
-              width: "100%",
-              textAlign: "left",
-            }}
-          >
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "var(--pink-100)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="credit-card" size={24} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>Stripe</div>
-              <div style={{ fontSize: 13, color: "var(--ink-500)" }}>Visa, Mastercard, AmEx, Wise</div>
-            </div>
-            {selectedMethod === "stripe" && <Icon name="check-circle" size={20} style={{ color: "var(--rose-500)" }} />}
-          </button>
-
-          {/* ZIPIT */}
-          <button
-            className={`payment-method ${selectedMethod === "zipit" ? "selected" : ""}`}
-            onClick={() => setSelectedMethod("zipit")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              padding: 16,
-              border: `2px solid ${selectedMethod === "zipit" ? "var(--rose-500)" : "var(--card-border)"}`,
-              borderRadius: "var(--radius-md)",
-              background: selectedMethod === "zipit" ? "var(--pink-100)" : "transparent",
-              cursor: "pointer",
-              width: "100%",
-              textAlign: "left",
-            }}
-          >
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "var(--pink-100)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="landmark" size={24} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>ZIPIT</div>
-              <div style={{ fontSize: 13, color: "var(--ink-500)" }}>FBC Bank - Direct Transfer</div>
-            </div>
-            {selectedMethod === "zipit" && <Icon name="check-circle" size={20} style={{ color: "var(--rose-500)" }} />}
-          </button>
-
-          {/* Ecocash Direct */}
-          <button
-            className={`payment-method ${selectedMethod === "ecocash" ? "selected" : ""}`}
-            onClick={() => setSelectedMethod("ecocash")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              padding: 16,
-              border: `2px solid ${selectedMethod === "ecocash" ? "var(--rose-500)" : "var(--card-border)"}`,
-              borderRadius: "var(--radius-md)",
-              background: selectedMethod === "ecocash" ? "var(--pink-100)" : "transparent",
-              cursor: "pointer",
-              width: "100%",
-              textAlign: "left",
-            }}
-          >
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "var(--pink-100)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="smartphone" size={24} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>Ecocash Direct</div>
-              <div style={{ fontSize: 13, color: "var(--ink-500)" }}>Direct Transfer + PoP</div>
-            </div>
-            {selectedMethod === "ecocash" && <Icon name="check-circle" size={20} style={{ color: "var(--rose-500)" }} />}
-          </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
+          {methodBtn("paynow", "smartphone", "Paynow", "Ecocash, Omari, InnBucks — instant")}
+          {methodBtn("stripe", "credit-card", "Card payment", "Visa, Mastercard, AmEx via Stripe")}
+          {methodBtn("ecocash", "banknote", "Ecocash / InnBucks", `Direct transfer — $${PRICE.toFixed(2)} + $${TRANSFER_FEE.toFixed(2)} fee`)}
+          {methodBtn("bank", "landmark", "Bank Transfer", `FBC USD account — $${PRICE.toFixed(2)} + $${TRANSFER_FEE.toFixed(2)} fee`)}
         </div>
 
-        {/* Payment Details */}
-        {selectedMethod === "zipit" && (
-          <div style={{ marginBottom: 20, padding: 16, background: "var(--pink-100)", borderRadius: "var(--radius-sm)" }}>
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>ZIPIT Details:</div>
-            <div style={{ fontSize: 13, lineHeight: 1.6 }}>
-              <div><strong>Bank:</strong> FBC Bank</div>
-              <div><strong>Account No:</strong> 6870465460146</div>
-              <div><strong>Account Type:</strong> USD Account</div>
-              <div><strong>Amount:</strong> ${PAYMENT_PRICE}</div>
-            </div>
-          </div>
-        )}
-
+        {/* Direct transfer details */}
         {selectedMethod === "ecocash" && (
           <div style={{ marginBottom: 20, padding: 16, background: "var(--pink-100)", borderRadius: "var(--radius-sm)" }}>
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>Ecocash Direct Details:</div>
-            <div style={{ fontSize: 13, lineHeight: 1.6 }}>
-              <div><strong>Number:</strong> 0773909307</div>
-              <div><strong>Amount:</strong> ${PAYMENT_PRICE}</div>
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>Send ${total.toFixed(2)} via Ecocash or InnBucks to:</div>
+            <div style={{ fontSize: 13, lineHeight: 1.7 }}>
+              {detailRow("Number", "+263 77 390 9307")}
+              {detailRow("Name", "Munyaradzi J Muzvidziwa")}
+              {detailRow("Amount", `$${total.toFixed(2)} (includes $0.50 withdrawal fee)`)}
             </div>
           </div>
         )}
 
-        {/* Proof of Payment Upload */}
-        {(selectedMethod === "zipit" || selectedMethod === "ecocash") && (
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>Upload Proof of Payment</label>
-            <input
-              type="file"
-              accept="image/*,.pdf"
-              onChange={(e) => setPopFile(e.target.files?.[0] || null)}
-              style={{ width: "100%" }}
-            />
-            <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>
-              Upload screenshot or PDF of your payment confirmation
+        {selectedMethod === "bank" && (
+          <div style={{ marginBottom: 20, padding: 16, background: "var(--pink-100)", borderRadius: "var(--radius-sm)" }}>
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>Transfer ${total.toFixed(2)} to:</div>
+            <div style={{ fontSize: 13, lineHeight: 1.7 }}>
+              {detailRow("Account Name", "Solabliss Zimbabwe Pvt Ltd")}
+              {detailRow("Bank", "FBC Bank")}
+              {detailRow("Branch", "FBC Center Branch")}
+              {detailRow("USD Account", "6870465460146")}
+              {detailRow("Amount", `$${total.toFixed(2)} (includes $0.50 fee)`)}
             </div>
+          </div>
+        )}
+
+        {/* WhatsApp PoP */}
+        {isDirect && (
+          <div style={{ marginBottom: 20, padding: 16, border: "1px solid var(--card-border)", borderRadius: "var(--radius-sm)", fontSize: 13, lineHeight: 1.7 }}>
+            After paying, send your <strong>proof of payment</strong> on WhatsApp to{" "}
+            <strong>+263 71 856 0128</strong> with your <strong>name, email, phone and transaction
+            reference</strong> — we&apos;ll activate your account as soon as it&apos;s confirmed.
+            <a
+              href={whatsappHref()}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary"
+              style={{ width: "100%", marginTop: 12, textDecoration: "none" }}
+            >
+              <Icon name="send" size={15} /> Send PoP on WhatsApp
+            </a>
           </div>
         )}
 
@@ -203,10 +197,22 @@ export default function PaymentPage() {
           className="btn btn-primary"
           style={{ width: "100%" }}
           onClick={handlePayment}
-          disabled={processing}
+          disabled={processing || (isDirect && popSent)}
         >
-          {processing ? "Processing..." : `Pay $${PAYMENT_PRICE}`}
+          {processing
+            ? "Redirecting to checkout…"
+            : isDirect
+              ? popSent
+                ? "Waiting for PoP verification"
+                : `I've sent $${total.toFixed(2)} — continue`
+              : `Pay $${PRICE.toFixed(2)}`}
         </button>
+
+        {popSent && (
+          <p style={{ fontSize: 12.5, color: "var(--ink-500)", textAlign: "center", marginTop: 10 }}>
+            PoP sent? We&apos;ll verify and unlock your account shortly. You can close this page.
+          </p>
+        )}
 
         <button
           className="btn btn-ghost"
@@ -217,5 +223,13 @@ export default function PaymentPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaymentInner />
+    </Suspense>
   );
 }

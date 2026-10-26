@@ -14,10 +14,7 @@ interface Payment {
   status: string;
 }
 
-const PAYMENTS_DATA: Payment[] = [
-  { paymentId: "PAY-2025-0526-001", organisation: "Acme Corporation", amount: "$2,500", method: "Bank Transfer", date: "2025-05-26", status: "Completed" },
-  { paymentId: "PAY-2025-0525-001", organisation: "TechCorp Ltd", amount: "$1,200", method: "Credit Card", date: "2025-05-25", status: "Completed" },
-];
+const PAYMENTS_DATA: Payment[] = [];
 
 export default function AdminPaymentsPage() {
   const [search, setSearch] = useState("");

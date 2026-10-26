@@ -8,13 +8,13 @@ import Topbar from "@/components/Topbar";
 import Fab from "@/components/Fab";
 
 export default function AppShellLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, authReady, user, logout } = useAppData();
+  const { isAuthenticated, authReady, user, logout, sidebarOpen, setSidebarOpen } = useAppData();
   const router = useRouter();
   const pathname = usePathname();
   const [showSubscribe, setShowSubscribe] = useState(false);
 
   useEffect(() => {
-    if (authReady && !isAuthenticated) router.replace("/");
+    if (authReady && !isAuthenticated) router.replace("/login");
   }, [authReady, isAuthenticated, router]);
 
   if (!authReady || !isAuthenticated) return null;
@@ -36,6 +36,11 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   return (
     <div id="main-app">
       <Sidebar />
+      <div
+        className={"sidebar-backdrop" + (sidebarOpen ? " show" : "")}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
       <div className="main-col">
         <Topbar />
         <div className="page-container">

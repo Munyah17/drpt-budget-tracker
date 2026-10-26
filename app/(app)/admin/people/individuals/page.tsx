@@ -13,11 +13,7 @@ interface Person {
   status: string;
 }
 
-const INDIVIDUALS_DATA: Person[] = [
-  { name: "John Doe", email: "john.doe@email.com", plan: "Individual ($1/yr)", expiry: "2025-12-31", status: "Active" },
-  { name: "Sarah Smith", email: "sarah.smith@email.com", plan: "Individual ($1/yr)", expiry: "2025-05-15", status: "Expired" },
-  { name: "Mike Johnson", email: "mike.j@email.com", plan: "Individual ($1/yr)", expiry: "2026-01-20", status: "Active" },
-];
+const INDIVIDUALS_DATA: Person[] = [];
 
 export default function AdminIndividualsPage() {
   const [search, setSearch] = useState("");

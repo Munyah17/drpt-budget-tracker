@@ -13,10 +13,7 @@ interface Onboarding {
   assigned: string;
 }
 
-const ONBOARDING_DATA: Onboarding[] = [
-  { organisation: "GlobalHealth Inc", contact: "hr@globalhealth.com", stage: "Integration Setup", progress: "60%", assigned: "John Smith" },
-  { organisation: "StartupXYZ", contact: "admin@startupxyz.com", stage: "Contract Review", progress: "30%", assigned: "Sarah Jones" },
-];
+const ONBOARDING_DATA: Onboarding[] = [];
 
 export default function AdminOnboardingPage() {
   const [search, setSearch] = useState("");

@@ -14,19 +14,19 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Users</div>
-          <div className="stat-value">1,247</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Active Users (30d)</div>
-          <div className="stat-value">892</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Monthly Revenue</div>
-          <div className="stat-value">$456</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Avg Session Duration</div>
-          <div className="stat-value">8.5m</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 
@@ -35,28 +35,18 @@ export default function AdminAnalyticsPage() {
           <div className="card-head">
             <h3>User Growth</h3>
           </div>
-          <div style={{ height: 200, display: "flex", alignItems: "flex-end", gap: 8, padding: 20 }}>
-            {[65, 78, 92, 85, 110, 125, 140, 155, 170, 185, 200, 220].map((val, idx) => (
-              <div key={idx} style={{ flex: 1, height: `${val}%`, background: "var(--rose-500)", borderRadius: 4 }} />
-            ))}
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--ink-500)", marginTop: 8 }}>
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-          </div>
+          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>
+            No user metrics yet — growth data will appear here once users sign up.
+          </p>
         </div>
 
         <div className="glass-card card-pad">
           <div className="card-head">
             <h3>Revenue Trend</h3>
           </div>
-          <div style={{ height: 200, display: "flex", alignItems: "flex-end", gap: 8, padding: 20 }}>
-            {[40, 55, 45, 70, 65, 80, 75, 90, 85, 100, 95, 110].map((val, idx) => (
-              <div key={idx} style={{ flex: 1, height: `${val}%`, background: "var(--green)", borderRadius: 4 }} />
-            ))}
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--ink-500)", marginTop: 8 }}>
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-          </div>
+          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>
+            No revenue data yet — connect billing to populate this chart.
+          </p>
         </div>
       </div>
 
@@ -74,23 +64,10 @@ export default function AdminAnalyticsPage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Housing</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>2,450</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$1,245,000</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">+12%</span></td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Food</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>3,890</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$456,000</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">+8%</span></td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Transport</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>1,820</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$234,000</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-red">-3%</span></td>
+            <tr>
+              <td colSpan={4} style={{ padding: "24px 8px", fontSize: 13, color: "var(--ink-500)", textAlign: "center" }}>
+                No transaction data yet — top categories will appear here.
+              </td>
             </tr>
           </tbody>
         </table>

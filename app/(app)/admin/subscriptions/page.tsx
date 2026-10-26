@@ -14,19 +14,19 @@ export default function SubscriptionsPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Active Subscriptions</div>
-          <div className="stat-value">456</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Monthly Revenue</div>
-          <div className="stat-value">$456</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Churn Rate</div>
-          <div className="stat-value">2.3%</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">New This Month</div>
-          <div className="stat-value">89</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 
@@ -44,17 +44,10 @@ export default function SubscriptionsPage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px" }}>john.doe@email.com</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Premium</span></td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26</td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px" }}>sarah.smith@email.com</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Premium</span></td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Active</span></td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-25</td>
+            <tr>
+              <td colSpan={4} style={{ padding: "24px 8px", fontSize: 13, color: "var(--ink-500)", textAlign: "center" }}>
+                No subscriptions yet.
+              </td>
             </tr>
           </tbody>
         </table>

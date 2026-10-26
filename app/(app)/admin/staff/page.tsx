@@ -13,12 +13,7 @@ interface Staff {
   status: "active" | "on-leave" | "inactive";
 }
 
-const STAFF_DATA: Staff[] = [
-  { id: "1", name: "Admin User", email: "munyamuzvidziwa19@gmail.com", role: "admin", department: "Management", status: "active" },
-  { id: "2", name: "Jane Cooper", email: "jane.cooper@drpt.com", role: "moderator", department: "Support", status: "active" },
-  { id: "3", name: "Robert Fox", email: "robert.fox@drpt.com", role: "support", department: "Support", status: "on-leave" },
-  { id: "4", name: "Cody Fisher", email: "cody.fisher@drpt.com", role: "moderator", department: "Operations", status: "active" },
-];
+const STAFF_DATA: Staff[] = [];
 
 export default function StaffManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,15 +98,15 @@ export default function StaffManagementPage() {
       <div className="grid grid-3">
         <div className="glass-card card-pad">
           <div className="stat-label">Total Staff</div>
-          <div className="stat-value">12</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Active Now</div>
-          <div className="stat-value">8</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">On Leave</div>
-          <div className="stat-value">2</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
       {crud.modalNode}

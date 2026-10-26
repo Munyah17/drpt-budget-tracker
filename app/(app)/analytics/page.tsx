@@ -43,9 +43,7 @@ export default function AnalyticsPage() {
           <div className="stat-value">
             <CountUp end={savingsRate} decimals={0} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>
-            %
-          </span>
+          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <span className="stat-label">Largest Expense</span>

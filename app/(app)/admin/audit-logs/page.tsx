@@ -18,13 +18,7 @@ export default function AuditLogsPage() {
   const { toast } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const mockLogs: AuditLog[] = [
-    { id: "1", action: "User Login", user: "admin@drpt.com", details: "Successful login", timestamp: "2025-05-26 14:32:15", ip: "192.168.1.100" },
-    { id: "2", action: "User Created", user: "admin@drpt.com", details: "Created user john.doe@email.com", timestamp: "2025-05-26 14:28:42", ip: "192.168.1.100" },
-    { id: "3", action: "Settings Updated", user: "jane.cooper@drpt.com", details: "Updated maintenance mode", timestamp: "2025-05-26 14:15:33", ip: "192.168.1.105" },
-    { id: "4", action: "Payment Processed", user: "system", details: "Payment $1.00 from john.doe@email.com", timestamp: "2025-05-26 14:10:22", ip: "192.168.1.1" },
-    { id: "5", action: "Failed Login Attempt", user: "unknown", details: "Invalid credentials for test@email.com", timestamp: "2025-05-26 14:05:11", ip: "192.168.1.200" },
-  ];
+  const mockLogs: AuditLog[] = [];
 
   const filteredLogs = mockLogs.filter(log => 
     log.action.toLowerCase().includes(searchTerm.toLowerCase()) || 

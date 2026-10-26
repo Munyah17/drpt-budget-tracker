@@ -14,10 +14,7 @@ interface Payslip {
   delivered: string;
 }
 
-const PAYSLIPS_DATA: Payslip[] = [
-  { employee: "Emma Wilson", organisation: "Acme Corporation", period: "May 2025", status: "Delivered", delivered: "2025-05-26 15:00" },
-  { employee: "David Brown", organisation: "TechCorp Ltd", period: "May 2025", status: "Pending", delivered: "-" },
-];
+const PAYSLIPS_DATA: Payslip[] = [];
 
 export default function AdminPayslipsPage() {
   const [search, setSearch] = useState("");

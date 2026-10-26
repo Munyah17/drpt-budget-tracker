@@ -15,12 +15,7 @@ export default function AdminCalendarPage() {
   const [selectedDate, setSelectedDate] = useState("2025-05-26");
   const [showAddEvent, setShowAddEvent] = useState(false);
 
-  const mockEvents: PlatformEvent[] = [
-    { id: "1", title: "System Maintenance", type: "maintenance", date: "2025-06-01", description: "Scheduled downtime for server upgrades" },
-    { id: "2", title: "v2.2.0 Release", type: "release", date: "2025-06-15", description: "New features and bug fixes deployment" },
-    { id: "3", title: "Team Meeting", type: "meeting", date: "2025-05-28", description: "Weekly operations sync" },
-    { id: "4", title: "Platform Announcement", type: "announcement", date: "2025-05-30", description: "New pricing tiers announcement" },
-  ];
+  const mockEvents: PlatformEvent[] = [];
 
   const getTypeBadge = (type: string) => {
     const colors = {

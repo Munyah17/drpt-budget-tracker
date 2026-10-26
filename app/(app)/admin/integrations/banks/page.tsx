@@ -14,11 +14,7 @@ interface BankIntegration {
   lastSync: string;
 }
 
-const BANKS_DATA: BankIntegration[] = [
-  { name: "Barclays Business", provider: "TrueLayer", accounts: "3", status: "Connected", lastSync: "2 hours ago" },
-  { name: "HSBC Corporate", provider: "TrueLayer", accounts: "2", status: "Connected", lastSync: "5 hours ago" },
-  { name: "Lloyds Business", provider: "Yodlee", accounts: "1", status: "Degraded", lastSync: "3 days ago" },
-];
+const BANKS_DATA: BankIntegration[] = [];
 
 export default function AdminBanksPage() {
   const [search, setSearch] = useState("");

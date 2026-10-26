@@ -11,11 +11,7 @@ interface Version {
   status: string;
 }
 
-const VERSIONS_DATA: Version[] = [
-  { version: "v2.0.5", released: "May 20, 2025", changes: "Bug fixes and performance improvements", status: "Deprecated" },
-  { version: "v2.0.4", released: "May 15, 2025", changes: "Payment gateway integration", status: "Deprecated" },
-  { version: "v2.0.0", released: "May 1, 2025", changes: "Major release - Multi-currency support", status: "Archived" },
-];
+const VERSIONS_DATA: Version[] = [];
 
 export default function VersionControlPage() {
   const crud = useCrud(VERSIONS_DATA, "Version");
@@ -43,15 +39,15 @@ export default function VersionControlPage() {
       <div className="grid grid-3" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Current Version</div>
-          <div className="stat-value">v2.1.0</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Deployments</div>
-          <div className="stat-value">47</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Last Deployed</div>
-          <div className="stat-value">2h ago</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

@@ -15,11 +15,7 @@ interface OnboardingItem {
   progress: string;
 }
 
-const ONBOARDING_DATA: OnboardingItem[] = [
-  { name: "Rachel Green", email: "rachel.green@acme.com", department: "Engineering", startDate: "2025-06-02", stage: "Documents", progress: "60%" },
-  { name: "Tom Harris", email: "tom.harris@acme.com", department: "Sales", startDate: "2025-06-09", stage: "IT Setup", progress: "35%" },
-  { name: "Priya Nair", email: "priya.nair@acme.com", department: "Finance", startDate: "2025-06-16", stage: "Contract", progress: "20%" },
-];
+const ONBOARDING_DATA: OnboardingItem[] = [];
 
 export default function CorporateOnboardingPage() {
   const { toast } = useAppData();

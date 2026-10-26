@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { initials } from "@/lib/format";
 import Icon from "./Icon";
 
 export default function Topbar() {
-  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, toast, user } = useAppData();
+  const router = useRouter();
+  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, toast, user, isDemo, logout } = useAppData();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -27,23 +29,20 @@ export default function Topbar() {
   }, [dropdownOpen]);
 
   const handleProfile = () => {
-    toast("Opening profile...", "user");
-    setDropdownOpen(false);
-  };
-
-  const handleNotifications = () => {
-    toast("Opening notifications...", "bell");
+    router.push("/profile");
     setDropdownOpen(false);
   };
 
   const handleSettings = () => {
-    toast("Opening settings...", "settings");
+    router.push("/settings");
     setDropdownOpen(false);
   };
 
   const handleLogout = () => {
-    toast("Logging out...", "log-out");
+    toast(isDemo ? "Exiting demo..." : "Logging out...", "log-out");
     setDropdownOpen(false);
+    logout();
+    router.push("/");
   };
 
   return (
@@ -57,7 +56,14 @@ export default function Topbar() {
           <Icon name="menu" />
         </button>
         <div className="topbar-greeting">
-          <h1>Good morning, {user?.name || "User"} 👋</h1>
+          <h1>
+            Good morning, {user?.name || "User"} 👋
+            {isDemo && (
+              <span className="chip" style={{ marginLeft: 10, verticalAlign: "middle", fontSize: 11 }}>
+                Demo — nothing is saved
+              </span>
+            )}
+          </h1>
           <p>Here&apos;s your financial overview</p>
         </div>
       </div>
@@ -66,10 +72,6 @@ export default function Topbar() {
           <Icon name="search" />
           <input placeholder="Search transactions, bills…" />
         </div>
-        <button className="icon-btn" data-tip="Notifications">
-          <Icon name="bell" />
-          <span className="dot" />
-        </button>
         <button className="icon-btn" data-tip="Toggle theme" onClick={toggleTheme}>
           <Icon name={theme === "dark" ? "sun" : "moon"} />
         </button>
@@ -88,11 +90,12 @@ export default function Topbar() {
               top: "100%",
               right: 0,
               marginTop: 8,
-              background: "var(--card-bg)",
+              background: "var(--card-solid)",
               border: "1px solid var(--card-border)",
               borderRadius: "var(--radius-sm)",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              boxShadow: "var(--shadow-md)",
               minWidth: 180,
+              padding: 6,
               zIndex: 1000
             }}>
               <button 
@@ -108,17 +111,17 @@ export default function Topbar() {
                   alignItems: "center",
                   gap: 8,
                   fontSize: 14,
-                  color: "var(--ink-800)",
+                  color: "var(--ink-900)",
                   transition: "background 0.2s"
                 }}
                 onClick={handleProfile}
-                onMouseEnter={(e) => e.currentTarget.style.background = "var(--hover-bg)"}
+                onMouseEnter={(e) => e.currentTarget.style.background = "var(--pink-100)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "none"}
               >
                 <Icon name="user" size={16} />
                 Profile
               </button>
-              <button 
+              <button
                 className="dropdown-item" 
                 style={{
                   width: "100%",
@@ -131,34 +134,11 @@ export default function Topbar() {
                   alignItems: "center",
                   gap: 8,
                   fontSize: 14,
-                  color: "var(--ink-800)",
-                  transition: "background 0.2s"
-                }}
-                onClick={handleNotifications}
-                onMouseEnter={(e) => e.currentTarget.style.background = "var(--hover-bg)"}
-                onMouseLeave={(e) => e.currentTarget.style.background = "none"}
-              >
-                <Icon name="bell" size={16} />
-                Notifications
-              </button>
-              <button 
-                className="dropdown-item" 
-                style={{
-                  width: "100%",
-                  padding: "10px 16px",
-                  textAlign: "left",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  fontSize: 14,
-                  color: "var(--ink-800)",
+                  color: "var(--ink-900)",
                   transition: "background 0.2s"
                 }}
                 onClick={handleSettings}
-                onMouseEnter={(e) => e.currentTarget.style.background = "var(--hover-bg)"}
+                onMouseEnter={(e) => e.currentTarget.style.background = "var(--pink-100)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "none"}
               >
                 <Icon name="settings" size={16} />
@@ -178,15 +158,15 @@ export default function Topbar() {
                   alignItems: "center",
                   gap: 8,
                   fontSize: 14,
-                  color: "var(--red-500)",
+                  color: "var(--red)",
                   transition: "background 0.2s"
                 }}
                 onClick={handleLogout}
-                onMouseEnter={(e) => e.currentTarget.style.background = "var(--hover-bg)"}
+                onMouseEnter={(e) => e.currentTarget.style.background = "var(--pink-100)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "none"}
               >
                 <Icon name="log-out" size={16} />
-                Logout
+                {isDemo ? "Exit Demo" : "Logout"}
               </button>
             </div>
           )}

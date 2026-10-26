@@ -13,10 +13,7 @@ interface Employee {
   status: string;
 }
 
-const EMPLOYEES_DATA: Employee[] = [
-  { name: "Emma Wilson", email: "emma.wilson@acme.com", organisation: "Acme Corporation", department: "Engineering", status: "Active" },
-  { name: "David Brown", email: "david.brown@techcorp.com", organisation: "TechCorp Ltd", department: "Sales", status: "Active" },
-];
+const EMPLOYEES_DATA: Employee[] = [];
 
 export default function AdminEmployeesPage() {
   const [search, setSearch] = useState("");

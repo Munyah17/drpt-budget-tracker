@@ -14,11 +14,7 @@ interface AccountingIntegration {
   syncFrequency: string;
 }
 
-const ACCOUNTING_DATA: AccountingIntegration[] = [
-  { name: "Xero", category: "Accounting", organisations: "45", status: "Connected", syncFrequency: "Real-time" },
-  { name: "QuickBooks", category: "Accounting", organisations: "32", status: "Connected", syncFrequency: "Hourly" },
-  { name: "Sage", category: "Accounting", organisations: "18", status: "Degraded", syncFrequency: "Daily" },
-];
+const ACCOUNTING_DATA: AccountingIntegration[] = [];
 
 export default function AdminAccountingPage() {
   const [search, setSearch] = useState("");

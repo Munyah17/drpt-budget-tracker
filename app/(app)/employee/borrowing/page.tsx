@@ -17,11 +17,7 @@ interface Advance {
   date: string;
 }
 
-const ADVANCES_DATA: Advance[] = [
-  { id: "ADV-001", type: "Salary Advance", amount: "$800", repayment: "Deducted June payroll", status: "Approved", date: "2025-05-20" },
-  { id: "ADV-002", type: "Employee Loan", amount: "$2,500", repayment: "$208/mo × 12", status: "Active", date: "2025-02-10" },
-  { id: "ADV-003", type: "Salary Advance", amount: "$400", repayment: "Deducted April payroll", status: "Settled", date: "2025-03-15" },
-];
+const ADVANCES_DATA: Advance[] = [];
 
 function RequestAdvanceModal({ onSubmit, onClose }: { onSubmit: (type: string, amount: string) => void; onClose: () => void }) {
   const [type, setType] = useState("Salary Advance");
@@ -98,15 +94,15 @@ export default function EmployeeBorrowingPage() {
       <div className="grid grid-3" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Available to Borrow</div>
-          <div className="stat-value">$1,950</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Outstanding Balance</div>
-          <div className="stat-value">$1,664</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Next Repayment</div>
-          <div className="stat-value">$208</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

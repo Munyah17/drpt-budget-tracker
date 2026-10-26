@@ -22,13 +22,7 @@ export default function AdminTransactionsPage() {
   const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">("all");
   const [viewing, setViewing] = useState<RowRecord | null>(null);
 
-  const mockTransactions: PlatformTransaction[] = [
-    { id: "1", user: "john.doe@email.com", type: "income", category: "Salary", amount: 4120.0, date: "2025-05-26", method: "Bank Transfer" },
-    { id: "2", user: "sarah.smith@email.com", type: "expense", category: "Food", amount: 76.45, date: "2025-05-26", method: "Debit Card" },
-    { id: "3", user: "mike.wilson@email.com", type: "expense", category: "Transport", amount: 45.0, date: "2025-05-25", method: "Debit Card" },
-    { id: "4", user: "emma.jones@email.com", type: "income", category: "Private Practice", amount: 850.0, date: "2025-05-25", method: "Bank Transfer" },
-    { id: "5", user: "john.doe@email.com", type: "expense", category: "Shopping", amount: 32.99, date: "2025-05-24", method: "Credit Card" },
-  ];
+  const mockTransactions: PlatformTransaction[] = [];
 
   const filteredTransactions = mockTransactions.filter(t => {
     const matchesSearch = t.user.toLowerCase().includes(searchTerm.toLowerCase()) || 

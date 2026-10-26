@@ -22,10 +22,7 @@ const DEFAULT_STEPS = [
   { id: "exit", label: "Exit interview completed" },
 ];
 
-const LEAVERS_DATA: Leaver[] = [
-  { employee: "James Patel", department: "Engineering", lastDay: "2025-06-15", reason: "Resignation", status: "In Progress" },
-  { employee: "Ana Costa", department: "Marketing", lastDay: "2025-05-30", reason: "Contract End", status: "Completed" },
-];
+const LEAVERS_DATA: Leaver[] = [];
 
 export default function OffboardingPage() {
   const { toast } = useAppData();

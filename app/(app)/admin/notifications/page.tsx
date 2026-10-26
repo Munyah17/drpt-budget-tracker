@@ -17,11 +17,7 @@ export default function NotificationsPage() {
   const { toast } = useAppData();
   const [showCompose, setShowCompose] = useState(false);
 
-  const mockNotifications: Notification[] = [
-    { id: "1", title: "System Maintenance", message: "Scheduled maintenance on June 1st", type: "warning", target: "all", sent: "2h ago" },
-    { id: "2", title: "New Feature", message: "AI Assistant now available for all users", type: "info", target: "paid", sent: "1d ago" },
-    { id: "3", title: "Payment Reminder", message: "Your subscription is expiring soon", type: "warning", target: "free", sent: "3d ago" },
-  ];
+  const mockNotifications: Notification[] = [];
 
   const getTypeBadge = (type: string) => {
     const colors = {

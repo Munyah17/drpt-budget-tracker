@@ -14,10 +14,7 @@ interface Subscription {
   status: string;
 }
 
-const SUBSCRIPTIONS_DATA: Subscription[] = [
-  { user: "John Doe", plan: "Individual ($1/yr)", startDate: "2024-12-31", expiry: "2025-12-31", status: "Active" },
-  { user: "Sarah Smith", plan: "Individual ($1/yr)", startDate: "2024-05-15", expiry: "2025-05-15", status: "Expired" },
-];
+const SUBSCRIPTIONS_DATA: Subscription[] = [];
 
 export default function AdminSubscriptionsPage() {
   const [search, setSearch] = useState("");

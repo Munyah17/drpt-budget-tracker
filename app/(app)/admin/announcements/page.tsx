@@ -16,11 +16,7 @@ interface Announcement {
   active: boolean;
 }
 
-const INITIAL_ANNOUNCEMENTS: Announcement[] = [
-  { id: "1", title: "Scheduled Maintenance", content: "Platform will be down for maintenance on June 1st from 2-4 AM UTC", type: "warning", target: "all", published: "2025-05-26", expires: "2025-06-02", active: true },
-  { id: "2", title: "New Feature Launch", content: "AI Assistant is now available for all premium users!", type: "info", target: "paid", published: "2025-05-25", expires: "2025-06-25", active: true },
-  { id: "3", title: "Security Update", content: "Please update your passwords for enhanced security", type: "urgent", target: "all", published: "2025-05-20", expires: "2025-06-20", active: false },
-];
+const INITIAL_ANNOUNCEMENTS: Announcement[] = [];
 
 export default function AnnouncementsPage() {
   const { toast } = useAppData();

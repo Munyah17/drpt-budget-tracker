@@ -10,10 +10,7 @@ interface Entry {
   amount: string;
 }
 
-const ENTRIES_DATA: Entry[] = [
-  { date: "2025-05-26", description: "User Subscription Payment", type: "Income", amount: "$1.00" },
-  { date: "2025-05-25", description: "AWS Infrastructure", type: "Expense", amount: "$245.00" },
-];
+const ENTRIES_DATA: Entry[] = [];
 
 export default function AccountingPage() {
   const crud = useCrud(ENTRIES_DATA, "Entry");
@@ -33,19 +30,19 @@ export default function AccountingPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Revenue</div>
-          <div className="stat-value">$45,850</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Expenses</div>
-          <div className="stat-value">$12,340</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Net Profit</div>
-          <div className="stat-value">$33,510</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Pending Invoices</div>
-          <div className="stat-value">8</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

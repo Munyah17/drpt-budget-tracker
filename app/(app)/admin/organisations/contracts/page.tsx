@@ -14,10 +14,7 @@ interface Contract {
   status: string;
 }
 
-const CONTRACTS_DATA: Contract[] = [
-  { organisation: "Acme Corporation", plan: "Enterprise", monthlyFee: "$2,500", startDate: "2024-01-15", renewal: "2025-01-15", status: "Active" },
-  { organisation: "TechCorp Ltd", plan: "Professional", monthlyFee: "$1,200", startDate: "2024-03-01", renewal: "2025-03-01", status: "Active" },
-];
+const CONTRACTS_DATA: Contract[] = [];
 
 export default function AdminContractsPage() {
   const [search, setSearch] = useState("");

@@ -14,11 +14,7 @@ interface PayrollProvider {
   integration: string;
 }
 
-const PAYROLL_DATA: PayrollProvider[] = [
-  { name: "Gusto", type: "Payroll", clients: "12", status: "Active", integration: "Connected" },
-  { name: "ADP", type: "Payroll", clients: "8", status: "Active", integration: "Connected" },
-  { name: "QuickBooks Payroll", type: "Payroll", clients: "15", status: "Inactive", integration: "Pending" },
-];
+const PAYROLL_DATA: PayrollProvider[] = [];
 
 export default function AdminPayrollProvidersPage() {
   const [search, setSearch] = useState("");

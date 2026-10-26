@@ -15,12 +15,7 @@ interface AuditLog {
   ipAddress: string;
 }
 
-const AUDIT_DATA: AuditLog[] = [
-  { timestamp: "2025-05-26 15:30:45", user: "john.smith@drpt.com", action: "Updated payroll batch", resource: "BCH-2025-0526-001", ipAddress: "192.168.1.100" },
-  { timestamp: "2025-05-26 15:15:22", user: "sarah.jones@drpt.com", action: "Generated invoice", resource: "INV-2025-0526-003", ipAddress: "192.168.1.105" },
-  { timestamp: "2025-05-26 14:45:10", user: "admin@drpt.com", action: "Modified user role", resource: "john.doe@email.com", ipAddress: "192.168.1.50" },
-  { timestamp: "2025-05-26 14:30:00", user: "emma.wilson@acme.com", action: "Viewed payslip", resource: "Payslip-May-2025", ipAddress: "10.0.0.45" },
-];
+const AUDIT_DATA: AuditLog[] = [];
 
 export default function AdminAuditPage() {
   const { toast } = useAppData();

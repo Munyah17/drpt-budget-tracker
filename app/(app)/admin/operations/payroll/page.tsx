@@ -14,11 +14,7 @@ interface PayrollBatch {
   submitted: string;
 }
 
-const PAYROLL_DATA: PayrollBatch[] = [
-  { batchId: "BCH-2025-0526-001", organisation: "Acme Corporation", employees: "450", status: "Processing", submitted: "2025-05-26 14:30" },
-  { batchId: "BCH-2025-0526-002", organisation: "TechCorp Ltd", employees: "320", status: "Completed", submitted: "2025-05-26 12:15" },
-  { batchId: "BCH-2025-0526-003", organisation: "GlobalHealth Inc", employees: "477", status: "Failed", submitted: "2025-05-26 10:45" },
-];
+const PAYROLL_DATA: PayrollBatch[] = [];
 
 export default function AdminPayrollPage() {
   const [search, setSearch] = useState("");
@@ -53,19 +49,19 @@ export default function AdminPayrollPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Pending Batches</div>
-          <div className="stat-value">5</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">In Processing</div>
-          <div className="stat-value">3</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Completed Today</div>
-          <div className="stat-value">12</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Failed</div>
-          <div className="stat-value">1</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

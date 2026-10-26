@@ -25,17 +25,9 @@ export default function LiveChatPage() {
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
 
-  const mockSessions: ChatSession[] = [
-    { id: "1", user: "John Doe", email: "john.doe@email.com", status: "active", lastMessage: "How do I reset my password?" },
-    { id: "2", user: "Sarah Smith", email: "sarah.smith@email.com", status: "waiting", lastMessage: "Payment not processing" },
-    { id: "3", user: "Mike Wilson", email: "mike.wilson@email.com", status: "closed", lastMessage: "Thanks for the help!" },
-  ];
+  const mockSessions: ChatSession[] = [];
 
-  const mockMessages: ChatMessage[] = [
-    { id: "1", user: "John Doe", message: "Hi, I need help with my account", timestamp: "14:32", isAdmin: false },
-    { id: "2", user: "Admin", message: "Hello! How can I help you today?", timestamp: "14:33", isAdmin: true },
-    { id: "3", user: "John Doe", message: "How do I reset my password?", timestamp: "14:34", isAdmin: false },
-  ];
+  const mockMessages: ChatMessage[] = [];
 
   const getStatusBadge = (status: string) => {
     const colors = {
@@ -144,3 +136,6 @@ export default function LiveChatPage() {
     </>
   );
 }
+;
+
+  const mockMessages: ChatMessage[] = [];

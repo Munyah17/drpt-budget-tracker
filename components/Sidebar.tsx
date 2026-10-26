@@ -48,6 +48,13 @@ export default function Sidebar() {
     <aside className={"sidebar" + (sidebarOpen ? " open" : "")} id="sidebar">
       <div className="sidebar-logo">
         Dr PT <span style={{ color: "var(--rose-500)" }}>❤</span>
+        <button
+          className="sidebar-close"
+          aria-label="Close menu"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <Icon name="x" size={18} />
+        </button>
       </div>
       <nav className="nav-group">
         {navItems.map((n) => {

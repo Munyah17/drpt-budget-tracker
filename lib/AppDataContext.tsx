@@ -34,7 +34,11 @@ interface AppDataContextValue {
   /** True once the initial session restore (localStorage + Supabase) has settled */
   authReady: boolean;
   user: UserProfile | null;
+  /** True while browsing with the throwaway demo account — nothing is persisted */
+  isDemo: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; role?: UserRole; error?: string }>;
+  /** One-click demo sign-in for prospective customers — in-memory only */
+  loginDemo: () => void;
   logout: () => void;
 
   theme: "light" | "dark";
@@ -89,10 +93,21 @@ const AppDataContext = createContext<AppDataContextValue | null>(null);
 
 let toastSeq = 1;
 
+/** Profile used for the public "See Demo" walkthrough — regular user, paid, unsaved */
+const DEMO_USER_PROFILE: UserProfile = {
+  id: "demo-preview",
+  email: "demo@drpt.app",
+  name: "Demo User",
+  role: "user",
+  currency: DEFAULT_CURRENCY,
+  isPaid: true,
+};
+
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [month, setMonth] = useState("May 2025");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -240,7 +255,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setUser((prev) => {
       if (!prev) return prev;
       const next = { ...prev, ...patch };
-      localStorage.setItem("drpatie-user", JSON.stringify(next));
+      // Demo sessions are never persisted
+      if (next.id !== DEMO_USER_PROFILE.id) {
+        localStorage.setItem("drpatie-user", JSON.stringify(next));
+      }
       return next;
     });
   }, []);
@@ -414,18 +432,29 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     [user?.currency, currency]
   );
 
+  const loginDemo = useCallback(() => {
+    // In-memory only: no Supabase session, no localStorage — refresh/logout ends it
+    setIsDemo(true);
+    setUser(DEMO_USER_PROFILE);
+    setIsAuthenticated(true);
+    setAuthReady(true);
+  }, []);
+
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
+    if (!isDemo) await supabase.auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
+    setIsDemo(false);
     localStorage.removeItem("drpatie-user");
-  }, []);
+  }, [isDemo]);
 
   const value: AppDataContextValue = {
     isAuthenticated,
     authReady,
     user,
+    isDemo,
     login,
+    loginDemo,
     logout,
     theme,
     toggleTheme,

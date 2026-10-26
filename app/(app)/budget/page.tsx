@@ -6,6 +6,7 @@ import {  fmt , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import ProgressBar from "@/components/ProgressBar";
 import Modal from "@/components/Modal";
+import Envelopes from "@/components/Envelopes";
 import type { Budget } from "@/lib/types";
 
 function budgetStatus(pct: number) {
@@ -41,7 +42,7 @@ function EditBudgetModal({ budget, onClose }: { budget: Budget; onClose: () => v
 }
 
 export default function BudgetPage() {
-  const { budgets, month, setMonth } = useAppData();
+  const { budgets, month } = useAppData();
   const [editing, setEditing] = useState<Budget | null>(null);
   const totalBudget = budgets.reduce((s, b) => s + b.budget, 0);
   const totalSpent = budgets.reduce((s, b) => s + b.spent, 0);
@@ -51,13 +52,10 @@ export default function BudgetPage() {
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
           <h2 className="section-title">Budget Planner</h2>
-          <p className="section-sub">{month} â€” track spending against your monthly plan</p>
+          <p className="section-sub">{month} — track spending against your monthly plan</p>
         </div>
-        <select className="month-select" value={month} onChange={(e) => setMonth(e.target.value)}>
-          <option>May 2025</option>
-          <option>June 2025</option>
-        </select>
       </div>
+      <Envelopes />
       <div className="glass-card card-pad">
         <div className="table-wrap">
           <table>

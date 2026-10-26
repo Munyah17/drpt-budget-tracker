@@ -14,12 +14,7 @@ interface Employee {
   status: string;
 }
 
-const EMPLOYEES_DATA: Employee[] = [
-  { name: "Emma Wilson", email: "emma.wilson@acme.com", department: "Engineering", role: "Senior Engineer", status: "Active" },
-  { name: "David Brown", email: "david.brown@acme.com", department: "Sales", role: "Account Executive", status: "Active" },
-  { name: "Lisa Chen", email: "lisa.chen@acme.com", department: "Operations", role: "Ops Coordinator", status: "Active" },
-  { name: "James Patel", email: "james.patel@acme.com", department: "Finance", role: "Accountant", status: "On Leave" },
-];
+const EMPLOYEES_DATA: Employee[] = [];
 
 export default function CorporateEmployeesDirectoryPage() {
   const { toast } = useAppData();

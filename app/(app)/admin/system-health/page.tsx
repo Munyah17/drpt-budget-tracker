@@ -14,19 +14,19 @@ export default function SystemHealthPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">System Uptime</div>
-          <div className="stat-value">99.9%</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">API Latency</div>
-          <div className="stat-value">45ms</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Error Rate</div>
-          <div className="stat-value">0.12%</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Active Connections</div>
-          <div className="stat-value">1,247</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

@@ -15,12 +15,7 @@ interface LeaveRequest {
   status: string;
 }
 
-const LEAVE_DATA: LeaveRequest[] = [
-  { employee: "Emma Wilson", type: "Annual", from: "2025-06-16", to: "2025-06-20", days: "5", status: "Pending" },
-  { employee: "David Brown", type: "Sick", from: "2025-05-28", to: "2025-05-30", days: "3", status: "Approved" },
-  { employee: "Lisa Chen", type: "Parental", from: "2025-07-01", to: "2025-07-31", days: "23", status: "Approved" },
-  { employee: "James Patel", type: "Annual", from: "2025-06-10", to: "2025-06-11", days: "2", status: "Rejected" },
-];
+const LEAVE_DATA: LeaveRequest[] = [];
 
 export default function LeavePage() {
   const { toast } = useAppData();
@@ -68,7 +63,7 @@ export default function LeavePage() {
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">On Leave Today</div>
-          <div className="stat-value">2</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

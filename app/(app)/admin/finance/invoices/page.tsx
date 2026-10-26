@@ -15,11 +15,7 @@ interface Invoice {
   status: string;
 }
 
-const INVOICES_DATA: Invoice[] = [
-  { invoiceId: "INV-2025-0526-001", organisation: "Acme Corporation", amount: "$2,500", dueDate: "2025-06-15", status: "Paid" },
-  { invoiceId: "INV-2025-0526-002", organisation: "TechCorp Ltd", amount: "$4,500", dueDate: "2025-05-11", status: "Overdue" },
-  { invoiceId: "INV-2025-0526-003", organisation: "GlobalHealth Inc", amount: "$7,950", dueDate: "2025-06-30", status: "Pending" },
-];
+const INVOICES_DATA: Invoice[] = [];
 
 export default function AdminInvoicesPage() {
   const [search, setSearch] = useState("");
@@ -63,19 +59,19 @@ export default function AdminInvoicesPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Outstanding</div>
-          <div className="stat-value">$12,450</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Overdue</div>
-          <div className="stat-value">$4,500</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">This Month</div>
-          <div className="stat-value">$8,950</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Paid This Month</div>
-          <div className="stat-value">$15,200</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

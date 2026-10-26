@@ -22,17 +22,9 @@ interface Goal {
   status: string;
 }
 
-const REVIEWS_DATA: Review[] = [
-  { employee: "Emma Wilson", reviewer: "Sarah Chen", period: "Q2 2025", rating: "4.5 / 5", status: "Completed" },
-  { employee: "David Brown", reviewer: "Sarah Chen", period: "Q2 2025", rating: "-", status: "Scheduled" },
-  { employee: "Lisa Chen", reviewer: "Mark Otieno", period: "Q2 2025", rating: "4.1 / 5", status: "Completed" },
-];
+const REVIEWS_DATA: Review[] = [];
 
-const GOALS_DATA: Goal[] = [
-  { employee: "Emma Wilson", goal: "Complete CPD certification", due: "2025-08-31", progress: "65%", status: "On Track" },
-  { employee: "James Patel", goal: "Reduce patient wait time by 15%", due: "2025-07-31", progress: "40%", status: "At Risk" },
-  { employee: "David Brown", goal: "Automate monthly reporting", due: "2025-06-30", progress: "80%", status: "On Track" },
-];
+const GOALS_DATA: Goal[] = [];
 
 export default function PerformancePage() {
   const { toast } = useAppData();

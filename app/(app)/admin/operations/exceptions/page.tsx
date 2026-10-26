@@ -14,10 +14,7 @@ interface Exception {
   status: string;
 }
 
-const EXCEPTIONS_DATA: Exception[] = [
-  { type: "Integration Failure", description: "GlobalHealth payroll sync timeout", priority: "Critical", assigned: "John Smith", status: "In Progress" },
-  { type: "Data Mismatch", description: "Acme Corp employee record duplicate", priority: "High", assigned: "Sarah Jones", status: "Assigned" },
-];
+const EXCEPTIONS_DATA: Exception[] = [];
 
 export default function AdminExceptionsPage() {
   const [search, setSearch] = useState("");
@@ -52,19 +49,19 @@ export default function AdminExceptionsPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Critical</div>
-          <div className="stat-value">2</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">High</div>
-          <div className="stat-value">5</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Medium</div>
-          <div className="stat-value">8</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Low</div>
-          <div className="stat-value">12</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

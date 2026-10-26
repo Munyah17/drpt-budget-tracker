@@ -21,19 +21,19 @@ export default function CorporateOverviewPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Employees</div>
-          <div className="stat-value">450</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Active This Month</div>
-          <div className="stat-value">438</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Payroll This Month</div>
-          <div className="stat-value">$1.24M</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Pending Onboarding</div>
-          <div className="stat-value">6</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 
@@ -49,20 +49,10 @@ export default function CorporateOverviewPage() {
               </tr>
             </thead>
             <tbody>
-              <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>May 2025</td>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>$412,300</td>
-                <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>April 2025</td>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>$408,950</td>
-                <td style={{ padding: "10px 6px" }}><span className="badge badge-green">Paid</span></td>
-              </tr>
               <tr>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>June 2025</td>
-                <td style={{ padding: "10px 6px", fontSize: 13 }}>$415,700</td>
-                <td style={{ padding: "10px 6px" }}><span className="badge badge-blue">Scheduled</span></td>
+                <td colSpan={3} style={{ padding: "24px 8px", fontSize: 13, color: "var(--ink-500)", textAlign: "center" }}>
+                  No payroll runs recorded yet.
+                </td>
               </tr>
             </tbody>
           </table>
@@ -70,24 +60,9 @@ export default function CorporateOverviewPage() {
 
         <div className="glass-card card-pad">
           <h3 style={{ fontWeight: 600, marginBottom: 16, fontSize: 15 }}>Pending Tasks</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
-              <span className="badge badge-amber">Onboarding</span>
-              <span>6 new hires awaiting document verification</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
-              <span className="badge badge-blue">Payroll</span>
-              <span>June payroll run scheduled for 28 June</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
-              <span className="badge badge-red">Compliance</span>
-              <span>2 right-to-work documents expire this month</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
-              <span className="badge badge-green">Benefits</span>
-              <span>Pension contribution review due 15 June</span>
-            </div>
-          </div>
+          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "16px 0" }}>
+            No pending tasks — onboarding, payroll and compliance items will appear here.
+          </p>
         </div>
       </div>
 
@@ -96,19 +71,19 @@ export default function CorporateOverviewPage() {
         <div className="grid grid-4">
           <div>
             <div className="stat-label">Engineering</div>
-            <div className="stat-value" style={{ fontSize: 22 }}>142</div>
+            <div className="stat-value" style={{ fontSize: 22 }}>—</div>
           </div>
           <div>
             <div className="stat-label">Sales</div>
-            <div className="stat-value" style={{ fontSize: 22 }}>98</div>
+            <div className="stat-value" style={{ fontSize: 22 }}>—</div>
           </div>
           <div>
             <div className="stat-label">Operations</div>
-            <div className="stat-value" style={{ fontSize: 22 }}>76</div>
+            <div className="stat-value" style={{ fontSize: 22 }}>—</div>
           </div>
           <div>
             <div className="stat-label">Finance & Admin</div>
-            <div className="stat-value" style={{ fontSize: 22 }}>134</div>
+            <div className="stat-value" style={{ fontSize: 22 }}>—</div>
           </div>
         </div>
       </div>

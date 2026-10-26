@@ -22,14 +22,9 @@ interface Webhook {
   status: string;
 }
 
-const KEYS_DATA: ApiKey[] = [
-  { id: "1", label: "Payroll sync service", prefix: "drpt_live_Kx92", scopes: "payroll:read, employees:read", created: "2025-03-12", lastUsed: "2h ago", status: "Active" },
-  { id: "2", label: "HR dashboard export", prefix: "drpt_live_Pw41", scopes: "reports:read", created: "2025-04-22", lastUsed: "3d ago", status: "Active" },
-];
+const KEYS_DATA: ApiKey[] = [];
 
-const WEBHOOKS_DATA: Webhook[] = [
-  { url: "https://api.acme.com/hooks/payroll", events: "payroll.completed", status: "Active" },
-];
+const WEBHOOKS_DATA: Webhook[] = [];
 
 const SCOPES = ["employees:read", "employees:write", "payroll:read", "payroll:write", "leave:read", "leave:write", "reports:read"];
 

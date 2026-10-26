@@ -14,19 +14,19 @@ export default function BillingRevenuePage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Total Revenue</div>
-          <div className="stat-value">$45,850</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">This Month</div>
-          <div className="stat-value">$4,560</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Pending</div>
-          <div className="stat-value">$1,240</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Refunds</div>
-          <div className="stat-value">$320</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 
@@ -45,19 +45,10 @@ export default function BillingRevenuePage() {
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-26</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>john.doe@email.com</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$1.00</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Paynow</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Completed</span></td>
-            </tr>
-            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>2025-05-25</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>sarah.smith@email.com</td>
-              <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>$1.00</td>
-              <td style={{ padding: "12px 8px", fontSize: 13 }}>Stripe</td>
-              <td style={{ padding: "12px 8px" }}><span className="badge badge-green">Completed</span></td>
+            <tr>
+              <td colSpan={5} style={{ padding: "24px 8px", fontSize: 13, color: "var(--ink-500)", textAlign: "center" }}>
+                No transactions yet.
+              </td>
             </tr>
           </tbody>
         </table>

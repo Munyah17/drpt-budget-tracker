@@ -13,11 +13,7 @@ interface Staff {
   status: string;
 }
 
-const STAFF_DATA: Staff[] = [
-  { name: "John Smith", email: "john.smith@drpt.com", role: "Operations Manager", department: "Operations", status: "Active" },
-  { name: "Sarah Jones", email: "sarah.jones@drpt.com", role: "Finance Officer", department: "Finance", status: "Active" },
-  { name: "Mike Davis", email: "mike.davis@drpt.com", role: "Support Admin", department: "Support", status: "Active" },
-];
+const STAFF_DATA: Staff[] = [];
 
 export default function AdminStaffPage() {
   const [search, setSearch] = useState("");

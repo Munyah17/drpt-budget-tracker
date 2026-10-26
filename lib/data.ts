@@ -7,58 +7,18 @@ export const USER = {
   location: "London, UK",
 };
 
-export const ACCOUNTS: Account[] = [
-  { name: "Barclays Current", icon: "landmark", balance: 4256.8 },
-  { name: "Lloyds Savings", icon: "piggy-bank", balance: 3450.0 },
-  { name: "Monzo", icon: "credit-card", balance: 719.7 },
-  { name: "Revolut", icon: "wallet", balance: 0.0 },
-];
+// All seeded demo data removed — real users start with a clean slate.
+export const ACCOUNTS: Account[] = [];
 
-export const INITIAL_INCOME: IncomeEntry[] = [
-  { id: 1, source: "NHS Salary", category: "Salary", date: "2025-05-28", amount: 4120.0, recurring: "Monthly" },
-  { id: 2, source: "Private Practice", category: "Private Practice", date: "2025-05-25", amount: 850.0, recurring: "Weekly" },
-  { id: 3, source: "Locum Shift", category: "Locum", date: "2025-05-20", amount: 450.0, recurring: "None" },
-  { id: 4, source: "Investment Interest", category: "Investments", date: "2025-05-15", amount: 80.0, recurring: "Monthly" },
-  { id: 5, source: "Gift", category: "Gift", date: "2025-05-10", amount: 150.0, recurring: "None" },
-];
+export const INITIAL_INCOME: IncomeEntry[] = [];
 
-export const INITIAL_EXPENSES: ExpenseEntry[] = [
-  { id: 1, merchant: "Tesco", category: "Food", date: "2025-05-26", amount: 76.45, account: "Barclays Current", method: "Debit Card", tags: ["Groceries"], recurring: false },
-  { id: 2, merchant: "Shell", category: "Fuel", date: "2025-05-25", amount: 45.0, account: "Barclays Current", method: "Debit Card", tags: ["Transport"], recurring: false },
-  { id: 3, merchant: "Amazon", category: "Shopping", date: "2025-05-24", amount: 32.99, account: "Barclays Current", method: "Debit Card", tags: ["Shopping"], recurring: false },
-  { id: 4, merchant: "Gym Membership", category: "Health", date: "2025-05-23", amount: 25.0, account: "Barclays Current", method: "Direct Debit", tags: ["Health"], recurring: true },
-  { id: 5, merchant: "Nando's", category: "Entertainment", date: "2025-05-22", amount: 28.5, account: "Monzo", method: "Debit Card", tags: ["Dining"], recurring: false },
-  { id: 6, merchant: "Royal College Fee", category: "Education", date: "2025-05-20", amount: 120.0, account: "Barclays Current", method: "Card", tags: ["Professional"], recurring: false },
-];
+export const INITIAL_EXPENSES: ExpenseEntry[] = [];
 
-export const BILLS: Bill[] = [
-  { id: 1, name: "Council Tax", amount: 120.0, due: "2025-06-01", status: "upcoming", daysLeft: 1, icon: "landmark" },
-  { id: 2, name: "Broadband", amount: 29.99, due: "2025-06-02", status: "upcoming", daysLeft: 2, icon: "wifi" },
-  { id: 3, name: "Electricity", amount: 67.45, due: "2025-06-05", status: "upcoming", daysLeft: 5, icon: "zap" },
-  { id: 4, name: "Medical Defence Insurance", amount: 54.0, due: "2025-06-10", status: "upcoming", daysLeft: 10, icon: "shield" },
-  { id: 5, name: "Water Rates", amount: 41.2, due: "2025-05-18", status: "paid", daysLeft: 0, icon: "droplet" },
-  { id: 6, name: "Mobile Phone", amount: 22.0, due: "2025-05-12", status: "paid", daysLeft: 0, icon: "smartphone" },
-  { id: 7, name: "Netflix", amount: 15.99, due: "2025-05-08", status: "overdue", daysLeft: -2, icon: "tv" },
-];
+export const BILLS: Bill[] = [];
 
-export const INITIAL_GOALS: Goal[] = [
-  { id: 1, name: "Vacation to Dubai", target: 2500.0, saved: 1400.0, deadline: "31/12/2025" },
-  { id: 2, name: "Emergency Fund", target: 6000.0, saved: 3250.0, deadline: "30/09/2025" },
-  { id: 3, name: "New Car", target: 5000.0, saved: 1800.0, deadline: "30/06/2026" },
-  { id: 4, name: "House Deposit", target: 20000.0, saved: 4200.0, deadline: "31/12/2026" },
-  { id: 5, name: "Investment Fund", target: 10000.0, saved: 2600.0, deadline: "31/03/2027" },
-];
+export const INITIAL_GOALS: Goal[] = [];
 
-export const BUDGETS: Budget[] = [
-  { category: "Housing", budget: 1200, spent: 1120 },
-  { category: "Transport", budget: 600, spent: 540 },
-  { category: "Food", budget: 500, spent: 410 },
-  { category: "Utilities", budget: 300, spent: 280 },
-  { category: "Health", budget: 300, spent: 260 },
-  { category: "Personal", budget: 400, spent: 330 },
-  { category: "Entertainment", budget: 250, spent: 180 },
-  { category: "Other", budget: 400, spent: 96 },
-];
+export const BUDGETS: Budget[] = [];
 
 export const CATEGORY_COLORS: Record<string, string> = {
   Housing: "#c81457",
@@ -75,19 +35,22 @@ export const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export const MONTHLY_TREND = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  income: [5200, 5350, 5400, 5500, 5650, 5700],
-  expenses: [3400, 3550, 3100, 3300, 3214.75, 3050],
+  labels: [] as string[],
+  income: [] as number[],
+  expenses: [] as number[],
 };
 
 export const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: "layout-dashboard" },
+  { id: "cashflow", label: "Cash Flow", icon: "banknote" },
   { id: "income", label: "Income", icon: "wallet" },
   { id: "expenses", label: "Expenses", icon: "shopping-bag" },
   { id: "transactions", label: "Transactions", icon: "list" },
   { id: "budget", label: "Budget Planner", icon: "pie-chart" },
   { id: "savings", label: "Savings Goals", icon: "target" },
   { id: "borrowing", label: "Borrowing", icon: "credit-card" },
+  { id: "net-worth", label: "Net Worth", icon: "target" },
+  { id: "subscriptions", label: "Subscriptions", icon: "repeat" },
   { id: "bills", label: "Bills", icon: "receipt" },
   { id: "reports", label: "Reports", icon: "file-text" },
   { id: "analytics", label: "Analytics", icon: "bar-chart-3" },
@@ -277,28 +240,14 @@ export const REPORTS = [
   { name: "Budget Performance", desc: "Compare budget vs actual", icon: "gauge" },
 ];
 
-export const AI_RESPONSES: Record<string, string> = {
-  "where did my money go this month?": `You spent $3,214.75 this month. The largest expenses were:<ul><li>Housing: $1,120.00 (34.9%)</li><li>Transport: $540.00 (16.8%)</li><li>Food: $410.00 (12.8%)</li><li>Utilities: $280.00 (8.7%)</li></ul>Tip: you spent 27% more on dining out compared to April. Would you like tips to reduce this?`,
-  "summarise june": `June is projected to bring in $5,700 in income against roughly $3,050 in expenses — a healthier month than May, mostly thanks to lower fuel and shopping spend.`,
-  "can i afford a holiday?": `Based on your Emergency Fund (54% funded) and current savings rate of 43%, a $1,400 holiday in December looks affordable — you're already 56% of the way to your Vacation to Dubai goal.`,
-  "how much should i save?": `A good target for your income level is 20–25% of take-home pay. You're currently saving around 43%, well above that benchmark — nicely done.`,
-};
+export const AI_RESPONSES: Record<string, string> = {};
 
 export interface CalEvent {
   type: "income" | "expense" | "bill" | "savings";
   label: string;
   amount: number;
 }
-export const CAL_EVENTS: Record<string, CalEvent[]> = {
-  "2025-05-28": [{ type: "income", label: "NHS Salary", amount: 4120.0 }],
-  "2025-06-01": [{ type: "bill", label: "Council Tax", amount: -120.0 }],
-  "2025-06-02": [{ type: "bill", label: "Broadband", amount: -29.99 }],
-  "2025-05-26": [{ type: "expense", label: "Tesco", amount: -76.45 }],
-  "2025-05-25": [
-    { type: "expense", label: "Shell", amount: -45.0 },
-    { type: "income", label: "Private Practice", amount: 850.0 },
-  ],
-};
+export const CAL_EVENTS: Record<string, CalEvent[]> = {};
 export const EVENT_COLOR: Record<string, string> = {
   income: "#1a9c6d",
   expense: "#e91e63",

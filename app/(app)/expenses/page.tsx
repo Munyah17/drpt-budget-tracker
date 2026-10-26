@@ -8,6 +8,8 @@ import { ExpenseEntry } from "@/lib/types";
 import Icon from "@/components/Icon";
 import CountUp from "@/components/CountUp";
 import ExpenseModal from "@/components/modals/ExpenseModal";
+import SmsImportModal from "@/components/modals/SmsImportModal";
+import SplitBillModal from "@/components/modals/SplitBillModal";
 import FilterBar from "@/components/FilterBar";
 
 export default function ExpensesPage() {
@@ -15,6 +17,8 @@ export default function ExpensesPage() {
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [smsOpen, setSmsOpen] = useState(false);
+  const [splitOpen, setSplitOpen] = useState(false);
   const [editing, setEditing] = useState<ExpenseEntry | undefined>(undefined);
 
   const rows = useMemo(
@@ -43,9 +47,17 @@ export default function ExpensesPage() {
           <h2 className="section-title">Expenses</h2>
           <p className="section-sub">Everything you&apos;ve spent this month</p>
         </div>
-        <button className="btn btn-primary" onClick={openAdd}>
-          <Icon name="plus" size={16} /> Add Expense
-        </button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button className="btn btn-ghost" onClick={() => setSplitOpen(true)}>
+            <Icon name="users" size={16} /> Split Bill
+          </button>
+          <button className="btn btn-ghost" onClick={() => setSmsOpen(true)}>
+            <Icon name="smartphone" size={16} /> Import SMS
+          </button>
+          <button className="btn btn-primary" onClick={openAdd}>
+            <Icon name="plus" size={16} /> Add Expense
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
@@ -150,6 +162,8 @@ export default function ExpensesPage() {
       </div>
 
       {modalOpen && <ExpenseModal editing={editing} onClose={() => setModalOpen(false)} />}
+      {smsOpen && <SmsImportModal onClose={() => setSmsOpen(false)} />}
+      {splitOpen && <SplitBillModal onClose={() => setSplitOpen(false)} />}
     </>
   );
 }

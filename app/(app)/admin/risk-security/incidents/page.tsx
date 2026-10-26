@@ -13,11 +13,7 @@ interface Incident {
   assigned: string;
 }
 
-const INCIDENTS_DATA: Incident[] = [
-  { incidentId: "INC-2025-0526-001", type: "Unusual login activity", severity: "Critical", status: "Investigating", assigned: "Security Team" },
-  { incidentId: "INC-2025-0525-001", type: "API rate limit exceeded", severity: "High", status: "Open", assigned: "Tech Team" },
-  { incidentId: "INC-2025-0524-001", type: "Failed webhook delivery", severity: "Medium", status: "Resolved", assigned: "Ops Team" },
-];
+const INCIDENTS_DATA: Incident[] = [];
 
 export default function AdminIncidentsPage() {
   const [search, setSearch] = useState("");
@@ -49,19 +45,19 @@ export default function AdminIncidentsPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="stat-label">Open</div>
-          <div className="stat-value">3</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Investigating</div>
-          <div className="stat-value">2</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Resolved (7d)</div>
-          <div className="stat-value">8</div>
+          <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
           <div className="stat-label">Critical</div>
-          <div className="stat-value">1</div>
+          <div className="stat-value">—</div>
         </div>
       </div>
 

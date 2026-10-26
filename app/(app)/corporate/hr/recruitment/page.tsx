@@ -22,17 +22,9 @@ interface Candidate {
   applied: string;
 }
 
-const JOBS_DATA: JobPosting[] = [
-  { title: "Senior Physiotherapist", department: "Clinical", location: "Harare", type: "Full-time", applicants: "24", status: "Open" },
-  { title: "Payroll Administrator", department: "Finance", location: "Remote", type: "Full-time", applicants: "12", status: "Open" },
-  { title: "Front Desk Coordinator", department: "Operations", location: "Bulawayo", type: "Part-time", applicants: "8", status: "Paused" },
-];
+const JOBS_DATA: JobPosting[] = [];
 
-const CANDIDATES_DATA: Candidate[] = [
-  { name: "Tendai Moyo", role: "Senior Physiotherapist", stage: "Interview", applied: "2025-05-20" },
-  { name: "Chipo Dube", role: "Payroll Administrator", stage: "Screening", applied: "2025-05-22" },
-  { name: "Farai Ndoro", role: "Senior Physiotherapist", stage: "Offer", applied: "2025-05-15" },
-];
+const CANDIDATES_DATA: Candidate[] = [];
 
 export default function RecruitmentPage() {
   const { toast } = useAppData();

@@ -15,12 +15,7 @@ interface Doc {
   size: string;
 }
 
-const DOCS_DATA: Doc[] = [
-  { name: "Employment Contract — Emma Wilson", category: "Contracts", employee: "Emma Wilson", uploaded: "2024-01-15", size: "240 KB" },
-  { name: "Health & Safety Policy v3", category: "Policies", employee: "All Staff", uploaded: "2025-03-02", size: "1.1 MB" },
-  { name: "ID Copy — David Brown", category: "Identification", employee: "David Brown", uploaded: "2024-03-10", size: "520 KB" },
-  { name: "Leave Policy 2025", category: "Policies", employee: "All Staff", uploaded: "2025-01-05", size: "310 KB" },
-];
+const DOCS_DATA: Doc[] = [];
 
 export default function DocumentsPage() {
   const { toast } = useAppData();

@@ -63,9 +63,14 @@ export default function ReportsPage() {
           <h2 className="section-title">Reports</h2>
           <p className="section-sub">Professional summaries, ready to export</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setCustomOpen(true)}>
-          <Icon name="sliders-horizontal" size={16} /> Custom Report
-        </button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button className="btn btn-ghost" onClick={() => window.open("/print/report", "_blank")}>
+            <Icon name="printer" size={16} /> Print Monthly Report
+          </button>
+          <button className="btn btn-primary" onClick={() => setCustomOpen(true)}>
+            <Icon name="sliders-horizontal" size={16} /> Custom Report
+          </button>
+        </div>
       </div>
       <div className="glass-card card-pad">
         {REPORTS.map((r) => (

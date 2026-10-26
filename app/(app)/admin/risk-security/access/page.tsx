@@ -11,12 +11,7 @@ interface AccessRole {
   users: string;
 }
 
-const ACCESS_DATA: AccessRole[] = [
-  { role: "Super Admin", permissions: "Full platform access", users: "2" },
-  { role: "Operations Manager", permissions: "Payroll, exceptions, reconciliation", users: "5" },
-  { role: "Finance Officer", permissions: "Invoices, payments, reconciliation", users: "3" },
-  { role: "Corporate Admin", permissions: "Organisation management, employees", users: "12" },
-];
+const ACCESS_DATA: AccessRole[] = [];
 
 export default function AdminAccessPage() {
   const [search, setSearch] = useState("");
