@@ -23,5 +23,6 @@ alter table public.activity_events enable row level security;
 -- Inserts go through the service-role /api/track endpoint, and reads through
 -- /api/admin/analytics (also service role) — so no client-side RLS grants are
 -- needed at all. Deny direct anon/authenticated access explicitly.
+drop policy if exists "no direct access" on public.activity_events;
 create policy "no direct access" on public.activity_events
   for all using (false) with check (false);
