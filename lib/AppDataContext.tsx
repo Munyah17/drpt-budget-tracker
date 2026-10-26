@@ -184,10 +184,16 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id)) return;
     dbSynced.current = true;
     const uid = user.id;
-    fetch(`/api/me?uid=${encodeURIComponent(uid)}`)
-      .then((r) => r.json())
-      .then((d: { paid?: boolean; role?: UserRole; name?: string; currency?: string; error?: string }) => {
-        if (d.error) return; // server unreachable — keep stored values
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!session?.access_token) return null; // no live session → keep stored values
+        return fetch(`/api/me?uid=${encodeURIComponent(uid)}`, {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+      })
+      .then((r) => (r ? r.json() : null))
+      .then((d: { paid?: boolean; role?: UserRole; name?: string; currency?: string; error?: string } | null) => {
+        if (!d || d.error) return; // server unreachable — keep stored values
         setUser((prev) => {
           if (!prev || prev.id !== uid) return prev;
           const next: UserProfile = {
