@@ -15,7 +15,8 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   // Every registration must pay — unpaid standard users never reach app content.
   // Demo/admin/corporate/employee accounts carry isPaid or a non-user role, so
   // they pass through. /payment itself lives outside this layout, so no loop.
-  const isUnpaid = user?.role === "user" && !user?.isPaid;
+  // Fail closed: authenticated with no profile loaded counts as unpaid.
+  const isUnpaid = !user || (user.role === "user" && !user.isPaid);
 
   useEffect(() => {
     if (!authReady) return;
