@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "llama-3.3-70b-versatile";
+// Groq retired the llama-3.x chat models — gpt-oss-120b is the current flagship. Override via GROQ_MODEL.
+const MODEL = process.env.GROQ_MODEL ?? "openai/gpt-oss-120b";
 
 /**
  * Groq-backed AI assistant endpoint.

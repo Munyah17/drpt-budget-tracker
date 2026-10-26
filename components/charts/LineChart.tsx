@@ -17,7 +17,7 @@ export default function LineChart({
   width?: number;
   height?: number;
 }) {
-  const max = Math.max(...series.flatMap((s) => s.data)) * 1.12;
+  const max = Math.max(1, ...series.flatMap((s) => s.data)) * 1.12;
   const padL = 6, padR = 6, padT = 10, padB = 26;
   const plotW = width - padL - padR;
   const plotH = height - padT - padB;
@@ -32,6 +32,7 @@ export default function LineChart({
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", height: "auto", display: "block" }}>
         {series.map((s) => {
           const p = pts(s.data);
+          if (!p.length) return null;
           const d = p.map((pt, i) => (i === 0 ? "M" : "L") + pt[0].toFixed(1) + " " + pt[1].toFixed(1)).join(" ");
           const areaD = `${d} L ${p[p.length - 1][0].toFixed(1)} ${(height - padB).toFixed(1)} L ${p[0][0].toFixed(1)} ${(height - padB).toFixed(1)} Z`;
           return (

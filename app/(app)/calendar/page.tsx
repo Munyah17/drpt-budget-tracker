@@ -1,7 +1,8 @@
 ﻿"use client";
 
-import { useState } from "react";
-import { CAL_EVENTS, EVENT_COLOR } from "@/lib/data";
+import { useMemo, useState } from "react";
+import { useAppData } from "@/lib/AppDataContext";
+import { EVENT_COLOR, CalEvent } from "@/lib/data";
 import { fmt, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 
@@ -9,9 +10,24 @@ const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 export default function CalendarPage() {
+  const { income, expenses, bills } = useAppData();
+  const now = new Date();
+  const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const [selected, setSelected] = useState<string | null>(null);
-  const [year, setYear] = useState(2025);
-  const [mon, setMon] = useState(4); // 0-indexed, May 2025 default
+  const [year, setYear] = useState(now.getFullYear());
+  const [mon, setMon] = useState(now.getMonth()); // 0-indexed, current month default
+
+  // Real day events from income, expenses and bills
+  const CAL_EVENTS = useMemo(() => {
+    const map: Record<string, CalEvent[]> = {};
+    const push = (iso: string, ev: CalEvent) => (map[iso] = map[iso] ?? []).push(ev);
+    income.forEach((i) => push(i.date.slice(0, 10), { type: "income", label: i.source, amount: i.amount }));
+    expenses.forEach((e) => push(e.date.slice(0, 10), { type: "expense", label: e.merchant, amount: -e.amount }));
+    bills.forEach((b) => {
+      if (b.due) push(b.due.slice(0, 10), { type: "bill", label: `${b.name} due`, amount: -b.amount });
+    });
+    return map;
+  }, [income, expenses, bills]);
 
   const daysInMonth = new Date(year, mon + 1, 0).getDate();
   // Day of week for the 1st, converted to Mon=0..Sun=6
@@ -80,7 +96,7 @@ export default function CalendarPage() {
         <div className="cal-grid">
           {cells.map((iso, idx) => {
             if (!iso) return <div className="cal-day muted" key={idx} />;
-            const isToday = iso === "2025-05-28";
+            const isToday = iso === todayIso;
             const isSelected = iso === selected;
             const ev = CAL_EVENTS[iso];
             const day = parseInt(iso.slice(-2), 10);

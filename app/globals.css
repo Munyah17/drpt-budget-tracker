@@ -507,7 +507,7 @@ tbody tr:hover{ background:var(--pink-100); }
 /* ==================== CASH FLOW ==================== */
 .field-label{ display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-500); margin-bottom:6px; }
 
-.cash-add-grid{ display:grid; grid-template-columns:200px 1.1fr 1.4fr; gap:14px; margin-bottom:14px; }
+.cash-add-grid{ display:grid; grid-template-columns:minmax(220px,240px) 1.1fr 1.4fr; gap:14px; margin-bottom:14px; }
 .cash-add-grid input, .cash-add-grid select,
 .cash-add-footer input, .st-filters input, .st-filters select{
   border:1.5px solid var(--card-border); border-radius:12px; padding:11px 14px;
@@ -519,9 +519,10 @@ tbody tr:hover{ background:var(--pink-100); }
 }
 .cash-type-toggle{ display:flex; gap:6px; }
 .cash-type-btn{
-  flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+  flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:6px;
   padding:11px 8px; border-radius:12px; border:1.5px solid var(--card-border);
   background:var(--card-solid); font-weight:700; font-size:13px; color:var(--ink-500); cursor:pointer;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .cash-type-btn.out.active{ border-color:var(--rose-500); background:var(--pink-100); color:var(--rose-600); }
 .cash-type-btn.in.active{ border-color:var(--green); background:rgba(26,156,109,.1); color:var(--green); }
@@ -539,8 +540,8 @@ tbody tr:hover{ background:var(--pink-100); }
 .cash-add-footer input{ flex:0 1 auto; }
 .cash-add-footer input:first-child{ flex:1; }
 
-.wallet-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-.wallet-card{ padding:18px 20px; }
+.wallet-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.wallet-card{ padding:18px 20px; min-width:0; }
 .w-label{ display:flex; align-items:center; gap:7px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-500); }
 .w-value{ font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-top:6px; color:var(--ink-900); }
 .w-sub{ font-size:11.5px; color:var(--ink-500); margin-top:4px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
@@ -588,7 +589,7 @@ tbody tr:hover{ background:var(--pink-100); }
 
 @media (max-width:860px){
   .cash-add-grid{ grid-template-columns:1fr; }
-  .wallet-row{ grid-template-columns:1fr; }
+  .cash-type-toggle{ min-width:0; }
 }
 @media (max-width:520px){
   .cash-add-footer{ flex-direction:column; align-items:stretch; }
@@ -604,7 +605,6 @@ tbody tr:hover{ background:var(--pink-100); }
 }
 
 /* --- cashflow extras: streaks, mic, receipts, recurring, digest --- */
-.wallet-row{ grid-template-columns:repeat(4,1fr); }
 .badge-chip{
   display:inline-flex; align-items:center; justify-content:center;
   padding:3px 8px; border-radius:100px; font-size:10.5px; font-weight:800;
@@ -632,3 +632,4 @@ tbody tr:hover{ background:var(--pink-100); }
 .digest-body ul{ margin:8px 0; padding-left:20px; }
 .digest-body li{ margin:4px 0; }
 @media (max-width:1100px){ .wallet-row{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:860px){ .wallet-row{ grid-template-columns:1fr; } }
