@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { markProfilePaid } from "@/lib/server/payments";
+import { notifyAdmin } from "@/lib/server/notify";
 
 /**
  * POST /api/webhooks/stripe — Stripe sends checkout.session.completed here.
@@ -66,7 +67,25 @@ export async function POST(req: NextRequest) {
     const paidStatus = session.payment_status as string | undefined;
     if (uid && (paidStatus === "paid" || event.type === "checkout.session.async_payment_succeeded")) {
       await markProfilePaid(uid);
+      const customer = session.customer_details as Record<string, string> | undefined;
+      await notifyAdmin("payment_success", {
+        email: customer?.email ?? (session.customer_email as string) ?? "",
+        name: customer?.name ?? "",
+        method: "stripe",
+        detail: `session ${session.id ?? ""}`,
+      });
     }
+  }
+
+  if (event.type === "checkout.session.async_payment_failed") {
+    const session = event.data?.object ?? {};
+    const customer = session.customer_details as Record<string, string> | undefined;
+    await notifyAdmin("payment_failed", {
+      email: customer?.email ?? (session.customer_email as string) ?? "",
+      name: customer?.name ?? "",
+      method: "stripe",
+      detail: `async payment failed — session ${session.id ?? ""}`,
+    });
   }
 
   // Stripe expects a 2xx quickly — heavy work is already done above

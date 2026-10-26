@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
+import { notifyEvent } from "@/lib/notifyClient";
 import Icon from "@/components/Icon";
 
 type PaymentMethod = "paynow" | "stripe" | "ecocash" | "bank";
@@ -65,6 +66,10 @@ function PaymentInner() {
         });
         const data = await res.json();
         if (!res.ok || !data.url) {
+          notifyEvent("payment_failed", {
+            email: user?.email, name: user?.name,
+            method: selectedMethod, detail: data.error || "Could not start payment",
+          });
           throw new Error(data.error || "Could not start payment");
         }
         // Paynow returns a poll URL we need later to confirm status
@@ -74,6 +79,10 @@ function PaymentInner() {
       }
 
       // Direct transfers: user pays manually, then sends PoP on WhatsApp
+      notifyEvent("transfer_intent", {
+        email: user?.email, name: user?.name,
+        method: paymentMethodLabel(selectedMethod),
+      });
       setPopSent(true);
       toast("Send your proof of payment on WhatsApp to activate your account.", "send");
     } catch (err) {

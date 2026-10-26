@@ -4,6 +4,7 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
+import { notifyEvent } from "@/lib/notifyClient";
 import { UserRole } from "@/lib/types";
 import Icon from "@/components/Icon";
 
@@ -56,6 +57,7 @@ function LoginForm() {
       if (error) {
         setSubmitting(false);
         toast(error.message, "x");
+        notifyEvent("signup_failed", { email, name, detail: error.message });
         return;
       }
 
@@ -74,6 +76,9 @@ function LoginForm() {
 
         if (profileError) {
           console.error('Profile creation error:', profileError);
+          notifyEvent("signup_failed", { email, name, detail: "profile insert failed" });
+        } else {
+          notifyEvent("signup_success", { email, name });
         }
 
         // Sign in, then finish registration with the $1 payment

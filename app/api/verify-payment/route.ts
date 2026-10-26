@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { markProfilePaid } from "@/lib/server/payments";
+import { notifyAdmin } from "@/lib/server/notify";
 
 /**
  * GET /api/verify-payment?provider=stripe&session_id=...&uid=...
@@ -38,7 +39,12 @@ export async function GET(req: NextRequest) {
       const data = new URLSearchParams(await res.text());
       const status = (data.get("status") ?? "").toLowerCase();
       const paid = status === "paid" || status === "awaiting delivery" || status === "delivered";
-      if (paid) await markProfilePaid(uid);
+      if (paid) {
+        await markProfilePaid(uid);
+        await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${uid}` });
+      } else if (status === "cancelled" || status === "failed" || status === "disputed") {
+        await notifyAdmin("payment_failed", { method: "paynow", detail: `status "${status}", uid ${uid}` });
+      }
       return NextResponse.json({ paid, status });
     }
 
