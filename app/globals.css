@@ -119,6 +119,7 @@
   .steps{ grid-template-columns:1fr; }
   .hero-mock-body{ grid-template-columns:1fr; }
   .landing-nav-links a.nav-link{ display:none; }
+  .landing-nav .landing-logo{ display:none; }
   .landing-section{ padding:52px 6vw; }
   .landing-hero{ padding:52px 6vw 24px; }
 }
