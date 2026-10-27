@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { PAYSLIP_KEY, PayslipDoc } from "@/lib/payslip";
+import { PAYSLIP_KEY, PayslipDoc, PayslipFlag } from "@/lib/payslip";
 
 const EMPTY: PayslipDoc = {
   company: "",
@@ -18,6 +18,7 @@ const EMPTY: PayslipDoc = {
   earnings: [],
   deductions: [],
   currencyLabel: "Dollar",
+  flag: "none",
 };
 
 const emptySubscribe = () => () => {};
@@ -78,6 +79,14 @@ function ZwFlag() {
       </div>
     </div>
   );
+}
+
+/** Header emblem — whichever flag/logo the doc supplies. */
+function FlagEmblem({ flag }: { flag: PayslipFlag | undefined }) {
+  if (!flag || flag === "none") return null;
+  if (flag === "zw") return <ZwFlag />;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={flag.image} alt={flag.alt ?? "Flag"} style={{ width: 96, height: 60, objectFit: "contain" }} />;
 }
 
 const DetailCell = ({ label, value }: { label: string; value: string }) => (
@@ -145,7 +154,7 @@ export default function PrintPayslipPage() {
       <div className="sheet">
         <div className="ps-frame">
           <div className="ps-head">
-            <div className="zw"><ZwFlag /></div>
+            <div className="zw"><FlagEmblem flag={doc.flag} /></div>
             <div className="ps-company">{doc.company || "Company Name"}</div>
             <div className="ps-addr">{doc.companyAddress}</div>
             <div className="ps-title">Payslip for the period of {doc.period}</div>

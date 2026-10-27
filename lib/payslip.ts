@@ -13,6 +13,14 @@ export interface PayslipLine {
   amount: number;
 }
 
+/**
+ * Header emblem rendered top-right of the payslip — a template variable.
+ * "zw"   → built-in CSS Zimbabwe flag
+ * "none" → no emblem
+ * {image} → any flag / company logo image URL
+ */
+export type PayslipFlag = "zw" | "none" | { image: string; alt?: string };
+
 export interface PayslipDoc {
   // Employer
   company: string;
@@ -32,6 +40,8 @@ export interface PayslipDoc {
   earnings: PayslipLine[];
   deductions: PayslipLine[];
   currencyLabel: string;
+  // Header emblem — swappable per company/country
+  flag: PayslipFlag;
 }
 
 const rand = (seed: number, min: number, max: number) => {
@@ -54,6 +64,10 @@ export function buildPayslipDoc(opts: {
   period: string;
   company?: string;
   employeeId?: string;
+  /** PAYE tax fraction (default 21%) — country/company variable */
+  payeRate?: number;
+  /** Override any field on the generated doc — this is a template */
+  overrides?: Partial<PayslipDoc>;
 }): PayslipDoc {
   const { employee, period } = opts;
   const seed = nameSeed(employee + period);
@@ -77,7 +91,7 @@ export function buildPayslipDoc(opts: {
 
   const gross = earnings.reduce((s, e) => s + e.amount, 0);
   const deductions: PayslipLine[] = [
-    { label: "PAYE", amount: money(gross * 0.21) },
+    { label: "PAYE", amount: money(gross * (opts.payeRate ?? 0.21)) },
     { label: "Absent deduction", amount: money(rand(seed + 8, 2500, 5000)) },
     { label: "NSSA deduction", amount: money(gross * 0.04) },
     { label: "Union", amount: money(rand(seed + 9, 3000, 5500)) },
@@ -98,6 +112,8 @@ export function buildPayslipDoc(opts: {
     earnings,
     deductions,
     currencyLabel: "Dollar",
+    flag: "zw",
+    ...opts.overrides,
   };
 }
 
