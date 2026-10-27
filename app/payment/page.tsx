@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
@@ -27,7 +27,24 @@ function PaymentInner() {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
   const [popSent, setPopSent] = useState(false);
+  const [pending, setPending] = useState<{ userId: string; email: string; name: string } | null>(null);
   const cancelled = searchParams.get("cancelled") === "1";
+
+  // Signup redirects straight here — the user may not be signed in yet, so
+  // recover the stashed identity from sessionStorage for checkout/webhooks.
+  useEffect(() => {
+    if (user) return;
+    queueMicrotask(() => {
+      try {
+        const raw = sessionStorage.getItem("drpt-pending-pay");
+        if (raw) setPending(JSON.parse(raw));
+      } catch { /* no pending identity */ }
+    });
+  }, [user]);
+
+  const payerId = user?.id ?? pending?.userId;
+  const payerEmail = user?.email ?? pending?.email;
+  const payerName = user?.name ?? pending?.name;
 
   const isDirect = selectedMethod === "ecocash" || selectedMethod === "bank";
   const total = selectedMethod ? priceUsd(selectedMethod) : minPriceUsd();
@@ -35,8 +52,8 @@ function PaymentInner() {
   const whatsappHref = () => {
     const text =
       `Hi, I've paid for WellSpend access.\n` +
-      `Name: ${user?.name ?? ""}\n` +
-      `Email: ${user?.email ?? ""}\n` +
+      `Name: ${payerName ?? ""}\n` +
+      `Email: ${payerEmail ?? ""}\n` +
       `Phone: \n` +
       `Method: ${selectedMethod ? paymentMethodLabel(selectedMethod) : ""}\n` +
       `Transaction Ref: `;
@@ -61,12 +78,12 @@ function PaymentInner() {
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user?.id, email: user?.email, name: user?.name }),
+          body: JSON.stringify({ userId: payerId, email: payerEmail, name: payerName }),
         });
         const data = await res.json();
         if (!res.ok || !data.url) {
           notifyEvent("payment_failed", {
-            email: user?.email, name: user?.name,
+            email: payerEmail, name: payerName,
             method: selectedMethod, detail: data.error || "Could not start payment",
           });
           throw new Error(data.error || "Could not start payment");
@@ -79,7 +96,7 @@ function PaymentInner() {
 
       // Direct transfers: user pays manually, then sends PoP on WhatsApp
       notifyEvent("transfer_intent", {
-        email: user?.email, name: user?.name,
+        email: payerEmail, name: payerName,
         method: paymentMethodLabel(selectedMethod),
       });
       setPopSent(true);

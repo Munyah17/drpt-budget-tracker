@@ -214,10 +214,10 @@ export default function BillsPage() {
     } catch {
       /* reminders unavailable — bills list still works */
     }
-  }, [user?.email]);
+  }, [user]);
 
   useEffect(() => {
-    loadPrefs();
+    queueMicrotask(() => void loadPrefs());
   }, [loadPrefs]);
 
   function openReminder(b: Bill) {

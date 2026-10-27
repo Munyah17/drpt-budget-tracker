@@ -90,10 +90,10 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [user?.email]);
+  }, [user]);
 
   useEffect(() => {
-    load();
+    queueMicrotask(() => void load());
   }, [load]);
 
   const t = data?.totals;

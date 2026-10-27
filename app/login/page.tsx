@@ -64,41 +64,39 @@ function LoginForm() {
       }
 
       if (data.user) {
-        // Create profile with isPaid = false
-        const { error: profileError } = await (await import("@/lib/supabase")).supabase
-          .from('profiles')
-          .insert({
-            id: data.user.id,
-            email: email,
-            name: name || email.split('@')[0],
-            role: 'user',
-            currency: 'USD',
-            is_paid: false,
-          });
+        // Confirm email + create the profile server-side (service role) —
+        // works even when Supabase email confirmation is on, so the account
+        // is immediately sign-in-able and the profile row exists.
+        const displayName = name || email.split('@')[0];
+        const confirmRes = await fetch("/api/auth/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: data.user.id, email, name: displayName }),
+        }).catch(() => null);
 
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-          notifyEvent("signup_failed", { email, name, detail: "profile insert failed" });
-          trackEvent("signup_failed", { detail: "profile insert failed" }, { email });
-        } else {
+        if (confirmRes?.ok) {
           notifyEvent("signup_success", { email, name });
           trackEvent("signup", {}, { email });
-        }
-
-        // Sign in, then finish registration with the $1 payment
-        const loginResult = await login(email, password);
-
-        if (loginResult.success) {
-          setFadingOut(true);
-          toast(`Account created — one last step: pay from ${minPriceLabel()} to activate.`, "check-circle");
-          setTimeout(() => {
-            router.push("/payment");
-          }, 350);
         } else {
-          toast(`Account created! Sign in to pay from ${minPriceLabel()} and activate.`, "check-circle");
-          setIsSignup(false);
-          setSubmitting(false);
+          notifyEvent("signup_failed", { email, name, detail: "account confirm failed" });
+          trackEvent("signup_failed", { detail: "account confirm failed" }, { email });
         }
+
+        // Carry identity to the payment page even without a live session
+        sessionStorage.setItem(
+          "drpt-pending-pay",
+          JSON.stringify({ userId: data.user.id, email, name: displayName })
+        );
+
+        // Best-effort sign-in in the background — either way, the next stop
+        // is payment. No options, no freebies.
+        void login(email, password);
+
+        setFadingOut(true);
+        toast(`Account created — one last step: pay from ${minPriceLabel()} to activate.`, "check-circle");
+        setTimeout(() => {
+          router.push("/payment");
+        }, 350);
       }
     } else {
       const result = await login(email, password);

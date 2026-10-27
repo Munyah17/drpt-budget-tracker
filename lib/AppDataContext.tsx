@@ -121,6 +121,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrencyState] = useState<Currency>(DEFAULT_CURRENCY);
   const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
+  const [syncIntervalMin, setSyncIntervalMinState] = useState(15);
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS);
   const [income, setIncome] = useState<IncomeEntry[]>(INITIAL_INCOME);
   const [expenses, setExpenses] = useState<ExpenseEntry[]>(INITIAL_EXPENSES);
@@ -140,7 +141,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     // Restore cloud-sync interval preference
     const savedSync = parseInt(localStorage.getItem("drpatie-sync-interval") || "15", 10);
     if ([15, 30, 60, 360].includes(savedSync)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore on mount
       setSyncIntervalMinState(savedSync);
     }
 
@@ -224,7 +224,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, [authReady, isAuthenticated, user]);
 
   // ---- Cloud sync (paid, real accounts only — demo/admin ids aren't uuids) ----
-  const [syncIntervalMin, setSyncIntervalMinState] = useState(15);
   const hydrated = useRef(false); // pull completed → safe to push
   const syncing = useRef(false);
   const suppressPush = useRef(false); // skip the push echo after hydration
@@ -534,10 +533,21 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       }
 
       // Try Supabase auth for other users
-      const { data, error } = await supabase.auth.signInWithPassword({
+      let { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      // "Email not confirmed" — accounts created while confirmation is
+      // required can never sign in. Confirm server-side, then retry once.
+      if (error && /confirm/i.test(error.message)) {
+        await fetch("/api/auth/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }).catch(() => null);
+        ({ data, error } = await supabase.auth.signInWithPassword({ email, password }));
+      }
 
       if (error) {
         console.error('Login error:', error);

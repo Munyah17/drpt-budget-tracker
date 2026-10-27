@@ -80,10 +80,10 @@ export default function AdminAnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  }, [user?.email]);
+  }, [user]);
 
   useEffect(() => {
-    load();
+    queueMicrotask(() => void load());
   }, [load]);
 
   const t = data?.totals;

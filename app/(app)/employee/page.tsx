@@ -78,7 +78,7 @@ export default function EmployeeHomePage() {
           <tbody>
             <tr>
               <td colSpan={3} style={{ padding: "24px 8px", fontSize: 13, color: "var(--ink-500)", textAlign: "center" }}>
-                No payslips yet — they'll appear here once payroll runs.
+                No payslips yet — they&apos;ll appear here once payroll runs.
               </td>
             </tr>
           </tbody>
