@@ -13,14 +13,6 @@ export interface PayslipLine {
   amount: number;
 }
 
-/**
- * Header emblem rendered top-right of the payslip — a template variable.
- * "zw"   → built-in CSS Zimbabwe flag
- * "none" → no emblem
- * {image} → any flag / company logo image URL
- */
-export type PayslipFlag = "zw" | "none" | { image: string; alt?: string };
-
 export interface PayslipDoc {
   // Employer
   company: string;
@@ -40,8 +32,6 @@ export interface PayslipDoc {
   earnings: PayslipLine[];
   deductions: PayslipLine[];
   currencyLabel: string;
-  // Header emblem — swappable per company/country
-  flag: PayslipFlag;
 }
 
 const rand = (seed: number, min: number, max: number) => {
@@ -112,7 +102,6 @@ export function buildPayslipDoc(opts: {
     earnings,
     deductions,
     currencyLabel: "Dollar",
-    flag: "zw",
     ...opts.overrides,
   };
 }

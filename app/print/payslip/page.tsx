@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { PAYSLIP_KEY, PayslipDoc, PayslipFlag } from "@/lib/payslip";
+import { PAYSLIP_KEY, PayslipDoc } from "@/lib/payslip";
 
 const EMPTY: PayslipDoc = {
   company: "",
@@ -18,7 +18,6 @@ const EMPTY: PayslipDoc = {
   earnings: [],
   deductions: [],
   currencyLabel: "Dollar",
-  flag: "none",
 };
 
 const emptySubscribe = () => () => {};
@@ -44,50 +43,6 @@ function readDoc(): PayslipDoc {
 
 const fmt = (n: number) =>
   n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-/** Simplified Zimbabwe flag — 7 stripes + white triangle + red star. */
-function ZwFlag() {
-  const stripes = ["#009543", "#FFD200", "#D21034", "#000000", "#D21034", "#FFD200", "#009543"];
-  return (
-    <div style={{ position: "relative", width: 96, height: 60, flexShrink: 0 }}>
-      {stripes.map((c, i) => (
-        <div key={i} style={{ height: 60 / 7, background: c }} />
-      ))}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: 0,
-          height: 0,
-          borderTop: "30px solid transparent",
-          borderBottom: "30px solid transparent",
-          borderLeft: "42px solid #ffffff",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: 7,
-          top: "50%",
-          transform: "translateY(-52%)",
-          color: "#D21034",
-          fontSize: 24,
-          lineHeight: 1,
-        }}
-      >
-        ★
-      </div>
-    </div>
-  );
-}
-
-/** Header emblem — whichever flag/logo the doc supplies. */
-function FlagEmblem({ flag }: { flag: PayslipFlag | undefined }) {
-  if (!flag || flag === "none") return null;
-  if (flag === "zw") return <ZwFlag />;
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={flag.image} alt={flag.alt ?? "Flag"} style={{ width: 96, height: 60, objectFit: "contain" }} />;
-}
 
 const DetailCell = ({ label, value }: { label: string; value: string }) => (
   <div className="ps-detail">
@@ -117,8 +72,7 @@ export default function PrintPayslipPage() {
         .pt-ghost { background: #fff; color: #141414; }
         .sheet { width: 277mm; max-width: 100%; background: #fff; padding: 10mm 14mm; color: #111; box-shadow: 0 4px 24px rgba(0,0,0,.35); }
         .ps-frame { border: 1px solid #333; border-top: 3px solid #333; padding: 18px 22px; }
-        .ps-head { position: relative; text-align: center; margin-bottom: 10px; }
-        .ps-head .zw { position: absolute; right: 0; top: 0; }
+        .ps-head { text-align: center; margin-bottom: 10px; }
         .ps-company { font-size: 24px; font-weight: 800; letter-spacing: .01em; }
         .ps-addr { font-size: 13px; color: #333; margin: 2px 0 10px; }
         .ps-title { font-size: 17px; font-weight: 700; }
@@ -154,7 +108,6 @@ export default function PrintPayslipPage() {
       <div className="sheet">
         <div className="ps-frame">
           <div className="ps-head">
-            <div className="zw"><FlagEmblem flag={doc.flag} /></div>
             <div className="ps-company">{doc.company || "Company Name"}</div>
             <div className="ps-addr">{doc.companyAddress}</div>
             <div className="ps-title">Payslip for the period of {doc.period}</div>
