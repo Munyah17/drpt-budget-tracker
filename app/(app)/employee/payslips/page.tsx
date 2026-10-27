@@ -4,37 +4,49 @@ import { useState, useMemo } from "react";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import { useAppData } from "@/lib/AppDataContext";
-import { downloadBlob } from "@/lib/download";
+import { buildPayslipDoc, openPayslipPdf, payslipTotals, usd, PayslipDoc } from "@/lib/payslip";
 
 interface Payslip {
   period: string;
-  gross: string;
-  deductions: string;
-  net: string;
   payDate: string;
   status: string;
+  doc: PayslipDoc;
 }
 
-const PAYSLIPS_DATA: Payslip[] = [];
+const PAYSLIP_PERIODS: Omit<Payslip, "doc">[] = [
+  { period: "August 2026", payDate: "Aug 25, 2026", status: "Paid" },
+  { period: "September 2026", payDate: "Sep 25, 2026", status: "Paid" },
+  { period: "October 2026", payDate: "Oct 25, 2026", status: "Pending" },
+];
 
 export default function EmployeePayslipsPage() {
   const { user, toast } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
+  const payslips = useMemo<Payslip[]>(
+    () =>
+      PAYSLIP_PERIODS.map((p) => ({
+        ...p,
+        doc: buildPayslipDoc({
+          employee: user?.name ?? "Emma Wilson",
+          period: p.period,
+          company: user?.organisation ?? undefined,
+        }),
+      })),
+    [user]
+  );
+
   const filteredData = useMemo(() => {
-    return PAYSLIPS_DATA.filter((p) =>
+    return payslips.filter((p) =>
       (!statusFilter || p.status === statusFilter) &&
       p.period.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search, statusFilter]);
+  }, [payslips, search, statusFilter]);
 
   const handleDownload = (p: Payslip) => {
-    downloadBlob(
-      `payslip-${p.period.replace(/\s+/g, "-").toLowerCase()}.txt`,
-      `PAYSLIP — ${p.period}\nEmployer: ${user?.organisation ?? "Organisation"}\nEmployee: ${user?.name ?? "Employee"}\n\nGross Pay: ${p.gross}\nDeductions: ${p.deductions}\nNet Pay: ${p.net}\nPay Date: ${p.payDate}\nStatus: ${p.status}\n`
-    );
-    toast(`Payslip for ${p.period} downloaded`, "download");
+    openPayslipPdf(p.doc);
+    toast(`Payslip for ${p.period} opened — save as PDF`, "download");
   };
 
   return (
@@ -73,19 +85,22 @@ export default function EmployeePayslipsPage() {
                 </td>
               </tr>
             )}
-            {filteredData.map((p, idx) => (
+            {filteredData.map((p, idx) => {
+              const t = payslipTotals(p.doc);
+              return (
               <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{p.period}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.gross}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.deductions}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>{p.net}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{usd(t.gross)}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{usd(t.deductions)}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>{usd(t.net)}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.payDate}</td>
-                <td style={{ padding: "12px 8px" }}><span className="badge badge-green">{p.status}</span></td>
+                <td style={{ padding: "12px 8px" }}><span className={`badge ${p.status === "Paid" ? "badge-green" : "badge-amber"}`}>{p.status}</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(p)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(p)}><Icon name="download" size={14} style={{ marginRight: 4 }} />PDF</button>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -5,14 +5,13 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
-import { downloadBlob } from "@/lib/download";
+import { buildPayslipDoc, openPayslipPdf, payslipTotals, usd, PayslipDoc } from "@/lib/payslip";
 
 interface Payslip {
   employee: string;
   period: string;
-  gross: string;
-  net: string;
   status: string;
+  doc: PayslipDoc;
 }
 
 const PAYSLIPS_DATA: Payslip[] = [];
@@ -35,7 +34,7 @@ function GenerateModal({ onGenerate, onClose }: { onGenerate: (period: string) =
 }
 
 export default function CorporatePayslipsPage() {
-  const { toast } = useAppData();
+  const { toast, user } = useAppData();
   const [payslips, setPayslips] = useState<Payslip[]>(PAYSLIPS_DATA);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -49,11 +48,8 @@ export default function CorporatePayslipsPage() {
   }, [payslips, search, statusFilter]);
 
   const handleDownload = (p: Payslip) => {
-    downloadBlob(
-      `payslip-${p.employee.replace(/\s+/g, "-").toLowerCase()}-${p.period.replace(/\s+/g, "-").toLowerCase()}.txt`,
-      `PAYSLIP — ${p.period}\nEmployee: ${p.employee}\n\nGross Pay: ${p.gross}\nNet Pay: ${p.net}\nStatus: ${p.status}\n`
-    );
-    toast(`Payslip for ${p.employee} downloaded`, "download");
+    openPayslipPdf(p.doc);
+    toast(`Payslip for ${p.employee} opened — save as PDF`, "download");
   };
 
   const handleSend = (p: Payslip) => {
@@ -65,7 +61,16 @@ export default function CorporatePayslipsPage() {
     const existing = new Set(payslips.map((p) => `${p.employee}|${p.period}`));
     const additions = ["Emma Wilson", "David Brown", "Lisa Chen", "James Patel"]
       .filter((e) => !existing.has(`${e}|${period}`))
-      .map((employee) => ({ employee, period, gross: "$4,200", net: "$3,180", status: "Pending" }));
+      .map((employee) => ({
+        employee,
+        period,
+        status: "Pending",
+        doc: buildPayslipDoc({
+          employee,
+          period,
+          company: user?.organisation ?? "Acme Corporation",
+        }),
+      }));
     setPayslips((prev) => [...prev, ...additions]);
     toast(`${additions.length} payslips generated for ${period}`);
     setGenOpen(false);
@@ -110,25 +115,28 @@ export default function CorporatePayslipsPage() {
                 </td>
               </tr>
             )}
-            {filteredData.map((p, idx) => (
+            {filteredData.map((p, idx) => {
+              const t = payslipTotals(p.doc);
+              return (
               <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{p.employee}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.period}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.gross}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>{p.net}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13 }}>{usd(t.gross)}</td>
+                <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>{usd(t.net)}</td>
                 <td style={{ padding: "12px 8px" }}>
                   <span className={`badge ${p.status === "Delivered" ? "badge-green" : "badge-amber"}`}>
                     {p.status}
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(p)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(p)}><Icon name="download" size={14} style={{ marginRight: 4 }} />PDF</button>
                   {p.status !== "Delivered" && (
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(p)}><Icon name="send" size={14} style={{ marginRight: 4 }} />Send</button>
                   )}
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
