@@ -28,6 +28,54 @@ const EVENT_META: Record<NotifyEvent, { emoji: string; label: string }> = {
   transfer_intent: { emoji: "🏦", label: "Direct transfer started" },
 };
 
+/** Shared SMTP transport — null when SMTP_* env is not configured. */
+function mailTransport() {
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!host || !user || !pass) return null;
+  return nodemailer.createTransport({
+    host,
+    port: Number(process.env.SMTP_PORT || 465),
+    secure: Number(process.env.SMTP_PORT || 465) === 465,
+    auth: { user, pass },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+  });
+}
+
+/**
+ * Send an email to an arbitrary recipient through the same SMTP relay.
+ * Used by bill reminders; notifyAdmin() below is the fixed admin-address flow.
+ */
+export async function sendMail(opts: {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+}): Promise<boolean> {
+  const transport = mailTransport();
+  const user = process.env.SMTP_USER;
+  if (!transport || !user) {
+    console.warn("[notify] SMTP not configured — sendMail skipped");
+    return false;
+  }
+  try {
+    await transport.sendMail({
+      from: process.env.NOTIFY_FROM || `WellSpend <${user}>`,
+      to: opts.to,
+      subject: opts.subject,
+      text: opts.text,
+      html: opts.html,
+    });
+    return true;
+  } catch (err) {
+    console.error("[notify] sendMail failed:", err);
+    return false;
+  }
+}
+
 const clip = (v: unknown, max = 160): string =>
   String(v ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, max);
 
@@ -38,11 +86,10 @@ export async function notifyAdmin(
   event: NotifyEvent,
   details: { email?: string; name?: string; method?: string; detail?: string } = {},
 ): Promise<boolean> {
-  const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
   const to = process.env.NOTIFY_TO || user;
-  if (!host || !user || !pass || !to) {
+  const transport = mailTransport();
+  if (!transport || !user || !to) {
     console.warn("[notify] SMTP not configured — skipped", event);
     return false;
   }
@@ -78,15 +125,6 @@ export async function notifyAdmin(
   const text = fields.map(([k, v]) => `${k}: ${v}`).join("\n");
 
   try {
-    const transport = nodemailer.createTransport({
-      host,
-      port: Number(process.env.SMTP_PORT || 465),
-      secure: Number(process.env.SMTP_PORT || 465) === 465,
-      auth: { user, pass },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-    });
     await transport.sendMail({
       from: process.env.NOTIFY_FROM || `WellSpend <${user}>`,
       to,
