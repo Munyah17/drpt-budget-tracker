@@ -238,14 +238,16 @@ export default function LandingPage() {
         <div className="hero-badge" style={{ margin: "0 auto 14px" }}>
           <Icon name="briefcase" size={13} /> WellSpend for Business
         </div>
-        <h2>
-          Built for every business —<br />
-          <em>big or small.</em>
+        <h2 style={{ fontSize: "clamp(38px, 6vw, 60px)", fontWeight: 800, letterSpacing: "-1.5px", lineHeight: 1.05 }}>
+          Unified HR Solutions
         </h2>
+        <p style={{ fontSize: 16, fontWeight: 700, color: "var(--rose-600)", margin: "6px auto 10px", letterSpacing: 0.4 }}>
+          Payroll · Leave · Claims · Loans · People — all in one place.
+        </p>
         <p className="sub" style={{ maxWidth: 640 }}>
           Shop, clinic, school, NGO or startup — if you pay people, WellSpend works for you.
-          Run payroll, leave, claims and staff loans in one place, and every person on your
-          team gets their own money app. People who can manage their pay, stay.
+          Every person on your team gets their own money app, and people who can
+          manage their pay, stay.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14, maxWidth: 680, margin: "26px auto 34px" }}>
           {CORP_STATS.map((s) => (
