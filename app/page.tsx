@@ -53,41 +53,41 @@ const FEATURES = [
 const CORP_FEATURES = [
   {
     icon: "dollar-sign",
-    title: "Run payroll like clockwork",
-    text: "Draft, review, approve, pay — four clicks between you and a clean pay run. Bonuses and corrections ride an off-cycle run, and every approval leaves an audit trail.",
+    title: "Pay everyone in minutes",
+    text: "Pick a date, check the list, press pay. Bonuses and fixes go in a quick extra run — done.",
   },
   {
     icon: "users",
-    title: "Silence the HR inbox",
-    text: "Employees download their own payslips, request leave and apply for advances from their own portal. The questions stop coming — the work still gets done.",
+    title: "Staff help themselves",
+    text: "Payslips, leave requests and advances happen in each person's own app. No more WhatsApping HR for a payslip.",
   },
   {
     icon: "calendar",
-    title: "Know who's off before you schedule",
-    text: "One-click leave approvals feed a live team calendar, so you never promise a client someone who's on leave — or double-book the front desk.",
+    title: "See who's off, at a glance",
+    text: "Approve leave in one tap and everyone sees the same who's-away calendar. No double-booking, no surprises.",
   },
   {
     icon: "receipt",
-    title: "Advances without the awkwardness",
-    text: "Staff apply for loans and advances in-app, you approve in one tap, and repayments deduct themselves from payslips until it's settled. No spreadsheets, no reminders.",
+    title: "Loans that pay themselves back",
+    text: "Staff apply, you approve, and repayments come off their payslip on their own. No chasing, no spreadsheets.",
   },
   {
     icon: "user-circle",
-    title: "Control without micromanaging",
-    text: "HR approves, the payroll officer creates, finance signs off. Roles and permissions mean everyone touches exactly what they should — and nothing they shouldn't.",
+    title: "Everyone sees only their part",
+    text: "Give HR, accounts and managers their own access — pay info stays private, approvals stay in order.",
   },
   {
     icon: "banknote",
-    title: "Payday in one file",
-    text: "Export a ready-to-upload disbursement file for your bank or Ecocash for Business. Whole company paid before your coffee goes cold.",
+    title: "One file pays them all",
+    text: "Download one file for your bank or EcoCash for Business and the whole team is paid. That's payday, finished.",
   },
 ];
 
 const CORP_STATS = [
-  { v: "4 clicks", k: "from draft to paid payroll" },
-  { v: "0", k: "payslip PDFs to email by hand" },
-  { v: "100%", k: "of your staff get WellSpend free" },
-  { v: "1 day", k: "to onboard your whole organisation" },
+  { v: "4 clicks", k: "to pay your whole team" },
+  { v: "0 papers", k: "payslips printed or emailed" },
+  { v: "100%", k: "of staff get the app free" },
+  { v: "1 day", k: "to get set up" },
 ];
 
 const STEPS = [
@@ -239,13 +239,13 @@ export default function LandingPage() {
           <Icon name="briefcase" size={13} /> WellSpend for Business
         </div>
         <h2>
-          The benefit that pays for itself<br />
-          <em>every single payday.</em>
+          Built for every business —<br />
+          <em>big or small.</em>
         </h2>
         <p className="sub" style={{ maxWidth: 640 }}>
-          Your organisation runs payroll, leave, claims and staff loans in one calm dashboard —
-          and every employee gets the full WellSpend budget tracker with their account.
-          A team that can manage its money is a team that stays.
+          Shop, clinic, school, NGO or startup — if you pay people, WellSpend works for you.
+          Run payroll, leave, claims and staff loans in one place, and every person on your
+          team gets their own money app. People who can manage their pay, stay.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14, maxWidth: 680, margin: "26px auto 34px" }}>
           {CORP_STATS.map((s) => (
@@ -280,8 +280,8 @@ export default function LandingPage() {
           </Link>
         </div>
         <p style={{ textAlign: "center", fontSize: 13, color: "var(--ink-500)", marginTop: 14, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          We onboard your organisation, you invite your staff — payroll runs in week one,
-          and your team is budgeting the same day.
+          Any size, any industry — tell us about your business and we&apos;ll have your team
+          up and running within a day.
         </p>
       </section>
 
