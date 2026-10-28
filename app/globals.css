@@ -123,8 +123,9 @@
   .landing-nav .landing-logo{ display:none; }
   .landing-nav{ justify-content:flex-end; padding:14px 5vw; }
   .landing-nav-links{ margin-left:auto; gap:10px; }
-  .landing-nav-links .btn{ white-space:nowrap; flex-shrink:0; }
+  .landing-nav-links .btn{ white-space:nowrap; flex-shrink:0; padding:10px 16px; font-size:13px; }
   .nav-cta-full{ display:none; }
+  .nav-cta-short{ display:inline; }
   .landing-section{ padding:52px 6vw; }
   .landing-hero{ padding:52px 6vw 24px; }
 }
@@ -283,7 +284,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .login-form .btn-primary{ width:100%; padding:14px; font-size:14.5px; }
 .login-footer{ text-align:center; margin-top:22px; font-size:13px; color:var(--ink-500); }
 .login-footer a{ color:var(--rose-600); font-weight:700; }
-@media (max-width:760px){ .login-card{ grid-template-columns:1fr; } .login-visual{ display:none; } }
+@media (max-width:760px){
+  .login-card{ grid-template-columns:1fr; max-width:460px; }
+  .login-visual{ display:none; }
+  .login-form{ padding:34px 22px; }
+}
 
 /* ============================================================
    APP SHELL
