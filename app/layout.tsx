@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "@fontsource-variable/source-sans-3";
 import { AppDataProvider } from "@/lib/AppDataContext";
@@ -9,6 +9,12 @@ import PwaRegister from "@/components/PwaRegister";
 export const metadata: Metadata = {
   title: "WellSpend Budget Tracker ❤",
   description: "Track income, expenses and savings goals in one calm, beautiful place.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: "#c81057",
 };
 
