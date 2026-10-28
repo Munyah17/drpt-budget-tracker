@@ -53,34 +53,41 @@ const FEATURES = [
 const CORP_FEATURES = [
   {
     icon: "dollar-sign",
-    title: "Payroll Runs & Approvals",
-    text: "Draft → review → approve → pay. Off-cycle runs for bonuses and corrections, with an audit trail.",
+    title: "Run payroll like clockwork",
+    text: "Draft, review, approve, pay — four clicks between you and a clean pay run. Bonuses and corrections ride an off-cycle run, and every approval leaves an audit trail.",
   },
   {
     icon: "users",
-    title: "Employee Self-Service",
-    text: "Every employee gets their own portal — payslips, leave requests, salary advances and benefits.",
+    title: "Silence the HR inbox",
+    text: "Employees download their own payslips, request leave and apply for advances from their own portal. The questions stop coming — the work still gets done.",
   },
   {
     icon: "calendar",
-    title: "Leave & Team Calendar",
-    text: "One-click approvals and a live who's-off calendar, synced straight into payroll days worked.",
+    title: "Know who's off before you schedule",
+    text: "One-click leave approvals feed a live team calendar, so you never promise a client someone who's on leave — or double-book the front desk.",
   },
   {
     icon: "receipt",
-    title: "Claims & Staff Loans",
-    text: "Expense claims and salary advances with automatic deductions applied to payslips.",
+    title: "Advances without the awkwardness",
+    text: "Staff apply for loans and advances in-app, you approve in one tap, and repayments deduct themselves from payslips until it's settled. No spreadsheets, no reminders.",
   },
   {
     icon: "user-circle",
-    title: "Roles & Permissions",
-    text: "HR, payroll officer and finance approver roles — approvers approve, creators create.",
+    title: "Control without micromanaging",
+    text: "HR approves, the payroll officer creates, finance signs off. Roles and permissions mean everyone touches exactly what they should — and nothing they shouldn't.",
   },
   {
     icon: "banknote",
-    title: "Bank & Ecocash Payouts",
-    text: "Export bulk disbursement files for your bank or Ecocash for Business in one click.",
+    title: "Payday in one file",
+    text: "Export a ready-to-upload disbursement file for your bank or Ecocash for Business. Whole company paid before your coffee goes cold.",
   },
+];
+
+const CORP_STATS = [
+  { v: "4 clicks", k: "from draft to paid payroll" },
+  { v: "0", k: "payslip PDFs to email by hand" },
+  { v: "100%", k: "of your staff get WellSpend free" },
+  { v: "1 day", k: "to onboard your whole organisation" },
 ];
 
 const STEPS = [
@@ -228,11 +235,26 @@ export default function LandingPage() {
 
       {/* Corporate partnership */}
       <section className="landing-section" id="business">
-        <h2>WellSpend for Business</h2>
-        <p className="sub">
-          Payroll, HR and money tools your whole organisation runs on — while every employee
-          gets the full WellSpend budget tracker with their account.
+        <div className="hero-badge" style={{ margin: "0 auto 14px" }}>
+          <Icon name="briefcase" size={13} /> WellSpend for Business
+        </div>
+        <h2>
+          The benefit that pays for itself<br />
+          <em>every single payday.</em>
+        </h2>
+        <p className="sub" style={{ maxWidth: 640 }}>
+          Your organisation runs payroll, leave, claims and staff loans in one calm dashboard —
+          and every employee gets the full WellSpend budget tracker with their account.
+          A team that can manage its money is a team that stays.
         </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14, maxWidth: 680, margin: "26px auto 34px" }}>
+          {CORP_STATS.map((s) => (
+            <div key={s.k} className="glass-card" style={{ padding: "14px 10px", textAlign: "center" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "var(--rose-600)" }}>{s.v}</div>
+              <div style={{ fontSize: 11.5, color: "var(--ink-500)", marginTop: 2 }}>{s.k}</div>
+            </div>
+          ))}
+        </div>
         <div className="feature-grid">
           {CORP_FEATURES.map((f) => (
             <div className="feature-card glass-card" key={f.title}>
@@ -242,23 +264,24 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 28 }}>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 30 }}>
           <a
-            href="https://wa.me/263718560128?text=Hi%20—%20we%27d%20like%20to%20onboard%20our%20organisation%20onto%20WellSpend%20for%20Business."
+            href="https://wa.me/263718560128?text=Hi%20—%20we%27d%20like%20a%20walkthrough%20of%20WellSpend%20for%20Business%20for%20our%20organisation."
             target="_blank"
             rel="noreferrer"
             className="btn btn-primary"
-            style={{ padding: "13px 26px" }}
+            style={{ padding: "14px 28px", fontSize: 15 }}
             onClick={() => trackEvent("corp_interest")}
           >
-            <Icon name="send" size={15} style={{ marginRight: 8 }} /> Partner with us
+            <Icon name="send" size={15} style={{ marginRight: 8 }} /> Book a free walkthrough
           </a>
-          <Link href="/login" className="btn" style={{ padding: "13px 26px", background: "#fff", color: "#111", border: "1px solid var(--card-border)" }}>
+          <Link href="/login" className="btn" style={{ padding: "14px 28px", fontSize: 15, background: "#fff", color: "#111", border: "1px solid var(--card-border)" }}>
             Corporate sign in
           </Link>
         </div>
-        <p style={{ textAlign: "center", fontSize: 12.5, color: "var(--ink-500)", marginTop: 14 }}>
-          We onboard your organisation, you invite your staff — they&apos;re budgeting the same day.
+        <p style={{ textAlign: "center", fontSize: 13, color: "var(--ink-500)", marginTop: 14, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
+          We onboard your organisation, you invite your staff — payroll runs in week one,
+          and your team is budgeting the same day.
         </p>
       </section>
 
