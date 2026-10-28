@@ -26,6 +26,7 @@ function LoginForm() {
   const [fadingOut, setFadingOut] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
   const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
   const [name, setName] = useState("");
 
@@ -90,7 +91,7 @@ function LoginForm() {
 
         // Best-effort sign-in in the background — either way, the next stop
         // is payment. No options, no freebies.
-        void login(email, password);
+        void login(email, password, true);
 
         setFadingOut(true);
         toast(`Account created — one last step: pay from ${minPriceLabel()} to activate.`, "check-circle");
@@ -99,7 +100,7 @@ function LoginForm() {
         }, 350);
       }
     } else {
-      const result = await login(email, password);
+      const result = await login(email, password, remember);
 
       if (result.success) {
         trackEvent("login", { role: result.role }, { email });
@@ -177,7 +178,7 @@ function LoginForm() {
             {!isSignup && (
               <div className="field-row">
                 <label className="remember">
-                  <input type="checkbox" defaultChecked style={{ accentColor: "var(--rose-500)" }} /> Remember me
+                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ accentColor: "var(--rose-500)" }} /> Remember me
                 </label>
                 <a href="#">Forgot password?</a>
               </div>

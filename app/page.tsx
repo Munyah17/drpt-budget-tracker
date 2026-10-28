@@ -44,9 +44,24 @@ const FEATURES = [
     text: "Ask questions about your money in plain language and get instant answers.",
   },
   {
+    icon: "shield",
+    title: "Safe to Spend",
+    text: "See the exact amount that's safe to spend today after bills and goals are covered.",
+  },
+  {
+    icon: "refresh-cw",
+    title: "Rollover & Sinking Funds",
+    text: "Leftover budget rolls into next month — and side-pots build up for the big, rare expenses.",
+  },
+  {
     icon: "banknote",
     title: "Every Currency",
     text: "USD, ZWG, ZAR and every ISO currency — your money, your format.",
+  },
+  {
+    icon: "bell",
+    title: "Bills Never Late",
+    text: "Renewal warnings before a subscription or bill charges you — no surprise deductions.",
   },
 ];
 
@@ -98,6 +113,26 @@ const STEPS = [
   {
     title: "Pay $1 once",
     text: "One dollar. Once. Paynow, card, Ecocash or bank transfer — your pick.",
+  },
+  {
+    title: "Pick your currency",
+    text: "USD, ZWG, ZAR and every ISO currency — set once, formatted everywhere.",
+  },
+  {
+    title: "Set your budgets",
+    text: "Give each category a monthly number — that's your spending plan done.",
+  },
+  {
+    title: "Add your accounts",
+    text: "Bank, EcoCash, cash — list where your money actually lives.",
+  },
+  {
+    title: "Log as you spend",
+    text: "A few seconds per entry — or bulk-import a statement CSV.",
+  },
+  {
+    title: "Watch it add up",
+    text: "Charts, bills, safe-to-spend — the dashboard keeps you honest.",
   },
   {
     title: "Own your money",
@@ -238,10 +273,10 @@ export default function LandingPage() {
         <div className="hero-badge" style={{ margin: "0 auto 14px" }}>
           <Icon name="briefcase" size={13} /> WellSpend for Business
         </div>
-        <h2 style={{ fontSize: "clamp(38px, 6vw, 60px)", fontWeight: 800, letterSpacing: "-1.5px", lineHeight: 1.05 }}>
+        <h2 style={{ fontSize: "clamp(30px, 4.5vw, 46px)", fontWeight: 800, letterSpacing: "-1.2px", lineHeight: 1.05 }}>
           Unified HR Solutions
         </h2>
-        <p style={{ fontSize: 16, fontWeight: 700, color: "var(--rose-600)", margin: "6px auto 10px", letterSpacing: 0.4 }}>
+        <p style={{ fontSize: 16, fontWeight: 700, color: "var(--rose-600)", margin: "6px auto 10px", letterSpacing: 0.4, textAlign: "center" }}>
           Payroll · Leave · Claims · Loans · People — all in one place.
         </p>
         <p className="sub" style={{ maxWidth: 640 }}>
@@ -312,6 +347,35 @@ export default function LandingPage() {
             <Link href="/login?signup=1" className="btn btn-primary" style={{ width: "100%" }}>
               Create account & pay $1
             </Link>
+          </div>
+
+          <div className="pricing-card glass-card">
+            <span className="chip"><Icon name="briefcase" size={12} /> WellSpend for Business</span>
+            <div className="price" style={{ fontSize: 40, lineHeight: 1.15 }}>Unified<br />HR</div>
+            <ul>
+              {[
+                "Payroll runs & multi-step approvals",
+                "Employee self-service portal",
+                "Leave calendar, claims & staff loans",
+                "Bank & EcoCash payout files",
+                "Every employee gets WellSpend free",
+                "Setup & walkthrough for your whole team",
+              ].map((item) => (
+                <li key={item}>
+                  <Icon name="check-circle" size={16} /> {item}
+                </li>
+              ))}
+            </ul>
+            <a
+              href="https://wa.me/263718560128?text=Hi%20—%20we%27d%20like%20a%20demo%20of%20WellSpend%20for%20Business%20(Unified%20HR)."
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary"
+              style={{ width: "100%" }}
+              onClick={() => trackEvent("corp_interest")}
+            >
+              Arrange a demo or talk
+            </a>
           </div>
         </div>
       </section>

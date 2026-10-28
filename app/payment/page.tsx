@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
-import { priceUsd, priceLabel, minPriceUsd, minPriceLabel, TRANSFER_FEE_USD } from "@/lib/pricing";
+import { priceUsd, priceLabel, minPriceUsd, minPriceLabel } from "@/lib/pricing";
 import Icon from "@/components/Icon";
 
 type PaymentMethod = "paynow" | "stripe" | "ecocash" | "bank";
@@ -236,7 +236,7 @@ function PaymentInner() {
             <div style={{ fontSize: 13, lineHeight: 1.7 }}>
               {detailRow("Number", "+263 77 390 9307")}
               {detailRow("Name", "Munyaradzi J Muzvidziwa")}
-              {detailRow("Amount", `$${total.toFixed(2)} (includes $${TRANSFER_FEE_USD.toFixed(2)} withdrawal fee)`)}
+              {detailRow("Amount", `$${total.toFixed(2)}`)}
             </div>
           </div>
         )}
@@ -249,7 +249,7 @@ function PaymentInner() {
               {detailRow("Bank", "FBC Bank")}
               {detailRow("Branch", "FBC Center Branch")}
               {detailRow("USD Account", "6870465460146")}
-              {detailRow("Amount", `$${total.toFixed(2)} (includes $${TRANSFER_FEE_USD.toFixed(2)} fee)`)}
+              {detailRow("Amount", `$${total.toFixed(2)}`)}
             </div>
           </div>
         )}

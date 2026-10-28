@@ -36,7 +36,7 @@ interface AppDataContextValue {
   user: UserProfile | null;
   /** True while browsing with the throwaway demo account — nothing is persisted */
   isDemo: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; role?: UserRole; error?: string }>;
+  login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; role?: UserRole; error?: string }>;
   /** One-click demo sign-in for prospective customers — in-memory only */
   loginDemo: () => void;
   logout: () => void;
@@ -99,6 +99,37 @@ let toastSeq = 1;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/** "Remember me" persistence: remembered sessions live in localStorage and
+ *  survive browser restarts; otherwise the profile/session sits in
+ *  sessionStorage and ends when the tab closes. */
+const USER_KEY = "drpatie-user";
+const REMEMBER_KEY = "drpatie-remember";
+const isRemembered = () =>
+  typeof window !== "undefined" && localStorage.getItem(REMEMBER_KEY) === "1";
+
+function persistUser(p: UserProfile) {
+  const v = JSON.stringify(p);
+  if (isRemembered()) {
+    localStorage.setItem(USER_KEY, v);
+    sessionStorage.removeItem(USER_KEY);
+  } else {
+    sessionStorage.setItem(USER_KEY, v);
+    localStorage.removeItem(USER_KEY);
+  }
+}
+
+function storedUser(): string | null {
+  if (typeof window === "undefined") return null;
+  return (isRemembered() ? localStorage.getItem(USER_KEY) : null) ?? sessionStorage.getItem(USER_KEY);
+}
+
+function clearStoredUser() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(USER_KEY);
+  sessionStorage.removeItem(USER_KEY);
+  localStorage.removeItem(REMEMBER_KEY);
+}
+
 /** Profile used for the public "See Demo" walkthrough — regular user, paid, unsaved */
 const DEMO_USER_PROFILE: UserProfile = {
   id: "demo-preview",
@@ -144,22 +175,32 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       setSyncIntervalMinState(savedSync);
     }
 
-    // Restore locally persisted profile (demo/admin/corporate/employee logins
-    // have no Supabase session, so this is the only thing that survives reload)
+    // Sessions saved before "Remember me" existed are force-cleared once, so
+    // nobody is silently auto-logged-in from a stale always-on token.
+    const flag = localStorage.getItem(REMEMBER_KEY);
+    if (flag !== "1" && flag !== "0") {
+      void supabase.auth.signOut();
+      clearStoredUser();
+    }
+
+    // Restore persisted profile (remembered → localStorage, current-tab
+    // session → sessionStorage; nothing survives a closed browser unremembered)
     try {
-      const raw = localStorage.getItem("drpatie-user");
+      const raw = storedUser();
       if (raw) {
         const profile = JSON.parse(raw) as UserProfile;
         setUser(profile);
         setIsAuthenticated(true);
       }
     } catch {
-      localStorage.removeItem("drpatie-user");
+      clearStoredUser();
     }
 
-    // Check for existing Supabase session
+    // Check for existing Supabase session — only when the user opted into
+    // "Remember me"; unremembered sessions never restore across visits.
     const checkSession = async () => {
       try {
+        if (!isRemembered()) return;
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           const { data: profile } = await supabase
@@ -216,7 +257,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
             name: d.name || prev.name,
             currency: (d.currency as UserProfile["currency"]) || prev.currency,
           };
-          localStorage.setItem("drpatie-user", JSON.stringify(next));
+          persistUser(next);
           return next;
         });
       })
@@ -404,7 +445,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       const next = { ...prev, ...patch };
       // Demo sessions are never persisted
       if (next.id !== DEMO_USER_PROFILE.id) {
-        localStorage.setItem("drpatie-user", JSON.stringify(next));
+        persistUser(next);
       }
       return next;
     });
@@ -452,8 +493,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     return [...inc, ...exp].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [income, expenses]);
 
-  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; role?: UserRole; error?: string }> => {
+  const login = useCallback(async (email: string, password: string, remember = true): Promise<{ success: boolean; role?: UserRole; error?: string }> => {
     try {
+      // Record the choice BEFORE signing in — the Supabase storage adapter
+      // routes the token to localStorage or sessionStorage off this flag.
+      localStorage.setItem(REMEMBER_KEY, remember ? "1" : "0");
+
       // Drop any pre-existing session first — a stale session would otherwise
       // override this identity on the next refresh via checkSession().
       await supabase.auth.signOut();
@@ -481,7 +526,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         };
         setUser(userProfile);
         setIsAuthenticated(true);
-        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        persistUser(userProfile);
         return { success: true, role: "employee" };
       }
 
@@ -496,7 +541,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         };
         setUser(userProfile);
         setIsAuthenticated(true);
-        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        persistUser(userProfile);
         return { success: true, role: "corporate" };
       }
 
@@ -512,7 +557,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         };
         setUser(userProfile);
         setIsAuthenticated(true);
-        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        persistUser(userProfile);
         return { success: true, role: "admin" };
       }
 
@@ -528,7 +573,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         };
         setUser(userProfile);
         setIsAuthenticated(true);
-        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        persistUser(userProfile);
         return { success: true, role: "user" };
       }
 
@@ -572,7 +617,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         };
         setUser(userProfile);
         setIsAuthenticated(true);
-        localStorage.setItem("drpatie-user", JSON.stringify(userProfile));
+        persistUser(userProfile);
         return { success: true, role: userRole };
       }
 
@@ -607,7 +652,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setIsAuthenticated(false);
     setIsDemo(false);
-    localStorage.removeItem("drpatie-user");
+    clearStoredUser();
     // Reset sync state so the next login re-pulls its own snapshot
     hydrated.current = false;
     dataSynced.current = false;
