@@ -99,7 +99,8 @@ export default function LandingPage() {
           <a href="#pricing" className="nav-link">Pricing</a>
           <Link href="/login" className="btn btn-ghost btn-sm">Sign in</Link>
           <Link href="/login?signup=1" className="btn btn-primary btn-sm">
-            Get Started — $1
+            <span className="nav-cta-full">Get Started — $1</span>
+            <span className="nav-cta-short">Start — $1</span>
           </Link>
         </div>
       </nav>
