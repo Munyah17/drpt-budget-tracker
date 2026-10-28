@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { CURRENCIES } from "@/lib/data";
 import { Currency } from "@/lib/types";
-import { currencySymbol } from "@/lib/format";
-import { downloadBlob } from "@/lib/download";
+import { currencySymbol, fmt } from "@/lib/format";
+import { downloadBlob, downloadCsv } from "@/lib/download";
+import { useFinancePrefs, updatePrefs, toCsvRows, whatsappLink } from "@/lib/financeInsights";
 import Icon from "@/components/Icon";
 
 type SettingsTab = "preferences" | "notifications" | "security" | "backup";
@@ -22,7 +23,8 @@ function Switch({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 }
 
 export default function SettingsPage() {
-  const { theme, toggleTheme, toast, currency, setCurrency, user, logout, allTransactions, syncIntervalMin, setSyncIntervalMin } = useAppData();
+  const { theme, toggleTheme, toast, currency, setCurrency, user, logout, allTransactions, syncIntervalMin, setSyncIntervalMin, budgets } = useAppData();
+  const prefs = useFinancePrefs();
   const [tab, setTab] = useState<SettingsTab>("preferences");
   const [emailNotifs, setEmailNotifs] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
@@ -30,6 +32,12 @@ export default function SettingsPage() {
   const [budgetAlerts, setBudgetAlerts] = useState(false);
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
+
+  const exportCsv = () => {
+    if (!allTransactions.length) { toast("No transactions to export", "x"); return; }
+    downloadCsv(`wellspend-transactions-${new Date().toISOString().slice(0, 10)}.csv`, toCsvRows(allTransactions));
+    toast("Transactions CSV downloaded", "download");
+  };
 
   const exportBackup = () => {
     downloadBlob(
@@ -151,6 +159,60 @@ export default function SettingsPage() {
             </div>
             <Switch checked={budgetAlerts} onChange={setBudgetAlerts} />
           </div>
+          <div className="settings-row">
+            <div>
+              <div className="label">WhatsApp Alerts</div>
+              <div className="sub">Bill + budget warnings via WhatsApp</div>
+            </div>
+            <Switch checked={prefs.whatsappEnabled} onChange={(v) => updatePrefs((p) => ({ ...p, whatsappEnabled: v }))} />
+          </div>
+          {prefs.whatsappEnabled && (
+            <>
+              <div className="settings-row">
+                <div>
+                  <div className="label">WhatsApp Number</div>
+                  <div className="sub">Include country code, e.g. 263771234567</div>
+                </div>
+                <input
+                  className="settings-select"
+                  style={{ width: 180 }}
+                  value={prefs.whatsappNumber}
+                  onChange={(e) => updatePrefs((p) => ({ ...p, whatsappNumber: e.target.value }))}
+                  placeholder="2637…"
+                />
+              </div>
+              <div className="settings-row">
+                <div>
+                  <div className="label">Budget alert threshold</div>
+                  <div className="sub">Warn when a category hits this % of budget</div>
+                </div>
+                <select
+                  className="settings-select"
+                  value={prefs.budgetAlertPct}
+                  onChange={(e) => updatePrefs((p) => ({ ...p, budgetAlertPct: Number(e.target.value) }))}
+                >
+                  <option value={70}>70%</option>
+                  <option value={85}>85%</option>
+                  <option value={95}>95%</option>
+                  <option value={100}>100%</option>
+                </select>
+              </div>
+              <button
+                className="btn btn-ghost"
+                style={{ marginTop: 4 }}
+                onClick={() => {
+                  const over = budgets.filter((b) => b.budget > 0 && (b.spent / b.budget) * 100 >= prefs.budgetAlertPct);
+                  const text = over.length
+                    ? `Budget alert: ${over.map((b) => `${b.category} at ${Math.round((b.spent / b.budget) * 100)}% (${fmt(b.spent)}/${fmt(b.budget)})`).join(", ")}`
+                    : `All budgets are under ${prefs.budgetAlertPct}% — you're on track.`;
+                  window.open(whatsappLink(prefs.whatsappNumber, text), "_blank");
+                  toast("WhatsApp opened with your budget summary", "send");
+                }}
+              >
+                <Icon name="send" size={14} style={{ marginRight: 6 }} />Send budget status now
+              </button>
+            </>
+          )}
           <button className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => toast("Notification preferences saved", "check-circle")}>
             Save Changes
           </button>
@@ -208,6 +270,15 @@ export default function SettingsPage() {
             </div>
             <button className="btn btn-primary" onClick={exportBackup}>
               <Icon name="download" size={14} style={{ marginRight: 6 }} />Download Backup
+            </button>
+          </div>
+          <div className="settings-row">
+            <div>
+              <div className="label">Transactions CSV</div>
+              <div className="sub">Every transaction — opens in Excel</div>
+            </div>
+            <button className="btn btn-ghost" onClick={exportCsv}>
+              <Icon name="file-down" size={14} style={{ marginRight: 6 }} />Export CSV
             </button>
           </div>
         </div>

@@ -9,11 +9,12 @@ import Icon from "@/components/Icon";
 import BarChart from "@/components/charts/BarChart";
 import DonutChart from "@/components/charts/DonutChart";
 import NoSpendChallenge from "@/components/NoSpendChallenge";
+import { safeToSpend } from "@/lib/financeInsights";
 
 const monthLabel = new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 
 export default function DashboardPage() {
-  const { totalIncome, totalExpenses, totalBalance, categorySpend, expenses, income, bills, budgets } = useAppData();
+  const { totalIncome, totalExpenses, totalBalance, categorySpend, expenses, income, bills, budgets, goals } = useAppData();
   const remaining = totalIncome - totalExpenses;
   const recent = expenses.slice(0, 3);
   const upcoming = bills.filter((b) => b.status === "upcoming").slice(0, 2);
@@ -48,9 +49,10 @@ export default function DashboardPage() {
   const healthLabel = healthScore >= 70 ? "Great shape" : healthScore >= 40 ? "Getting there" : "Needs attention";
   const healthColor = healthScore >= 70 ? "var(--green)" : healthScore >= 40 ? "#d97706" : "var(--red)";
 
-  // ── Safe to spend today ──
-  const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate() + 1;
-  const safeToday = remaining > 0 ? remaining / daysLeft : 0;
+  // ── Safe to spend today (remaining income − upcoming bills − goal contributions) ──
+  const sts = safeToSpend({ balance: totalBalance, income: totalIncome, expenses: totalExpenses, bills, goals });
+  const daysLeft = sts.daysLeft;
+  const safeToday = sts.perDay;
 
   return (
     <>
@@ -131,6 +133,8 @@ export default function DashboardPage() {
           </div>
           <span className="stat-delta" style={{ color: "var(--ink-500)" }}>
             {daysLeft} days left in {monthLabel.split(" ")[0]}
+            {sts.billsDue > 0 && ` · ${fmt(sts.billsDue)} bills due`}
+            {sts.goalCommit > 0 && ` · ${fmt(sts.goalCommit)} to goals`}
           </span>
         </div>
       </div>

@@ -7,6 +7,8 @@ import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
 import RecordModal, { RowRecord } from "@/components/RecordModal";
+import { payoff, DebtInput } from "@/lib/financeInsights";
+import { fmt } from "@/lib/format";
 
 interface Loan {
   type: string;
@@ -49,6 +51,67 @@ function ApplyModal({ loanType, onApply, onClose }: { loanType: string; onApply:
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Submit Application</button>
       </form>
     </Modal>
+  );
+}
+
+function PayoffPlanner({ loans }: { loans: Loan[] }) {
+  const [extra, setExtra] = useState("50");
+
+  const debts: DebtInput[] = useMemo(
+    () =>
+      loans
+        .map((l) => ({
+          balance: parseFloat(l.remaining.replace(/[^0-9.]/g, "")) || 0,
+          apr: parseFloat(l.interestRate.replace(/[^0-9.]/g, "")) || 12,
+          minPayment: parseFloat(l.monthlyPayment.replace(/[^0-9.]/g, "")) || 50,
+        }))
+        .filter((d) => d.balance > 0),
+    [loans]
+  );
+
+  const x = parseFloat(extra) || 0;
+  const avalanche = useMemo(() => payoff(debts, x, "avalanche"), [debts, x]);
+  const snowball = useMemo(() => payoff(debts, x, "snowball"), [debts, x]);
+
+  if (!debts.length) return null;
+
+  return (
+    <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
+      <div className="card-head">
+        <h3>Payoff Planner <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>— avalanche vs snowball</span></h3>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+        <label style={{ fontSize: 13, color: "var(--ink-500)", flex: 1, minWidth: 200 }}>
+          Extra per month: <b style={{ color: "var(--rose-600)" }}>{fmt(x)}</b>
+          <input type="range" min="0" max="500" step="10" value={extra} onChange={(e) => setExtra(e.target.value)} style={{ width: "100%" }} />
+        </label>
+      </div>
+      <div className="grid grid-2">
+        {([
+          { name: "Avalanche (highest APR first)", r: avalanche },
+          { name: "Snowball (smallest balance first)", r: snowball },
+        ]).map(({ name, r }) => (
+          <div key={name} style={{ border: "1px solid var(--card-border)", borderRadius: "var(--radius-sm)", padding: 14 }}>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>{name}</div>
+            {r.impossible ? (
+              <p style={{ fontSize: 13, color: "var(--red)", margin: 0 }}>Not payable at this rate — increase the extra payment.</p>
+            ) : (
+              <>
+                <div style={{ fontSize: 22, fontWeight: 700 }}>{r.months} months</div>
+                <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
+                  Debt-free {r.payoffDate} · {fmt(r.totalInterest)} interest
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+      {!avalanche.impossible && !snowball.impossible && avalanche.totalInterest < snowball.totalInterest && (
+        <p style={{ fontSize: 12.5, color: "var(--green)", marginTop: 10 }}>
+          Avalanche saves {fmt(snowball.totalInterest - avalanche.totalInterest)} in interest vs snowball.
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -159,6 +222,8 @@ export default function BorrowingPage() {
           </tbody>
         </table>
       </div>
+
+      <PayoffPlanner loans={loans} />
 
       <div className="glass-card card-pad">
         <div className="card-head">

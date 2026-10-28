@@ -49,12 +49,45 @@ export default function EmployeePayslipsPage() {
     toast(`Payslip for ${p.period} opened — save as PDF`, "download");
   };
 
+  // Year-to-date summary across all payslips
+  const ytd = useMemo(() => {
+    return payslips.reduce(
+      (acc, p) => {
+        const t = payslipTotals(p.doc);
+        acc.gross += t.gross;
+        acc.deductions += t.deductions;
+        acc.net += t.net;
+        return acc;
+      },
+      { gross: 0, deductions: 0, net: 0 }
+    );
+  }, [payslips]);
+
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
           <h2 className="section-title">My Payslips</h2>
           <p className="section-sub">Issued by {user?.organisation ?? "your organisation"}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-4" style={{ marginBottom: 20 }}>
+        <div className="glass-card card-pad">
+          <div className="stat-label">YTD Gross</div>
+          <div className="stat-value">{usd(ytd.gross)}</div>
+        </div>
+        <div className="glass-card card-pad">
+          <div className="stat-label">YTD Deductions</div>
+          <div className="stat-value" style={{ color: "var(--red)" }}>{usd(ytd.deductions)}</div>
+        </div>
+        <div className="glass-card card-pad">
+          <div className="stat-label">YTD Net Pay</div>
+          <div className="stat-value" style={{ color: "var(--green)" }}>{usd(ytd.net)}</div>
+        </div>
+        <div className="glass-card card-pad">
+          <div className="stat-label">Payslips</div>
+          <div className="stat-value">{payslips.length}</div>
         </div>
       </div>
 

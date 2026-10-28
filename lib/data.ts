@@ -135,7 +135,8 @@ export const CORPORATE_NAV_ITEMS = [
     icon: "users",
     subItems: [
       { id: "directory", label: "Directory" },
-      { id: "onboarding", label: "Onboarding" }
+      { id: "onboarding", label: "Onboarding" },
+      { id: "import", label: "Bulk Import" }
     ]
   },
   {
@@ -144,9 +145,13 @@ export const CORPORATE_NAV_ITEMS = [
     icon: "dollar-sign",
     subItems: [
       { id: "runs", label: "Payroll Runs" },
+      { id: "disbursements", label: "Disbursements" },
       { id: "payslips", label: "Payslips" }
     ]
   },
+  { id: "expense-claims", label: "Expense Claims", icon: "receipt" },
+  { id: "staff-loans", label: "Staff Loans", icon: "banknote" },
+  { id: "announcements", label: "Announcements", icon: "bell" },
   { id: "benefits", label: "Benefits", icon: "heart-pulse" },
   {
     id: "hr",
@@ -161,6 +166,8 @@ export const CORPORATE_NAV_ITEMS = [
       { id: "offboarding", label: "Offboarding" }
     ]
   },
+  { id: "compliance", label: "Compliance", icon: "clipboard-check" },
+  { id: "roles", label: "Roles & Access", icon: "user-circle" },
   { id: "reports", label: "Reports", icon: "file-text" },
   { id: "integrations", label: "Integrations", icon: "plug" },
   { id: "developer", label: "Developer & API", icon: "key" },
@@ -173,6 +180,7 @@ export const EMPLOYEE_NAV_ITEMS = [
   { id: "employment", label: "Employment", icon: "briefcase", href: "/employee" },
   { id: "payslips", label: "Payslips", icon: "file-text", href: "/employee/payslips" },
   { id: "salary", label: "Salary Management", icon: "dollar-sign", href: "/employee/salary" },
+  { id: "leave", label: "Leave", icon: "calendar", href: "/employee/leave" },
   { id: "borrowing-emp", label: "Borrowing", icon: "credit-card", href: "/employee/borrowing" },
   { id: "benefits", label: "Benefits", icon: "heart-pulse", href: "/employee/benefits" },
   ...NAV_ITEMS.filter((n) => n.id !== "borrowing"),

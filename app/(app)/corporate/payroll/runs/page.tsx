@@ -1,134 +1,223 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, FormEvent } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
-import RecordModal, { RowRecord } from "@/components/RecordModal";
+import Modal from "@/components/Modal";
+import {
+  useCorpStore, updateCorp, payrollNext, payrollBadge,
+  PayrollRunRec, PayrollStatus,
+} from "@/lib/corpStore";
+import { usd } from "@/lib/payslip";
 
-interface PayrollRun {
-  runId: string;
-  period: string;
-  employees: string;
-  totalAmount: string;
-  status: string;
-  payDate: string;
+const th = { padding: "12px 8px", fontWeight: 600, fontSize: 13 } as const;
+const td = { padding: "12px 8px", fontSize: 13 } as const;
+
+const ACTION_LABEL: Record<string, string> = {
+  "Pending Review": "Submit for Review",
+  Approved: "Approve",
+  Paid: "Mark Paid",
+};
+
+function NewRunModal({ onClose }: { onClose: () => void }) {
+  const { toast, user } = useAppData();
+  const store = useCorpStore();
+  const [period, setPeriod] = useState("");
+  const [kind, setKind] = useState<"Regular" | "Off-cycle">("Regular");
+  const [employees, setEmployees] = useState(String(store.employees.length || ""));
+  const [total, setTotal] = useState("");
+  const [payDate, setPayDate] = useState("");
+  const [note, setNote] = useState("");
+
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    const run: PayrollRunRec = {
+      id: `RUN-${Date.now().toString(36).toUpperCase()}`,
+      period: period || new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
+      kind,
+      employees: parseInt(employees) || store.employees.length || 0,
+      totalAmount: parseFloat(total) || 0,
+      status: "Draft",
+      payDate: payDate || "—",
+      createdBy: user?.name,
+      note: kind === "Off-cycle" ? note || "Off-cycle payment" : note,
+    };
+    updateCorp((s) => ({ ...s, payrollRuns: [run, ...s.payrollRuns] }));
+    toast(`${kind} payroll run ${run.id} created as Draft`, "check-circle");
+    onClose();
+  }
+
+  return (
+    <Modal title="New Payroll Run" onClose={onClose}>
+      <form onSubmit={submit}>
+        <div className="field">
+          <label>Run type</label>
+          <select className="settings-select" style={{ width: "100%" }} value={kind} onChange={(e) => setKind(e.target.value as "Regular" | "Off-cycle")}>
+            <option>Regular</option>
+            <option>Off-cycle</option>
+          </select>
+        </div>
+        <div className="field">
+          <label>Period {kind === "Off-cycle" ? "(e.g. Bonus — Oct 2026)" : ""}</label>
+          <input value={period} onChange={(e) => setPeriod(e.target.value)} placeholder={kind === "Regular" ? "November 2026" : "Bonus — Oct 2026"} />
+        </div>
+        <div className="field">
+          <label>Employees</label>
+          <input type="number" min="0" value={employees} onChange={(e) => setEmployees(e.target.value)} />
+        </div>
+        <div className="field">
+          <label>Total amount ($)</label>
+          <input required type="number" min="0" step="0.01" value={total} onChange={(e) => setTotal(e.target.value)} placeholder="e.g. 48200" />
+        </div>
+        <div className="field">
+          <label>Pay date</label>
+          <input type="date" value={payDate} onChange={(e) => setPayDate(e.target.value)} />
+        </div>
+        {kind === "Off-cycle" && (
+          <div className="field">
+            <label>Reason</label>
+            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Bonus / correction / termination" />
+          </div>
+        )}
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Create Draft Run</button>
+      </form>
+    </Modal>
+  );
 }
 
-const RUNS_DATA: PayrollRun[] = [];
-
 export default function CorporatePayrollRunsPage() {
-  const { toast } = useAppData();
-  const [runs, setRuns] = useState<PayrollRun[]>(RUNS_DATA);
+  const { toast, user } = useAppData();
+  const store = useCorpStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [modal, setModal] = useState<{ mode: "view" | "edit" | "create"; record: RowRecord; index: number } | null>(null);
+  const [creating, setCreating] = useState(false);
 
-  const filteredData = useMemo(() => {
-    return runs.filter((run) =>
-      (!statusFilter || run.status === statusFilter) &&
-      (run.runId.toLowerCase().includes(search.toLowerCase()) || run.period.toLowerCase().includes(search.toLowerCase()))
-    );
-  }, [runs, search, statusFilter]);
+  const filtered = useMemo(
+    () =>
+      store.payrollRuns.filter(
+        (r) =>
+          (!statusFilter || r.status === statusFilter) &&
+          (r.id.toLowerCase().includes(search.toLowerCase()) ||
+            r.period.toLowerCase().includes(search.toLowerCase()))
+      ),
+    [store.payrollRuns, search, statusFilter]
+  );
 
-  const openModal = (mode: "view" | "edit" | "create", run?: PayrollRun, index?: number) => {
-    const record: RowRecord = run
-      ? { runId: run.runId, period: run.period, employees: run.employees, totalAmount: run.totalAmount, status: run.status, payDate: run.payDate }
-      : { runId: `RUN-2025-${String(runs.length + 7).padStart(2, "0")}`, period: "", employees: "", totalAmount: "", status: "Scheduled", payDate: "" };
-    setModal({ mode, record, index: index ?? -1 });
-  };
+  const count = (s: PayrollStatus) => store.payrollRuns.filter((r) => r.status === s).length;
+  const awaiting = count("Pending Review");
 
-  const handleSave = (values: RowRecord) => {
-    if (!modal) return;
-    const run: PayrollRun = { runId: values.runId, period: values.period, employees: values.employees, totalAmount: values.totalAmount, status: values.status || "Scheduled", payDate: values.payDate };
-    if (modal.mode === "create") {
-      setRuns((prev) => [run, ...prev]);
-      toast(`Payroll run ${run.runId} created`);
-    } else {
-      setRuns((prev) => prev.map((e, i) => (i === modal.index ? run : e)));
-      toast(`Payroll run ${run.runId} updated`);
-    }
-    setModal(null);
-  };
+  function advance(run: PayrollRunRec) {
+    const next = payrollNext(run.status);
+    if (!next) return;
+    updateCorp((s) => ({
+      ...s,
+      payrollRuns: s.payrollRuns.map((r) =>
+        r.id === run.id
+          ? { ...r, status: next, ...(next === "Approved" ? { approvedBy: user?.name } : {}) }
+          : r
+      ),
+    }));
+    toast(`${run.id} → ${next}`, next === "Paid" ? "check-circle" : "check");
+  }
 
-  const handleDelete = () => {
-    if (!modal) return;
-    setRuns((prev) => prev.filter((_, i) => i !== modal.index));
-    toast(`${modal.record.runId} deleted`, "trash-2");
-    setModal(null);
-  };
+  function reject(run: PayrollRunRec) {
+    updateCorp((s) => ({
+      ...s,
+      payrollRuns: s.payrollRuns.map((r) => (r.id === run.id ? { ...r, status: "Rejected" as const } : r)),
+    }));
+    toast(`${run.id} rejected`, "x");
+  }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
           <h2 className="section-title">Payroll Runs</h2>
-          <p className="section-sub">Manage and track payroll processing</p>
+          <p className="section-sub">Draft → Review → Approve → Pay. Off-cycle runs supported.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => openModal("create")}>
+        <button className="btn btn-primary" onClick={() => setCreating(true)}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           New Payroll Run
         </button>
       </div>
 
+      <div className="grid grid-4" style={{ marginBottom: 20 }}>
+        <div className="glass-card card-pad"><div className="stat-label">Draft</div><div className="stat-value">{count("Draft")}</div></div>
+        <div className="glass-card card-pad">
+          <div className="stat-label">Awaiting Approval</div>
+          <div className="stat-value" style={{ color: awaiting ? "var(--amber)" : undefined }}>{awaiting}</div>
+        </div>
+        <div className="glass-card card-pad"><div className="stat-label">Approved (unpaid)</div><div className="stat-value">{count("Approved")}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">Paid</div><div className="stat-value" style={{ color: "var(--green)" }}>{count("Paid")}</div></div>
+      </div>
+
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search payroll runs..."
-          statusOptions={[{ value: "Scheduled", label: "Scheduled" }, { value: "Paid", label: "Paid" }, { value: "Processing", label: "Processing" }]}
+          searchPlaceholder="Search runs..."
+          statusOptions={[
+            { value: "Draft", label: "Draft" },
+            { value: "Pending Review", label: "Pending Review" },
+            { value: "Approved", label: "Approved" },
+            { value: "Paid", label: "Paid" },
+            { value: "Rejected", label: "Rejected" },
+          ]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Run ID</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Period</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Employees</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Total Amount</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Pay Date</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={th}>Run ID</th>
+              <th style={th}>Period</th>
+              <th style={th}>Type</th>
+              <th style={th}>Employees</th>
+              <th style={th}>Total</th>
+              <th style={th}>Status</th>
+              <th style={th}>Pay Date</th>
+              <th style={th}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.length === 0 && (
-              <tr>
-                <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No payroll runs match your search.
-                </td>
-              </tr>
+            {filtered.length === 0 && (
+              <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>No payroll runs — create your first one.</td></tr>
             )}
-            {filteredData.map((run, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)" }}>
-                <td style={{ padding: "12px 8px", fontSize: 13 }}>{run.runId}</td>
-                <td style={{ padding: "12px 8px", fontWeight: 600 }}>{run.period}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13 }}>{run.employees}</td>
-                <td style={{ padding: "12px 8px", fontSize: 13, fontWeight: 600 }}>{run.totalAmount}</td>
-                <td style={{ padding: "12px 8px" }}>
-                  <span className={`badge ${run.status === "Paid" ? "badge-green" : run.status === "Scheduled" ? "badge-blue" : "badge-amber"}`}>
-                    {run.status}
-                  </span>
-                </td>
-                <td style={{ padding: "12px 8px", fontSize: 13 }}>{run.payDate}</td>
-                <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", run, runs.indexOf(run))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", run, runs.indexOf(run))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
-                </td>
-              </tr>
-            ))}
+            {filtered.map((run) => {
+              const next = payrollNext(run.status);
+              return (
+                <tr key={run.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
+                  <td style={td}>{run.id}</td>
+                  <td style={{ ...td, fontWeight: 600 }}>{run.period}</td>
+                  <td style={td}><span className="chip">{run.kind}</span></td>
+                  <td style={td}>{run.employees}</td>
+                  <td style={{ ...td, fontWeight: 600 }}>{usd(run.totalAmount)}</td>
+                  <td style={td}><span className={"badge " + payrollBadge(run.status)}>{run.status}</span></td>
+                  <td style={td}>{run.payDate}</td>
+                  <td style={td}>
+                    {next && (
+                      <button
+                        className="btn btn-ghost"
+                        style={{ padding: "4px 8px", fontSize: 12, color: next === "Paid" ? "var(--green)" : "var(--rose-600)" }}
+                        onClick={() => advance(run)}
+                      >
+                        <Icon name="check" size={14} style={{ marginRight: 4 }} />{ACTION_LABEL[next]}
+                      </button>
+                    )}
+                    {(run.status === "Draft" || run.status === "Pending Review") && (
+                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => reject(run)}>
+                        <Icon name="x" size={14} style={{ marginRight: 4 }} />Reject
+                      </button>
+                    )}
+                    {run.approvedBy && <span style={{ fontSize: 11, color: "var(--ink-500)", display: "block" }}>by {run.approvedBy}</span>}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-      {modal && (
-        <RecordModal
-          mode={modal.mode}
-          title={modal.mode === "create" ? "New Payroll Run" : modal.mode === "edit" ? "Edit Payroll Run" : "Payroll Run Details"}
-          record={modal.record}
-          onClose={() => setModal(null)}
-          onSave={handleSave}
-          onDelete={modal.mode === "view" ? handleDelete : undefined}
-        />
-      )}
+
+      {creating && <NewRunModal onClose={() => setCreating(false)} />}
     </>
   );
 }

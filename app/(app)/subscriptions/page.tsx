@@ -6,6 +6,7 @@ import { EXPENSE_ICONS } from "@/lib/data";
 import { sym, fmt, ukDate } from "@/lib/format";
 import CountUp from "@/components/CountUp";
 import Icon from "@/components/Icon";
+import { detectRecurring } from "@/lib/financeInsights";
 
 // Snapshot at module load — "days since" is display-only, minute precision unnecessary.
 const NOW = Date.now();
@@ -36,6 +37,27 @@ export default function SubscriptionsPage() {
     if (!e) return;
     updateExpense(id, { ...e, recurring: false });
     toast(`${e.merchant} marked as cancelled`, "check");
+  }
+
+  // Auto-detected likely subscriptions the user hasn't flagged yet
+  const detected = useMemo(() => detectRecurring(expenses), [expenses]);
+
+  // Renewal alerts: recurring charge expected again within 5 days of its usual cycle
+  const renewals = useMemo(
+    () =>
+      subs
+        .map((e) => ({ e, next: new Date(e.date).getTime() + 30.4 * 864e5 }))
+        .filter(({ next }) => next - NOW < 5 * 864e5)
+        .sort((a, b) => a.next - b.next),
+    [subs]
+  );
+
+  function flagAsSub(ids: number[], merchant: string) {
+    for (const id of ids) {
+      const e = expenses.find((x) => x.id === id);
+      if (e && !e.recurring) updateExpense(id, { ...e, recurring: true });
+    }
+    toast(`${merchant} flagged as a subscription`, "check-circle");
   }
 
   return (
@@ -90,6 +112,41 @@ export default function SubscriptionsPage() {
           )}
         </div>
       </div>
+
+      {renewals.length > 0 && (
+        <div className="glass-card card-pad" style={{ marginBottom: 20, borderLeft: "3px solid var(--amber)" }}>
+          <div className="card-head">
+            <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}><Icon name="bell" size={16} /> Renewals this week</h3>
+          </div>
+          {renewals.map(({ e }) => (
+            <div key={e.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--card-border)", fontSize: 13.5 }}>
+              <span>{e.merchant}</span>
+              <b className="amt-neg">-{fmt(e.amount)}</b>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {detected.length > 0 && (
+        <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
+          <div className="card-head">
+            <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}><Icon name="sparkles" size={16} /> Detected — confirm these are subscriptions?</h3>
+          </div>
+          {detected.map((d) => (
+            <div key={d.merchant} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: "1px solid var(--card-border)", flexWrap: "wrap" }}>
+              <div>
+                <b>{d.merchant}</b>{" "}
+                <span style={{ color: "var(--ink-500)", fontSize: 12.5 }}>
+                  {fmt(d.amount)} · {d.count}× charges, every ~{Math.round(d.avgDays)}d
+                </span>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={() => flagAsSub(d.ids, d.merchant)}>
+                <Icon name="repeat" size={13} style={{ marginRight: 4 }} />Yes, it&apos;s recurring
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="glass-card card-pad">
         <div className="card-head"><h3>Recurring Charges</h3></div>
