@@ -50,6 +50,39 @@ const FEATURES = [
   },
 ];
 
+const CORP_FEATURES = [
+  {
+    icon: "dollar-sign",
+    title: "Payroll Runs & Approvals",
+    text: "Draft → review → approve → pay. Off-cycle runs for bonuses and corrections, with an audit trail.",
+  },
+  {
+    icon: "users",
+    title: "Employee Self-Service",
+    text: "Every employee gets their own portal — payslips, leave requests, salary advances and benefits.",
+  },
+  {
+    icon: "calendar",
+    title: "Leave & Team Calendar",
+    text: "One-click approvals and a live who's-off calendar, synced straight into payroll days worked.",
+  },
+  {
+    icon: "receipt",
+    title: "Claims & Staff Loans",
+    text: "Expense claims and salary advances with automatic deductions applied to payslips.",
+  },
+  {
+    icon: "user-circle",
+    title: "Roles & Permissions",
+    text: "HR, payroll officer and finance approver roles — approvers approve, creators create.",
+  },
+  {
+    icon: "banknote",
+    title: "Bank & Ecocash Payouts",
+    text: "Export bulk disbursement files for your bank or Ecocash for Business in one click.",
+  },
+];
+
 const STEPS = [
   {
     title: "Create your account",
@@ -96,6 +129,7 @@ export default function LandingPage() {
         <div className="landing-nav-links">
           <a href="#features" className="nav-link">Features</a>
           <a href="#how" className="nav-link">How it works</a>
+          <a href="#business" className="nav-link">For Business</a>
           <a href="#pricing" className="nav-link">Pricing</a>
           <Link href="/login" className="btn btn-ghost btn-sm">Sign in</Link>
           <Link href="/login?signup=1" className="btn btn-primary btn-sm">
@@ -192,6 +226,42 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Corporate partnership */}
+      <section className="landing-section" id="business">
+        <h2>WellSpend for Business</h2>
+        <p className="sub">
+          Payroll, HR and money tools your whole organisation runs on — while every employee
+          gets the full WellSpend budget tracker with their account.
+        </p>
+        <div className="feature-grid">
+          {CORP_FEATURES.map((f) => (
+            <div className="feature-card glass-card" key={f.title}>
+              <div className="fic"><Icon name={f.icon} size={20} /></div>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 28 }}>
+          <a
+            href="https://wa.me/263718560128?text=Hi%20—%20we%27d%20like%20to%20onboard%20our%20organisation%20onto%20WellSpend%20for%20Business."
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-primary"
+            style={{ padding: "13px 26px" }}
+            onClick={() => trackEvent("corp_interest")}
+          >
+            <Icon name="send" size={15} style={{ marginRight: 8 }} /> Partner with us
+          </a>
+          <Link href="/login" className="btn" style={{ padding: "13px 26px", background: "#fff", color: "#111", border: "1px solid var(--card-border)" }}>
+            Corporate sign in
+          </Link>
+        </div>
+        <p style={{ textAlign: "center", fontSize: 12.5, color: "var(--ink-500)", marginTop: 14 }}>
+          We onboard your organisation, you invite your staff — they&apos;re budgeting the same day.
+        </p>
+      </section>
+
       {/* Pricing */}
       <section className="landing-section" id="pricing">
         <h2>One dollar. That&rsquo;s it.</h2>
@@ -241,6 +311,7 @@ export default function LandingPage() {
         </div>
         <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
           <a href="#features">Features</a>
+          <a href="#business">For Business</a>
           <a href="#pricing">Pricing</a>
           <Link href="/login">Sign in</Link>
         </div>
