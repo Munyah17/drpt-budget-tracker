@@ -7,6 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import Fab from "@/components/Fab";
+import TabBar from "@/components/TabBar";
 
 export default function AppShellLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, authReady, user, sidebarOpen, setSidebarOpen } = useAppData();
@@ -40,7 +41,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   if (!authReady || !isAuthenticated || isUnpaid) return null;
 
   return (
-    <div id="main-app">
+    <div id="main-app" className={user?.role === "user" ? "has-tabbar" : undefined}>
       <Sidebar />
       <div
         className={"sidebar-backdrop" + (sidebarOpen ? " show" : "")}
@@ -56,6 +57,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
         </div>
       </div>
       <Fab />
+      {user?.role === "user" && <TabBar />}
     </div>
   );
 }

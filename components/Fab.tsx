@@ -12,6 +12,7 @@ export default function Fab() {
   return (
     <>
       <button
+        className="fab-btn"
         aria-label={t("fab_aria")}
         onClick={() => setOpen(true)}
         onMouseEnter={() => setHover(true)}

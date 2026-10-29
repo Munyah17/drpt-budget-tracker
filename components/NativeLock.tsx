@@ -37,6 +37,8 @@ export default function NativeLock() {
 
   useEffect(() => {
     if (!native) return;
+    // The platform is only known in the browser, so the lock is raised after mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocked(true);
     void unlock();
     const onVisibility = () => {

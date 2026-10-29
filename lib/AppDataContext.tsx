@@ -1,5 +1,6 @@
 "use client";
 
+import { demoData } from "./demoData";
 import {
   createContext,
   ReactNode,
@@ -464,7 +465,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   const totalIncome = useMemo(() => income.reduce((s, i) => s + i.amount, 0), [income]);
   const totalExpenses = useMemo(() => expenses.reduce((s, e) => s + e.amount, 0), [expenses]);
-  const totalBalance = useMemo(() => ACCOUNTS.reduce((s, a) => s + a.balance, 0), []);
+  // What the person actually has: opening balances plus everything earned minus everything spent.
+  const totalBalance = useMemo(() => accounts.reduce((s, a) => s + a.balance, 0) + totalIncome - totalExpenses, [accounts, totalIncome, totalExpenses]);
   const categorySpend = useMemo(() => {
     const map: Record<string, number> = {};
     expenses.forEach((e) => {
@@ -644,6 +646,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const loginDemo = useCallback(() => {
     // In-memory only: no Supabase session, no localStorage — refresh/logout ends it
     setIsDemo(true);
+    const demo = demoData();
+    setIncome(demo.income);
+    setExpenses(demo.expenses);
+    setGoals(demo.goals);
+    setBills(demo.bills);
+    setBudgets(demo.budgets);
     setUser(DEMO_USER_PROFILE);
     setIsAuthenticated(true);
     setAuthReady(true);
@@ -651,6 +659,14 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     if (!isDemo) await supabase.auth.signOut();
+    if (isDemo) {
+      // Sample data must never leak into the next real session.
+      setIncome(INITIAL_INCOME);
+      setExpenses(INITIAL_EXPENSES);
+      setGoals(INITIAL_GOALS);
+      setBills(INITIAL_BILLS);
+      setBudgets(BUDGETS);
+    }
     setUser(null);
     setIsAuthenticated(false);
     setIsDemo(false);
