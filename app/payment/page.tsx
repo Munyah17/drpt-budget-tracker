@@ -7,6 +7,7 @@ import { notifyEvent } from "@/lib/notifyClient";
 import { priceUsd, priceLabel, minPriceUsd, minPriceLabel } from "@/lib/pricing";
 import Icon from "@/components/Icon";
 import { useTranslations } from "next-intl";
+import { useIsNative } from "@/lib/native";
 
 type PaymentMethod = "paynow" | "stripe" | "ecocash" | "bank";
 
@@ -17,6 +18,11 @@ function PaymentInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast, user, isDemo } = useAppData();
+  const native = useIsNative();
+  // No purchases inside the iPhone app.
+  useEffect(() => {
+    if (native) router.replace("/login");
+  }, [native, router]);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
   const [popSent, setPopSent] = useState(false);

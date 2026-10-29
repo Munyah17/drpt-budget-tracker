@@ -209,7 +209,12 @@
     "profession": "Profession",
     "professionPh": "e.g. Teacher, Nurse, Engineer",
     "referralCode": "Referral Code (optional)",
-    "referralCodePh": "If you have one"
+    "referralCodePh": "If you have one",
+    "stepLabel": "Step {step} of 2",
+    "continue": "Continue",
+    "back": "Back",
+    "step1Sub": "Your sign-in details",
+    "step2Sub": "A little about you"
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",
@@ -3098,5 +3103,22 @@
       "railCard": "Card",
       "railInternal": "Internal"
     }
+  },
+  "Native": {
+    "inactiveTitle": "Your account isn't active yet",
+    "inactiveBody": "Sign in with an active WellSpend account to use the app.",
+    "signOut": "Sign out",
+    "welcomeSignIn": "Sign in to your WellSpend account"
+  },
+  "Welcome": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get started",
+    "s1Title": "Add things in two taps",
+    "s1Body": "Tap the pink + any time to log spending or income. It takes a few seconds.",
+    "s2Title": "See where it goes",
+    "s2Body": "Budget Planner shows each category as a simple bar, so you notice overspending early.",
+    "s3Title": "Never miss a bill",
+    "s3Body": "Add your bills once and WellSpend tells you what's due and when."
   }
 }

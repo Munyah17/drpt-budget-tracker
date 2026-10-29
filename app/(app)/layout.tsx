@@ -8,11 +8,16 @@ import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import Fab from "@/components/Fab";
 import TabBar from "@/components/TabBar";
+import WelcomeTour from "@/components/WelcomeTour";
+import { useIsNative } from "@/lib/native";
+import { useTranslations } from "next-intl";
 
 export default function AppShellLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, authReady, user, sidebarOpen, setSidebarOpen } = useAppData();
+  const { isAuthenticated, authReady, user, sidebarOpen, setSidebarOpen, logout } = useAppData();
   const router = useRouter();
   const pathname = usePathname();
+  const native = useIsNative();
+  const tNative = useTranslations("Native");
 
   // Every registration must pay — unpaid standard users never reach app content.
   // Demo/admin/corporate/employee accounts carry isPaid or a non-user role, so
@@ -25,10 +30,10 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
     if (!isAuthenticated) {
       // Guests land on the marketing page — they sign up & pay or leave.
       router.replace("/");
-    } else if (isUnpaid) {
+    } else if (isUnpaid && !native) {
       router.replace("/payment");
     }
-  }, [authReady, isAuthenticated, isUnpaid, pathname, router]);
+  }, [authReady, isAuthenticated, isUnpaid, native, pathname, router]);
 
   // Product analytics: one event per in-app page view
   const uid = user?.id;
@@ -38,7 +43,17 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
     }
   }, [authReady, isAuthenticated, isUnpaid, pathname, uid]);
 
-  if (!authReady || !isAuthenticated || isUnpaid) return null;
+  if (!authReady || !isAuthenticated) return null;
+  if (isUnpaid) {
+    // Inside the iPhone app an inactive account just sees a plain notice: no pricing, no purchase path.
+    return native ? (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, padding: 32, textAlign: "center" }}>
+        <h1 style={{ fontSize: 22, margin: 0 }}>{tNative("inactiveTitle")}</h1>
+        <p style={{ margin: 0, color: "var(--ink-500)", maxWidth: 320 }}>{tNative("inactiveBody")}</p>
+        <button className="btn btn-primary" onClick={() => { logout(); router.replace("/login"); }}>{tNative("signOut")}</button>
+      </div>
+    ) : null;
+  }
 
   return (
     <div id="main-app" className={user?.role === "user" ? "has-tabbar" : undefined}>
@@ -58,6 +73,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
       </div>
       <Fab />
       {user?.role === "user" && <TabBar />}
+      <WelcomeTour />
     </div>
   );
 }

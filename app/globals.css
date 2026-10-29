@@ -691,3 +691,59 @@ tbody tr:hover{ background:var(--pink-100); }
   #toast-wrap{ top:auto; bottom:calc(84px + env(safe-area-inset-bottom)); left:16px; right:16px; }
   .toast{ min-width:0; }
 }
+
+/* Transactions as a readable list on phones: merchant and amount on top, date and category underneath */
+@media (max-width:760px){
+  .tx-table, .tx-table tbody{ display:block; width:100%; }
+  .tx-table thead{ display:none; }
+  .tx-table tr{
+    display:grid; grid-template-columns:1fr auto; grid-template-areas:"name amount" "date cat"; gap:4px 12px;
+    padding:12px 2px; border-bottom:1px solid var(--card-border);
+  }
+  .tx-table td{ display:block; padding:0 !important; border:0 !important; min-width:0; }
+  .tx-table td:nth-child(1), .tx-table td:nth-child(4){ display:none; }
+  .tx-table td:nth-child(2){ grid-area:name; font-weight:700; }
+  .tx-table td:nth-child(3){ grid-area:cat; text-align:right; }
+  .tx-table td:nth-child(5){ grid-area:date; font-size:12px; color:var(--ink-500); }
+  .tx-table td:nth-child(6){ grid-area:amount; font-size:15px; font-weight:800; }
+  .tx-table tr:has(td[colspan]){ display:block; }
+  .tx-table td[colspan]{ display:block !important; }
+}
+
+/* Budget lines as cards on phones: category and edit on top, progress bar, then budget / spent / left */
+@media (max-width:760px){
+  .bud-table, .bud-table tbody{ display:block; width:100%; }
+  .bud-table thead{ display:none; }
+  .bud-table tr{
+    display:grid; grid-template-columns:repeat(3,1fr); grid-template-areas:"name name edit" "bar bar bar" "b s r"; gap:8px 10px;
+    padding:14px 2px; border-bottom:1px solid var(--card-border);
+  }
+  .bud-table td{ display:block; padding:0 !important; border:0 !important; min-width:0; }
+  .bud-table td:nth-child(1){ grid-area:name; font-size:15px; }
+  .bud-table td:nth-child(6){ grid-area:edit; text-align:right; }
+  .bud-table td:nth-child(5){ grid-area:bar; }
+  .bud-table td:nth-child(2){ grid-area:b; } .bud-table td:nth-child(3){ grid-area:s; } .bud-table td:nth-child(4){ grid-area:r; }
+  .bud-table td[data-label]{ font-weight:800; font-size:14px; }
+  .bud-table td[data-label]::before{ content:attr(data-label); display:block; font-size:10.5px; font-weight:600; color:var(--ink-500); text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px; }
+  .bud-table tr:last-child{ display:flex; justify-content:space-between; }
+  .bud-table tr:last-child td:last-child{ display:none; }
+}
+
+.signup-steps{ margin:-4px 0 18px; }
+.signup-bar{ height:6px; border-radius:99px; background:var(--pink-100); overflow:hidden; }
+.signup-bar span{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--rose-600),var(--rose-400)); transition:width .3s; }
+.signup-steps p{ margin:8px 0 0; font-size:12.5px; font-weight:600; color:var(--ink-500); }
+
+/* Landing on phones: full-width buttons and a persistent call to action */
+.landing-sticky{ display:none; }
+@media (max-width:760px){
+  .hero-ctas{ flex-direction:column; align-items:stretch; }
+  .hero-ctas .btn{ width:100%; justify-content:center; }
+  .landing-hero h1{ font-size:clamp(34px,10vw,44px); }
+  .landing{ padding-bottom:84px; }
+  .landing-sticky{
+    display:block; position:fixed; left:0; right:0; bottom:0; z-index:700; padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--card-solid) 70%, transparent);
+  }
+  .landing-sticky .btn{ width:100%; justify-content:center; padding:14px; font-size:15px; box-shadow:0 12px 24px -8px rgba(200,20,87,.5); }
+}

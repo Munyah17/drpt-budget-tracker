@@ -10,6 +10,7 @@ import { notifyEvent } from "@/lib/notifyClient";
 import { trackEvent } from "@/lib/analytics";
 import { minPriceLabel } from "@/lib/pricing";
 import { UserRole } from "@/lib/types";
+import { useIsNative } from "@/lib/native";
 
 const rolePath = (role?: UserRole) =>
   role === "admin"
@@ -30,7 +31,11 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const native = useIsNative();
   const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
+  const [step, setStep] = useState(1);
+  // The iPhone app only signs in: accounts are created and paid for elsewhere.
+  const signup = isSignup && !native;
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
@@ -49,9 +54,19 @@ function LoginForm() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+
+    if (signup && step === 1) {
+      if (password !== confirmPassword) {
+        toast(t("pwMismatch"), "x");
+        return;
+      }
+      setStep(2);
+      return;
+    }
+
     setSubmitting(true);
 
-    if (isSignup) {
+    if (signup) {
       if (password !== confirmPassword) {
         setSubmitting(false);
         toast(t("pwMismatch"), "x");
@@ -157,9 +172,15 @@ function LoginForm() {
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
             <LanguageSelect compact />
           </div>
-          <h2>{isSignup ? t("signupTitle") : t("signinTitle")}</h2>
+          <h2>{signup ? t("signupTitle") : t("signinTitle")}</h2>
+          {signup && (
+            <div className="signup-steps" aria-label={t("stepLabel", { step })}>
+              <div className="signup-bar"><span style={{ width: step === 1 ? "50%" : "100%" }} /></div>
+              <p>{t("stepLabel", { step })} · {step === 1 ? t("step1Sub") : t("step2Sub")}</p>
+            </div>
+          )}
           <form onSubmit={handleSubmit}>
-            {isSignup && (
+            {signup && step === 2 && (
               <>
                 <div className="field">
                   <label htmlFor="name">{t("fullName")}</label>
@@ -214,6 +235,7 @@ function LoginForm() {
                 </div>
               </>
             )}
+            {(!signup || step === 1) && (<>
             <div className="field">
               <label htmlFor="email">{t("email")}</label>
               <input
@@ -236,7 +258,8 @@ function LoginForm() {
                 required
               />
             </div>
-            {isSignup && (
+            </>)}
+            {signup && step === 1 && (
               <>
                 <div className="field">
                   <label htmlFor="confirm-password">{t("confirmPassword")}</label>
@@ -249,6 +272,10 @@ function LoginForm() {
                     required
                   />
                 </div>
+              </>
+            )}
+            {signup && step === 2 && (
+              <>
                 <div className="field">
                   <label htmlFor="referral-code">{t("referralCode")}</label>
                   <input
@@ -261,7 +288,7 @@ function LoginForm() {
                 </div>
               </>
             )}
-            {!isSignup && (
+            {!signup && (
               <div className="field-row">
                 <label className="remember">
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ accentColor: "var(--rose-500)" }} /> {t("remember")}
@@ -270,15 +297,24 @@ function LoginForm() {
               </div>
             )}
             <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>
-              {submitting ? (isSignup ? t("creating") : t("signingIn")) : (isSignup ? t("createPay") : t("signIn"))}
+              {signup && step === 1 ? t("continue") : submitting ? (signup ? t("creating") : t("signingIn")) : (signup ? t("createPay") : t("signIn"))}
             </button>
+            {signup && step === 2 && (
+              <button type="button" className="btn btn-ghost" style={{ width: "100%", marginTop: 8 }} onClick={() => setStep(1)}>
+                {t("back")}
+              </button>
+            )}
           </form>
 
           <div className="login-footer">
-            {isSignup ? t("haveAccount") : t("noAccount")}{" "}
-            <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); }}>
-              {isSignup ? t("signInLink") : t("signUpLink")}
-            </a>
+            {!native && (
+              <>
+                {signup ? t("haveAccount") : t("noAccount")}{" "}
+                <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); setStep(1); }}>
+                  {signup ? t("signInLink") : t("signUpLink")}
+                </a>
+              </>
+            )}
             <div style={{ marginTop: 8 }}>
               <Link href="/" style={{ color: "var(--ink-500)", fontWeight: 600, fontSize: 12 }}>
                 <span className="back-arrow" aria-hidden="true">← </span>{t("backHome")}

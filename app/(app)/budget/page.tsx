@@ -110,7 +110,7 @@ export default function BudgetPage() {
       <Envelopes />
       <div className="glass-card card-pad">
         <div className="table-wrap">
-          <table>
+          <table className="bud-table">
             <thead>
               <tr>
                 <th>{t("colCategory")}</th>
@@ -131,12 +131,12 @@ export default function BudgetPage() {
                 return (
                   <tr key={b.category}>
                     <td style={{ fontWeight: 700 }}>{b.category}</td>
-                    <td>
+                    <td data-label={t("colBudget")}>
                       {fmt(eff)}
                       {carry > 0 && <div style={{ fontSize: 10, color: "var(--green)" }}>{t("carried", { amount: fmt(carry) })}</div>}
                     </td>
-                    <td>{fmt(b.spent)}</td>
-                    <td style={{ color: remaining < 0 ? "var(--red)" : "var(--ink-900)" }}>{fmt(remaining)}</td>
+                    <td data-label={t("colSpent")}>{fmt(b.spent)}</td>
+                    <td data-label={t("colRemaining")} style={{ color: remaining < 0 ? "var(--red)" : "var(--ink-900)" }}>{fmt(remaining)}</td>
                     <td>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <ProgressBar pct={Math.min(pct, 100)} color={st.color} />

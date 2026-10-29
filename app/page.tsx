@@ -9,6 +9,7 @@ import LanguageSelect from "@/components/LanguageSelect";
 import { trackEvent } from "@/lib/analytics";
 import { UserRole } from "@/lib/types";
 import Icon from "@/components/Icon";
+import { useIsNative } from "@/lib/native";
 
 const rolePath = (role?: UserRole) =>
   role === "admin"
@@ -51,11 +52,17 @@ export default function LandingPage() {
   const router = useRouter();
   const t = useTranslations("Landing");
   const { loginDemo, toast, isAuthenticated, authReady, user } = useAppData();
+  const native = useIsNative();
 
   // Signed-in visitors go straight to their portal
   useEffect(() => {
     if (authReady && isAuthenticated) router.replace(rolePath(user?.role));
   }, [authReady, isAuthenticated, user, router]);
+
+  // The iPhone app has no marketing page: it opens straight on sign-in.
+  useEffect(() => {
+    if (native && authReady && !isAuthenticated) router.replace("/login");
+  }, [native, authReady, isAuthenticated, router]);
 
   // Count every landing-page visit for the admin analytics funnel
   useEffect(() => {
@@ -298,6 +305,13 @@ export default function LandingPage() {
         <div>{t("footer.rights", { year: String(new Date().getFullYear()) })}</div>
         <div>{t("footer.powered")}</div>
       </footer>
+      {!native && (
+        <div className="landing-sticky">
+          <Link href="/login?signup=1" className="btn btn-primary">
+            {t("hero.getStarted")} <Icon name="arrow-up-right" size={16} />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

@@ -115,7 +115,7 @@ export default function TransactionsPage() {
           </select>
         </div>
         <div className="table-wrap">
-          <table>
+          <table className="tx-table">
             <thead>
               <tr>
                 <th>

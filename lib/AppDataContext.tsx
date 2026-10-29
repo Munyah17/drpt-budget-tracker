@@ -149,7 +149,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isDemo, setIsDemo] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [month, setMonth] = useState("May 2025");
+  const [month, setMonth] = useState(() => new Date().toLocaleString("en-GB", { month: "long", year: "numeric" }));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [currency, setCurrencyState] = useState<Currency>(DEFAULT_CURRENCY);
