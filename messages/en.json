@@ -24,7 +24,8 @@
       "ai": "AI Assistant",
       "calendar": "Calendar",
       "settings": "Settings",
-      "profile": "Profile"
+      "profile": "Profile",
+      "wallet": "Wallet"
     },
     "admin": {
       "overview": "Overview",
@@ -90,7 +91,8 @@
       "salary": "Salary Management",
       "leave": "Leave",
       "borrowing-emp": "Early Pay",
-      "benefits": "Benefits"
+      "benefits": "Benefits",
+      "wallet": "Wallet"
     }
   },
   "Shell": {
@@ -2273,7 +2275,11 @@
       "save": "Save",
       "toastBankSaved": "Bank details saved",
       "toastBankFile": "Bank file for {id} downloaded — upload to your bank",
-      "toastEcocashFile": "Ecocash bulk file for {id} downloaded"
+      "toastEcocashFile": "Ecocash bulk file for {id} downloaded",
+      "payToWallets": "WellSpend Wallet",
+      "toastNoWallet": "No WellSpend wallet opened on this device",
+      "toastWalletPaid": "{amount} paid to WellSpend wallet — run {id}",
+      "txnSalary": "Salary — {period}"
     },
     "corp_pay_payslips": {
       "title": "Payslips",
@@ -2597,7 +2603,10 @@
       "deductedOn": "deducted from your {date} payslip",
       "confirmAccess": "Confirm access",
       "requestToast": "Request sent to HR — {amount}",
-      "autoApprovedToast": "Approved — {amount} is on its way"
+      "autoApprovedToast": "Approved — {amount} is on its way",
+      "destLabel": "Send it to",
+      "destWallet": "WellSpend wallet — instant",
+      "destExternal": "Bank / mobile money"
     },
     "emp_home": {
       "title": "Employment",
@@ -3019,6 +3028,75 @@
       "showing": "Showing {shown} of {total} transactions",
       "pageOf": "Page {page} of {pages}",
       "modalTitle": "Transaction Details"
+    },
+    "wallet": {
+      "title": "Wallet & Cards",
+      "subtitle": "Your WellSpend wallet — instant ZIPIT transfers, RTGS and cards",
+      "openTitle": "Your money, in your pocket",
+      "openText": "Open a WellSpend wallet to store money, receive your salary and Early Pay instantly, and spend with a ZimSwitch, Visa or Mastercard — issued through our partner bank.",
+      "openB1": "Instant ZIPIT transfers to any ZimSwitch bank or mobile wallet",
+      "openB2": "RTGS transfers for larger payments, processed same-day",
+      "openB3": "Cards linked to your wallet or Early Pay — spend what you''ve earned",
+      "openBtn": "Open my wallet",
+      "toastOpened": "Wallet opened — welcome aboard",
+      "balance": "Available balance",
+      "sendBtn": "Send money",
+      "topUpBtn": "Top up",
+      "toastTopUp": "{amount} added to your wallet",
+      "txnTopUp": "ZIPIT top-up",
+      "sendTitle": "Send money",
+      "sendRail": "Transfer rail",
+      "railZipitHint": "instant, any ZimSwitch bank",
+      "railRtgsHint": "same-day bank transfer",
+      "sendDestZipit": "Recipient — phone or account",
+      "sendDestRtgs": "Recipient bank & account",
+      "destZipitPh": "e.g. 0771 234 567",
+      "destRtgsPh": "e.g. CBZ — 0112345678901",
+      "sendAmount": "Amount",
+      "insufficient": "Insufficient wallet balance.",
+      "sendZipit": "Send via ZIPIT",
+      "sendRtgs": "Send via RTGS",
+      "toastZipitSent": "{amount} sent instantly via ZIPIT",
+      "toastRtgsSent": "{amount} queued via RTGS — arrives same-day",
+      "txnZipitOut": "ZIPIT transfer",
+      "txnRtgsOut": "RTGS transfer",
+      "cardsTitle": "Your cards",
+      "issueBtn": "Issue card",
+      "issueTitle": "Issue a new card",
+      "issueNetwork": "Card network",
+      "issueKind": "Card type",
+      "kindVirtual": "Virtual",
+      "kindVirtualHint": "ready instantly",
+      "kindPhysical": "Physical",
+      "kindPhysicalHint": "delivered to you",
+      "issueSource": "Linked to",
+      "issueSourceHint": "Early Pay cards spend from your earned-wage balance — perfect for accessing advances on the go.",
+      "sourceWallet": "Wallet balance",
+      "sourceEwa": "Early Pay",
+      "cardHolder": "Card holder",
+      "cardSpends": "Spends",
+      "statusActive": "Active",
+      "statusOrdered": "Ordered",
+      "statusFrozen": "Frozen",
+      "freeze": "Freeze",
+      "unfreeze": "Unfreeze",
+      "toastVirtualIssued": "{network} virtual card ready",
+      "toastOrdered": "{network} card ordered — on its way",
+      "noCards": "No cards yet — issue a virtual card in seconds.",
+      "txnsTitle": "Wallet activity",
+      "thTxn": "Transaction",
+      "thRail": "Rail",
+      "thCounterparty": "To / From",
+      "thAmount": "Amount",
+      "thStatus": "Status",
+      "thDate": "Date",
+      "noTxns": "No wallet activity yet.",
+      "txnDone": "Done",
+      "txnProcessing": "Processing",
+      "txnFailed": "Failed",
+      "railEwa": "Early Pay",
+      "railCard": "Card",
+      "railInternal": "Internal"
     }
   }
 }

@@ -24,7 +24,8 @@
       "ai": "AI 助手",
       "calendar": "日历",
       "settings": "设置",
-      "profile": "个人资料"
+      "profile": "个人资料",
+      "wallet": "钱包"
     },
     "admin": {
       "overview": "概览",
@@ -90,7 +91,8 @@
       "salary": "薪资管理",
       "leave": "请假",
       "borrowing-emp": "提前支薪",
-      "benefits": "福利"
+      "benefits": "福利",
+      "wallet": "钱包"
     }
   },
   "Shell": {
@@ -375,7 +377,10 @@
       "deductedOn": "将从您 {date} 的工资单中扣除",
       "confirmAccess": "确认提取",
       "requestToast": "申请已发送给人事 — {amount}",
-      "autoApprovedToast": "已批准 — {amount} 正在发放中"
+      "autoApprovedToast": "已批准 — {amount} 正在发放中",
+      "destLabel": "发送至",
+      "destWallet": "WellSpend 钱包 — 即时到账",
+      "destExternal": "银行 / 手机钱包"
     },
     "corp_staff_loans": {
       "tabEarly": "提前支薪",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "提前支薪还款"
+    },
+    "wallet": {
+      "title": "钱包与卡片",
+      "subtitle": "您的 WellSpend 钱包 — 即时 ZIPIT 转账、RTGS 和卡片",
+      "openTitle": "您的钱,就在口袋里",
+      "openText": "开通 WellSpend 钱包即可存钱、即时接收工资与提前支薪,并使用 ZimSwitch、Visa 或 Mastercard 消费 — 卡片由我们的合作银行发行。",
+      "openB1": "即时 ZIPIT 转账至任何 ZimSwitch 银行或移动钱包",
+      "openB2": "RTGS 转账适用于大额付款,当日处理",
+      "openB3": "卡片关联您的钱包或提前支薪 — 花您已赚到的钱",
+      "openBtn": "开通我的钱包",
+      "toastOpened": "钱包已开通 — 欢迎加入",
+      "balance": "可用余额",
+      "sendBtn": "汇款",
+      "topUpBtn": "充值",
+      "toastTopUp": "{amount} 已存入您的钱包",
+      "txnTopUp": "ZIPIT 充值",
+      "sendTitle": "汇款",
+      "sendRail": "转账通道",
+      "railZipitHint": "即时到账,任何 ZimSwitch 银行",
+      "railRtgsHint": "当日到账的银行转账",
+      "sendDestZipit": "收款人 — 手机号或账户",
+      "sendDestRtgs": "收款银行与账户",
+      "destZipitPh": "例如 0771 234 567",
+      "destRtgsPh": "例如 CBZ — 0112345678901",
+      "sendAmount": "金额",
+      "insufficient": "钱包余额不足。",
+      "sendZipit": "通过 ZIPIT 汇款",
+      "sendRtgs": "通过 RTGS 汇款",
+      "toastZipitSent": "{amount} 已通过 ZIPIT 即时汇出",
+      "toastRtgsSent": "{amount} 已通过 RTGS 排队 — 当日到账",
+      "txnZipitOut": "ZIPIT 转账",
+      "txnRtgsOut": "RTGS 转账",
+      "cardsTitle": "您的卡片",
+      "issueBtn": "发卡",
+      "issueTitle": "申请新卡",
+      "issueNetwork": "卡组织",
+      "issueKind": "卡类型",
+      "kindVirtual": "虚拟卡",
+      "kindVirtualHint": "即时可用",
+      "kindPhysical": "实体卡",
+      "kindPhysicalHint": "邮寄给您",
+      "issueSource": "关联至",
+      "issueSourceHint": "提前支薪卡直接从您已赚工资余额中消费 — 随时随地使用预支款的最佳方式。",
+      "sourceWallet": "钱包余额",
+      "sourceEwa": "提前支薪",
+      "cardHolder": "持卡人",
+      "cardSpends": "消费自",
+      "statusActive": "使用中",
+      "statusOrdered": "已订购",
+      "statusFrozen": "已冻结",
+      "freeze": "冻结",
+      "unfreeze": "解冻",
+      "toastVirtualIssued": "{network} 虚拟卡已就绪",
+      "toastOrdered": "{network} 卡已订购 — 正在配送",
+      "noCards": "还没有卡片 — 几秒内即可申请一张虚拟卡。",
+      "txnsTitle": "钱包动态",
+      "thTxn": "交易",
+      "thRail": "通道",
+      "thCounterparty": "收/付方",
+      "thAmount": "金额",
+      "thStatus": "状态",
+      "thDate": "日期",
+      "noTxns": "暂无钱包动态。",
+      "txnDone": "已完成",
+      "txnProcessing": "处理中",
+      "txnFailed": "失败",
+      "railEwa": "提前支薪",
+      "railCard": "卡",
+      "railInternal": "内部"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "WellSpend 钱包",
+      "toastNoWallet": "此设备上尚未开通 WellSpend 钱包",
+      "toastWalletPaid": "{amount} 已支付至 WellSpend 钱包 — 批次 {id}",
+      "txnSalary": "工资 — {period}"
     }
   }
 }

@@ -106,6 +106,8 @@ export interface SalaryAdvance {
   /** Total deducted from the next payslip (amount + fee) */
   repay: number;
   status: AdvanceStatus;
+  /** Where the money goes on payout — wallet lands instantly, external via rail */
+  destination?: "wallet" | "external";
   requestedAt: string; // ISO date
   decidedBy?: string;
   paidOutAt?: string;

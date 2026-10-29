@@ -24,7 +24,8 @@
       "ai": "AI-assistent",
       "calendar": "Kalender",
       "settings": "Inställningar",
-      "profile": "Profil"
+      "profile": "Profil",
+      "wallet": "Plånbok"
     },
     "admin": {
       "overview": "Översikt",
@@ -90,7 +91,8 @@
       "salary": "Lönehantering",
       "leave": "Ledighet",
       "borrowing-emp": "Lön i förtid",
-      "benefits": "Förmåner"
+      "benefits": "Förmåner",
+      "wallet": "Plånbok"
     }
   },
   "Shell": {
@@ -375,7 +377,10 @@
       "deductedOn": "dras från ditt lönebesked {date}",
       "confirmAccess": "Bekräfta uttag",
       "requestToast": "Begäran skickad till HR — {amount}",
-      "autoApprovedToast": "Godkänd — {amount} är på väg"
+      "autoApprovedToast": "Godkänd — {amount} är på väg",
+      "destLabel": "Skicka det till",
+      "destWallet": "WellSpend-plånbok — direkt",
+      "destExternal": "Bank / mobila pengar"
     },
     "corp_staff_loans": {
       "tabEarly": "Lön i förtid",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Återbetalning lön i förtid"
+    },
+    "wallet": {
+      "title": "Plånbok & kort",
+      "subtitle": "Din WellSpend-plånbok — direkta ZIPIT-överföringar, RTGS och kort",
+      "openTitle": "Dina pengar, i fickan",
+      "openText": "Öppna en WellSpend-plånbok för att förvara pengar, få din lön och Lön i förtid direkt, och handla med ett ZimSwitch-, Visa- eller Mastercard-kort — utgivet via vår partnerbank.",
+      "openB1": "Direkta ZIPIT-överföringar till vilken ZimSwitch-bank eller mobil plånbok som helst",
+      "openB2": "RTGS-överföringar för större betalningar, behandlade samma dag",
+      "openB3": "Kort kopplade till din plånbok eller Lön i förtid — spendera det du har tjänat",
+      "openBtn": "Öppna min plånbok",
+      "toastOpened": "Plånbok öppnad — välkommen ombord",
+      "balance": "Tillgängligt saldo",
+      "sendBtn": "Skicka pengar",
+      "topUpBtn": "Fyll på",
+      "toastTopUp": "{amount} tillagt i din plånbok",
+      "txnTopUp": "ZIPIT-påfyllning",
+      "sendTitle": "Skicka pengar",
+      "sendRail": "Överföringskanal",
+      "railZipitHint": "direkt, vilken ZimSwitch-bank som helst",
+      "railRtgsHint": "banköverföring samma dag",
+      "sendDestZipit": "Mottagare — telefon eller konto",
+      "sendDestRtgs": "Mottagarens bank & konto",
+      "destZipitPh": "t.ex. 0771 234 567",
+      "destRtgsPh": "t.ex. CBZ — 0112345678901",
+      "sendAmount": "Belopp",
+      "insufficient": "Otillräckligt saldo i plånboken.",
+      "sendZipit": "Skicka via ZIPIT",
+      "sendRtgs": "Skicka via RTGS",
+      "toastZipitSent": "{amount} skickat direkt via ZIPIT",
+      "toastRtgsSent": "{amount} köat via RTGS — framme samma dag",
+      "txnZipitOut": "ZIPIT-överföring",
+      "txnRtgsOut": "RTGS-överföring",
+      "cardsTitle": "Dina kort",
+      "issueBtn": "Utfärda kort",
+      "issueTitle": "Utfärda ett nytt kort",
+      "issueNetwork": "Kortnätverk",
+      "issueKind": "Korttyp",
+      "kindVirtual": "Virtuellt",
+      "kindVirtualHint": "klart direkt",
+      "kindPhysical": "Fysiskt",
+      "kindPhysicalHint": "levereras till dig",
+      "issueSource": "Kopplat till",
+      "issueSourceHint": "Kort för Lön i förtid spenderar från ditt intjänade lönesaldo — perfekt för att komma åt uttag på språng.",
+      "sourceWallet": "Plånbokssaldo",
+      "sourceEwa": "Lön i förtid",
+      "cardHolder": "Kortinnehavare",
+      "cardSpends": "Spenderar",
+      "statusActive": "Aktiv",
+      "statusOrdered": "Beställt",
+      "statusFrozen": "Fryst",
+      "freeze": "Frys",
+      "unfreeze": "Tina",
+      "toastVirtualIssued": "Virtuellt {network}-kort klart",
+      "toastOrdered": "{network}-kort beställt — på väg till dig",
+      "noCards": "Inga kort än — skapa ett virtuellt kort på några sekunder.",
+      "txnsTitle": "Plånboksaktivitet",
+      "thTxn": "Transaktion",
+      "thRail": "Kanal",
+      "thCounterparty": "Till / från",
+      "thAmount": "Belopp",
+      "thStatus": "Status",
+      "thDate": "Datum",
+      "noTxns": "Ingen plånboksaktivitet än.",
+      "txnDone": "Klar",
+      "txnProcessing": "Behandlas",
+      "txnFailed": "Misslyckades",
+      "railEwa": "Lön i förtid",
+      "railCard": "Kort",
+      "railInternal": "Intern"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "WellSpend-plånbok",
+      "toastNoWallet": "Ingen WellSpend-plånbok öppnad på den här enheten",
+      "toastWalletPaid": "{amount} betalt till WellSpend-plånbok — körning {id}",
+      "txnSalary": "Lön — {period}"
     }
   }
 }

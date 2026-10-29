@@ -24,7 +24,8 @@
       "ai": "Umsizi We-AI",
       "calendar": "Ikhalenda",
       "settings": "Izilungiselelo",
-      "profile": "Iphrofayela"
+      "profile": "Iphrofayela",
+      "wallet": "Iwalethi"
     },
     "admin": {
       "overview": "Isishwankathelo",
@@ -90,7 +91,8 @@
       "salary": "Ukulawulwa Komholo",
       "leave": "Ilivi",
       "borrowing-emp": "Umholo Wangaphambili",
-      "benefits": "Izinzuzo"
+      "benefits": "Izinzuzo",
+      "wallet": "Iwalethi"
     }
   },
   "Shell": {
@@ -375,7 +377,10 @@
       "deductedOn": "kukhishwa encwadini yakho yomholo ka {date}",
       "confirmAccess": "Qinisekisa ukufinyelela",
       "requestToast": "Isicelo sithunyelwe e-HR — {amount}",
-      "autoApprovedToast": "Kuvunyiwe — {amount} iyeza"
+      "autoApprovedToast": "Kuvunyiwe — {amount} iyeza",
+      "destLabel": "Ithumele ku",
+      "destWallet": "Iwalethi ye-WellSpend — ngokushesha",
+      "destExternal": "Ibhange / imali yeselula"
     },
     "corp_staff_loans": {
       "tabEarly": "Umholo Wangaphambili",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Isikhipho soMholo Wangaphambili"
+    },
+    "wallet": {
+      "title": "Iwalethi Nezikhadi",
+      "subtitle": "Iwalethi yakho ye-WellSpend — ukudluliselwa kwe-ZIPIT okusheshayo, i-RTGS nezikhadi",
+      "openTitle": "Imali yakho, epokothweni lakho",
+      "openText": "Vula iwalethi ye-WellSpend ukugcina imali, ukuthola umholo wakho noMholo Wangaphambili ngokushesha, futhi uchithe ngekhadi le-ZimSwitch, i-Visa noma i-Mastercard — elikhishwe yibhange lethu lokubambisana.",
+      "openB1": "Ukudluliselwa kwe-ZIPIT okusheshayo kunoma iyiphi ibhange ye-ZimSwitch noma iwalethi yeselula",
+      "openB2": "Ukudluliselwa kwe-RTGS kwezinkokhelo ezinkulu, okucutshungulwa ngosuku olufanayo",
+      "openB3": "Izikhadi ezixhunyiwe kiwalethi yakho noma kuMholo Wangaphambili — chitha okusewukutholile",
+      "openBtn": "Vula iwalethi yami",
+      "toastOpened": "Iwalethi ivuliwe — wamukelekile",
+      "balance": "Isamba esitholakalayo",
+      "sendBtn": "Thumela imali",
+      "topUpBtn": "Faka imali",
+      "toastTopUp": "{amount} ingeziwe ewalethini yakho",
+      "txnTopUp": "Ukufakwa kwemali nge-ZIPIT",
+      "sendTitle": "Thumela imali",
+      "sendRail": "Indlela yokudlulisa",
+      "railZipitHint": "ngokushesha, kunoma iyiphi ibhange ye-ZimSwitch",
+      "railRtgsHint": "ukudlulisa kwebhange ngosuku olufanayo",
+      "sendDestZipit": "Umamukeli — ifoni noma i-akhawunti",
+      "sendDestRtgs": "Ibhange ne-akhawunti yomamukeli",
+      "destZipitPh": "isib. 0771 234 567",
+      "destRtgsPh": "isib. CBZ — 0112345678901",
+      "sendAmount": "Inani",
+      "insufficient": "Imali ewalethini yakho ayanele.",
+      "sendZipit": "Thumela nge-ZIPIT",
+      "sendRtgs": "Thumela nge-RTGS",
+      "toastZipitSent": "{amount} ithunyelwe ngokushesha nge-ZIPIT",
+      "toastRtgsSent": "{amount} ifakwe ohlwini lwe-RTGS — ifika ngosuku olufanayo",
+      "txnZipitOut": "Ukudlulisa kwe-ZIPIT",
+      "txnRtgsOut": "Ukudlulisa kwe-RTGS",
+      "cardsTitle": "Izikhadi zakho",
+      "issueBtn": "Khipha ikhadi",
+      "issueTitle": "Khipha ikhadi elisha",
+      "issueNetwork": "Inethiwekhi yekhadi",
+      "issueKind": "Uhlobo lwekhadi",
+      "kindVirtual": "Eli-virtual",
+      "kindVirtualHint": "lilungile ngokushesha",
+      "kindPhysical": "Eliphathekayo",
+      "kindPhysicalHint": "lilethwe kuwe",
+      "issueSource": "Ixhunyiwe ku",
+      "issueSourceHint": "Izikhadi zoMholo Wangaphambili zichitha kusuka esameni somholo wakho owutholile — zikahle kakhulu ukufinyelela ukuboleka lapho uhamba khona.",
+      "sourceWallet": "Isamba sewalethi",
+      "sourceEwa": "Umholo Wangaphambili",
+      "cardHolder": "Umnikazi wekhadi",
+      "cardSpends": "Ichitha ku",
+      "statusActive": "Iyasebenza",
+      "statusOrdered": "Iceliwe",
+      "statusFrozen": "Iqandisiwe",
+      "freeze": "Qandisa",
+      "unfreeze": "Susa ukuqanda",
+      "toastVirtualIssued": "Ikhadi le-{network} eli-virtual selilungile",
+      "toastOrdered": "Ikhadi le-{network} lceliwe — lisendleleni",
+      "noCards": "Azikho izikhadi okwamanje — khipha ikhadi eli-virtual ngemizuzwana.",
+      "txnsTitle": "Izenzo zewalethi",
+      "thTxn": "Intengiselwano",
+      "thRail": "Indlela",
+      "thCounterparty": "Kuye / Kuvela",
+      "thAmount": "Inani",
+      "thStatus": "Isimo",
+      "thDate": "Usuku",
+      "noTxns": "Akukho zenzo zewalethi okwamanje.",
+      "txnDone": "Kuqediwe",
+      "txnProcessing": "Kuyacutshungulwa",
+      "txnFailed": "Kwehlulekile",
+      "railEwa": "Umholo Wangaphambili",
+      "railCard": "Ikhadi",
+      "railInternal": "Okwangaphakathi"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "Iwalethi ye-WellSpend",
+      "toastNoWallet": "Awukho iwalethi ye-WellSpend evuliwe kulesi sidivayisi",
+      "toastWalletPaid": "{amount} ikhokhelwe iwalethi ye-WellSpend — ukuqhutshwa {id}",
+      "txnSalary": "Umholo — {period}"
     }
   }
 }

@@ -7,6 +7,7 @@ import Modal from "@/components/Modal";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCorpStore, updateCorp, nextId, SalaryAdvance, AdvanceStatus } from "@/lib/corpStore";
 import { accruedWages, advanceFee, nextPayday, workdaysElapsed, workdaysInMonth } from "@/lib/ewa";
+import { useWallet } from "@/lib/walletStore";
 import { ukDate, sym } from "@/lib/format";
 import { usd } from "@/lib/payslip";
 
@@ -18,13 +19,14 @@ const badge = (s: AdvanceStatus) =>
   s === "Settled" ? "badge-green" : s === "Paid Out" ? "badge-blue" : s === "Rejected" ? "badge-red" : "badge-amber";
 
 function RequestModal({
-  max, feePct, payday, onSubmit, onClose,
+  max, feePct, payday, walletOpen, onSubmit, onClose,
 }: {
-  max: number; feePct: number; payday: Date;
-  onSubmit: (amount: number) => void; onClose: () => void;
+  max: number; feePct: number; payday: Date; walletOpen: boolean;
+  onSubmit: (amount: number, destination: "wallet" | "external") => void; onClose: () => void;
 }) {
   const t = useTranslations("Pages.emp_borrowing");
   const [amount, setAmount] = useState("");
+  const [destination, setDestination] = useState<"wallet" | "external">(walletOpen ? "wallet" : "external");
   const amt = Math.min(max, parseFloat(amount) || 0);
   const fee = advanceFee(amt, feePct);
   const over = (parseFloat(amount) || 0) > max;
@@ -32,7 +34,7 @@ function RequestModal({
   function submit(e: FormEvent) {
     e.preventDefault();
     if (amt <= 0 || over) return;
-    onSubmit(Math.round(amt * 100) / 100);
+    onSubmit(Math.round(amt * 100) / 100, destination);
   }
 
   return (
@@ -46,6 +48,13 @@ function RequestModal({
           </div>
         </div>
         {over && <p style={{ fontSize: 12.5, color: "var(--red)", margin: "-4px 0 10px" }}>{t("tooMuch", { max: usd(max) })}</p>}
+        <div className="field">
+          <label>{t("destLabel")}</label>
+          <select className="settings-select" style={{ width: "100%" }} value={destination} onChange={(e) => setDestination(e.target.value as "wallet" | "external")}>
+            {walletOpen && <option value="wallet">{t("destWallet")}</option>}
+            <option value="external">{t("destExternal")}</option>
+          </select>
+        </div>
         {amt > 0 && !over && (
           <div className="glass-card" style={{ padding: 14, marginBottom: 12, border: "1px solid var(--card-border)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" }}>
@@ -74,6 +83,7 @@ export default function EmployeeBorrowingPage() {
   const { user, toast } = useAppData();
   const t = useTranslations("Pages.emp_borrowing");
   const store = useCorpStore();
+  const wallet = useWallet();
   const [requestOpen, setRequestOpen] = useState(false);
   const [editingSalary, setEditingSalary] = useState(false);
   const [salaryInput, setSalaryInput] = useState("");
@@ -126,7 +136,7 @@ export default function EmployeeBorrowingPage() {
     setSalaryInput("");
   }
 
-  function handleRequest(amount: number) {
+  function handleRequest(amount: number, destination: "wallet" | "external") {
     const fee = advanceFee(amount, ewa.feePct);
     const auto = amount <= ewa.autoApproveBelow;
     const adv: SalaryAdvance = {
@@ -136,6 +146,7 @@ export default function EmployeeBorrowingPage() {
       fee,
       repay: Math.round((amount + fee) * 100) / 100,
       status: auto ? "Approved" : "Pending",
+      destination,
       requestedAt: new Date().toISOString().slice(0, 10),
       ...(auto ? { decidedBy: "auto" } : {}),
     };
@@ -261,6 +272,7 @@ export default function EmployeeBorrowingPage() {
           max={available}
           feePct={ewa.feePct}
           payday={payday}
+          walletOpen={wallet.opened}
           onSubmit={handleRequest}
           onClose={() => setRequestOpen(false)}
         />

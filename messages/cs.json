@@ -24,7 +24,8 @@
       "ai": "AI asistent",
       "calendar": "Kalendář",
       "settings": "Nastavení",
-      "profile": "Profil"
+      "profile": "Profil",
+      "wallet": "Peněženka"
     },
     "admin": {
       "overview": "Přehled",
@@ -90,7 +91,8 @@
       "salary": "Správa platu",
       "leave": "Dovolená",
       "borrowing-emp": "Předčasná výplata",
-      "benefits": "Benefity"
+      "benefits": "Benefity",
+      "wallet": "Peněženka"
     }
   },
   "Shell": {
@@ -408,7 +410,10 @@
       "deductedOn": "strženo z tvé výplatní pásky {date}",
       "confirmAccess": "Potvrdit výběr",
       "requestToast": "Žádost odeslána HR — {amount}",
-      "autoApprovedToast": "Schváleno — {amount} je na cestě"
+      "autoApprovedToast": "Schváleno — {amount} je na cestě",
+      "destLabel": "Kam to poslat",
+      "destWallet": "Peněženka WellSpend — okamžitě",
+      "destExternal": "Banka / mobilní peníze"
     },
     "emp_home": {
       "earlyPayTitle": "Předčasná výplata",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Splátka předčasné výplaty"
+    },
+    "wallet": {
+      "title": "Peněženka a karty",
+      "subtitle": "Tvoje peněženka WellSpend — okamžité převody ZIPIT, RTGS a karty",
+      "openTitle": "Tvoje peníze v tvé kapse",
+      "openText": "Otevři si peněženku WellSpend, ukládej peníze, dostávej výplatu a Předčasnou výplatu okamžitě a utrácej kartou ZimSwitch, Visa nebo Mastercard — vydanou naší partnerskou bankou.",
+      "openB1": "Okamžité převody ZIPIT do jakékoli banky ZimSwitch nebo mobilní peněženky",
+      "openB2": "Převody RTGS pro větší platby, zpracované ještě tentýž den",
+      "openB3": "Karty napojené na peněženku nebo Předčasnou výplatu — utrácej vydělané peníze",
+      "openBtn": "Otevřít moji peněženku",
+      "toastOpened": "Peněženka otevřená — vítej na palubě",
+      "balance": "Dostupný zůstatek",
+      "sendBtn": "Poslat peníze",
+      "topUpBtn": "Dobít",
+      "toastTopUp": "{amount} přidáno do tvé peněženky",
+      "txnTopUp": "Dobití ZIPIT",
+      "sendTitle": "Poslat peníze",
+      "sendRail": "Způsob převodu",
+      "railZipitHint": "okamžitě, jakákoli banka ZimSwitch",
+      "railRtgsHint": "bankovní převod tentýž den",
+      "sendDestZipit": "Příjemce — telefon nebo účet",
+      "sendDestRtgs": "Banka a účet příjemce",
+      "destZipitPh": "např. 0771 234 567",
+      "destRtgsPh": "např. CBZ — 0112345678901",
+      "sendAmount": "Částka",
+      "insufficient": "Nedostatečný zůstatek v peněžence.",
+      "sendZipit": "Poslat přes ZIPIT",
+      "sendRtgs": "Poslat přes RTGS",
+      "toastZipitSent": "{amount} odesláno okamžitě přes ZIPIT",
+      "toastRtgsSent": "{amount} zařazeno přes RTGS — dorazí tentýž den",
+      "txnZipitOut": "Převod ZIPIT",
+      "txnRtgsOut": "Převod RTGS",
+      "cardsTitle": "Tvé karty",
+      "issueBtn": "Vydat kartu",
+      "issueTitle": "Vydat novou kartu",
+      "issueNetwork": "Karetní síť",
+      "issueKind": "Typ karty",
+      "kindVirtual": "Virtuální",
+      "kindVirtualHint": "hotová hned",
+      "kindPhysical": "Fyzická",
+      "kindPhysicalHint": "doručíme ti",
+      "issueSource": "Napojená na",
+      "issueSourceHint": "Karty Předčasné výplaty utrácejí ze zůstatku vydělané mzdy — ideální pro zálohy po ruce.",
+      "sourceWallet": "Zůstatek peněženky",
+      "sourceEwa": "Předčasná výplata",
+      "cardHolder": "Držitel karty",
+      "cardSpends": "Útraty",
+      "statusActive": "Aktivní",
+      "statusOrdered": "Objednaná",
+      "statusFrozen": "Zmrazená",
+      "freeze": "Zmrazit",
+      "unfreeze": "Odmrazit",
+      "toastVirtualIssued": "Virtuální karta {network} je hotová",
+      "toastOrdered": "Karta {network} objednaná — je na cestě",
+      "noCards": "Zatím žádné karty — virtuální vydáš během pár sekund.",
+      "txnsTitle": "Aktivita peněženky",
+      "thTxn": "Transakce",
+      "thRail": "Způsob",
+      "thCounterparty": "Komu / Od koho",
+      "thAmount": "Částka",
+      "thStatus": "Stav",
+      "thDate": "Datum",
+      "noTxns": "Zatím žádná aktivita peněženky.",
+      "txnDone": "Hotovo",
+      "txnProcessing": "Zpracovává se",
+      "txnFailed": "Selhalo",
+      "railEwa": "Předčasná výplata",
+      "railCard": "Karta",
+      "railInternal": "Interní"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "Peněženka WellSpend",
+      "toastNoWallet": "Na tomto zařízení není otevřená žádná peněženka WellSpend",
+      "toastWalletPaid": "{amount} vyplaceno na peněženku WellSpend — cyklus {id}",
+      "txnSalary": "Mzda — {period}"
     }
   }
 }

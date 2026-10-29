@@ -24,7 +24,8 @@
       "ai": "Asystent AI",
       "calendar": "Kalendarz",
       "settings": "Ustawienia",
-      "profile": "Profil"
+      "profile": "Profil",
+      "wallet": "Portfel"
     },
     "admin": {
       "overview": "Przegląd",
@@ -90,7 +91,8 @@
       "salary": "Zarządzanie wynagrodzeniem",
       "leave": "Urlopy",
       "borrowing-emp": "Wcześniejsza wypłata",
-      "benefits": "Benefity"
+      "benefits": "Benefity",
+      "wallet": "Portfel"
     }
   },
   "Shell": {
@@ -408,7 +410,10 @@
       "deductedOn": "potrącone z paska wypłaty z {date}",
       "confirmAccess": "Potwierdź wypłatę",
       "requestToast": "Wniosek wysłany do HR — {amount}",
-      "autoApprovedToast": "Zatwierdzone — {amount} jest w drodze"
+      "autoApprovedToast": "Zatwierdzone — {amount} jest w drodze",
+      "destLabel": "Gdzie wysłać",
+      "destWallet": "Portfel WellSpend — natychmiast",
+      "destExternal": "Bank / portfel mobilny"
     },
     "emp_home": {
       "earlyPayTitle": "Wcześniejsza wypłata",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Spłata wcześniejszej wypłaty"
+    },
+    "wallet": {
+      "title": "Portfel i karty",
+      "subtitle": "Twój portfel WellSpend — błyskawiczne przelewy ZIPIT, RTGS i karty",
+      "openTitle": "Twoje pieniądze w Twojej kieszeni",
+      "openText": "Otwórz portfel WellSpend, aby przechowywać pieniądze, otrzymywać pensję i Wcześniejszą wypłatę natychmiast oraz wydawać kartą ZimSwitch, Visa lub Mastercard — wydaną przez nasz bank partnerski.",
+      "openB1": "Błyskawiczne przelewy ZIPIT do dowolnego banku ZimSwitch lub portfela mobilnego",
+      "openB2": "Przelewy RTGS dla większych płatności, realizowane tego samego dnia",
+      "openB3": "Karty powiązane z portfelem lub Wcześniejszą wypłatą — wydawaj swoje zarobione pieniądze",
+      "openBtn": "Otwórz mój portfel",
+      "toastOpened": "Portfel otwarty — witaj na pokładzie",
+      "balance": "Dostępne saldo",
+      "sendBtn": "Wyślij pieniądze",
+      "topUpBtn": "Doładuj",
+      "toastTopUp": "{amount} dodane do Twojego portfela",
+      "txnTopUp": "Doładowanie ZIPIT",
+      "sendTitle": "Wyślij pieniądze",
+      "sendRail": "Kanał przelewu",
+      "railZipitHint": "błyskawicznie, dowolny bank ZimSwitch",
+      "railRtgsHint": "przelew bankowy tego samego dnia",
+      "sendDestZipit": "Odbiorca — telefon lub konto",
+      "sendDestRtgs": "Bank i konto odbiorcy",
+      "destZipitPh": "np. 0771 234 567",
+      "destRtgsPh": "np. CBZ — 0112345678901",
+      "sendAmount": "Kwota",
+      "insufficient": "Niewystarczające środki w portfelu.",
+      "sendZipit": "Wyślij przez ZIPIT",
+      "sendRtgs": "Wyślij przez RTGS",
+      "toastZipitSent": "{amount} wysłane natychmiast przez ZIPIT",
+      "toastRtgsSent": "{amount} w kolejce przez RTGS — dotrze tego samego dnia",
+      "txnZipitOut": "Przelew ZIPIT",
+      "txnRtgsOut": "Przelew RTGS",
+      "cardsTitle": "Twoje karty",
+      "issueBtn": "Wydaj kartę",
+      "issueTitle": "Wydaj nową kartę",
+      "issueNetwork": "Sieć kartowa",
+      "issueKind": "Typ karty",
+      "kindVirtual": "Wirtualna",
+      "kindVirtualHint": "gotowa od razu",
+      "kindPhysical": "Fizyczna",
+      "kindPhysicalHint": "dostarczona do Ciebie",
+      "issueSource": "Powiązana z",
+      "issueSourceHint": "Karty Wcześniejszej wypłaty wydają środki z salda zarobionej pensji — idealne, by mieć dostęp do zaliczek w biegu.",
+      "sourceWallet": "Saldo portfela",
+      "sourceEwa": "Wcześniejsza wypłata",
+      "cardHolder": "Posiadacz karty",
+      "cardSpends": "Wydatki",
+      "statusActive": "Aktywna",
+      "statusOrdered": "Zamówiona",
+      "statusFrozen": "Zamrożona",
+      "freeze": "Zamróź",
+      "unfreeze": "Odmróź",
+      "toastVirtualIssued": "Wirtualna karta {network} gotowa",
+      "toastOrdered": "Karta {network} zamówiona — jest w drodze",
+      "noCards": "Nie masz jeszcze kart — wydaj wirtualną kartę w kilka sekund.",
+      "txnsTitle": "Aktywność portfela",
+      "thTxn": "Transakcja",
+      "thRail": "Kanał",
+      "thCounterparty": "Do / Od",
+      "thAmount": "Kwota",
+      "thStatus": "Status",
+      "thDate": "Data",
+      "noTxns": "Brak aktywności portfela.",
+      "txnDone": "Zrealizowana",
+      "txnProcessing": "W trakcie",
+      "txnFailed": "Nieudana",
+      "railEwa": "Wcześniejsza wypłata",
+      "railCard": "Karta",
+      "railInternal": "Wewnętrzny"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "Portfel WellSpend",
+      "toastNoWallet": "Na tym urządzeniu nie otwarto portfela WellSpend",
+      "toastWalletPaid": "{amount} wypłacone na portfel WellSpend — cykl {id}",
+      "txnSalary": "Pensja — {period}"
     }
   }
 }

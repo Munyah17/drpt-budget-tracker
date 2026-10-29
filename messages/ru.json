@@ -24,7 +24,8 @@
       "ai": "ИИ-ассистент",
       "calendar": "Календарь",
       "settings": "Настройки",
-      "profile": "Профиль"
+      "profile": "Профиль",
+      "wallet": "Кошелёк"
     },
     "admin": {
       "overview": "Обзор",
@@ -90,7 +91,8 @@
       "salary": "Управление зарплатой",
       "leave": "Отпуска",
       "borrowing-emp": "Ранняя выплата",
-      "benefits": "Льготы"
+      "benefits": "Льготы",
+      "wallet": "Кошелёк"
     }
   },
   "Shell": {
@@ -408,7 +410,10 @@
       "deductedOn": "вычитается из расчётного листка от {date}",
       "confirmAccess": "Подтвердить получение",
       "requestToast": "Запрос отправлен в HR — {amount}",
-      "autoApprovedToast": "Одобрено — {amount} уже в пути"
+      "autoApprovedToast": "Одобрено — {amount} уже в пути",
+      "destLabel": "Куда отправить",
+      "destWallet": "Кошелёк WellSpend — мгновенно",
+      "destExternal": "Банк / мобильные деньги"
     },
     "emp_home": {
       "earlyPayTitle": "Ранняя выплата",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Погашение ранней выплаты"
+    },
+    "wallet": {
+      "title": "Кошелёк и карты",
+      "subtitle": "Твой кошелёк WellSpend — мгновенные переводы ZIPIT, RTGS и карты",
+      "openTitle": "Твои деньги — у тебя в кармане",
+      "openText": "Открой кошелёк WellSpend, чтобы хранить деньги, мгновенно получать зарплату и Раннюю выплату, и трать картой ZimSwitch, Visa или Mastercard — выпущенной нашим банком-партнёром.",
+      "openB1": "Мгновенные переводы ZIPIT в любой банк ZimSwitch или мобильный кошелёк",
+      "openB2": "Переводы RTGS для крупных платежей — в тот же день",
+      "openB3": "Карты, привязанные к кошельку или Ранней выплате — трать заработанное",
+      "openBtn": "Открыть мой кошелёк",
+      "toastOpened": "Кошелёк открыт — добро пожаловать",
+      "balance": "Доступный баланс",
+      "sendBtn": "Отправить деньги",
+      "topUpBtn": "Пополнить",
+      "toastTopUp": "{amount} добавлено в твой кошелёк",
+      "txnTopUp": "Пополнение ZIPIT",
+      "sendTitle": "Отправить деньги",
+      "sendRail": "Способ перевода",
+      "railZipitHint": "мгновенно, любой банк ZimSwitch",
+      "railRtgsHint": "банковский перевод в тот же день",
+      "sendDestZipit": "Получатель — телефон или счёт",
+      "sendDestRtgs": "Банк и счёт получателя",
+      "destZipitPh": "напр. 0771 234 567",
+      "destRtgsPh": "напр. CBZ — 0112345678901",
+      "sendAmount": "Сумма",
+      "insufficient": "Недостаточно средств в кошельке.",
+      "sendZipit": "Отправить через ZIPIT",
+      "sendRtgs": "Отправить через RTGS",
+      "toastZipitSent": "{amount} отправлено мгновенно через ZIPIT",
+      "toastRtgsSent": "{amount} в очереди через RTGS — придёт в тот же день",
+      "txnZipitOut": "Перевод ZIPIT",
+      "txnRtgsOut": "Перевод RTGS",
+      "cardsTitle": "Твои карты",
+      "issueBtn": "Выпустить карту",
+      "issueTitle": "Выпустить новую карту",
+      "issueNetwork": "Платёжная система",
+      "issueKind": "Тип карты",
+      "kindVirtual": "Виртуальная",
+      "kindVirtualHint": "готова мгновенно",
+      "kindPhysical": "Физическая",
+      "kindPhysicalHint": "доставим тебе",
+      "issueSource": "Привязана к",
+      "issueSourceHint": "Карты Ранней выплаты тратят с баланса заработанной зарплаты — идеально, чтобы пользоваться авансами где угодно.",
+      "sourceWallet": "Баланс кошелька",
+      "sourceEwa": "Ранняя выплата",
+      "cardHolder": "Держатель карты",
+      "cardSpends": "Траты",
+      "statusActive": "Активна",
+      "statusOrdered": "Заказана",
+      "statusFrozen": "Заморожена",
+      "freeze": "Заморозить",
+      "unfreeze": "Разморозить",
+      "toastVirtualIssued": "Виртуальная карта {network} готова",
+      "toastOrdered": "Карта {network} заказана — уже в пути",
+      "noCards": "Карт пока нет — выпусти виртуальную за секунды.",
+      "txnsTitle": "Активность кошелька",
+      "thTxn": "Операция",
+      "thRail": "Способ",
+      "thCounterparty": "Кому / От кого",
+      "thAmount": "Сумма",
+      "thStatus": "Статус",
+      "thDate": "Дата",
+      "noTxns": "Активности кошелька пока нет.",
+      "txnDone": "Готово",
+      "txnProcessing": "В обработке",
+      "txnFailed": "Не удалось",
+      "railEwa": "Ранняя выплата",
+      "railCard": "Карта",
+      "railInternal": "Внутренний"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "Кошелёк WellSpend",
+      "toastNoWallet": "На этом устройстве нет открытого кошелька WellSpend",
+      "toastWalletPaid": "{amount} выплачено на кошелёк WellSpend — цикл {id}",
+      "txnSalary": "Зарплата — {period}"
     }
   }
 }

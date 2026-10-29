@@ -12,6 +12,7 @@ import {
 } from "@/lib/corpStore";
 import { usd } from "@/lib/payslip";
 import { ukDate } from "@/lib/format";
+import { walletCredit } from "@/lib/walletStore";
 
 const th = { padding: "12px 8px", fontWeight: 600, fontSize: 13 } as const;
 const td = { padding: "12px 8px", fontSize: 13 } as const;
@@ -115,6 +116,10 @@ function EarlyPayTab() {
         x.id === a.id ? { ...x, status: "Paid Out" as const, paidOutAt: new Date().toISOString().slice(0, 10) } : x
       ),
     }));
+    // Wallet destination lands instantly in the employee's WellSpend wallet
+    if (a.destination === "wallet") {
+      walletCredit(a.amount, `Early Pay — ${a.id}`, "EWA", user?.organisation ?? undefined);
+    }
     toast(t("advToastPaidOut", { amount: usd(a.amount), employee: a.employee }), "check-circle");
   }
 

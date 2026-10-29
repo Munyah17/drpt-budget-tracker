@@ -24,7 +24,8 @@
       "ai": "AI-assistent",
       "calendar": "Kalender",
       "settings": "Instellingen",
-      "profile": "Profiel"
+      "profile": "Profiel",
+      "wallet": "Wallet"
     },
     "admin": {
       "overview": "Overzicht",
@@ -90,7 +91,8 @@
       "salary": "Salarisbeheer",
       "leave": "Verlof",
       "borrowing-emp": "Vervroegd loon",
-      "benefits": "Voordelen"
+      "benefits": "Voordelen",
+      "wallet": "Wallet"
     }
   },
   "Shell": {
@@ -375,7 +377,10 @@
       "deductedOn": "verrekend met je loonstrook van {date}",
       "confirmAccess": "Opname bevestigen",
       "requestToast": "Aanvraag verstuurd naar HR — {amount}",
-      "autoApprovedToast": "Goedgekeurd — {amount} is onderweg"
+      "autoApprovedToast": "Goedgekeurd — {amount} is onderweg",
+      "destLabel": "Waar moet het heen",
+      "destWallet": "WellSpend-wallet — direct",
+      "destExternal": "Bank / mobiel geld"
     },
     "corp_staff_loans": {
       "tabEarly": "Vervroegd loon",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Terugbetaling vervroegd loon"
+    },
+    "wallet": {
+      "title": "Wallet & kaarten",
+      "subtitle": "Je WellSpend-wallet — directe ZIPIT-overschrijvingen, RTGS en kaarten",
+      "openTitle": "Je geld, op zak",
+      "openText": "Open een WellSpend-wallet om geld te bewaren, je salaris en Vervroegd loon direct te ontvangen, en te betalen met een ZimSwitch-, Visa- of Mastercard-kaart — uitgegeven via onze partnerbank.",
+      "openB1": "Directe ZIPIT-overschrijvingen naar elke ZimSwitch-bank of mobiele wallet",
+      "openB2": "RTGS-overschrijvingen voor grotere betalingen, dezelfde dag verwerkt",
+      "openB3": "Kaarten gekoppeld aan je wallet of Vervroegd loon — geef uit wat je verdiend hebt",
+      "openBtn": "Open mijn wallet",
+      "toastOpened": "Wallet geopend — welkom aan boord",
+      "balance": "Beschikbaar saldo",
+      "sendBtn": "Geld versturen",
+      "topUpBtn": "Opwaarderen",
+      "toastTopUp": "{amount} toegevoegd aan je wallet",
+      "txnTopUp": "ZIPIT-opwaardering",
+      "sendTitle": "Geld versturen",
+      "sendRail": "Betaalrail",
+      "railZipitHint": "direct, elke ZimSwitch-bank",
+      "railRtgsHint": "bankoverschrijving dezelfde dag",
+      "sendDestZipit": "Ontvanger — telefoon of rekening",
+      "sendDestRtgs": "Bank & rekening van ontvanger",
+      "destZipitPh": "bijv. 0771 234 567",
+      "destRtgsPh": "bijv. CBZ — 0112345678901",
+      "sendAmount": "Bedrag",
+      "insufficient": "Onvoldoende saldo in je wallet.",
+      "sendZipit": "Verstuur via ZIPIT",
+      "sendRtgs": "Verstuur via RTGS",
+      "toastZipitSent": "{amount} direct verstuurd via ZIPIT",
+      "toastRtgsSent": "{amount} in de wachtrij via RTGS — komt vandaag nog aan",
+      "txnZipitOut": "ZIPIT-overschrijving",
+      "txnRtgsOut": "RTGS-overschrijving",
+      "cardsTitle": "Je kaarten",
+      "issueBtn": "Kaart aanmaken",
+      "issueTitle": "Maak een nieuwe kaart",
+      "issueNetwork": "Kaartnetwerk",
+      "issueKind": "Kaarttype",
+      "kindVirtual": "Virtueel",
+      "kindVirtualHint": "direct klaar",
+      "kindPhysical": "Fysiek",
+      "kindPhysicalHint": "wordt bij je bezorgd",
+      "issueSource": "Gekoppeld aan",
+      "issueSourceHint": "Kaarten voor Vervroegd loon geven uit van je verdiende loonsaldo — perfect om onderweg je voorschot te gebruiken.",
+      "sourceWallet": "Walletsaldo",
+      "sourceEwa": "Vervroegd loon",
+      "cardHolder": "Kaarthouder",
+      "cardSpends": "Geeft uit",
+      "statusActive": "Actief",
+      "statusOrdered": "Besteld",
+      "statusFrozen": "Geblokkeerd",
+      "freeze": "Blokkeren",
+      "unfreeze": "Deblokkeren",
+      "toastVirtualIssued": "{network} virtuele kaart is klaar",
+      "toastOrdered": "{network}-kaart besteld — onderweg naar je",
+      "noCards": "Nog geen kaarten — maak in een paar seconden een virtuele kaart.",
+      "txnsTitle": "Walletactiviteit",
+      "thTxn": "Transactie",
+      "thRail": "Rail",
+      "thCounterparty": "Aan / van",
+      "thAmount": "Bedrag",
+      "thStatus": "Status",
+      "thDate": "Datum",
+      "noTxns": "Nog geen walletactiviteit.",
+      "txnDone": "Voltooid",
+      "txnProcessing": "In verwerking",
+      "txnFailed": "Mislukt",
+      "railEwa": "Vervroegd loon",
+      "railCard": "Kaart",
+      "railInternal": "Intern"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "WellSpend-wallet",
+      "toastNoWallet": "Geen WellSpend-wallet geopend op dit apparaat",
+      "toastWalletPaid": "{amount} betaald naar WellSpend-wallet — run {id}",
+      "txnSalary": "Salaris — {period}"
     }
   }
 }

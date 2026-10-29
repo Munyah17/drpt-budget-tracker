@@ -7,6 +7,7 @@ import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 import { downloadCsv } from "@/lib/download";
 import { useCorpStore, updateCorp, payrollBadge, PayrollRunRec } from "@/lib/corpStore";
+import { useWallet, walletCredit } from "@/lib/walletStore";
 import { usd } from "@/lib/payslip";
 
 const th = { padding: "12px 8px", fontWeight: 600, fontSize: 13 } as const;
@@ -54,8 +55,9 @@ function BankModal({ onClose }: { onClose: () => void }) {
 
 export default function DisbursementsPage() {
   const t = useTranslations("Pages.corp_pay_disbursements");
-  const { toast } = useAppData();
+  const { toast, user } = useAppData();
   const store = useCorpStore();
+  const wallet = useWallet();
   const [banks, setBanks] = useState(false);
 
   const approved = useMemo(
@@ -95,6 +97,17 @@ export default function DisbursementsPage() {
       { run_id: run.id, employee: "ALL STAFF", phone: "", amount: run.totalAmount.toFixed(2), currency: "USD" },
     ]);
     toast(t("toastEcocashFile", { id: run.id }), "download");
+  }
+
+  /** Salary lands straight into opened WellSpend wallets — instant, no bank file. */
+  function payToWallets(run: PayrollRunRec) {
+    if (!wallet.opened) {
+      toast(t("toastNoWallet"), "x");
+      return;
+    }
+    const share = run.employees > 0 ? run.totalAmount / run.employees : run.totalAmount;
+    walletCredit(Math.round(share * 100) / 100, t("txnSalary", { period: run.period }), "Internal", user?.organisation ?? run.id);
+    toast(t("toastWalletPaid", { amount: usd(share), id: run.id }), "check-circle");
   }
 
   return (
@@ -137,6 +150,9 @@ export default function DisbursementsPage() {
                   </button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => exportEcocash(run)}>
                     <Icon name="download" size={13} style={{ marginRight: 4 }} />Ecocash
+                  </button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--rose-600)" }} onClick={() => payToWallets(run)}>
+                    <Icon name="wallet" size={13} style={{ marginRight: 4 }} />{t("payToWallets")}
                   </button>
                 </td>
               </tr>

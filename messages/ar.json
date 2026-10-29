@@ -24,7 +24,8 @@
       "ai": "المساعد الذكي",
       "calendar": "التقويم",
       "settings": "الإعدادات",
-      "profile": "الملف الشخصي"
+      "profile": "الملف الشخصي",
+      "wallet": "المحفظة"
     },
     "admin": {
       "overview": "نظرة عامة",
@@ -90,7 +91,8 @@
       "salary": "إدارة الراتب",
       "leave": "الإجازات",
       "borrowing-emp": "الراتب المبكر",
-      "benefits": "المزايا"
+      "benefits": "المزايا",
+      "wallet": "المحفظة"
     }
   },
   "Shell": {
@@ -375,7 +377,10 @@
       "deductedOn": "تُخصم من قسيمة راتبك بتاريخ {date}",
       "confirmAccess": "تأكيد السحب",
       "requestToast": "أُرسل الطلب إلى الموارد البشرية — {amount}",
-      "autoApprovedToast": "اعتُمد — {amount} في طريقه إليك"
+      "autoApprovedToast": "اعتُمد — {amount} في طريقه إليك",
+      "destLabel": "أرسلها إلى",
+      "destWallet": "محفظة WellSpend — فوري",
+      "destExternal": "بنك / أموال الجوال"
     },
     "corp_staff_loans": {
       "tabEarly": "الراتب المبكر",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "سداد راتب مبكر"
+    },
+    "wallet": {
+      "title": "المحفظة والبطاقات",
+      "subtitle": "محفظة WellSpend الخاصة بك — تحويلات ZIPIT فورية وRTGS وبطاقات",
+      "openTitle": "أموالك، في جيبك",
+      "openText": "افتح محفظة WellSpend لتخزين أموالك واستلام راتبك والراتب المبكر فورًا، وأنفق باستخدام ZimSwitch أو Visa أو Mastercard — تصدر عبر بنكنا الشريك.",
+      "openB1": "تحويلات ZIPIT فورية إلى أي بنك ZimSwitch أو محفظة جوال",
+      "openB2": "تحويلات RTGS للمدفوعات الأكبر، تُعالَج في اليوم نفسه",
+      "openB3": "بطاقات مرتبطة بمحفظتك أو بالراتب المبكر — أنفق ما كسبته",
+      "openBtn": "افتح محفظتي",
+      "toastOpened": "تم فتح المحفظة — أهلًا بك",
+      "balance": "الرصيد المتاح",
+      "sendBtn": "إرسال الأموال",
+      "topUpBtn": "شحن",
+      "toastTopUp": "أُضيف {amount} إلى محفظتك",
+      "txnTopUp": "شحن عبر ZIPIT",
+      "sendTitle": "إرسال الأموال",
+      "sendRail": "مسار التحويل",
+      "railZipitHint": "فوري، أي بنك ZimSwitch",
+      "railRtgsHint": "تحويل بنكي في اليوم نفسه",
+      "sendDestZipit": "المستلم — الهاتف أو الحساب",
+      "sendDestRtgs": "بنك المستلم وحسابه",
+      "destZipitPh": "مثال: 0771 234 567",
+      "destRtgsPh": "مثال: CBZ — 0112345678901",
+      "sendAmount": "المبلغ",
+      "insufficient": "رصيد المحفظة غير كافٍ.",
+      "sendZipit": "إرسال عبر ZIPIT",
+      "sendRtgs": "إرسال عبر RTGS",
+      "toastZipitSent": "أُرسل {amount} فورًا عبر ZIPIT",
+      "toastRtgsSent": "وُضع {amount} في قائمة RTGS — يصل في اليوم نفسه",
+      "txnZipitOut": "تحويل ZIPIT",
+      "txnRtgsOut": "تحويل RTGS",
+      "cardsTitle": "بطاقاتك",
+      "issueBtn": "إصدار بطاقة",
+      "issueTitle": "إصدار بطاقة جديدة",
+      "issueNetwork": "شبكة البطاقة",
+      "issueKind": "نوع البطاقة",
+      "kindVirtual": "افتراضية",
+      "kindVirtualHint": "جاهزة فورًا",
+      "kindPhysical": "فعلية",
+      "kindPhysicalHint": "تُوصَل إليك",
+      "issueSource": "مرتبطة بـ",
+      "issueSourceHint": "بطاقات الراتب المبكر تنفق من رصيد أجورك المكتسبة — مثالية للوصول إلى السلف أثناء التنقل.",
+      "sourceWallet": "رصيد المحفظة",
+      "sourceEwa": "الراتب المبكر",
+      "cardHolder": "حامل البطاقة",
+      "cardSpends": "تنفق من",
+      "statusActive": "نشطة",
+      "statusOrdered": "مطلوبة",
+      "statusFrozen": "مجمّدة",
+      "freeze": "تجميد",
+      "unfreeze": "إلغاء التجميد",
+      "toastVirtualIssued": "بطاقة {network} الافتراضية جاهزة",
+      "toastOrdered": "تم طلب بطاقة {network} — في الطريق إليك",
+      "noCards": "لا بطاقات بعد — أصدر بطاقة افتراضية في ثوانٍ.",
+      "txnsTitle": "نشاط المحفظة",
+      "thTxn": "المعاملة",
+      "thRail": "المسار",
+      "thCounterparty": "إلى / من",
+      "thAmount": "المبلغ",
+      "thStatus": "الحالة",
+      "thDate": "التاريخ",
+      "noTxns": "لا نشاط في المحفظة بعد.",
+      "txnDone": "مكتملة",
+      "txnProcessing": "قيد المعالجة",
+      "txnFailed": "فاشلة",
+      "railEwa": "الراتب المبكر",
+      "railCard": "بطاقة",
+      "railInternal": "داخلي"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "محفظة WellSpend",
+      "toastNoWallet": "لا توجد محفظة WellSpend مفتوحة على هذا الجهاز",
+      "toastWalletPaid": "دُفع {amount} إلى محفظة WellSpend — المسير {id}",
+      "txnSalary": "الراتب — {period}"
     }
   }
 }

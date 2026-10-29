@@ -24,7 +24,8 @@
       "ai": "AI-assistent",
       "calendar": "Kalender",
       "settings": "Innstillinger",
-      "profile": "Profil"
+      "profile": "Profil",
+      "wallet": "Lommebok"
     },
     "admin": {
       "overview": "Oversikt",
@@ -90,7 +91,8 @@
       "salary": "Lønnsadministrasjon",
       "leave": "Permisjon",
       "borrowing-emp": "Tidig lønn",
-      "benefits": "Fordeler"
+      "benefits": "Fordeler",
+      "wallet": "Lommebok"
     }
   },
   "Shell": {
@@ -375,7 +377,10 @@
       "deductedOn": "trekkes fra lønnsslippen din {date}",
       "confirmAccess": "Bekreft uttak",
       "requestToast": "Forespørsel sendt til HR — {amount}",
-      "autoApprovedToast": "Godkjent — {amount} er på vei"
+      "autoApprovedToast": "Godkjent — {amount} er på vei",
+      "destLabel": "Send det til",
+      "destWallet": "WellSpend-lommebok — umiddelbart",
+      "destExternal": "Bank / mobile penger"
     },
     "corp_staff_loans": {
       "tabEarly": "Tidig lønn",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Tilbakebetaling tidig lønn"
+    },
+    "wallet": {
+      "title": "Lommebok & kort",
+      "subtitle": "Din WellSpend-lommebok — øyeblikkelige ZIPIT-overføringer, RTGS og kort",
+      "openTitle": "Pengene dine, i lomma",
+      "openText": "Åpne en WellSpend-lommebok for å oppbevare penger, motta lønnen din og Tidig lønn umiddelbart, og handle med et ZimSwitch-, Visa- eller Mastercard-kort — utstedt via partnerbanken vår.",
+      "openB1": "Øyeblikkelige ZIPIT-overføringer til enhver ZimSwitch-bank eller mobillommebok",
+      "openB2": "RTGS-overføringer for større betalinger, behandlet samme dag",
+      "openB3": "Kort knyttet til lommeboken din eller Tidig lønn — bruk det du har tjent",
+      "openBtn": "Åpne lommeboken min",
+      "toastOpened": "Lommebok åpnet — velkommen om bord",
+      "balance": "Tilgjengelig saldo",
+      "sendBtn": "Send penger",
+      "topUpBtn": "Fyll opp",
+      "toastTopUp": "{amount} lagt til i lommeboken din",
+      "txnTopUp": "ZIPIT-påfylling",
+      "sendTitle": "Send penger",
+      "sendRail": "Overføringskanal",
+      "railZipitHint": "umiddelbart, enhver ZimSwitch-bank",
+      "railRtgsHint": "bankoverføring samme dag",
+      "sendDestZipit": "Mottaker — telefon eller konto",
+      "sendDestRtgs": "Mottakers bank & konto",
+      "destZipitPh": "f.eks. 0771 234 567",
+      "destRtgsPh": "f.eks. CBZ — 0112345678901",
+      "sendAmount": "Beløp",
+      "insufficient": "Utilstrekkelig saldo i lommeboken.",
+      "sendZipit": "Send via ZIPIT",
+      "sendRtgs": "Send via RTGS",
+      "toastZipitSent": "{amount} sendt umiddelbart via ZIPIT",
+      "toastRtgsSent": "{amount} satt i kø via RTGS — fremme samme dag",
+      "txnZipitOut": "ZIPIT-overføring",
+      "txnRtgsOut": "RTGS-overføring",
+      "cardsTitle": "Kortene dine",
+      "issueBtn": "Utsted kort",
+      "issueTitle": "Utsted et nytt kort",
+      "issueNetwork": "Kortnettverk",
+      "issueKind": "Korttype",
+      "kindVirtual": "Virtuelt",
+      "kindVirtualHint": "klart med en gang",
+      "kindPhysical": "Fysisk",
+      "kindPhysicalHint": "leveres til deg",
+      "issueSource": "Knyttet til",
+      "issueSourceHint": "Kort for Tidig lønn bruker fra saldoen din med opptjent lønn — perfekt for å få tilgang til uttak på farten.",
+      "sourceWallet": "Lommeboksaldo",
+      "sourceEwa": "Tidig lønn",
+      "cardHolder": "Kortholder",
+      "cardSpends": "Bruker",
+      "statusActive": "Aktiv",
+      "statusOrdered": "Bestilt",
+      "statusFrozen": "Fryst",
+      "freeze": "Frys",
+      "unfreeze": "Tin",
+      "toastVirtualIssued": "Virtuelt {network}-kort klart",
+      "toastOrdered": "{network}-kort bestilt — på vei til deg",
+      "noCards": "Ingen kort ennå — lag et virtuelt kort på sekunder.",
+      "txnsTitle": "Lommebokaktivitet",
+      "thTxn": "Transaksjon",
+      "thRail": "Kanal",
+      "thCounterparty": "Til / fra",
+      "thAmount": "Beløp",
+      "thStatus": "Status",
+      "thDate": "Dato",
+      "noTxns": "Ingen lommebokaktivitet ennå.",
+      "txnDone": "Ferdig",
+      "txnProcessing": "Behandles",
+      "txnFailed": "Mislyktes",
+      "railEwa": "Tidig lønn",
+      "railCard": "Kort",
+      "railInternal": "Intern"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "WellSpend-lommebok",
+      "toastNoWallet": "Ingen WellSpend-lommebok åpnet på denne enheten",
+      "toastWalletPaid": "{amount} betalt til WellSpend-lommebok — kjøring {id}",
+      "txnSalary": "Lønn — {period}"
     }
   }
 }

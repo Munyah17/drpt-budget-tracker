@@ -24,7 +24,8 @@
       "ai": "Assistant IA",
       "calendar": "Calendrier",
       "settings": "Paramètres",
-      "profile": "Profil"
+      "profile": "Profil",
+      "wallet": "Portefeuille"
     },
     "admin": {
       "overview": "Vue d''ensemble",
@@ -90,7 +91,8 @@
       "salary": "Gestion du salaire",
       "leave": "Congés",
       "borrowing-emp": "Paie Anticipée",
-      "benefits": "Avantages"
+      "benefits": "Avantages",
+      "wallet": "Portefeuille"
     }
   },
   "Shell": {
@@ -408,7 +410,10 @@
       "deductedOn": "déduit de ton bulletin du {date}",
       "confirmAccess": "Confirmer l''accès",
       "requestToast": "Demande envoyée aux RH — {amount}",
-      "autoApprovedToast": "Approuvée — {amount} en route"
+      "autoApprovedToast": "Approuvée — {amount} en route",
+      "destLabel": "L''envoyer vers",
+      "destWallet": "Portefeuille WellSpend — instantané",
+      "destExternal": "Banque / argent mobile"
     },
     "emp_home": {
       "earlyPayTitle": "Paie Anticipée",
@@ -418,6 +423,81 @@
     },
     "emp_payslips": {
       "deductionEarlyPay": "Remboursement de Paie Anticipée"
+    },
+    "wallet": {
+      "title": "Portefeuille et cartes",
+      "subtitle": "Ton portefeuille WellSpend — transferts ZIPIT instantanés, RTGS et cartes",
+      "openTitle": "Ton argent, dans ta poche",
+      "openText": "Ouvre un portefeuille WellSpend pour garder ton argent, recevoir ta paie et ta Paie Anticipée instantanément, et dépenser avec une carte ZimSwitch, Visa ou Mastercard — émise par notre banque partenaire.",
+      "openB1": "Transferts ZIPIT instantanés vers n''importe quelle banque ZimSwitch ou portefeuille mobile",
+      "openB2": "Transferts RTGS pour les gros paiements, traités le jour même",
+      "openB3": "Des cartes liées à ton portefeuille ou à ta Paie Anticipée — dépense ce que tu as déjà gagné",
+      "openBtn": "Ouvrir mon portefeuille",
+      "toastOpened": "Portefeuille ouvert — bienvenue à bord",
+      "balance": "Solde disponible",
+      "sendBtn": "Envoyer de l''argent",
+      "topUpBtn": "Recharger",
+      "toastTopUp": "{amount} ajoutés à ton portefeuille",
+      "txnTopUp": "Recharge ZIPIT",
+      "sendTitle": "Envoyer de l''argent",
+      "sendRail": "Canal de transfert",
+      "railZipitHint": "instantané, toute banque ZimSwitch",
+      "railRtgsHint": "virement bancaire le jour même",
+      "sendDestZipit": "Destinataire — téléphone ou compte",
+      "sendDestRtgs": "Banque et compte du destinataire",
+      "destZipitPh": "ex. : 0771 234 567",
+      "destRtgsPh": "ex. : CBZ — 0112345678901",
+      "sendAmount": "Montant",
+      "insufficient": "Solde du portefeuille insuffisant.",
+      "sendZipit": "Envoyer via ZIPIT",
+      "sendRtgs": "Envoyer via RTGS",
+      "toastZipitSent": "{amount} envoyés instantanément via ZIPIT",
+      "toastRtgsSent": "{amount} en file via RTGS — arrive le jour même",
+      "txnZipitOut": "Transfert ZIPIT",
+      "txnRtgsOut": "Transfert RTGS",
+      "cardsTitle": "Tes cartes",
+      "issueBtn": "Émettre une carte",
+      "issueTitle": "Émettre une nouvelle carte",
+      "issueNetwork": "Réseau de la carte",
+      "issueKind": "Type de carte",
+      "kindVirtual": "Virtuelle",
+      "kindVirtualHint": "prête tout de suite",
+      "kindPhysical": "Physique",
+      "kindPhysicalHint": "livrée chez toi",
+      "issueSource": "Liée à",
+      "issueSourceHint": "Les cartes de Paie Anticipée dépensent depuis ton solde de salaire gagné — parfait pour accéder à tes avances où que tu sois.",
+      "sourceWallet": "Solde du portefeuille",
+      "sourceEwa": "Paie Anticipée",
+      "cardHolder": "Titulaire de la carte",
+      "cardSpends": "Dépenses",
+      "statusActive": "Active",
+      "statusOrdered": "Commandée",
+      "statusFrozen": "Gelée",
+      "freeze": "Geler",
+      "unfreeze": "Dégeler",
+      "toastVirtualIssued": "Carte virtuelle {network} prête",
+      "toastOrdered": "Carte {network} commandée — en route",
+      "noCards": "Pas encore de cartes — émets une carte virtuelle en quelques secondes.",
+      "txnsTitle": "Activité du portefeuille",
+      "thTxn": "Transaction",
+      "thRail": "Canal",
+      "thCounterparty": "À / De",
+      "thAmount": "Montant",
+      "thStatus": "Statut",
+      "thDate": "Date",
+      "noTxns": "Pas encore d''activité sur le portefeuille.",
+      "txnDone": "Terminée",
+      "txnProcessing": "En cours",
+      "txnFailed": "Échouée",
+      "railEwa": "Paie Anticipée",
+      "railCard": "Carte",
+      "railInternal": "Interne"
+    },
+    "corp_pay_disbursements": {
+      "payToWallets": "Portefeuille WellSpend",
+      "toastNoWallet": "Aucun portefeuille WellSpend ouvert sur cet appareil",
+      "toastWalletPaid": "{amount} versés sur le portefeuille WellSpend — cycle {id}",
+      "txnSalary": "Salaire — {period}"
     }
   }
 }
