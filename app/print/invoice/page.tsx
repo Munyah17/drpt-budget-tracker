@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useTranslations } from "next-intl";
 import PrintDocument, { PRINT_DOC_KEY, PrintDocData } from "@/components/PrintDocument";
 
 /** Shown when the page is opened directly with no stashed document */
@@ -43,6 +44,7 @@ function readDoc(): PrintDocData {
 }
 
 export default function PrintInvoicePage() {
+  const t = useTranslations("Pages.print_invoice");
   const doc = useSyncExternalStore<PrintDocData>(emptySubscribe, readDoc, () => SAMPLE_DOC);
 
   return (
@@ -82,10 +84,10 @@ export default function PrintInvoicePage() {
 
       <div className="print-toolbar">
         <button className="pt-primary" onClick={() => window.print()}>
-          Print / Save as PDF
+          {t("printPdf")}
         </button>
         <button className="pt-ghost" onClick={() => window.close()}>
-          Close
+          {t("close")}
         </button>
       </div>
 

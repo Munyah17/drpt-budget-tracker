@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslations } from "next-intl";
 import {
   ACCOUNTS,
   BILLS as INITIAL_BILLS,
@@ -141,6 +142,7 @@ const DEMO_USER_PROFILE: UserProfile = {
 };
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
+  const tAuth = useTranslations("Pages.components");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -621,12 +623,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         return { success: true, role: userRole };
       }
 
-      return { success: false, error: "Sign-in failed. Please try again." };
+      return { success: false, error: tAuth("signInFailed") };
     } catch (error) {
       console.error('Login error:', error);
-      return { success: false, error: error instanceof Error ? error.message : "Sign-in failed. Please try again." };
+      return { success: false, error: error instanceof Error ? error.message : tAuth("signInFailed") };
     }
-  }, []);
+  }, [tAuth]);
 
   const setCurrency = useCallback((c: Currency) => {
     setCurrencyState(c);

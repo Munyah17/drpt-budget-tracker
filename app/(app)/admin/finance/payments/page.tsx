@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,6 +18,7 @@ interface Payment {
 const PAYMENTS_DATA: Payment[] = [];
 
 export default function AdminPaymentsPage() {
+  const t = useTranslations("Pages.adm_finance_payments");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
@@ -33,38 +35,38 @@ export default function AdminPaymentsPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Payments</h2>
-          <p className="section-sub">View payment transactions</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Record Payment
+          {t("recordPayment")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search payments..."
-          statusOptions={[{ value: "Completed", label: "Completed" }, { value: "Pending", label: "Pending" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Completed", label: t("statusCompleted") }, { value: "Pending", label: t("statusPending") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Payment ID</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Organisation</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Amount</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Method</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Date</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thPaymentId")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thOrganisation")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thAmount")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thMethod")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thDate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No payments match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}

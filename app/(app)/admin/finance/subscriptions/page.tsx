@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,6 +18,7 @@ interface Subscription {
 const SUBSCRIPTIONS_DATA: Subscription[] = [];
 
 export default function AdminSubscriptionsPage() {
+  const t = useTranslations("Pages.adm_finance_subscriptions");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const crud = useCrud(SUBSCRIPTIONS_DATA, "Subscription");
@@ -30,45 +32,45 @@ export default function AdminSubscriptionsPage() {
   }, [crud.items, search, statusFilter]);
 
   const handleRenew = (item: string) => {
-    toast(`Renewing ${item}...`);
+    toast(t("toastRenewing", { item }));
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Subscriptions</h2>
-          <p className="section-sub">Manage user subscriptions</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add Subscription
+          {t("addSubscription")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search subscriptions..."
-          statusOptions={[{ value: "Active", label: "Active" }, { value: "Expired", label: "Expired" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Active", label: t("statusActive") }, { value: "Expired", label: t("statusExpired") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>User</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Plan</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Start Date</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Expiry</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thUser")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thPlan")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStartDate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thExpiry")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No subscriptions match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -84,9 +86,9 @@ export default function AdminSubscriptionsPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", subscription, crud.items.indexOf(subscription))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", subscription, crud.items.indexOf(subscription))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                   {subscription.status === "Expired" && (
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleRenew(subscription.user)}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />Renew</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleRenew(subscription.user)}><Icon name="refresh-cw" size={14} style={{ marginRight: 4 }} />{t("renew")}</button>
                   )}
                 </td>
               </tr>

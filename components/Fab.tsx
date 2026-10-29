@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Icon from "./Icon";
 import QuickAddModal from "./QuickAddModal";
 
 export default function Fab() {
+  const t = useTranslations("Pages.components");
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   return (
     <>
       <button
-        aria-label="Add transaction"
+        aria-label={t("fab_aria")}
         onClick={() => setOpen(true)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}

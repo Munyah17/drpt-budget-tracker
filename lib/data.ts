@@ -242,12 +242,12 @@ export const CURRENCIES: Currency[] = [
 ];
 
 export const REPORTS = [
-  { name: "Income Report", desc: "View your income summary", icon: "trending-up" },
-  { name: "Expense Report", desc: "View your expense summary", icon: "trending-down" },
-  { name: "Cash Flow Statement", desc: "See your cash flow", icon: "repeat" },
-  { name: "Net Worth Report", desc: "View your net worth over time", icon: "landmark" },
-  { name: "Budget Performance", desc: "Compare budget vs actual", icon: "gauge" },
-];
+  { key: "income", icon: "trending-up" },
+  { key: "expense", icon: "trending-down" },
+  { key: "cashflow", icon: "repeat" },
+  { key: "networth", icon: "landmark" },
+  { key: "budget", icon: "gauge" },
+] as const;
 
 export const AI_RESPONSES: Record<string, string> = {};
 

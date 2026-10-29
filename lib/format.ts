@@ -1,9 +1,22 @@
+import { intlLocaleFor } from "./i18n/config";
 import { Currency } from "./types";
 
 export const DEFAULT_CURRENCY: Currency = "USD";
 
 /** Currency used by the shorthand formatters — synced from AppDataContext */
 let activeCurrency: Currency = DEFAULT_CURRENCY;
+
+/** Date locale. English stays en-GB, matching the previous formatters. */
+let activeDateLocale = "en-GB";
+/** Number locale. English stays en-US so "$" does not become "US$". */
+let activeNumberLocale = "en-US";
+
+/** Called when the resolved interface language changes. */
+export function setActiveLocale(locale: string) {
+  const intl = intlLocaleFor(locale);
+  activeDateLocale = intl.date;
+  activeNumberLocale = intl.number;
+}
 
 /** Called by AppDataProvider whenever the selected currency changes */
 export function setActiveCurrency(c: Currency) {
@@ -23,10 +36,11 @@ export function sym(): string {
 /** Display symbol for a currency code, e.g. "$" for USD, "₦" for NGN */
 export function currencySymbol(currency: Currency): string {
   try {
-    const part = new Intl.NumberFormat("en-US", {
+    const part = new Intl.NumberFormat(activeNumberLocale, {
       style: "currency",
       currency,
       currencyDisplay: "narrowSymbol",
+      numberingSystem: "latn",
     })
       .formatToParts(0)
       .find((p) => p.type === "currency");
@@ -43,10 +57,11 @@ export function currencySymbol(currency: Currency): string {
  */
 export function formatCurrency(n: number, currency: Currency = DEFAULT_CURRENCY): string {
   try {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat(activeNumberLocale, {
       style: "currency",
       currency,
       currencyDisplay: "narrowSymbol",
+      numberingSystem: "latn",
     }).format(n);
   } catch {
     // Unknown/invalid code — fall back to a plain code prefix
@@ -62,9 +77,31 @@ export function gbp(n: number): string {
   return fmt(n);
 }
 
+const dateOptions = { numberingSystem: "latn" } as const;
+
 export function ukDate(iso: string): string {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  return new Intl.DateTimeFormat(activeDateLocale, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    ...dateOptions,
+  }).format(d);
+}
+
+export function formatMonthYear(d: Date): string {
+  return new Intl.DateTimeFormat(activeDateLocale, {
+    month: "long",
+    year: "numeric",
+    ...dateOptions,
+  }).format(d);
+}
+
+export function formatShortMonth(d: Date): string {
+  return new Intl.DateTimeFormat(activeDateLocale, {
+    month: "short",
+    ...dateOptions,
+  }).format(d);
 }
 
 export function initials(name: string): string {

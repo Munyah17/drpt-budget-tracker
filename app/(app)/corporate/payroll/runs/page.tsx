@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -14,13 +15,14 @@ import { usd } from "@/lib/payslip";
 const th = { padding: "12px 8px", fontWeight: 600, fontSize: 13 } as const;
 const td = { padding: "12px 8px", fontSize: 13 } as const;
 
-const ACTION_LABEL: Record<string, string> = {
-  "Pending Review": "Submit for Review",
-  Approved: "Approve",
-  Paid: "Mark Paid",
+const ACTION_KEYS: Record<string, string> = {
+  "Pending Review": "actionSubmitReview",
+  Approved: "actionApprove",
+  Paid: "actionMarkPaid",
 };
 
 function NewRunModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.corp_pay_runs");
   const { toast, user } = useAppData();
   const store = useCorpStore();
   const [period, setPeriod] = useState("");
@@ -44,49 +46,50 @@ function NewRunModal({ onClose }: { onClose: () => void }) {
       note: kind === "Off-cycle" ? note || "Off-cycle payment" : note,
     };
     updateCorp((s) => ({ ...s, payrollRuns: [run, ...s.payrollRuns] }));
-    toast(`${kind} payroll run ${run.id} created as Draft`, "check-circle");
+    toast(t("toastCreated", { kind: t(kind === "Off-cycle" ? "kindOffCycle" : "kindRegular"), id: run.id }), "check-circle");
     onClose();
   }
 
   return (
-    <Modal title="New Payroll Run" onClose={onClose}>
+    <Modal title={t("modalTitle")} onClose={onClose}>
       <form onSubmit={submit}>
         <div className="field">
-          <label>Run type</label>
+          <label>{t("fieldRunType")}</label>
           <select className="settings-select" style={{ width: "100%" }} value={kind} onChange={(e) => setKind(e.target.value as "Regular" | "Off-cycle")}>
-            <option>Regular</option>
-            <option>Off-cycle</option>
+            <option value="Regular">{t("kindRegular")}</option>
+            <option value="Off-cycle">{t("kindOffCycle")}</option>
           </select>
         </div>
         <div className="field">
-          <label>Period {kind === "Off-cycle" ? "(e.g. Bonus — Oct 2026)" : ""}</label>
-          <input value={period} onChange={(e) => setPeriod(e.target.value)} placeholder={kind === "Regular" ? "November 2026" : "Bonus — Oct 2026"} />
+          <label>{t("fieldPeriod")}{kind === "Off-cycle" ? t("periodHintOffCycle") : ""}</label>
+          <input value={period} onChange={(e) => setPeriod(e.target.value)} placeholder={kind === "Regular" ? t("periodPlaceholderRegular") : t("periodPlaceholderOffCycle")} />
         </div>
         <div className="field">
-          <label>Employees</label>
+          <label>{t("fieldEmployees")}</label>
           <input type="number" min="0" value={employees} onChange={(e) => setEmployees(e.target.value)} />
         </div>
         <div className="field">
-          <label>Total amount ($)</label>
-          <input required type="number" min="0" step="0.01" value={total} onChange={(e) => setTotal(e.target.value)} placeholder="e.g. 48200" />
+          <label>{t("fieldTotal")}</label>
+          <input required type="number" min="0" step="0.01" value={total} onChange={(e) => setTotal(e.target.value)} placeholder={t("totalPlaceholder")} />
         </div>
         <div className="field">
-          <label>Pay date</label>
+          <label>{t("fieldPayDate")}</label>
           <input type="date" value={payDate} onChange={(e) => setPayDate(e.target.value)} />
         </div>
         {kind === "Off-cycle" && (
           <div className="field">
-            <label>Reason</label>
-            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Bonus / correction / termination" />
+            <label>{t("fieldReason")}</label>
+            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={t("reasonPlaceholder")} />
           </div>
         )}
-        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Create Draft Run</button>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("createRun")}</button>
       </form>
     </Modal>
   );
 }
 
 export default function CorporatePayrollRunsPage() {
+  const t = useTranslations("Pages.corp_pay_runs");
   const { toast, user } = useAppData();
   const store = useCorpStore();
   const [search, setSearch] = useState("");
@@ -118,7 +121,7 @@ export default function CorporatePayrollRunsPage() {
           : r
       ),
     }));
-    toast(`${run.id} → ${next}`, next === "Paid" ? "check-circle" : "check");
+    toast(t("toastAdvanced", { id: run.id, status: next }), next === "Paid" ? "check-circle" : "check");
   }
 
   function reject(run: PayrollRunRec) {
@@ -126,41 +129,41 @@ export default function CorporatePayrollRunsPage() {
       ...s,
       payrollRuns: s.payrollRuns.map((r) => (r.id === run.id ? { ...r, status: "Rejected" as const } : r)),
     }));
-    toast(`${run.id} rejected`, "x");
+    toast(t("toastRejected", { id: run.id }), "x");
   }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Payroll Runs</h2>
-          <p className="section-sub">Draft → Review → Approve → Pay. Off-cycle runs supported.</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setCreating(true)}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          New Payroll Run
+          {t("newRun")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
-        <div className="glass-card card-pad"><div className="stat-label">Draft</div><div className="stat-value">{count("Draft")}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statDraft")}</div><div className="stat-value">{count("Draft")}</div></div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Awaiting Approval</div>
+          <div className="stat-label">{t("statAwaiting")}</div>
           <div className="stat-value" style={{ color: awaiting ? "var(--amber)" : undefined }}>{awaiting}</div>
         </div>
-        <div className="glass-card card-pad"><div className="stat-label">Approved (unpaid)</div><div className="stat-value">{count("Approved")}</div></div>
-        <div className="glass-card card-pad"><div className="stat-label">Paid</div><div className="stat-value" style={{ color: "var(--green)" }}>{count("Paid")}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statApprovedUnpaid")}</div><div className="stat-value">{count("Approved")}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statPaid")}</div><div className="stat-value" style={{ color: "var(--green)" }}>{count("Paid")}</div></div>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search runs..."
+          searchPlaceholder={t("searchPlaceholder")}
           statusOptions={[
-            { value: "Draft", label: "Draft" },
-            { value: "Pending Review", label: "Pending Review" },
-            { value: "Approved", label: "Approved" },
-            { value: "Paid", label: "Paid" },
-            { value: "Rejected", label: "Rejected" },
+            { value: "Draft", label: t("statusDraft") },
+            { value: "Pending Review", label: t("statusPendingReview") },
+            { value: "Approved", label: t("statusApproved") },
+            { value: "Paid", label: t("statusPaid") },
+            { value: "Rejected", label: t("statusRejected") },
           ]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
@@ -168,19 +171,19 @@ export default function CorporatePayrollRunsPage() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={th}>Run ID</th>
-              <th style={th}>Period</th>
-              <th style={th}>Type</th>
-              <th style={th}>Employees</th>
-              <th style={th}>Total</th>
-              <th style={th}>Status</th>
-              <th style={th}>Pay Date</th>
-              <th style={th}>Actions</th>
+              <th style={th}>{t("colRunId")}</th>
+              <th style={th}>{t("colPeriod")}</th>
+              <th style={th}>{t("colType")}</th>
+              <th style={th}>{t("colEmployees")}</th>
+              <th style={th}>{t("colTotal")}</th>
+              <th style={th}>{t("colStatus")}</th>
+              <th style={th}>{t("colPayDate")}</th>
+              <th style={th}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>No payroll runs — create your first one.</td></tr>
+              <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>{t("emptyState")}</td></tr>
             )}
             {filtered.map((run) => {
               const next = payrollNext(run.status);
@@ -200,15 +203,15 @@ export default function CorporatePayrollRunsPage() {
                         style={{ padding: "4px 8px", fontSize: 12, color: next === "Paid" ? "var(--green)" : "var(--rose-600)" }}
                         onClick={() => advance(run)}
                       >
-                        <Icon name="check" size={14} style={{ marginRight: 4 }} />{ACTION_LABEL[next]}
+                        <Icon name="check" size={14} style={{ marginRight: 4 }} />{t(ACTION_KEYS[next])}
                       </button>
                     )}
                     {(run.status === "Draft" || run.status === "Pending Review") && (
                       <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => reject(run)}>
-                        <Icon name="x" size={14} style={{ marginRight: 4 }} />Reject
+                        <Icon name="x" size={14} style={{ marginRight: 4 }} />{t("reject")}
                       </button>
                     )}
-                    {run.approvedBy && <span style={{ fontSize: 11, color: "var(--ink-500)", display: "block" }}>by {run.approvedBy}</span>}
+                    {run.approvedBy && <span style={{ fontSize: 11, color: "var(--ink-500)", display: "block" }}>{t("approvedBy", { name: run.approvedBy })}</span>}
                   </td>
                 </tr>
               );

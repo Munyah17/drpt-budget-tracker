@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { fmt } from "@/lib/format";
 import Icon from "./Icon";
@@ -18,6 +19,7 @@ interface Envelope {
  * (bills, food, savings…). Warns when the plan overshoots income.
  */
 export default function Envelopes() {
+  const t = useTranslations("Pages.components");
   const { income } = useAppData();
   const [envelopes, setEnvelopes] = useState<Envelope[]>(() => {
     if (typeof window === "undefined") return [];
@@ -58,13 +60,13 @@ export default function Envelopes() {
   return (
     <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
       <div className="card-head" style={{ marginBottom: 12 }}>
-        <h3>Payday Envelopes</h3>
-        <span className="chip">{fmt(pot)} to allocate</span>
+        <h3>{t("envelopes_title")}</h3>
+        <span className="chip">{t("envelopes_toAllocate", { amount: fmt(pot) })}</span>
       </div>
 
       {envelopes.length === 0 && (
         <p style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-          Divide this month&apos;s income into envelopes — bills first, savings next, fun last.
+          {t("envelopes_empty")}
         </p>
       )}
 
@@ -78,7 +80,7 @@ export default function Envelopes() {
           </span>
           <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <strong>{fmt(e.amount)}</strong>
-            <button className="btn btn-ghost btn-sm" data-tip="Remove" onClick={() => save(envelopes.filter((x) => x.id !== e.id))}>
+            <button className="btn btn-ghost btn-sm" data-tip={t("envelopes_remove")} onClick={() => save(envelopes.filter((x) => x.id !== e.id))}>
               <Icon name="trash-2" size={13} />
             </button>
           </span>
@@ -87,7 +89,7 @@ export default function Envelopes() {
 
       {envelopes.length > 0 && (
         <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", fontSize: 13.5, fontWeight: 700, color: over ? "var(--red)" : "var(--green)" }}>
-          <span>{over ? "Over-allocated by" : "Left unallocated"}</span>
+          <span>{over ? t("envelopes_over") : t("envelopes_left")}</span>
           <span>{fmt(Math.abs(left))}</span>
         </div>
       )}
@@ -95,14 +97,14 @@ export default function Envelopes() {
       <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
         <input
           type="text"
-          placeholder="Envelope name e.g. Rent"
+          placeholder={t("envelopes_phName")}
           value={name}
           onChange={(e) => setName(e.target.value)}
           style={{ flex: 1, padding: "10px 12px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", fontSize: 13 }}
         />
         <input
           type="number"
-          placeholder="Amount"
+          placeholder={t("envelopes_phAmount")}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           style={{ width: 110, padding: "10px 12px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", fontSize: 13 }}

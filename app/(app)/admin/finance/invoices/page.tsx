@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
 import { downloadBlob } from "@/lib/download";
@@ -18,6 +19,7 @@ interface Invoice {
 const INVOICES_DATA: Invoice[] = [];
 
 export default function AdminInvoicesPage() {
+  const t = useTranslations("Pages.adm_finance_invoices");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
@@ -34,70 +36,76 @@ export default function AdminInvoicesPage() {
   const handleDownload = (invoice: Invoice) => {
     downloadBlob(
       `invoice-${invoice.invoiceId}.txt`,
-      `INVOICE ${invoice.invoiceId}\nOrganisation: ${invoice.organisation}\nAmount: ${invoice.amount}\nDue: ${invoice.dueDate}\nStatus: ${invoice.status}\n`
+      t("downloadContent", {
+        id: invoice.invoiceId,
+        organisation: invoice.organisation,
+        amount: invoice.amount,
+        dueDate: invoice.dueDate,
+        status: invoice.status,
+      })
     );
-    toast(`Invoice ${invoice.invoiceId} downloaded`, "download");
+    toast(t("toastDownloaded", { id: invoice.invoiceId }), "download");
   };
 
   const handleSend = (invoice: Invoice) => {
-    toast(`Payment reminder sent for ${invoice.invoiceId}`, "send");
+    toast(t("toastReminderSent", { id: invoice.invoiceId }), "send");
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Invoices</h2>
-          <p className="section-sub">Manage client invoices</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Create Invoice
+          {t("createInvoice")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">Total Outstanding</div>
+          <div className="stat-label">{t("statTotalOutstanding")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Overdue</div>
+          <div className="stat-label">{t("statOverdue")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">This Month</div>
+          <div className="stat-label">{t("statThisMonth")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Paid This Month</div>
+          <div className="stat-label">{t("statPaidThisMonth")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search invoices..."
-          statusOptions={[{ value: "Paid", label: "Paid" }, { value: "Overdue", label: "Overdue" }, { value: "Pending", label: "Pending" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Paid", label: t("statusPaid") }, { value: "Overdue", label: t("statusOverdue") }, { value: "Pending", label: t("statusPending") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Invoice #</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Organisation</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Amount</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Due Date</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thInvoice")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thOrganisation")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thAmount")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thDueDate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No invoices match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -113,11 +121,11 @@ export default function AdminInvoicesPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(invoice)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(invoice)}><Icon name="download" size={14} style={{ marginRight: 4 }} />{t("download")}</button>
                   {invoice.status !== "Paid" && (
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(invoice)}><Icon name="send" size={14} style={{ marginRight: 4 }} />Remind</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(invoice)}><Icon name="send" size={14} style={{ marginRight: 4 }} />{t("remind")}</button>
                   )}
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", invoice, crud.items.indexOf(invoice))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", invoice, crud.items.indexOf(invoice))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                 </td>
               </tr>
             ))}

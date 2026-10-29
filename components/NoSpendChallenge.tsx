@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { EXPENSE_CATS } from "@/lib/data";
 import Icon from "./Icon";
@@ -18,6 +19,7 @@ interface ChallengeState {
  * if a matching expense is found on or after the start date.
  */
 export default function NoSpendChallenge() {
+  const t = useTranslations("Pages.components");
   const { expenses } = useAppData();
   const [challenge, setChallenge] = useState<ChallengeState | null>(() => {
     if (typeof window === "undefined") return null;
@@ -71,14 +73,14 @@ export default function NoSpendChallenge() {
     <div className="glass-card card-pad">
       <div className="card-head" style={{ marginBottom: 10 }}>
         <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Icon name="zap" size={16} style={{ color: "var(--rose-600)" }} /> No-Spend Challenge
+          <Icon name="zap" size={16} style={{ color: "var(--rose-600)" }} /> {t("noSpend_title")}
         </h3>
       </div>
 
       {!challenge ? (
         <>
           <p style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-            Pick a category and see how many days you can go without spending on it.
+            {t("noSpend_desc")}
           </p>
           <div style={{ display: "flex", gap: 8 }}>
             <select
@@ -93,7 +95,7 @@ export default function NoSpendChallenge() {
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
-            <button className="btn btn-primary" onClick={start}>Start</button>
+            <button className="btn btn-primary" onClick={start}>{t("noSpend_start")}</button>
           </div>
         </>
       ) : (
@@ -103,17 +105,21 @@ export default function NoSpendChallenge() {
               {streak}
             </div>
             <div style={{ fontSize: 12.5, color: "var(--ink-500)", marginTop: 4 }}>
-              {streak === 1 ? "day" : "days"} without <strong>{challenge.category}</strong> spend
+              {t.rich("noSpend_days", {
+                count: streak,
+                category: challenge.category,
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </div>
           </div>
           {broken && (
             <p style={{ fontSize: 12.5, color: "#d97706", marginBottom: 10, textAlign: "center" }}>
-              You slipped once — the streak restarted from your last clean day. Keep going!
+              {t("noSpend_broken")}
             </p>
           )}
           <div style={{ display: "flex", gap: 8 }}>
             <button className="btn btn-ghost" style={{ flex: 1, fontSize: 12.5 }} onClick={stop}>
-              End challenge
+              {t("noSpend_end")}
             </button>
           </div>
         </>

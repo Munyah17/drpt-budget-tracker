@@ -1,4 +1,5 @@
-﻿import { fmt } from "@/lib/format";
+﻿import { useTranslations } from "next-intl";
+import { fmt } from "@/lib/format";
 import { LegendCategories } from "./ChartLegend";
 
 export default function DonutChart({
@@ -12,6 +13,7 @@ export default function DonutChart({
   size?: number;
   legend?: boolean;
 }) {
+  const t = useTranslations("Pages.components");
   const strokeWidth = Math.round(size * 0.135);
   const entries = Object.entries(data);
   const total = entries.reduce((a, [, v]) => a + v, 0) || 1;
@@ -47,7 +49,7 @@ export default function DonutChart({
         </svg>
         <div style={{ position: "absolute", textAlign: "center" }}>
           <div style={{ fontSize: 11, color: "var(--ink-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".03em" }}>
-            Total
+            {t("donut_total")}
           </div>
           <div style={{ fontSize: 17, fontWeight: 800 }}>{fmt(total)}</div>
         </div>

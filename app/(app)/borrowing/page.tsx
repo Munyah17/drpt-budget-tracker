@@ -1,6 +1,7 @@
 "use client";
 import { sym } from "@/lib/format";
 
+import { useTranslations } from "next-intl";
 import { FormEvent, useState, useMemo } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
@@ -23,6 +24,7 @@ interface Loan {
 const LOANS_DATA: Loan[] = [];
 
 function ApplyModal({ loanType, onApply, onClose }: { loanType: string; onApply: (amount: string, term: string) => void; onClose: () => void }) {
+  const t = useTranslations("Pages.borrowing");
   const [amount, setAmount] = useState("");
   const [term, setTerm] = useState("");
 
@@ -32,29 +34,30 @@ function ApplyModal({ loanType, onApply, onClose }: { loanType: string; onApply:
   }
 
   return (
-    <Modal title={`Apply — ${loanType}`} onClose={onClose}>
+    <Modal title={t("applyTitle", { type: loanType })} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Amount ({sym()})</label>
-          <input required type="number" min="100" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 5000" />
+          <label>{t("amount", { sym: sym() })}</label>
+          <input required type="number" min="100" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t("phAmount")} />
         </div>
         <div className="field">
-          <label>Term</label>
+          <label>{t("term")}</label>
           <select className="settings-select" style={{ width: "100%" }} value={term} onChange={(e) => setTerm(e.target.value)} required>
-            <option value="" disabled>Select term</option>
-            <option>1 year</option>
-            <option>3 years</option>
-            <option>5 years</option>
-            <option>7 years</option>
+            <option value="" disabled>{t("selectTerm")}</option>
+            <option>{t("term1")}</option>
+            <option>{t("term3")}</option>
+            <option>{t("term5")}</option>
+            <option>{t("term7")}</option>
           </select>
         </div>
-        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Submit Application</button>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("submitBtn")}</button>
       </form>
     </Modal>
   );
 }
 
 function PayoffPlanner({ loans }: { loans: Loan[] }) {
+  const t = useTranslations("Pages.borrowing");
   const [extra, setExtra] = useState("50");
 
   const debts: DebtInput[] = useMemo(
@@ -78,28 +81,28 @@ function PayoffPlanner({ loans }: { loans: Loan[] }) {
   return (
     <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
       <div className="card-head">
-        <h3>Payoff Planner <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>— avalanche vs snowball</span></h3>
+        <h3>{t("payoffTitle")} <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>{t("payoffSub")}</span></h3>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
         <label style={{ fontSize: 13, color: "var(--ink-500)", flex: 1, minWidth: 200 }}>
-          Extra per month: <b style={{ color: "var(--rose-600)" }}>{fmt(x)}</b>
+          {t("extraPerMonth")}: <b style={{ color: "var(--rose-600)" }}>{fmt(x)}</b>
           <input type="range" min="0" max="500" step="10" value={extra} onChange={(e) => setExtra(e.target.value)} style={{ width: "100%" }} />
         </label>
       </div>
       <div className="grid grid-2">
         {([
-          { name: "Avalanche (highest APR first)", r: avalanche },
-          { name: "Snowball (smallest balance first)", r: snowball },
+          { name: t("avalanche"), r: avalanche },
+          { name: t("snowball"), r: snowball },
         ]).map(({ name, r }) => (
           <div key={name} style={{ border: "1px solid var(--card-border)", borderRadius: "var(--radius-sm)", padding: 14 }}>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>{name}</div>
             {r.impossible ? (
-              <p style={{ fontSize: 13, color: "var(--red)", margin: 0 }}>Not payable at this rate — increase the extra payment.</p>
+              <p style={{ fontSize: 13, color: "var(--red)", margin: 0 }}>{t("notPayable")}</p>
             ) : (
               <>
-                <div style={{ fontSize: 22, fontWeight: 700 }}>{r.months} months</div>
+                <div style={{ fontSize: 22, fontWeight: 700 }}>{t("monthsCount", { count: r.months })}</div>
                 <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
-                  Debt-free {r.payoffDate} · {fmt(r.totalInterest)} interest
+                  {t("debtFree", { date: r.payoffDate, interest: fmt(r.totalInterest) })}
                 </div>
               </>
             )}
@@ -108,7 +111,7 @@ function PayoffPlanner({ loans }: { loans: Loan[] }) {
       </div>
       {!avalanche.impossible && !snowball.impossible && avalanche.totalInterest < snowball.totalInterest && (
         <p style={{ fontSize: 12.5, color: "var(--green)", marginTop: 10 }}>
-          Avalanche saves {fmt(snowball.totalInterest - avalanche.totalInterest)} in interest vs snowball.
+          {t("avalancheSaves", { amount: fmt(snowball.totalInterest - avalanche.totalInterest) })}
         </p>
       )}
     </div>
@@ -116,6 +119,7 @@ function PayoffPlanner({ loans }: { loans: Loan[] }) {
 }
 
 export default function BorrowingPage() {
+  const t = useTranslations("Pages.borrowing");
   const { toast } = useAppData();
   const [loans, setLoans] = useState<Loan[]>(LOANS_DATA);
   const [search, setSearch] = useState("");
@@ -137,12 +141,12 @@ export default function BorrowingPage() {
       type: applying,
       lender: "WellSpend Credit",
       amount: formatted,
-      interestRate: "TBC",
-      monthlyPayment: `${term} months`,
+      interestRate: t("tbc"),
+      monthlyPayment: t("monthsTerm", { term }),
       remaining: formatted,
       status: "Pending",
     }]);
-    toast(`${applying} application submitted`, "check-circle");
+    toast(t("toastApplied", { type: applying }), "check-circle");
     setApplying(null);
   };
 
@@ -150,66 +154,66 @@ export default function BorrowingPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Borrowing & Loans</h2>
-          <p className="section-sub">Manage your loans and credit options</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">Total Outstanding</div>
+          <div className="stat-label">{t("statOutstanding")}</div>
           <div className="stat-value">—</div>
-          <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>Across all loans</div>
+          <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>{t("statOutstandingSub")}</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Monthly Payment</div>
+          <div className="stat-label">{t("statMonthly")}</div>
           <div className="stat-value">—</div>
-          <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>Next due: Jun 1</div>
+          <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>{t("statMonthlySub")}</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Credit Score</div>
+          <div className="stat-label">{t("statScore")}</div>
           <div className="stat-value">—</div>
-          <div style={{ fontSize: 12, color: "var(--green-500)", marginTop: 4 }}>Good</div>
+          <div style={{ fontSize: 12, color: "var(--green-500)", marginTop: 4 }}>{t("statScoreSub")}</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Available Credit</div>
+          <div className="stat-label">{t("statAvail")}</div>
           <div className="stat-value">—</div>
-          <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>Of $21,000 limit</div>
+          <div style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 4 }}>{t("statAvailSub")}</div>
         </div>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div className="card-head">
-          <h3>Active Loans</h3>
+          <h3>{t("activeLoans")}</h3>
         </div>
         <FilterBar
-          searchPlaceholder="Search loans..."
-          statusOptions={[{ value: "Active", label: "Active" }, { value: "High Balance", label: "High Balance" }]}
+          searchPlaceholder={t("phSearch")}
+          statusOptions={[{ value: "Active", label: t("statusActive") }, { value: "High Balance", label: t("statusHighBalance") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Loan Type</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Lender</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Amount</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Interest Rate</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Monthly Payment</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Remaining</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colType")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colLender")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colAmount")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colRate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colMonthly")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colRemaining")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredLoans.length === 0 && (
               <tr>
                 <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No loans match your search.
+                  {t("empty")}
                 </td>
               </tr>
             )}
             {filteredLoans.map((loan, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => setViewing({ type: loan.type, lender: loan.lender, amount: loan.amount, "interest rate": loan.interestRate, "monthly payment": loan.monthlyPayment, remaining: loan.remaining, status: loan.status })}>
+              <tr key={idx} style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }} onClick={() => setViewing({ [t("rkType")]: loan.type, [t("rkLender")]: loan.lender, [t("rkAmount")]: loan.amount, [t("rkRate")]: loan.interestRate, [t("rkMonthly")]: loan.monthlyPayment, [t("rkRemaining")]: loan.remaining, [t("rkStatus")]: loan.status })}>
                 <td style={{ padding: "12px 8px", fontWeight: 600 }}>{loan.type}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.lender}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{loan.amount}</td>
@@ -227,7 +231,7 @@ export default function BorrowingPage() {
 
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>Available Loan Options</h3>
+          <h3>{t("optionsTitle")}</h3>
         </div>
         <div className="grid grid-3">
           <div className="glass-card card-pad" style={{ cursor: "pointer" }}>
@@ -236,16 +240,16 @@ export default function BorrowingPage() {
                 <Icon name="credit-card" size={24} />
               </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 16 }}>Personal Loan</div>
-                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>Up to $50,000</div>
+                <div style={{ fontWeight: 600, fontSize: 16 }}>{t("optPersonal")}</div>
+                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{t("optPersonalLimit")}</div>
               </div>
             </div>
             <div style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-              <div>From 5.9% APR</div>
-              <div>1-7 year terms</div>
+              <div>{t("optPersonalApr")}</div>
+              <div>{t("optPersonalTerm")}</div>
             </div>
-            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying("Personal Loan")}>
-              Apply Now
+            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying(t("optPersonal"))}>
+              {t("applyBtn")}
             </button>
           </div>
           <div className="glass-card card-pad" style={{ cursor: "pointer" }}>
@@ -254,16 +258,16 @@ export default function BorrowingPage() {
                 <Icon name="home" size={24} />
               </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 16 }}>Home Equity</div>
-                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>Up to $250,000</div>
+                <div style={{ fontWeight: 600, fontSize: 16 }}>{t("optHome")}</div>
+                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{t("optHomeLimit")}</div>
               </div>
             </div>
             <div style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-              <div>From 4.5% APR</div>
-              <div>5-20 year terms</div>
+              <div>{t("optHomeApr")}</div>
+              <div>{t("optHomeTerm")}</div>
             </div>
-            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying("Home Equity Loan")}>
-              Apply Now
+            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying(t("optHomeApply"))}>
+              {t("applyBtn")}
             </button>
           </div>
           <div className="glass-card card-pad" style={{ cursor: "pointer" }}>
@@ -272,22 +276,22 @@ export default function BorrowingPage() {
                 <Icon name="refresh-cw" size={24} />
               </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 16 }}>Debt Consolidation</div>
-                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>Simplify payments</div>
+                <div style={{ fontWeight: 600, fontSize: 16 }}>{t("optDebt")}</div>
+                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{t("optDebtLimit")}</div>
               </div>
             </div>
             <div style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-              <div>From 6.5% APR</div>
-              <div>1-5 year terms</div>
+              <div>{t("optDebtApr")}</div>
+              <div>{t("optDebtTerm")}</div>
             </div>
-            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying("Debt Consolidation")}>
-              Apply Now
+            <button className="btn btn-primary" style={{ width: "100%" }} onClick={() => setApplying(t("optDebt"))}>
+              {t("applyBtn")}
             </button>
           </div>
         </div>
       </div>
       {applying && <ApplyModal loanType={applying} onApply={handleApply} onClose={() => setApplying(null)} />}
-      {viewing && <RecordModal mode="view" title="Loan Details" record={viewing} onClose={() => setViewing(null)} />}
+      {viewing && <RecordModal mode="view" title={t("loanDetails")} record={viewing} onClose={() => setViewing(null)} />}
     </>
   );
 }

@@ -1,0 +1,320 @@
+{
+  "Meta": {
+    "title": "I-WellSpend Budget Tracker ❤",
+    "description": "Landela imali engenayo, izindleko nezinjongo zokonga endaweni eyodwa ezolileyo, enhle."
+  },
+  "Language": {
+    "label": "Ulimi"
+  },
+  "Nav": {
+    "user": {
+      "dashboard": "Ideshibhodi",
+      "cashflow": "Ukugeleza Kwemali",
+      "income": "Imali Engenayo",
+      "expenses": "Izindleko",
+      "transactions": "Izintengiselwano",
+      "budget": "Umhleli Webhajethi",
+      "savings": "Izinjongo Zokonga",
+      "borrowing": "Ukuboleka",
+      "net-worth": "Ingcebo Ephelele",
+      "subscriptions": "Izibhaliso",
+      "bills": "Izibhili",
+      "reports": "Imibiko",
+      "analytics": "Ukuhlaziya",
+      "ai": "Umsizi We-AI",
+      "calendar": "Ikhalenda",
+      "settings": "Izilungiselelo",
+      "profile": "Iphrofayela"
+    },
+    "admin": {
+      "overview": "Isishwankathelo",
+      "analytics": "Ukuhlaziya",
+      "organisations": "Izinhlangano",
+      "organisations_corporates": "Amakhasimende Ezinkampani",
+      "organisations_contracts": "Izinkontileka",
+      "organisations_onboarding": "Ukwamukelwa Kwezinhlangano",
+      "people": "Ukulawulwa Kwabasebenzisi",
+      "people_individuals": "Amakhasimende Ngamunye",
+      "people_employees": "Abasebenzi Bezinkampani",
+      "people_staff": "Abasebenzi Bangaphakathi",
+      "operations": "Imisebenzi",
+      "operations_payroll": "Amaqoqo Emiholo",
+      "operations_payslips": "Ukuhanjiswa Kwezincwadi Zemiholo",
+      "operations_exceptions": "Okungajwayelekile Nezigameko",
+      "finance": "Izimali",
+      "finance_invoices": "Amainvoyisi",
+      "finance_payments": "Izinkokhelo",
+      "finance_subscriptions": "Izibhaliso",
+      "integrations": "Ukuhlanganiswa",
+      "integrations_banks": "Ukuxhumana Kwamabhange",
+      "integrations_payroll": "Abanikezi Bemiholo",
+      "integrations_accounting": "Ukubalwa Kwezimali",
+      "reports": "Imibiko",
+      "risk-security": "Ubungozi Nokuphepha",
+      "risk-security_audit": "Izibhalo Zokucwaninga",
+      "risk-security_access": "Ukulawula Ukungena",
+      "risk-security_incidents": "Izigameko",
+      "settings": "Izilungiselelo"
+    },
+    "corporate": {
+      "overview": "Ideshibhodi",
+      "employees": "Abasebenzi",
+      "employees_directory": "Uhlu Lwabasebenzi",
+      "employees_onboarding": "Ukwamukelwa Kwabasebenzi",
+      "employees_import": "Ukungenisa Ngobuningi",
+      "payroll": "Imiholo",
+      "payroll_runs": "Ukuqhutshwa Kwemiholo",
+      "payroll_disbursements": "Ukwabiwa Kwezimali",
+      "payroll_payslips": "Izincwadi Zemiholo",
+      "expense-claims": "Izimangalo Zezindleko",
+      "staff-loans": "Izikweletu Zabasebenzi",
+      "announcements": "Izimemezelo",
+      "benefits": "Izinzuzo",
+      "hr": "I-HR",
+      "hr_leave": "Ukulawulwa Kwelivi",
+      "hr_attendance": "Ukubakona",
+      "hr_recruitment": "Ukuqashwa",
+      "hr_performance": "Ukusebenza",
+      "hr_documents": "Izincwadi",
+      "hr_offboarding": "Ukuphuma Emsebenzini",
+      "compliance": "Ukulandela Imithetho",
+      "roles": "Izindima Nemvume",
+      "reports": "Imibiko",
+      "integrations": "Ukuhlanganiswa",
+      "developer": "Abathuthukisi Ne-API",
+      "settings": "Izilungiselelo"
+    },
+    "employee": {
+      "employment": "Ukuqashwa",
+      "payslips": "Izincwadi Zemiholo",
+      "salary": "Ukulawulwa Komholo",
+      "leave": "Ilivi",
+      "borrowing-emp": "Ukuboleka",
+      "benefits": "Izinzuzo"
+    }
+  },
+  "Shell": {
+    "closeMenu": "Vala imenyu",
+    "logOut": "Phuma",
+    "openMenu": "Vula imenyu",
+    "greeting": "Sawubona, {name} 👋",
+    "guest": "Umsebenzisi",
+    "demoChip": "Idemo — akukho lutho olugciniwe",
+    "overview": "Nansi isishwankathelo sezimali zakho",
+    "search": "Sesha izintengiselwano, izibhili…",
+    "toggleTheme": "Shintsha itimu",
+    "profile": "Iphrofayela",
+    "settings": "Izilungiselelo",
+    "exitDemo": "Phuma Kwedemo",
+    "logout": "Phuma",
+    "loggingOut": "Iyaphuma...",
+    "exitingDemo": "Iyaphuma kwidemo..."
+  },
+  "Settings": {
+    "title": "Izilungiselelo",
+    "sub": "Phatha okuthanda kwakho",
+    "preferences": "Izinketho",
+    "notifications": "Izaziso",
+    "security": "Ukuphepha",
+    "backup": "Ukulondoloza",
+    "currency": "Uhlobo Lwemali",
+    "currencySub": "Isetshenziswa kuyo yonke i-app",
+    "dateFormat": "Ifomethi Yosuku",
+    "dateFormatSub": "Indlela okuvezwa ngayo izinsuku",
+    "language": "Ulimi",
+    "languageHint": "Isebenzisa ulimi lweselula yakho kuze ukhethe lapha.",
+    "theme": "Itimu",
+    "themeSub": "Ukubonakala okukhanyayo noma okumnyama",
+    "save": "Gcina Izinguquko",
+    "saved": "Izilungiselelo zilondoloziwe"
+  },
+  "Login": {
+    "visualTitle": "Ukucaca kwezimali, usuku ngalunye.",
+    "visualText": "Landela imali engenayo, izindleko nezinjongo zokonga endaweni eyodwa ezolileyo, enhle.",
+    "signupTitle": "Yenza i-akhawunti yakho — $1 ivula konke, kuze kube naphakade",
+    "signinTitle": "Siyakwamukela futhi! Ngena ukuze uqhubekele ku-akhawunti yakho",
+    "fullName": "Igama Eliphelele",
+    "namePh": "Faka igama lakho",
+    "email": "Ikheli le-imeyili",
+    "emailPh": "Faka i-imeyili yakho",
+    "password": "Iphasiwedi",
+    "passwordPh": "Faka iphasiwedi yakho",
+    "remember": "Ngikhumbule",
+    "forgot": "Ukhohlwe iphasiwedi?",
+    "creating": "Kuyakhiwa i-akhawunti…",
+    "signingIn": "Kungenwa…",
+    "createPay": "Yenza I-Akhawunti & Khokhela $1",
+    "signIn": "Ngena",
+    "haveAccount": "Usuvele une-akhawunti?",
+    "noAccount": "Awunayo i-akhawunti?",
+    "signInLink": "Ngena",
+    "signUpLink": "Bhalisa — $1 kanye kuphela",
+    "backHome": "Buyela ekhaya",
+    "invalid": "I-imeyili noma iphasiwedi engalungile"
+  },
+  "Landing": {
+    "demoToast": "Wamukelekile kwidemo — hlola nganoma, akukho lutho olugciniwe.",
+    "nav": {
+      "features": "Izici",
+      "how": "Indlela esebenza ngayo",
+      "business": "Kwebhizinisi",
+      "pricing": "Izintengo",
+      "signIn": "Ngena",
+      "getStarted": "Qala — $1",
+      "startShort": "Qala — $1"
+    },
+    "hero": {
+      "badge": "I-$1 kuphela — kanye, naphakade",
+      "titleLine1": "Imali yakho,",
+      "titleEm": "ekugcineni icacile.",
+      "lead": "I-WellSpend Budget Tracker isiceli sebhajethi esizolile nesihle sempilo yangempela. Imali engenayo, izindleko, izibhili, izinjongo nolwazi — konke endaweni eyodwa, ngaphansi kwenani lebhodlela lamanzi.",
+      "getStarted": "Qala — $1",
+      "seeDemo": "Buka Idemo",
+      "note": "Ukukhokhelwa kanye kuka-$1 · Zonke izici zivulwa naphakade · I-Paynow, ikhadi, i-EcoCash noma ibhange.",
+      "balance": "Isamba esiphelele",
+      "income": "Imali engenayo yenyanga lena",
+      "budgetUsed": "Ibhajethi esetshenzisiwe"
+    },
+    "features": {
+      "heading": "Konke okudingayo",
+      "sub": "Izixhobo eziyisithupha ezifundile ezifaka yonke impilo yakho yezimali — akukho ukukhula, akukho indlela yokufunda.",
+      "budget": {
+        "title": "Umhleli Webhajethi",
+        "text": "Setha amabhajethi enyanga ngesigaba ngasinye futhi bukela izindleko zakho ziqhathaniswa nawo ngesikhathi sangempela."
+      },
+      "savings": {
+        "title": "Izinjongo Zokonga",
+        "text": "Chaza izinjongo ezinemihla yokuphela futhi ubone ngokucacile ukuthi ngasinye sesikuphi."
+      },
+      "bills": {
+        "title": "Izibhili Nezikhumbuzi",
+        "text": "Ungaze uphuthelwe usuku lokukhokhela — izibhili ezizayo, ezikhokhelwe nezidlulelwe isikhathi endaweni eyodwa."
+      },
+      "reports": {
+        "title": "Imibiko Nokuhlaziya",
+        "text": "Imali engenayo nezindleko, ukuhlukaniswa kwezigaba nemikhambo eqonda ngempela."
+      },
+      "ai": {
+        "title": "Umsizi We-AI",
+        "text": "Buza imibuzo mayelana nemali yakho ngolimi olula futhi uthola izimpendulo ngokushesha."
+      },
+      "safe": {
+        "title": "Kuphephile Ukuchitha",
+        "text": "Bona inani eliphelele elikuphephile ukulichitha namuhla ngemuva kwezibhili nezinjongo ezifakiwe."
+      },
+      "rollover": {
+        "title": "Ukudlulisa Nezikhwama Zokonga",
+        "text": "Ibhajethi esele idluliselwa enyangeni elandelayo — futhi izikhwama ezingeceleni ziyakhula ngezindleko ezinkulu ezingavamile."
+      },
+      "currency": {
+        "title": "Zonke Izinhlobo Zemali",
+        "text": "USD, ZWG, ZAR nazo zonke izinhlobo zemali ze-ISO — imali yakho, ifomethi yakho."
+      },
+      "reminders": {
+        "title": "Izibhili Aziphuzi",
+        "text": "Izixwayiso zokuvuselelwa ngaphambi kokuthi isibhaliso noma isibhili sikukhokhise — akukho ukususwa okumangazayo."
+      }
+    },
+    "how": {
+      "heading": "Usuqalile futhi usebenza ngomzuzu",
+      "sub": "Izinyathelo ezintathu phakathi kwakho nesithombe esicacile semali yakho.",
+      "account": {
+        "title": "Yenza i-akhawunti yakho",
+        "text": "Bhalisa ngegama lakho ne-imeyili — kuthatha imizuzwana engamashumi amathathu."
+      },
+      "pay": {
+        "title": "Khokha $1 kube kanye",
+        "text": "Idola elilodwa. Kanye. I-Paynow, ikhadi, i-EcoCash noma ukudluliselwa kwebhange — okukhethayo."
+      },
+      "currency": {
+        "title": "Khetha uhlobo lwemali yakho",
+        "text": "USD, ZWG, ZAR nazo zonke izinhlobo zemali ze-ISO — setha kanye, zivezwa yonke indawo."
+      },
+      "budgets": {
+        "title": "Setha amabhajethi akho",
+        "text": "Nikeza isigaba ngasinye inani lenyanga — lona uhlelo lwakho lokuchitha seluqediwe."
+      },
+      "accounts": {
+        "title": "Faka ama-akhawunti akho",
+        "text": "Ibhange, i-EcoCash, imali — bhala lapho imali yakho ihlala khona ngempela."
+      },
+      "log": {
+        "title": "Bhalisa njengoba usuchitha",
+        "text": "Imizuzwana embalwa ngokufaka — noma ngenisa isitatimende se-CSV ngokugcwele."
+      },
+      "watch": {
+        "title": "Buka kwanda",
+        "text": "Amagrafu, izibhili, okuphephile ukulichitha — ideshibhodi igcina uqotho."
+      },
+      "own": {
+        "title": "Yiba ngumnini wemali yakho",
+        "text": "Ukufinyelela okugcwele naphakade. Zonke izici, zonke izibuyekezo, azikho izibhaliso."
+      }
+    },
+    "business": {
+      "badge": "WellSpend for Business",
+      "heading": "Izixazululo Ze-HR Ezihlanganisiwe",
+      "line": "Imiholo · Ilivi · Izimangalo · Izikweletu · Abantu — konke endaweni eyodwa.",
+      "sub": "Isitolo, ikliniki, isikole, i-NGO noma i-startup — uma ukhokhela abantu, i-WellSpend isebenzela wena. Umuntu ngamunye eqenjini lakho uthola i-app yakhe yemali, futhi abantu abangalawula iholo labo bahlala.",
+      "clicksV": "Ukuqhafaza oku-4",
+      "clicksK": "ukukhokhela iqembu lakho lonke",
+      "papersV": "Amaphepha ayi-0",
+      "papersK": "izincwadi zemiholo ezishicilelwe noma ezithunyelwe",
+      "staffV": "100%",
+      "staffK": "wabasebenzi bathola i-app mahhala",
+      "setupV": "Usuku luku-1",
+      "setupK": "ukuqaliswa",
+      "payTitle": "Kokhela bonke ngemizuzu embalwa",
+      "payText": "Khetha usuku, hlola uhlu, cindezela ukukhokha. Amabhonasi nokulungiswa kungenwa oqondweni olusheshayo lwezele — seqediwe.",
+      "staffTitle": "Abasebenzi bazisiza",
+      "staffText": "Izincwadi zemiholo, izicelo zelivi nezimali ezenzakala kuwo wonke umuntu i-app yakhe. Akukho okunye ukuthumela i-HR ku-WhatsApp ngesiliphu semholo.",
+      "awayTitle": "Bona ukuthi ubani ongekho, ngokushesha",
+      "awayText": "Vumela ilivi ngokucindezela okukodwa futhi wonke umuntu ubona ikhalenda elifanayo lalabo abangekho. Akukho ukubhuka kabili, akukho okumangazayo.",
+      "loansTitle": "Izikweletu ezizibuyisela",
+      "loansText": "Abasebenzi bafaka isicelo, wena uvuma, futhi izinkokhelo ziphuma esiliphini semholo sabo ngokwazo. Akukho ukulandela, akukho izinkomba.",
+      "accessTitle": "Wonke umuntu ubona ingxenye yakhe kuphela",
+      "accessText": "Nikeza i-HR, ama-akhawunti nabaqondisi ukufinyelela kwabo — ulwazi lomholo luhlala luyimfihlo, izimvume zihlala zilungile.",
+      "fileTitle": "Ifayela elilodwa likhokhela bonke",
+      "fileText": "Landa ifayela elilodwa lebhange lakho noma i-EcoCash for Business futhi iqembu lonke selikhokhelwe. Yilona usuku lomholo, seluqediwe.",
+      "walkthrough": "Bhukha isibonisi samahhala",
+      "signIn": "Ngena kwenkampani",
+      "note": "Noma ibukhulu, noma yisiphi isimboni — sitshele ngebhizinisi lakho futhi sizobe siqale iqembu lakho ngaphakathi kosuku."
+    },
+    "pricing": {
+      "heading": "Idola elilodwa. Yilokho.",
+      "sub": "Azikho izibhaliso, azikho amazinga, akukho ukuthengiswa okwengeziwe. Khokha kanye, gcine kuze kube naphakade.",
+      "lifetime": "Ukufinyelela impilo yonke",
+      "forever": "/ naphakade",
+      "features": "Zonke izici zivuliwe, naphakade",
+      "tracking": "Ukulandela imali engenayo, izindleko nebhajethi",
+      "goals": "Izinjongo zokonga, izibhili nekhalenda",
+      "reports": "Imibiko, ukuhlaziya nomsizi we-AI",
+      "currencies": "Zonke izinhlobo zemali zomhlaba",
+      "pay": "Khokha nge-Paynow, ikhadi, i-EcoCash noma ukudluliselwa kwebhange",
+      "create": "Yenza i-akhawunti & khokhela $1",
+      "businessChip": "WellSpend for Business",
+      "hrLine1": "I-HR",
+      "hrLine2": "Ehlanganisiwe",
+      "payroll": "Ukuqhutshwa kwemiholo nezimvume ezinezinyathelo eziningi",
+      "portal": "Isango lezisizakalo zabasebenzi",
+      "leave": "Ikhalenda lelivi, izimangalo nezikweletu zabasebenzi",
+      "payout": "Amafayela okukhokha ebhange ne-EcoCash",
+      "free": "Umsebenzi ngamunye uthola i-WellSpend mahhala",
+      "setup": "Ukulungiswa nesibonisi seqembu lakho lonke",
+      "arrange": "Hlela idemo noma inkulumo"
+    },
+    "cta": {
+      "heading": "Usulungile ukubona ukuthi imali yakho iya kuphi?",
+      "text": "Ukubhalisa kuphothulwa nge-$1 eyodwa — bese uhlelo lonke luba nge lakho.",
+      "button": "Qala — $1"
+    },
+    "footer": {
+      "features": "Izici",
+      "business": "Kwebhizinisi",
+      "pricing": "Izintengo",
+      "signIn": "Ngena",
+      "rights": "© {year} WellSpend Budget Tracker. Zonke izilungelo zilondoloziwe.",
+      "powered": "Isekelwe yi-Global Space Web +263718560128"
+    }
+  }
+}

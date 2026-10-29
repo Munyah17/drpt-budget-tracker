@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Icon from "@/components/Icon";
 
 export default function AdminAIPage() {
+  const t = useTranslations("Pages.adm_ai");
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I'm the WellSpend AI. I can provide insights about platform performance, user behavior, revenue trends, and operational metrics. What would you like to know?" }
+    { role: "assistant", content: t("initialMessage") }
   ]);
 
   const [sending, setSending] = useState(false);
@@ -32,13 +34,13 @@ export default function AdminAIPage() {
           content:
             data.reply ??
             data.error ??
-            "The AI service is unavailable right now — try again shortly.",
+            t("serviceUnavailable"),
         },
       ]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Could not reach the AI service. Check your connection and try again." },
+        { role: "assistant", content: t("serviceUnreachable") },
       ]);
     } finally {
       setSending(false);
@@ -49,8 +51,8 @@ export default function AdminAIPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Platform AI Insights</h2>
-          <p className="section-sub">AI-powered platform analytics and insights</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -83,7 +85,7 @@ export default function AdminAIPage() {
         <div style={{ display: "flex", gap: 8, borderTop: "1px solid var(--card-border)", paddingTop: 16 }}>
           <input
             type="text"
-            placeholder="Ask about platform metrics..."
+            placeholder={t("inputPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}

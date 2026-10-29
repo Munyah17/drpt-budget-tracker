@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Icon from "@/components/Icon";
 
 interface Ticket {
@@ -13,6 +14,7 @@ interface Ticket {
 }
 
 export default function SupportPage() {
+  const t = useTranslations("Pages.adm_support");
   const [, setSelectedTicket] = useState<Ticket | null>(null);
 
   const mockTickets: Ticket[] = [];
@@ -41,43 +43,43 @@ export default function SupportPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Support</h2>
-          <p className="section-sub">Manage user support tickets</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">Open Tickets</div>
+          <div className="stat-label">{t("openTickets")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">In Progress</div>
+          <div className="stat-label">{t("inProgress")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Resolved Today</div>
+          <div className="stat-label">{t("resolvedToday")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Avg Response Time</div>
+          <div className="stat-label">{t("avgResponseTime")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>
 
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>Support Tickets</h3>
+          <h3>{t("ticketsTitle")}</h3>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Subject</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>User</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Priority</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Created</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colSubject")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colUser")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colPriority")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colCreated")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>

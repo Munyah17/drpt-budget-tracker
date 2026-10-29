@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { CATEGORY_COLORS } from "@/lib/data";
-import {  fmt, ukDate , sym } from "@/lib/format";
+import {  fmt, ukDate , sym, formatMonthYear } from "@/lib/format";
 import CountUp from "@/components/CountUp";
 import Icon from "@/components/Icon";
 import BarChart from "@/components/charts/BarChart";
@@ -11,10 +12,10 @@ import DonutChart from "@/components/charts/DonutChart";
 import NoSpendChallenge from "@/components/NoSpendChallenge";
 import { safeToSpend } from "@/lib/financeInsights";
 
-const monthLabel = new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-
 export default function DashboardPage() {
+  const t = useTranslations("Pages.dashboard");
   const { totalIncome, totalExpenses, totalBalance, categorySpend, expenses, income, bills, budgets, goals } = useAppData();
+  const monthLabel = formatMonthYear(new Date());
   const remaining = totalIncome - totalExpenses;
   const recent = expenses.slice(0, 3);
   const upcoming = bills.filter((b) => b.status === "upcoming").slice(0, 2);
@@ -22,8 +23,8 @@ export default function DashboardPage() {
   // Weekly income vs expense split for the current month
   const now = new Date();
   const inMonth = (d: string) => {
-    const t = new Date(d);
-    return t.getMonth() === now.getMonth() && t.getFullYear() === now.getFullYear();
+    const dt = new Date(d);
+    return dt.getMonth() === now.getMonth() && dt.getFullYear() === now.getFullYear();
   };
   const weekOf = (d: string) => Math.min(3, Math.floor((new Date(d).getDate() - 1) / 7));
   const incW = [0, 0, 0, 0];
@@ -46,7 +47,7 @@ export default function DashboardPage() {
     (budgetOk === null ? 20 : budgetOk * 30) +
     Math.min(30, recentCount * 3)
   );
-  const healthLabel = healthScore >= 70 ? "Great shape" : healthScore >= 40 ? "Getting there" : "Needs attention";
+  const healthLabel = healthScore >= 70 ? t("healthGreat") : healthScore >= 40 ? t("healthOk") : t("healthBad");
   const healthColor = healthScore >= 70 ? "var(--green)" : healthScore >= 40 ? "#d97706" : "var(--red)";
 
   // ── Safe to spend today (remaining income − upcoming bills − goal contributions) ──
@@ -59,7 +60,7 @@ export default function DashboardPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Total Balance</span>
+            <span className="stat-label">{t("statBalance")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="banknote" size={17} />
             </div>
@@ -71,7 +72,7 @@ export default function DashboardPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Monthly Income</span>
+            <span className="stat-label">{t("statIncome")}</span>
             <div className="stat-icon" style={{ background: "rgba(26,156,109,.12)", color: "var(--green)" }}>
               <Icon name="trending-up" size={17} />
             </div>
@@ -83,7 +84,7 @@ export default function DashboardPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Monthly Expenses</span>
+            <span className="stat-label">{t("statExpenses")}</span>
             <div className="stat-icon" style={{ background: "rgba(224,38,75,.12)", color: "var(--red)" }}>
               <Icon name="trending-down" size={17} />
             </div>
@@ -95,7 +96,7 @@ export default function DashboardPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Remaining Budget</span>
+            <span className="stat-label">{t("statRemaining")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="piggy-bank" size={17} />
             </div>
@@ -110,7 +111,7 @@ export default function DashboardPage() {
       <div className="grid grid-2" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Financial Health</span>
+            <span className="stat-label">{t("statHealth")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="heart" size={17} />
             </div>
@@ -123,7 +124,7 @@ export default function DashboardPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Safe to Spend Today</span>
+            <span className="stat-label">{t("statSafe")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="wallet" size={17} />
             </div>
@@ -132,9 +133,9 @@ export default function DashboardPage() {
             <CountUp end={safeToday} prefix={sym()} />
           </div>
           <span className="stat-delta" style={{ color: "var(--ink-500)" }}>
-            {daysLeft} days left in {monthLabel.split(" ")[0]}
-            {sts.billsDue > 0 && ` · ${fmt(sts.billsDue)} bills due`}
-            {sts.goalCommit > 0 && ` · ${fmt(sts.goalCommit)} to goals`}
+            {t("daysLeftIn", { days: daysLeft, month: monthLabel.split(" ")[0] })}
+            {sts.billsDue > 0 && ` · ${t("billsDue", { count: fmt(sts.billsDue) })}`}
+            {sts.goalCommit > 0 && ` · ${t("toGoals", { amount: fmt(sts.goalCommit) })}`}
           </span>
         </div>
       </div>
@@ -142,26 +143,26 @@ export default function DashboardPage() {
       <div className="grid" style={{ gridTemplateColumns: "1.4fr 1fr", marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Income vs Expenses</h3>
+            <h3>{t("chartTitle")}</h3>
             <span className="chip">{monthLabel}</span>
           </div>
           {hasChartData ? (
             <BarChart
-              labels={["Week 1", "Week 2", "Week 3", "Week 4"]}
+              labels={[1, 2, 3, 4].map((n) => t("weekN", { n }))}
               series={[
-                { name: "Income", color: "#1a9c6d", data: incW },
-                { name: "Expenses", color: "#e91e63", data: expW },
+                { name: t("seriesIncome"), color: "#1a9c6d", data: incW },
+                { name: t("seriesExpenses"), color: "#e91e63", data: expW },
               ]}
             />
           ) : (
             <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "40px 0", textAlign: "center" }}>
-              No transactions logged this month yet.
+              {t("chartEmpty")}
             </p>
           )}
         </div>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Category Spending</h3>
+            <h3>{t("catTitle")}</h3>
           </div>
           <DonutChart data={categorySpend} colors={CATEGORY_COLORS} size={168} />
         </div>
@@ -170,13 +171,13 @@ export default function DashboardPage() {
       <div className="grid grid-3">
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Recent Transactions</h3>
+            <h3>{t("recentTitle")}</h3>
             <Link href="/transactions" style={{ fontSize: 12.5, color: "var(--rose-600)", fontWeight: 700 }}>
-              View all
+              {t("viewAll")}
             </Link>
           </div>
           {recent.length === 0 && (
-            <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "16px 0" }}>No transactions yet — add your first expense.</p>
+            <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "16px 0" }}>{t("recentEmpty")}</p>
           )}
           {recent.map((e) => (
             <div
@@ -198,13 +199,13 @@ export default function DashboardPage() {
         </div>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Upcoming Bills</h3>
+            <h3>{t("billsTitle")}</h3>
             <Link href="/bills" style={{ fontSize: 12.5, color: "var(--rose-600)", fontWeight: 700 }}>
-              View all
+              {t("viewAll")}
             </Link>
           </div>
           {upcoming.length === 0 && (
-            <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "16px 0" }}>No upcoming bills.</p>
+            <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "16px 0" }}>{t("billsEmpty")}</p>
           )}
           {upcoming.map((b) => (
             <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: "1px solid var(--card-border)" }}>
@@ -213,12 +214,12 @@ export default function DashboardPage() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 600, fontSize: 13.5 }}>{b.name}</div>
-                <div style={{ fontSize: 11.5, color: "var(--ink-500)" }}>Due {ukDate(b.due)}</div>
+                <div style={{ fontSize: 11.5, color: "var(--ink-500)" }}>{t("dueOn", { date: ukDate(b.due) })}</div>
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontWeight: 700 }}>{fmt(b.amount)}</div>
                 <span className="badge badge-amber">
-                  {b.daysLeft} day{b.daysLeft === 1 ? "" : "s"} left
+                  {t("daysLeft", { count: b.daysLeft })}
                 </span>
               </div>
             </div>
@@ -230,16 +231,16 @@ export default function DashboardPage() {
         >
           <div className="card-head" style={{ marginBottom: 12 }}>
             <h3 style={{ color: "#fff", display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="sparkles" /> AI Insight
+              <Icon name="sparkles" /> {t("aiTitle")}
             </h3>
           </div>
           <p style={{ fontSize: 14, lineHeight: 1.6, opacity: 0.95, margin: "0 0 16px" }}>
             {topCategory
-              ? `Your biggest spend category this month is ${topCategory[0]} at ${fmt(topCategory[1])}.`
-              : "Log your first income or expense and I'll start finding insights for you."}
+              ? t("aiTop", { category: topCategory[0], amount: fmt(topCategory[1]) })
+              : t("aiEmpty")}
           </p>
           <Link href="/ai" className="btn btn-ghost" style={{ background: "#ffffff22", color: "#fff", borderColor: "#ffffff33" }}>
-            Ask AI Assistant
+            {t("aiBtn")}
           </Link>
         </div>
         <NoSpendChallenge />

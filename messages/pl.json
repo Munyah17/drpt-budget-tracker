@@ -1,0 +1,320 @@
+{
+  "Meta": {
+    "title": "WellSpend Budget Tracker ❤",
+    "description": "Śledź przychody, wydatki i cele oszczędnościowe w jednym spokojnym, pięknym miejscu."
+  },
+  "Language": {
+    "label": "Język"
+  },
+  "Nav": {
+    "user": {
+      "dashboard": "Panel",
+      "cashflow": "Przepływ pieniędzy",
+      "income": "Przychody",
+      "expenses": "Wydatki",
+      "transactions": "Transakcje",
+      "budget": "Planer budżetu",
+      "savings": "Cele oszczędnościowe",
+      "borrowing": "Pożyczki",
+      "net-worth": "Wartość netto",
+      "subscriptions": "Subskrypcje",
+      "bills": "Rachunki",
+      "reports": "Raporty",
+      "analytics": "Analityka",
+      "ai": "Asystent AI",
+      "calendar": "Kalendarz",
+      "settings": "Ustawienia",
+      "profile": "Profil"
+    },
+    "admin": {
+      "overview": "Przegląd",
+      "analytics": "Analityka",
+      "organisations": "Organizacje",
+      "organisations_corporates": "Klienci korporacyjni",
+      "organisations_contracts": "Umowy",
+      "organisations_onboarding": "Wdrażanie",
+      "people": "Zarządzanie użytkownikami",
+      "people_individuals": "Klienci indywidualni",
+      "people_employees": "Pracownicy korporacyjni",
+      "people_staff": "Personel wewnętrzny",
+      "operations": "Operacje",
+      "operations_payroll": "Listy płac",
+      "operations_payslips": "Dostarczanie pasków wypłat",
+      "operations_exceptions": "Wyjątki i incydenty",
+      "finance": "Finanse",
+      "finance_invoices": "Faktury",
+      "finance_payments": "Płatności",
+      "finance_subscriptions": "Subskrypcje",
+      "integrations": "Integracje",
+      "integrations_banks": "Połączenia bankowe",
+      "integrations_payroll": "Dostawcy płac",
+      "integrations_accounting": "Księgowość",
+      "reports": "Raporty",
+      "risk-security": "Ryzyko i bezpieczeństwo",
+      "risk-security_audit": "Dzienniki audytu",
+      "risk-security_access": "Kontrola dostępu",
+      "risk-security_incidents": "Incydenty",
+      "settings": "Ustawienia"
+    },
+    "corporate": {
+      "overview": "Panel",
+      "employees": "Pracownicy",
+      "employees_directory": "Katalog",
+      "employees_onboarding": "Wdrażanie",
+      "employees_import": "Import zbiorczy",
+      "payroll": "Płace",
+      "payroll_runs": "Cykle płacowe",
+      "payroll_disbursements": "Wypłaty",
+      "payroll_payslips": "Paski wypłat",
+      "expense-claims": "Rozliczenia wydatków",
+      "staff-loans": "Pożyczki pracownicze",
+      "announcements": "Ogłoszenia",
+      "benefits": "Benefity",
+      "hr": "HR",
+      "hr_leave": "Zarządzanie urlopami",
+      "hr_attendance": "Obecność",
+      "hr_recruitment": "Rekrutacja",
+      "hr_performance": "Oceny pracowników",
+      "hr_documents": "Dokumenty",
+      "hr_offboarding": "Odejścia pracowników",
+      "compliance": "Zgodność",
+      "roles": "Role i dostęp",
+      "reports": "Raporty",
+      "integrations": "Integracje",
+      "developer": "Deweloper i API",
+      "settings": "Ustawienia"
+    },
+    "employee": {
+      "employment": "Zatrudnienie",
+      "payslips": "Paski wypłat",
+      "salary": "Zarządzanie wynagrodzeniem",
+      "leave": "Urlopy",
+      "borrowing-emp": "Pożyczki",
+      "benefits": "Benefity"
+    }
+  },
+  "Shell": {
+    "closeMenu": "Zamknij menu",
+    "logOut": "Wyloguj się",
+    "openMenu": "Otwórz menu",
+    "greeting": "Dzień dobry, {name} 👋",
+    "guest": "Użytkownik",
+    "demoChip": "Demo — nic nie jest zapisywane",
+    "overview": "Oto Twój przegląd finansów",
+    "search": "Szukaj transakcji, rachunków…",
+    "toggleTheme": "Przełącz motyw",
+    "profile": "Profil",
+    "settings": "Ustawienia",
+    "exitDemo": "Wyjdź z demo",
+    "logout": "Wyloguj się",
+    "loggingOut": "Wylogowywanie...",
+    "exitingDemo": "Wychodzenie z demo..."
+  },
+  "Settings": {
+    "title": "Ustawienia",
+    "sub": "Zarządzaj swoimi preferencjami",
+    "preferences": "Preferencje",
+    "notifications": "Powiadomienia",
+    "security": "Bezpieczeństwo",
+    "backup": "Kopia zapasowa",
+    "currency": "Waluta",
+    "currencySub": "Używana w całej aplikacji",
+    "dateFormat": "Format daty",
+    "dateFormatSub": "Sposób wyświetlania dat",
+    "language": "Język",
+    "languageHint": "Używa języka urządzenia, dopóki nie wybierzesz go tutaj.",
+    "theme": "Motyw",
+    "themeSub": "Jasny lub ciemny wygląd",
+    "save": "Zapisz zmiany",
+    "saved": "Ustawienia zapisane"
+  },
+  "Login": {
+    "visualTitle": "Jasność w finansach, każdego dnia.",
+    "visualText": "Śledź przychody, wydatki i cele oszczędnościowe w jednym spokojnym, pięknym miejscu.",
+    "signupTitle": "Utwórz konto — $1 odblokowuje wszystko, na zawsze",
+    "signinTitle": "Witaj z powrotem! Zaloguj się, aby kontynuować",
+    "fullName": "Imię i nazwisko",
+    "namePh": "Wpisz swoje imię",
+    "email": "Adres e-mail",
+    "emailPh": "Wpisz swój e-mail",
+    "password": "Hasło",
+    "passwordPh": "Wpisz swoje hasło",
+    "remember": "Zapamiętaj mnie",
+    "forgot": "Nie pamiętasz hasła?",
+    "creating": "Tworzenie konta…",
+    "signingIn": "Logowanie…",
+    "createPay": "Utwórz konto i zapłać $1",
+    "signIn": "Zaloguj się",
+    "haveAccount": "Masz już konto?",
+    "noAccount": "Nie masz konta?",
+    "signInLink": "Zaloguj się",
+    "signUpLink": "Zarejestruj się — $1 raz",
+    "backHome": "Wróć na stronę główną",
+    "invalid": "Nieprawidłowy e-mail lub hasło"
+  },
+  "Landing": {
+    "demoToast": "Witaj w wersji demo — eksploruj swobodnie, nic nie jest zapisywane.",
+    "nav": {
+      "features": "Funkcje",
+      "how": "Jak to działa",
+      "business": "Dla firm",
+      "pricing": "Cennik",
+      "signIn": "Zaloguj się",
+      "getStarted": "Zacznij — $1",
+      "startShort": "Start — $1"
+    },
+    "hero": {
+      "badge": "Tylko $1 — raz, na zawsze",
+      "titleLine1": "Twoje pieniądze,",
+      "titleEm": "wreszcie jasne.",
+      "lead": "WellSpend Budget Tracker to spokojny, piękny planista budżetu do prawdziwego życia. Przychody, wydatki, rachunki, cele i wnioski — wszystko w jednym miejscu, za mniej niż butelka wody.",
+      "getStarted": "Zacznij — $1",
+      "seeDemo": "Zobacz demo",
+      "note": "Jednorazowa płatność $1 · Każda funkcja odblokowana na zawsze · Paynow, karta, Ecocash lub bank.",
+      "balance": "Saldo całkowite",
+      "income": "Przychody w tym miesiącu",
+      "budgetUsed": "Wykorzystany budżet"
+    },
+    "features": {
+      "heading": "Wszystko, czego potrzebujesz",
+      "sub": "Sześć konkretnych narzędzi, które obejmują całe Twoje życie finansowe — bez nadmiaru, bez krzywej uczenia.",
+      "budget": {
+        "title": "Planer budżetu",
+        "text": "Ustaw miesięczne budżety dla kategorii i obserwuj, jak wydatki mieszczą się w nich w czasie rzeczywistym."
+      },
+      "savings": {
+        "title": "Cele oszczędnościowe",
+        "text": "Określ cele z terminami i zobacz dokładnie, na ile jesteś blisko każdego z nich."
+      },
+      "bills": {
+        "title": "Rachunki i przypomnienia",
+        "text": "Nigdy nie przegap terminu — nadchodzące, opłacone i zaległe rachunki w jednym rzucie oka."
+      },
+      "reports": {
+        "title": "Raporty i analityka",
+        "text": "Przychody kontra wydatki, podział na kategorie i trendy, które naprawdę mają sens."
+      },
+      "ai": {
+        "title": "Asystent AI",
+        "text": "Zadawaj pytania o swoje pieniądze zwykłym językiem i otrzymuj natychmiastowe odpowiedzi."
+      },
+      "safe": {
+        "title": "Bezpieczna kwota",
+        "text": "Zobacz dokładną kwotę, którą możesz dziś bezpiecznie wydać po pokryciu rachunków i celów."
+      },
+      "rollover": {
+        "title": "Przenoszenie i fundusze celowe",
+        "text": "Niewykorzystany budżet przechodzi na kolejny miesiąc — a boczne skarbonki rosną na duże, rzadkie wydatki."
+      },
+      "currency": {
+        "title": "Każda waluta",
+        "text": "USD, ZWG, ZAR i każda waluta ISO — Twoje pieniądze, Twój format."
+      },
+      "reminders": {
+        "title": "Rachunki zawsze na czas",
+        "text": "Ostrzeżenia o odnowieniu, zanim subskrypcja lub rachunek Cię obciąży — bez niespodziewanych potrąceń."
+      }
+    },
+    "how": {
+      "heading": "Gotowe w minutę",
+      "sub": "Trzy kroki między Tobą a jasnym obrazem Twoich pieniędzy.",
+      "account": {
+        "title": "Utwórz konto",
+        "text": "Zarejestruj się imieniem i e-mailem — to zajmuje trzydzieści sekund."
+      },
+      "pay": {
+        "title": "Zapłać $1 raz",
+        "text": "Jeden dolar. Raz. Paynow, karta, Ecocash lub przelew bankowy — Twój wybór."
+      },
+      "currency": {
+        "title": "Wybierz walutę",
+        "text": "USD, ZWG, ZAR i każda waluta ISO — ustaw raz, formatowane wszędzie."
+      },
+      "budgets": {
+        "title": "Ustaw budżety",
+        "text": "Przypisz każdej kategorii miesięczną kwotę — i masz gotowy plan wydatków."
+      },
+      "accounts": {
+        "title": "Dodaj swoje konta",
+        "text": "Bank, EcoCash, gotówka — wypisz, gdzie naprawdę trzymasz pieniądze."
+      },
+      "log": {
+        "title": "Zapisuj wydatki na bieżąco",
+        "text": "Kilka sekund na wpis — albo zaimportuj zbiorczo wyciąg CSV."
+      },
+      "watch": {
+        "title": "Patrz, jak się sumuje",
+        "text": "Wykresy, rachunki, bezpieczna kwota — panel trzyma Cię w ryzach."
+      },
+      "own": {
+        "title": "Pełna kontrola nad pieniędzmi",
+        "text": "Pełny dostęp na zawsze. Każda funkcja, każda aktualizacja, bez subskrypcji."
+      }
+    },
+    "business": {
+      "badge": "WellSpend for Business",
+      "heading": "Zintegrowane rozwiązania HR",
+      "line": "Płace · Urlopy · Rozliczenia · Pożyczki · Ludzie — wszystko w jednym miejscu.",
+      "sub": "Sklep, przychodnia, szkoła, organizacja czy startup — jeśli płacisz ludziom, WellSpend działa dla Ciebie. Każda osoba w zespole dostaje własną aplikację do pieniędzy, a ludzie, którzy mogą zarządzać swoją wypłatą, zostają.",
+      "clicksV": "4 kliknięcia",
+      "clicksK": "by wypłacić całemu zespołowi",
+      "papersV": "0 papierów",
+      "papersK": "pasków wypłat drukowanych lub wysyłanych e-mailem",
+      "staffV": "100%",
+      "staffK": "pracowników dostaje aplikację za darmo",
+      "setupV": "1 dzień",
+      "setupK": "na wdrożenie",
+      "payTitle": "Wypłać wszystkim w kilka minut",
+      "payText": "Wybierz datę, sprawdź listę, naciśnij „wypłać”. Premie i poprawki przechodzą szybkim dodatkowym przebiegiem — gotowe.",
+      "staffTitle": "Pracownicy załatwiają sami",
+      "staffText": "Paski wypłat, wnioski urlopowe i zaliczki dzieją się w aplikacji każdej osoby. Koniec z pisaniem do HR na WhatsAppie o pasek wypłaty.",
+      "awayTitle": "Zobacz, kto jest nieobecny, na pierwszy rzut oka",
+      "awayText": "Zatwierdzaj urlopy jednym dotknięciem, a wszyscy widzą ten sam kalendarz nieobecności. Bez nakładania się, bez niespodzianek.",
+      "loansTitle": "Pożyczki, które spłacają się same",
+      "loansText": "Pracownicy wnioskują, Ty zatwierdzasz, a raty same schodzą z paska wypłaty. Bez gonitwy, bez arkuszy.",
+      "accessTitle": "Każdy widzi tylko swoją część",
+      "accessText": "Daj HR, księgowości i menedżerom ich własne uprawnienia — informacje o płacach zostają prywatne, zatwierdzenia w porządku.",
+      "fileTitle": "Jeden plik płaci wszystkim",
+      "fileText": "Pobierz jeden plik dla banku lub EcoCash for Business i cały zespół ma wypłatę. To dzień wypłaty, zamknięte.",
+      "walkthrough": "Umów się na bezpłatną prezentację",
+      "signIn": "Logowanie dla firm",
+      "note": "Dowolny rozmiar, dowolna branża — opowiedz nam o swojej firmie, a Twój zespół będzie działał w ciągu jednego dnia."
+    },
+    "pricing": {
+      "heading": "Jeden dolar. To wszystko.",
+      "sub": "Bez subskrypcji, bez planów, bez dosprzedaży. Zapłać raz, zachowaj na zawsze.",
+      "lifetime": "Dożywotni dostęp",
+      "forever": "/ na zawsze",
+      "features": "Każda funkcja odblokowana, na zawsze",
+      "tracking": "Śledzenie przychodów, wydatków i budżetu",
+      "goals": "Cele oszczędnościowe, rachunki i kalendarz",
+      "reports": "Raporty, analityka i asystent AI",
+      "currencies": "Wszystkie waluty świata",
+      "pay": "Zapłać przez Paynow, kartę, Ecocash lub przelew bankowy",
+      "create": "Utwórz konto i zapłać $1",
+      "businessChip": "WellSpend for Business",
+      "hrLine1": "Zintegrowany",
+      "hrLine2": "HR",
+      "payroll": "Cykle płacowe i wieloetapowe zatwierdzenia",
+      "portal": "Portal samoobsługowy pracownika",
+      "leave": "Kalendarz urlopów, rozliczenia i pożyczki pracownicze",
+      "payout": "Pliki wypłat dla banku i EcoCash",
+      "free": "Każdy pracownik dostaje WellSpend za darmo",
+      "setup": "Wdrożenie i prezentacja dla całego zespołu",
+      "arrange": "Umów demo lub rozmowę"
+    },
+    "cta": {
+      "heading": "Gotowy, by zobaczyć, dokąd idą Twoje pieniądze?",
+      "text": "Rejestracja kończy się jednorazową płatnością $1 — potem cała aplikacja jest Twoja.",
+      "button": "Zacznij — $1"
+    },
+    "footer": {
+      "features": "Funkcje",
+      "business": "Dla firm",
+      "pricing": "Cennik",
+      "signIn": "Zaloguj się",
+      "rights": "© {year} WellSpend Budget Tracker. Wszelkie prawa zastrzeżone.",
+      "powered": "Zasilane przez Global Space Web +263718560128"
+    }
+  }
+}

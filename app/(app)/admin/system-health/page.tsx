@@ -1,31 +1,33 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 
 export default function SystemHealthPage() {
+  const t = useTranslations("Pages.adm_system_health");
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">System Health</h2>
-          <p className="section-sub">Monitor system performance and uptime</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">System Uptime</div>
+          <div className="stat-label">{t("systemUptime")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">API Latency</div>
+          <div className="stat-label">{t("apiLatency")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Error Rate</div>
+          <div className="stat-label">{t("errorRate")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Active Connections</div>
+          <div className="stat-label">{t("activeConnections")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>
@@ -33,14 +35,14 @@ export default function SystemHealthPage() {
       <div className="grid grid-2" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Services</h3>
+            <h3>{t("servicesTitle")}</h3>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
-              { name: "Database", status: "healthy", value: "99.9%" },
-              { name: "API Server", status: "healthy", value: "99.8%" },
-              { name: "Cache", status: "healthy", value: "99.9%" },
-              { name: "Storage", status: "warning", value: "78%" },
+              { name: t("svcDatabase"), status: "healthy", value: "99.9%" },
+              { name: t("svcApiServer"), status: "healthy", value: "99.8%" },
+              { name: t("svcCache"), status: "healthy", value: "99.9%" },
+              { name: t("svcStorage"), status: "warning", value: "78%" },
             ].map((service, idx) => (
               <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -64,14 +66,14 @@ export default function SystemHealthPage() {
 
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Resource Usage</h3>
+            <h3>{t("resourcesTitle")}</h3>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
-              { name: "CPU Usage", value: 45, color: "var(--green)" },
-              { name: "Memory", value: 62, color: "var(--amber)" },
-              { name: "Disk Space", value: 78, color: "var(--amber)" },
-              { name: "Network", value: 23, color: "var(--green)" },
+              { name: t("resCpu"), value: 45, color: "var(--green)" },
+              { name: t("resMemory"), value: 62, color: "var(--amber)" },
+              { name: t("resDisk"), value: 78, color: "var(--amber)" },
+              { name: t("resNetwork"), value: 23, color: "var(--green)" },
             ].map((resource, idx) => (
               <div key={idx}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>

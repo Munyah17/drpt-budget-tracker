@@ -1,0 +1,320 @@
+{
+  "Meta": {
+    "title": "WellSpend Budget Tracker ❤",
+    "description": "Sleduj příjmy, výdaje a spořicí cíle na jednom klidném, krásném místě."
+  },
+  "Language": {
+    "label": "Jazyk"
+  },
+  "Nav": {
+    "user": {
+      "dashboard": "Přehled",
+      "cashflow": "Peněžní tok",
+      "income": "Příjmy",
+      "expenses": "Výdaje",
+      "transactions": "Transakce",
+      "budget": "Plánovač rozpočtu",
+      "savings": "Spořicí cíle",
+      "borrowing": "Půjčky",
+      "net-worth": "Čisté jmění",
+      "subscriptions": "Předplatná",
+      "bills": "Účty",
+      "reports": "Reporty",
+      "analytics": "Analytika",
+      "ai": "AI asistent",
+      "calendar": "Kalendář",
+      "settings": "Nastavení",
+      "profile": "Profil"
+    },
+    "admin": {
+      "overview": "Přehled",
+      "analytics": "Analytika",
+      "organisations": "Organizace",
+      "organisations_corporates": "Firemní klienti",
+      "organisations_contracts": "Smlouvy",
+      "organisations_onboarding": "Onboarding",
+      "people": "Správa uživatelů",
+      "people_individuals": "Individuální klienti",
+      "people_employees": "Firemní zaměstnanci",
+      "people_staff": "Interní zaměstnanci",
+      "operations": "Provoz",
+      "operations_payroll": "Mzdové dávky",
+      "operations_payslips": "Distribuce výplatních pásek",
+      "operations_exceptions": "Výjimky a incidenty",
+      "finance": "Finance",
+      "finance_invoices": "Faktury",
+      "finance_payments": "Platby",
+      "finance_subscriptions": "Předplatná",
+      "integrations": "Integrace",
+      "integrations_banks": "Bankovní připojení",
+      "integrations_payroll": "Mzdoví poskytovatelé",
+      "integrations_accounting": "Účetnictví",
+      "reports": "Reporty",
+      "risk-security": "Rizika a bezpečnost",
+      "risk-security_audit": "Auditní záznamy",
+      "risk-security_access": "Řízení přístupu",
+      "risk-security_incidents": "Incidenty",
+      "settings": "Nastavení"
+    },
+    "corporate": {
+      "overview": "Přehled",
+      "employees": "Zaměstnanci",
+      "employees_directory": "Adresář",
+      "employees_onboarding": "Onboarding",
+      "employees_import": "Hromadný import",
+      "payroll": "Mzdy",
+      "payroll_runs": "Mzdové cykly",
+      "payroll_disbursements": "Výplaty",
+      "payroll_payslips": "Výplatní pásky",
+      "expense-claims": "Vyúčtování výdajů",
+      "staff-loans": "Zaměstnanecké půjčky",
+      "announcements": "Oznámení",
+      "benefits": "Benefity",
+      "hr": "HR",
+      "hr_leave": "Správa dovolené",
+      "hr_attendance": "Docházka",
+      "hr_recruitment": "Nábor",
+      "hr_performance": "Výkonnost",
+      "hr_documents": "Dokumenty",
+      "hr_offboarding": "Offboarding",
+      "compliance": "Compliance",
+      "roles": "Role a přístup",
+      "reports": "Reporty",
+      "integrations": "Integrace",
+      "developer": "Vývoj a API",
+      "settings": "Nastavení"
+    },
+    "employee": {
+      "employment": "Zaměstnání",
+      "payslips": "Výplatní pásky",
+      "salary": "Správa platu",
+      "leave": "Dovolená",
+      "borrowing-emp": "Půjčky",
+      "benefits": "Benefity"
+    }
+  },
+  "Shell": {
+    "closeMenu": "Zavřít menu",
+    "logOut": "Odhlásit se",
+    "openMenu": "Otevřít menu",
+    "greeting": "Dobré ráno, {name} 👋",
+    "guest": "Uživatel",
+    "demoChip": "Demo — nic se neukládá",
+    "overview": "Tady je tvůj přehled financí",
+    "search": "Hledat transakce, účty…",
+    "toggleTheme": "Přepnout motiv",
+    "profile": "Profil",
+    "settings": "Nastavení",
+    "exitDemo": "Ukončit demo",
+    "logout": "Odhlásit se",
+    "loggingOut": "Odhlašování...",
+    "exitingDemo": "Ukončování dema..."
+  },
+  "Settings": {
+    "title": "Nastavení",
+    "sub": "Spravuj své předvolby",
+    "preferences": "Předvolby",
+    "notifications": "Oznámení",
+    "security": "Zabezpečení",
+    "backup": "Záloha",
+    "currency": "Měna",
+    "currencySub": "Používá se v celé aplikaci",
+    "dateFormat": "Formát data",
+    "dateFormatSub": "Jak se zobrazují data",
+    "language": "Jazyk",
+    "languageHint": "Používá jazyk zařízení, dokud si tady nevybereš vlastní.",
+    "theme": "Motiv",
+    "themeSub": "Světlý nebo tmavý vzhled",
+    "save": "Uložit změny",
+    "saved": "Nastavení uložena"
+  },
+  "Login": {
+    "visualTitle": "Jasno ve financích, každý jediný den.",
+    "visualText": "Sleduj příjmy, výdaje a spořicí cíle na jednom klidném, krásném místě.",
+    "signupTitle": "Vytvoř si účet — $1 odemkne vše, navždy",
+    "signinTitle": "Vítej zpět! Přihlas se a pokračuj do svého účtu",
+    "fullName": "Celé jméno",
+    "namePh": "Zadej své jméno",
+    "email": "E-mailová adresa",
+    "emailPh": "Zadej svůj e-mail",
+    "password": "Heslo",
+    "passwordPh": "Zadej své heslo",
+    "remember": "Zapamatovat si mě",
+    "forgot": "Zapomenuté heslo?",
+    "creating": "Vytváření účtu…",
+    "signingIn": "Přihlašování…",
+    "createPay": "Vytvořit účet a zaplatit $1",
+    "signIn": "Přihlásit se",
+    "haveAccount": "Už máš účet?",
+    "noAccount": "Ještě nemáš účet?",
+    "signInLink": "Přihlásit se",
+    "signUpLink": "Registrovat — $1 jednou",
+    "backHome": "Zpět domů",
+    "invalid": "Neplatný e-mail nebo heslo"
+  },
+  "Landing": {
+    "demoToast": "Vítej v demu — zkoumej volně, nic se neukládá.",
+    "nav": {
+      "features": "Funkce",
+      "how": "Jak to funguje",
+      "business": "Pro firmy",
+      "pricing": "Ceny",
+      "signIn": "Přihlásit se",
+      "getStarted": "Začít — $1",
+      "startShort": "Start — $1"
+    },
+    "hero": {
+      "badge": "Jen $1 — jednou, navždy",
+      "titleLine1": "Tvé peníze,",
+      "titleEm": "konečně jasné.",
+      "lead": "WellSpend Budget Tracker je klidný, krásný tracker rozpočtu pro skutečný život. Příjmy, výdaje, účty, cíle a postřehy — všechno na jednom místě, za méně než láhev vody.",
+      "getStarted": "Začít — $1",
+      "seeDemo": "Zobrazit demo",
+      "note": "Jednorázová platba $1 · Každá funkce odemčena navždy · Paynow, karta, Ecocash nebo banka.",
+      "balance": "Celkový zůstatek",
+      "income": "Příjmy tento měsíc",
+      "budgetUsed": "Využitý rozpočet"
+    },
+    "features": {
+      "heading": "Všechno, co potřebuješ",
+      "sub": "Šest cílených nástrojů, které pokryjí celý tvůj finanční život — bez nadbytku, bez učení.",
+      "budget": {
+        "title": "Plánovač rozpočtu",
+        "text": "Nastav měsíční rozpočty pro kategorie a sleduj, jak se výdaje v reálném čase drží v mezích."
+      },
+      "savings": {
+        "title": "Spořicí cíle",
+        "text": "Definuj cíle s termíny a přesně uvidíš, jak daleko je každý z nich."
+      },
+      "bills": {
+        "title": "Účty a připomenutí",
+        "text": "Už žádný zmeškaný termín — nadcházející, zaplacené i zpožděné účty na jeden pohled."
+      },
+      "reports": {
+        "title": "Reporty a analytika",
+        "text": "Příjmy vs výdaje, rozpisy kategorií a trendy, které opravdu dávají smysl."
+      },
+      "ai": {
+        "title": "AI asistent",
+        "text": "Ptej se na své peníze obyčejným jazykem a dostávej okamžité odpovědi."
+      },
+      "safe": {
+        "title": "Bezpečná útrata",
+        "text": "Uvidíš přesnou částku, kterou dnes můžeš bezpečně utratit po pokrytí účtů a cílů."
+      },
+      "rollover": {
+        "title": "Přenosy a rezervní fondy",
+        "text": "Zbylý rozpočet se přenáší do příštího měsíce — a vedlejší kasičky rostou na velké, ojedinělé výdaje."
+      },
+      "currency": {
+        "title": "Každá měna",
+        "text": "USD, ZWG, ZAR a každá měna ISO — tvé peníze, tvůj formát."
+      },
+      "reminders": {
+        "title": "Účty vždy včas",
+        "text": "Upozornění předtím, než tě předplatné nebo účet zatíží — žádná překvapivá stržení."
+      }
+    },
+    "how": {
+      "heading": "Funguje za minutu",
+      "sub": "Tři kroky mezi tebou a jasným obrázkem tvých peněz.",
+      "account": {
+        "title": "Vytvoř si účet",
+        "text": "Zaregistruj se jménem a e-mailem — trvá to třicet sekund."
+      },
+      "pay": {
+        "title": "Zaplať $1 jednou",
+        "text": "Jeden dolar. Jednou. Paynow, karta, Ecocash nebo bankovní převod — jak chceš."
+      },
+      "currency": {
+        "title": "Vyber si měnu",
+        "text": "USD, ZWG, ZAR a každá měna ISO — nastav jednou, formátované všude."
+      },
+      "budgets": {
+        "title": "Nastav rozpočty",
+        "text": "Dej každé kategorii měsíční číslo — a plán výdajů je hotový."
+      },
+      "accounts": {
+        "title": "Přidej své účty",
+        "text": "Banka, EcoCash, hotovost — vypiš, kde tvé peníze opravdu leží."
+      },
+      "log": {
+        "title": "Zapisuj, jak utrácíš",
+        "text": "Pár sekund na záznam — nebo hromadně importuj CSV výpis."
+      },
+      "watch": {
+        "title": "Sleduj, jak se to sčítá",
+        "text": "Grafy, účty, bezpečná útrata — nástěnka tě drží v mezích."
+      },
+      "own": {
+        "title": "Vlastni své peníze",
+        "text": "Plný přístup navždy. Každá funkce, každá aktualizace, žádná předplatná."
+      }
+    },
+    "business": {
+      "badge": "WellSpend for Business",
+      "heading": "Sjednocená HR řešení",
+      "line": "Mzdy · Dovolená · Nároky · Půjčky · Lidé — vše na jednom místě.",
+      "sub": "Obchod, klinika, škola, neziskovka nebo startup — pokud lidem platíš, WellSpend ti funguje. Každý v týmu dostane vlastní peněžní aplikaci a lidé, kteří umí spravovat svou výplatu, zůstávají.",
+      "clicksV": "4 kliknutí",
+      "clicksK": "k výplatě celého týmu",
+      "papersV": "0 papírů",
+      "papersK": "výplatních pásek tištěných nebo mailovaných",
+      "staffV": "100%",
+      "staffK": "zaměstnanců má aplikaci zdarma",
+      "setupV": "1 den",
+      "setupK": "k rozjetí",
+      "payTitle": "Vyplať všechny během minut",
+      "payText": "Vyber datum, zkontroluj seznam, stiskni „vyplatit“. Bonusy a opravy projdou rychlým dodatečným během — hotovo.",
+      "staffTitle": "Zaměstnanci si pomáhají sami",
+      "staffText": "Výplatní pásky, žádosti o dovolenou a zálohy se dějí v aplikaci každého člověka. Konec psaní HR na WhatsAppu kvůli pásce.",
+      "awayTitle": "Vidíš, kdo chybí, na první pohled",
+      "awayText": "Schvaluj dovolenou jedním klepnutím a všichni vidí stejný kalendář absencí. Žádné překryvy, žádná překvapení.",
+      "loansTitle": "Půjčky, které se splácí samy",
+      "loansText": "Zaměstnanci žádají, ty schvaluješ a splátky se samy strhávají z výplatní pásky. Bez nahánění, bez tabulek.",
+      "accessTitle": "Každý vidí jen svou část",
+      "accessText": "Dej HR, účetním a manažerům jejich vlastní přístup — mzdové údaje zůstávají soukromé, schvalování v pořádku.",
+      "fileTitle": "Jeden soubor zaplatí všechny",
+      "fileText": "Stáhni jeden soubor pro banku nebo EcoCash for Business a celý tým je vyplacený. To je výplatní den, hotový.",
+      "walkthrough": "Zarezervuj bezplatnou ukázku",
+      "signIn": "Firemní přihlášení",
+      "note": "Jakákoli velikost, jakékoli odvětví — řekni nám o své firmě a tvůj tým pojede do jednoho dne."
+    },
+    "pricing": {
+      "heading": "Jeden dolar. To je vše.",
+      "sub": "Žádná předplatná, žádné tarify, žádné upselly. Zaplať jednou, vlastni navždy.",
+      "lifetime": "Doživotní přístup",
+      "forever": "/ navždy",
+      "features": "Každá funkce odemčena, navždy",
+      "tracking": "Sledování příjmů, výdajů a rozpočtu",
+      "goals": "Spořicí cíle, účty a kalendář",
+      "reports": "Reporty, analytika a AI asistent",
+      "currencies": "Všechny měny světa",
+      "pay": "Zaplať přes Paynow, kartu, Ecocash nebo bankovní převod",
+      "create": "Vytvořit účet a zaplatit $1",
+      "businessChip": "WellSpend for Business",
+      "hrLine1": "Sjednocený",
+      "hrLine2": "HR",
+      "payroll": "Mzdové cykly a vícekrokové schvalování",
+      "portal": "Portál samoobsluhy zaměstnanců",
+      "leave": "Kalendář dovolené, nároky a zaměstnanecké půjčky",
+      "payout": "Výplatní soubory pro banku a EcoCash",
+      "free": "Každý zaměstnanec má WellSpend zdarma",
+      "setup": "Zavedení a ukázka pro celý tým",
+      "arrange": "Domluv si demo nebo hovor"
+    },
+    "cta": {
+      "heading": "Chceš vidět, kam tvé peníze mizí?",
+      "text": "Registrace končí jednorázovou platbou $1 — pak je celá aplikace tvoje.",
+      "button": "Začít — $1"
+    },
+    "footer": {
+      "features": "Funkce",
+      "business": "Pro firmy",
+      "pricing": "Ceny",
+      "signIn": "Přihlásit se",
+      "rights": "© {year} WellSpend Budget Tracker. Všechna práva vyhrazena.",
+      "powered": "Pohání Global Space Web +263718560128"
+    }
+  }
+}

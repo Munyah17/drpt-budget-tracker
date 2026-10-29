@@ -1,15 +1,22 @@
 import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 import "@fontsource-variable/source-sans-3";
 import { AppDataProvider } from "@/lib/AppDataContext";
 import { CashFlowProvider } from "@/lib/CashFlowContext";
 import ToastHost from "@/components/ToastHost";
 import PwaRegister from "@/components/PwaRegister";
+import LocaleSync from "@/components/LocaleSync";
+import { textDirection } from "@/lib/i18n/config";
 
-export const metadata: Metadata = {
-  title: "WellSpend Budget Tracker ❤",
-  description: "Track income, expenses and savings goals in one calm, beautiful place.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -18,17 +25,23 @@ export const viewport: Viewport = {
   themeColor: "#c81057",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en-GB">
+    <html lang={locale} dir={textDirection(locale)}>
       <body>
-        <AppDataProvider>
-          <CashFlowProvider>
-            <PwaRegister />
-            {children}
-            <ToastHost />
-          </CashFlowProvider>
-        </AppDataProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <LocaleSync locale={locale} />
+          <AppDataProvider>
+            <CashFlowProvider>
+              <PwaRegister />
+              {children}
+              <ToastHost />
+            </CashFlowProvider>
+          </AppDataProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

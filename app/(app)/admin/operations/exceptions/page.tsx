@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,6 +18,7 @@ interface Exception {
 const EXCEPTIONS_DATA: Exception[] = [];
 
 export default function AdminExceptionsPage() {
+  const t = useTranslations("Pages.adm_ops_exceptions");
   const [search, setSearch] = useState("");
   const crud = useCrud(EXCEPTIONS_DATA, "Exception");
   const { toast } = useAppData();
@@ -30,64 +32,64 @@ export default function AdminExceptionsPage() {
   }, [crud.items, search, priorityFilter]);
 
   const handleResolve = (item: string) => {
-    toast(`Resolving ${item}...`);
+    toast(t("toastResolving", { item }));
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Exceptions & Incidents</h2>
-          <p className="section-sub">Track and resolve operational issues</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Report Exception
+          {t("reportException")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">Critical</div>
+          <div className="stat-label">{t("statCritical")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">High</div>
+          <div className="stat-label">{t("statHigh")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Medium</div>
+          <div className="stat-label">{t("statMedium")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Low</div>
+          <div className="stat-label">{t("statLow")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search exceptions..."
-          categoryOptions={[{ value: "Critical", label: "Critical" }, { value: "High", label: "High" }, { value: "Medium", label: "Medium" }, { value: "Low", label: "Low" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          categoryOptions={[{ value: "Critical", label: t("priorityCritical") }, { value: "High", label: t("priorityHigh") }, { value: "Medium", label: t("priorityMedium") }, { value: "Low", label: t("priorityLow") }]}
           onSearchChange={setSearch}
           onCategoryChange={setPriorityFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Type</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Description</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Priority</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Assigned</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thType")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thDescription")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thPriority")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thAssigned")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No exceptions match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -107,8 +109,8 @@ export default function AdminExceptionsPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", exception, crud.items.indexOf(exception))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleResolve(exception.type)}><Icon name="check" size={14} style={{ marginRight: 4 }} />Resolve</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", exception, crud.items.indexOf(exception))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleResolve(exception.type)}><Icon name="check" size={14} style={{ marginRight: 4 }} />{t("resolve")}</button>
                 </td>
               </tr>
             ))}

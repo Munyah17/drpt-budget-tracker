@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
@@ -27,11 +28,12 @@ const JOBS_DATA: JobPosting[] = [];
 const CANDIDATES_DATA: Candidate[] = [];
 
 export default function RecruitmentPage() {
+  const t = useTranslations("Pages.corp_hr_recruitment");
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const jobs = useCrud(JOBS_DATA, "Job Posting");
-  const candidates = useCrud(CANDIDATES_DATA, "Candidate");
+  const jobs = useCrud(JOBS_DATA, t("entityJob"));
+  const candidates = useCrud(CANDIDATES_DATA, t("entityCandidate"));
 
   const filteredJobs = useMemo(() => {
     return jobs.items.filter((j) =>
@@ -45,47 +47,47 @@ export default function RecruitmentPage() {
     const idx = stages.indexOf(c.stage);
     const next = stages[Math.min(idx + 1, stages.length - 1)];
     candidates.setItems((prev) => prev.map((x) => (x === c ? { ...x, stage: next } : x)));
-    toast(`${c.name} moved to ${next}`, "check-circle");
+    toast(t("toastAdvanced", { name: c.name, stage: next }), "check-circle");
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Recruitment</h2>
-          <p className="section-sub">Job postings and candidate pipeline</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => jobs.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Post Job
+          {t("postJob")}
         </button>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div className="card-head"><h3>Open Positions</h3></div>
+        <div className="card-head"><h3>{t("positionsHeading")}</h3></div>
         <FilterBar
-          searchPlaceholder="Search positions..."
-          statusOptions={[{ value: "Open", label: "Open" }, { value: "Paused", label: "Paused" }, { value: "Closed", label: "Closed" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Open", label: t("statusOpen") }, { value: "Paused", label: t("statusPaused") }, { value: "Closed", label: t("statusClosed") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Position</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Department</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Location</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Type</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Applicants</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colPosition")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDepartment")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colLocation")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colType")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colApplicants")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredJobs.length === 0 && (
               <tr>
                 <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No positions match your search.
+                  {t("emptyPositions")}
                 </td>
               </tr>
             )}
@@ -102,8 +104,8 @@ export default function RecruitmentPage() {
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => jobs.openModal("view", j, jobs.items.indexOf(j))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => jobs.openModal("edit", j, jobs.items.indexOf(j))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => jobs.openModal("view", j, jobs.items.indexOf(j))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => jobs.openModal("edit", j, jobs.items.indexOf(j))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>
               </tr>
             ))}
@@ -113,20 +115,20 @@ export default function RecruitmentPage() {
 
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>Candidate Pipeline</h3>
+          <h3>{t("pipelineHeading")}</h3>
           <button className="btn btn-ghost" onClick={() => candidates.openModal("create")}>
             <Icon name="plus" size={14} style={{ marginRight: 6 }} />
-            Add Candidate
+            {t("addCandidate")}
           </button>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Candidate</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Position</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Stage</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Applied</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colCandidate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colPosition")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStage")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colApplied")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -141,10 +143,10 @@ export default function RecruitmentPage() {
                 <td style={{ padding: "12px 8px" }}>
                   {c.stage !== "Hired" && (
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => nextStage(c)}>
-                      <Icon name="chevron-right" size={14} style={{ marginRight: 4 }} />Advance
+                      <Icon name="chevron-right" size={14} style={{ marginRight: 4 }} />{t("advance")}
                     </button>
                   )}
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => candidates.openModal("view", c, idx)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => candidates.openModal("view", c, idx)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                 </td>
               </tr>
             ))}

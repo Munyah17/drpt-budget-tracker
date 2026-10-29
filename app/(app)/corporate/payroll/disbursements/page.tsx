@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
@@ -13,6 +14,7 @@ const td = { padding: "12px 8px", fontSize: 13 } as const;
 
 /** Per-employee bank detail editor — used when employees lack bank info. */
 function BankModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.corp_pay_disbursements");
   const { toast } = useAppData();
   const store = useCorpStore();
   const [rows, setRows] = useState(
@@ -29,28 +31,29 @@ function BankModal({ onClose }: { onClose: () => void }) {
         return r ? { ...emp, bankName: r.bankName, bankAccount: r.bankAccount } : emp;
       }),
     }));
-    toast("Bank details saved", "check-circle");
+    toast(t("toastBankSaved"), "check-circle");
     onClose();
   }
 
   return (
-    <Modal title="Employee Bank Details" onClose={onClose}>
+    <Modal title={t("bankModalTitle")} onClose={onClose}>
       <form onSubmit={save}>
-        {rows.length === 0 && <p style={{ color: "var(--ink-500)", fontSize: 13 }}>No employees yet — import them first.</p>}
+        {rows.length === 0 && <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("noEmployees")}</p>}
         {rows.map((r, i) => (
           <div key={r.id} style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr 1fr", gap: 8, marginBottom: 8, alignItems: "center" }}>
             <span style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</span>
-            <input placeholder="Bank" value={r.bankName} onChange={(e) => setRows((p) => p.map((x, j) => (j === i ? { ...x, bankName: e.target.value } : x)))} />
-            <input placeholder="Account no." value={r.bankAccount} onChange={(e) => setRows((p) => p.map((x, j) => (j === i ? { ...x, bankAccount: e.target.value } : x)))} />
+            <input placeholder={t("bankPlaceholder")} value={r.bankName} onChange={(e) => setRows((p) => p.map((x, j) => (j === i ? { ...x, bankName: e.target.value } : x)))} />
+            <input placeholder={t("accountPlaceholder")} value={r.bankAccount} onChange={(e) => setRows((p) => p.map((x, j) => (j === i ? { ...x, bankAccount: e.target.value } : x)))} />
           </div>
         ))}
-        {rows.length > 0 && <button className="btn btn-primary" style={{ width: "100%", marginTop: 8 }} type="submit">Save</button>}
+        {rows.length > 0 && <button className="btn btn-primary" style={{ width: "100%", marginTop: 8 }} type="submit">{t("save")}</button>}
       </form>
     </Modal>
   );
 }
 
 export default function DisbursementsPage() {
+  const t = useTranslations("Pages.corp_pay_disbursements");
   const { toast } = useAppData();
   const store = useCorpStore();
   const [banks, setBanks] = useState(false);
@@ -77,7 +80,7 @@ export default function DisbursementsPage() {
     } else {
       downloadCsv(`disbursement-${run.id}.csv`, rows);
     }
-    toast(`Bank file for ${run.id} downloaded — upload to your bank`, "download");
+    toast(t("toastBankFile", { id: run.id }), "download");
   }
 
   function exportEcocash(run: PayrollRunRec) {
@@ -91,34 +94,34 @@ export default function DisbursementsPage() {
     downloadCsv(`ecocash-bulk-${run.id}.csv`, rows.length ? rows : [
       { run_id: run.id, employee: "ALL STAFF", phone: "", amount: run.totalAmount.toFixed(2), currency: "USD" },
     ]);
-    toast(`Ecocash bulk file for ${run.id} downloaded`, "download");
+    toast(t("toastEcocashFile", { id: run.id }), "download");
   }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Disbursements</h2>
-          <p className="section-sub">Export bank / Ecocash bulk payment files for approved runs</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-ghost" onClick={() => setBanks(true)}>
-          <Icon name="wallet" size={15} style={{ marginRight: 6 }} />Bank Details
+          <Icon name="wallet" size={15} style={{ marginRight: 6 }} />{t("bankDetails")}
         </button>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div className="card-head"><h3>Ready to disburse</h3></div>
+        <div className="card-head"><h3>{t("readyHeading")}</h3></div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={th}>Run</th><th style={th}>Period</th><th style={th}>Employees</th>
-              <th style={th}>Total</th><th style={th}>Status</th><th style={th}>Export</th>
+              <th style={th}>{t("colRun")}</th><th style={th}>{t("colPeriod")}</th><th style={th}>{t("colEmployees")}</th>
+              <th style={th}>{t("colTotal")}</th><th style={th}>{t("colStatus")}</th><th style={th}>{t("colExport")}</th>
             </tr>
           </thead>
           <tbody>
             {approved.length === 0 && (
               <tr><td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                No approved runs yet — approve a payroll run first.
+                {t("emptyState")}
               </td></tr>
             )}
             {approved.map((run) => (
@@ -130,7 +133,7 @@ export default function DisbursementsPage() {
                 <td style={td}><span className={"badge " + payrollBadge(run.status)}>{run.status}</span></td>
                 <td style={td}>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => exportRun(run)}>
-                    <Icon name="download" size={13} style={{ marginRight: 4 }} />Bank CSV
+                    <Icon name="download" size={13} style={{ marginRight: 4 }} />{t("bankCsv")}
                   </button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => exportEcocash(run)}>
                     <Icon name="download" size={13} style={{ marginRight: 4 }} />Ecocash
@@ -144,8 +147,7 @@ export default function DisbursementsPage() {
 
       <div className="glass-card card-pad" style={{ fontSize: 13, color: "var(--ink-500)", lineHeight: 1.7 }}>
         <Icon name="file-text" size={15} style={{ marginRight: 6, verticalAlign: -2 }} />
-        Upload the CSV to your bank&apos;s bulk-payment portal or Ecocash for Business. Each row splits the run total
-        evenly across employees — set per-employee net pay in a future payslip import. Only <b>Approved</b> runs appear here.
+        {t.rich("helpText", { b: (chunks) => <b>{chunks}</b> })}
       </div>
 
       {banks && <BankModal onClose={() => setBanks(false)} />}

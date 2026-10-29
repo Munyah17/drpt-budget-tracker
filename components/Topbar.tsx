@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { initials } from "@/lib/format";
+import LanguageSelect from "./LanguageSelect";
 import Icon from "./Icon";
 
 export default function Topbar() {
   const router = useRouter();
+  const t = useTranslations("Shell");
   const { sidebarOpen, setSidebarOpen, theme, toggleTheme, toast, user, isDemo, logout } = useAppData();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -39,7 +42,7 @@ export default function Topbar() {
   };
 
   const handleLogout = () => {
-    toast(isDemo ? "Exiting demo..." : "Logging out...", "log-out");
+    toast(isDemo ? t("exitingDemo") : t("loggingOut"), "log-out");
     setDropdownOpen(false);
     logout();
     router.push("/");
@@ -50,29 +53,30 @@ export default function Topbar() {
       <div className="topbar-left">
         <button
           className="icon-btn hamburger"
-          aria-label="Open menu"
+          aria-label={t("openMenu")}
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           <Icon name="menu" />
         </button>
         <div className="topbar-greeting">
           <h1>
-            Good morning, {user?.name || "User"} 👋
+            {t("greeting", { name: user?.name || t("guest") })}
             {isDemo && (
-              <span className="chip" style={{ marginLeft: 10, verticalAlign: "middle", fontSize: 11 }}>
-                Demo — nothing is saved
+              <span className="chip" style={{ marginInlineStart: 10, verticalAlign: "middle", fontSize: 11 }}>
+                {t("demoChip")}
               </span>
             )}
           </h1>
-          <p>Here&apos;s your financial overview</p>
+          <p>{t("overview")}</p>
         </div>
       </div>
       <div className="topbar-actions">
         <div className="search-box">
           <Icon name="search" />
-          <input placeholder="Search transactions, bills…" />
+          <input placeholder={t("search")} />
         </div>
-        <button className="icon-btn" data-tip="Toggle theme" onClick={toggleTheme}>
+        <LanguageSelect compact />
+        <button className="icon-btn" data-tip={t("toggleTheme")} onClick={toggleTheme}>
           <Icon name={theme === "dark" ? "sun" : "moon"} />
         </button>
         <div className="avatar-dropdown" style={{ position: "relative" }} ref={dropdownRef}>
@@ -88,7 +92,7 @@ export default function Topbar() {
             <div className="dropdown-menu" style={{
               position: "absolute",
               top: "100%",
-              right: 0,
+              insetInlineEnd: 0,
               marginTop: 8,
               background: "var(--card-solid)",
               border: "1px solid var(--card-border)",
@@ -103,7 +107,7 @@ export default function Topbar() {
                 style={{
                   width: "100%",
                   padding: "10px 16px",
-                  textAlign: "left",
+                  textAlign: "start",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -119,14 +123,14 @@ export default function Topbar() {
                 onMouseLeave={(e) => e.currentTarget.style.background = "none"}
               >
                 <Icon name="user" size={16} />
-                Profile
+                {t("profile")}
               </button>
               <button
                 className="dropdown-item" 
                 style={{
                   width: "100%",
                   padding: "10px 16px",
-                  textAlign: "left",
+                  textAlign: "start",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -142,7 +146,7 @@ export default function Topbar() {
                 onMouseLeave={(e) => e.currentTarget.style.background = "none"}
               >
                 <Icon name="settings" size={16} />
-                Settings
+                {t("settings")}
               </button>
               <div style={{ height: 1, background: "var(--card-border)", margin: "4px 0" }} />
               <button 
@@ -150,7 +154,7 @@ export default function Topbar() {
                 style={{
                   width: "100%",
                   padding: "10px 16px",
-                  textAlign: "left",
+                  textAlign: "start",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -166,7 +170,7 @@ export default function Topbar() {
                 onMouseLeave={(e) => e.currentTarget.style.background = "none"}
               >
                 <Icon name="log-out" size={16} />
-                {isDemo ? "Exit Demo" : "Logout"}
+                {isDemo ? t("exitDemo") : t("logout")}
               </button>
             </div>
           )}

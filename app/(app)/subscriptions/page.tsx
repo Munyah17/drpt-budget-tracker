@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { EXPENSE_ICONS } from "@/lib/data";
 import { sym, fmt, ukDate } from "@/lib/format";
@@ -16,6 +17,7 @@ const NOW = Date.now();
  * "monthly bleed" total and a one-tap cancel (marks the item non-recurring).
  */
 export default function SubscriptionsPage() {
+  const t = useTranslations("Pages.subscriptions");
   const { expenses, updateExpense, toast } = useAppData();
 
   const subs = useMemo(
@@ -36,7 +38,7 @@ export default function SubscriptionsPage() {
     const e = expenses.find((x) => x.id === id);
     if (!e) return;
     updateExpense(id, { ...e, recurring: false });
-    toast(`${e.merchant} marked as cancelled`, "check");
+    toast(t("toastCancelled", { merchant: e.merchant }), "check");
   }
 
   // Auto-detected likely subscriptions the user hasn't flagged yet
@@ -57,22 +59,22 @@ export default function SubscriptionsPage() {
       const e = expenses.find((x) => x.id === id);
       if (e && !e.recurring) updateExpense(id, { ...e, recurring: true });
     }
-    toast(`${merchant} flagged as a subscription`, "check-circle");
+    toast(t("toastFlagged", { merchant }), "check-circle");
   }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Subscription Hunter</h2>
-          <p className="section-sub">Find the recurring charges quietly draining your account</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Active Subscriptions</span>
+            <span className="stat-label">{t("statActive")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="repeat" size={17} />
             </div>
@@ -81,7 +83,7 @@ export default function SubscriptionsPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Monthly Bleed</span>
+            <span className="stat-label">{t("statMonthly")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--red)" }}>
               <Icon name="wallet" size={17} />
             </div>
@@ -90,7 +92,7 @@ export default function SubscriptionsPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Yearly Bleed</span>
+            <span className="stat-label">{t("statYearly")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--red)" }}>
               <Icon name="trending-up" size={17} />
             </div>
@@ -99,7 +101,7 @@ export default function SubscriptionsPage() {
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Largest</span>
+            <span className="stat-label">{t("statLargest")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="zap" size={17} />
             </div>
@@ -116,7 +118,7 @@ export default function SubscriptionsPage() {
       {renewals.length > 0 && (
         <div className="glass-card card-pad" style={{ marginBottom: 20, borderLeft: "3px solid var(--amber)" }}>
           <div className="card-head">
-            <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}><Icon name="bell" size={16} /> Renewals this week</h3>
+            <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}><Icon name="bell" size={16} /> {t("renewals")}</h3>
           </div>
           {renewals.map(({ e }) => (
             <div key={e.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--card-border)", fontSize: 13.5 }}>
@@ -130,18 +132,18 @@ export default function SubscriptionsPage() {
       {detected.length > 0 && (
         <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
           <div className="card-head">
-            <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}><Icon name="sparkles" size={16} /> Detected — confirm these are subscriptions?</h3>
+            <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}><Icon name="sparkles" size={16} /> {t("detected")}</h3>
           </div>
           {detected.map((d) => (
             <div key={d.merchant} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: "1px solid var(--card-border)", flexWrap: "wrap" }}>
               <div>
                 <b>{d.merchant}</b>{" "}
                 <span style={{ color: "var(--ink-500)", fontSize: 12.5 }}>
-                  {fmt(d.amount)} · {d.count}× charges, every ~{Math.round(d.avgDays)}d
+                  {t("detectedMeta", { amount: fmt(d.amount), count: d.count, days: Math.round(d.avgDays) })}
                 </span>
               </div>
               <button className="btn btn-ghost btn-sm" onClick={() => flagAsSub(d.ids, d.merchant)}>
-                <Icon name="repeat" size={13} style={{ marginRight: 4 }} />Yes, it&apos;s recurring
+                <Icon name="repeat" size={13} style={{ marginRight: 4 }} />{t("confirmRecurring")}
               </button>
             </div>
           ))}
@@ -149,20 +151,20 @@ export default function SubscriptionsPage() {
       )}
 
       <div className="glass-card card-pad">
-        <div className="card-head"><h3>Recurring Charges</h3></div>
+        <div className="card-head"><h3>{t("charges")}</h3></div>
         {subs.length === 0 ? (
           <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "24px 0", textAlign: "center" }}>
-            No recurring expenses found — mark any expense as recurring and it will be hunted down here.
+            {t("empty")}
           </p>
         ) : (
           <div className="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Service</th>
-                  <th>Category</th>
-                  <th>Last Charged</th>
-                  <th style={{ textAlign: "right" }}>Monthly Cost</th>
+                  <th>{t("colService")}</th>
+                  <th>{t("colCategory")}</th>
+                  <th>{t("colLast")}</th>
+                  <th style={{ textAlign: "right" }}>{t("colCost")}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -181,13 +183,13 @@ export default function SubscriptionsPage() {
                     <td>
                       {ukDate(e.date)}
                       <span style={{ fontSize: 11, color: "var(--ink-500)", marginLeft: 8 }}>
-                        {daysSince(e.date)}d ago
+                        {t("daysAgo", { days: daysSince(e.date) })}
                       </span>
                     </td>
                     <td style={{ textAlign: "right" }} className="amt-neg">-{fmt(e.amount)}</td>
                     <td style={{ textAlign: "right" }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => cancelSub(e.id)}>
-                        <Icon name="x" size={13} style={{ marginRight: 4 }} /> Cancel
+                        <Icon name="x" size={13} style={{ marginRight: 4 }} /> {t("cancel")}
                       </button>
                     </td>
                   </tr>

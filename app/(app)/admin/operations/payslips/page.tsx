@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,6 +18,7 @@ interface Payslip {
 const PAYSLIPS_DATA: Payslip[] = [];
 
 export default function AdminPayslipsPage() {
+  const t = useTranslations("Pages.adm_ops_payslips");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const crud = useCrud(PAYSLIPS_DATA, "Payslip");
@@ -30,49 +32,49 @@ export default function AdminPayslipsPage() {
   }, [crud.items, search, statusFilter]);
 
   const handleDownload = (item: string) => {
-    toast(`Downloading ${item}...`);
+    toast(t("toastDownloading", { item }));
   };
 
   const handleSend = (item: string) => {
-    toast(`Sending ${item}...`);
+    toast(t("toastSending", { item }));
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Payslip Delivery</h2>
-          <p className="section-sub">Manage payslip distribution</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Generate Payslips
+          {t("generatePayslips")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search payslips..."
-          statusOptions={[{ value: "Delivered", label: "Delivered" }, { value: "Pending", label: "Pending" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Delivered", label: t("statusDelivered") }, { value: "Pending", label: t("statusPending") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Employee</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Organisation</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Period</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Delivered</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thEmployee")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thOrganisation")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thPeriod")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thDelivered")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No payslips match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -90,11 +92,11 @@ export default function AdminPayslipsPage() {
                 <td style={{ padding: "12px 8px" }}>
                   {payslip.status === "Delivered" ? (
                     <>
-                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(payslip.employee)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
-                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(payslip.employee)}><Icon name="send" size={14} style={{ marginRight: 4 }} />Resend</button>
+                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(payslip.employee)}><Icon name="download" size={14} style={{ marginRight: 4 }} />{t("download")}</button>
+                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(payslip.employee)}><Icon name="send" size={14} style={{ marginRight: 4 }} />{t("resend")}</button>
                     </>
                   ) : (
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(payslip.employee)}><Icon name="send" size={14} style={{ marginRight: 4 }} />Send</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleSend(payslip.employee)}><Icon name="send" size={14} style={{ marginRight: 4 }} />{t("send")}</button>
                   )}
                 </td>
               </tr>

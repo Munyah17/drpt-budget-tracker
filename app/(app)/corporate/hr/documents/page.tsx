@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
 import { downloadBlob } from "@/lib/download";
@@ -18,10 +19,11 @@ interface Doc {
 const DOCS_DATA: Doc[] = [];
 
 export default function DocumentsPage() {
+  const t = useTranslations("Pages.corp_hr_documents");
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const crud = useCrud(DOCS_DATA, "Document");
+  const crud = useCrud(DOCS_DATA, t("entityLabel"));
 
   const filteredData = useMemo(() => {
     return crud.items.filter((d) =>
@@ -35,9 +37,9 @@ export default function DocumentsPage() {
   const handleDownload = (d: Doc) => {
     downloadBlob(
       `${d.name.replace(/[^\w]+/g, "-").toLowerCase()}.txt`,
-      `${d.name}\n\nCategory: ${d.category}\nEmployee: ${d.employee}\nUploaded: ${d.uploaded}\nSize: ${d.size}\n\n(Placeholder document content)`
+      t("docContent", { name: d.name, category: d.category, employee: d.employee, uploaded: d.uploaded, size: d.size })
     );
-    toast(`${d.name} downloaded`, "download");
+    toast(t("toastDownloaded", { name: d.name }), "download");
   };
 
   const upload = () => {
@@ -47,10 +49,10 @@ export default function DocumentsPage() {
       const file = input.files?.[0];
       if (!file) return;
       crud.setItems((prev) => [
-        { name: file.name, category: "Uploads", employee: "All Staff", uploaded: new Date().toISOString().slice(0, 10), size: `${Math.max(1, Math.round(file.size / 1024))} KB` },
+        { name: file.name, category: t("defaultCategory"), employee: t("allStaff"), uploaded: new Date().toISOString().slice(0, 10), size: `${Math.max(1, Math.round(file.size / 1024))} KB` },
         ...prev,
       ]);
-      toast(`${file.name} uploaded`, "upload-cloud");
+      toast(t("toastUploaded", { name: file.name }), "upload-cloud");
     };
     input.click();
   };
@@ -59,24 +61,24 @@ export default function DocumentsPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Documents</h2>
-          <p className="section-sub">Employee records, contracts and policies</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn btn-ghost" onClick={() => crud.openModal("create")}>
             <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-            New Record
+            {t("newRecord")}
           </button>
           <button className="btn btn-primary" onClick={upload}>
             <Icon name="upload-cloud" size={16} style={{ marginRight: 8 }} />
-            Upload Document
+            {t("uploadDocument")}
           </button>
         </div>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search documents..."
+          searchPlaceholder={t("searchPlaceholder")}
           categoryOptions={categories.map((c) => ({ value: c, label: c }))}
           onSearchChange={setSearch}
           onCategoryChange={setCategoryFilter}
@@ -84,19 +86,19 @@ export default function DocumentsPage() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Document</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Category</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Employee</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Uploaded</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Size</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDocument")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colCategory")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colEmployee")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colUploaded")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colSize")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No documents match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -108,8 +110,8 @@ export default function DocumentsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{d.uploaded}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{d.size}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(d)}><Icon name="download" size={14} style={{ marginRight: 4 }} />Download</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", d, crud.items.indexOf(d))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => handleDownload(d)}><Icon name="download" size={14} style={{ marginRight: 4 }} />{t("download")}</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", d, crud.items.indexOf(d))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                 </td>
               </tr>
             ))}

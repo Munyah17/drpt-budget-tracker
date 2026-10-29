@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 
@@ -21,6 +22,7 @@ interface ChatSession {
 }
 
 export default function LiveChatPage() {
+  const t = useTranslations("Pages.adm_live_chat");
   const { toast } = useAppData();
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
@@ -29,18 +31,24 @@ export default function LiveChatPage() {
 
   const mockMessages: ChatMessage[] = [];
 
+  const statusLabels: Record<string, string> = {
+    active: t("statusActive"),
+    waiting: t("statusWaiting"),
+    closed: t("statusClosed"),
+  };
+
   const getStatusBadge = (status: string) => {
     const colors = {
       active: "badge-green",
       waiting: "badge-amber",
       closed: "badge-red",
     };
-    return <span className={`badge ${colors[status as keyof typeof colors]}`}>{status}</span>;
+    return <span className={`badge ${colors[status as keyof typeof colors]}`}>{statusLabels[status] ?? status}</span>;
   };
 
   const handleSendMessage = () => {
     if (!messageInput.trim()) return;
-    toast("Message sent", "check-circle");
+    toast(t("messageSent"), "check-circle");
     setMessageInput("");
   };
 
@@ -48,14 +56,14 @@ export default function LiveChatPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Live Chat</h2>
-          <p className="section-sub">Real-time support chat with users</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: "300px 1fr", gap: 20 }}>
         <div className="glass-card card-pad">
-          <h3 style={{ marginBottom: 16 }}>Active Chats</h3>
+          <h3 style={{ marginBottom: 16 }}>{t("activeChats")}</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {mockSessions.map((session) => (
               <div
@@ -86,7 +94,7 @@ export default function LiveChatPage() {
           {selectedSession ? (
             <>
               <div style={{ borderBottom: "1px solid var(--card-border)", paddingBottom: 12, marginBottom: 12 }}>
-                <h3>Chat with John Doe</h3>
+                <h3>{t("chatWith", { name: "John Doe" })}</h3>
                 <div style={{ fontSize: 12, color: "var(--ink-500)" }}>john.doe@email.com</div>
               </div>
               <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 12 }}>
@@ -115,7 +123,7 @@ export default function LiveChatPage() {
               <div style={{ display: "flex", gap: 8, marginTop: 12, borderTop: "1px solid var(--card-border)", paddingTop: 12 }}>
                 <input
                   type="text"
-                  placeholder="Type a message..."
+                  placeholder={t("inputPlaceholder")}
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
@@ -128,7 +136,7 @@ export default function LiveChatPage() {
             </>
           ) : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--ink-500)" }}>
-              Select a chat to start messaging
+              {t("selectChat")}
             </div>
           )}
         </div>

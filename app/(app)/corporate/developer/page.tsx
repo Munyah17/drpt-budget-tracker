@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
@@ -29,9 +30,10 @@ const WEBHOOKS_DATA: Webhook[] = [];
 const SCOPES = ["employees:read", "employees:write", "payroll:read", "payroll:write", "leave:read", "leave:write", "reports:read"];
 
 export default function DeveloperPage() {
+  const t = useTranslations("Pages.corp_developer");
   const { toast } = useAppData();
-  const keys = useCrud(KEYS_DATA, "API Key");
-  const webhooks = useCrud(WEBHOOKS_DATA, "Webhook");
+  const keys = useCrud(KEYS_DATA, t("entityApiKey"));
+  const webhooks = useCrud(WEBHOOKS_DATA, t("entityWebhook"));
   const [createOpen, setCreateOpen] = useState(false);
   const [newKey, setNewKey] = useState<string | null>(null);
   const [label, setLabel] = useState("");
@@ -49,28 +51,28 @@ export default function DeveloperPage() {
     const full = `wellspend_live_${Array.from(crypto.getRandomValues(new Uint8Array(24))).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
     keys.setItems((prev) => [...prev, {
       id: String(Date.now()),
-      label: label || "Untitled key",
+      label: label || t("untitledKey"),
       prefix: full.slice(0, 12),
-      scopes: [...selected].join(", ") || "none",
+      scopes: [...selected].join(", ") || t("scopesNone"),
       created: new Date().toISOString().slice(0, 10),
-      lastUsed: "Never",
+      lastUsed: t("never"),
       status: "Active",
     }]);
     setNewKey(full);
     setCreateOpen(false);
     setLabel("");
-    toast("API key created — copy it now, it won't be shown again", "key");
+    toast(t("toastCreated"), "key");
   };
 
   const revoke = (k: ApiKey) => {
     keys.setItems((prev) => prev.map((x) => (x.id === k.id ? { ...x, status: "Revoked" } : x)));
-    toast(`${k.label} revoked`, "x-circle");
+    toast(t("toastRevoked", { label: k.label }), "x-circle");
   };
 
   const copyKey = () => {
     if (newKey) {
       navigator.clipboard?.writeText(newKey).catch(() => {});
-      toast("API key copied to clipboard", "check-circle");
+      toast(t("toastCopied"), "check-circle");
     }
   };
 
@@ -78,34 +80,34 @@ export default function DeveloperPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Developer &amp; API</h2>
-          <p className="section-sub">API keys, scopes and webhooks for authorised integrations</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setCreateOpen(true)}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Create API Key
+          {t("createApiKey")}
         </button>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div className="card-head"><h3>API Keys</h3></div>
+        <div className="card-head"><h3>{t("apiKeysHeading")}</h3></div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Label</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Key</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Scopes</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Created</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Last Used</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thLabel")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thKey")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thScopes")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thCreated")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thLastUsed")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {keys.items.length === 0 && (
               <tr>
                 <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No API keys yet.
+                  {t("emptyKeys")}
                 </td>
               </tr>
             )}
@@ -117,12 +119,12 @@ export default function DeveloperPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{k.created}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{k.lastUsed}</td>
                 <td style={{ padding: "12px 8px" }}>
-                  <span className={`badge ${k.status === "Active" ? "badge-green" : "badge-red"}`}>{k.status}</span>
+                  <span className={`badge ${k.status === "Active" ? "badge-green" : "badge-red"}`}>{k.status === "Active" ? t("statusActive") : t("statusRevoked")}</span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => keys.openModal("view", k, idx)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => keys.openModal("view", k, idx)}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                   {k.status === "Active" && (
-                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => revoke(k)}><Icon name="x-circle" size={14} style={{ marginRight: 4 }} />Revoke</button>
+                    <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => revoke(k)}><Icon name="x-circle" size={14} style={{ marginRight: 4 }} />{t("revoke")}</button>
                   )}
                 </td>
               </tr>
@@ -133,19 +135,19 @@ export default function DeveloperPage() {
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div className="card-head">
-          <h3>Webhooks</h3>
+          <h3>{t("webhooksHeading")}</h3>
           <button className="btn btn-ghost" onClick={() => webhooks.openModal("create")}>
             <Icon name="plus" size={14} style={{ marginRight: 6 }} />
-            Add Webhook
+            {t("addWebhook")}
           </button>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Endpoint URL</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Events</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thEndpoint")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thEvents")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -157,7 +159,7 @@ export default function DeveloperPage() {
                   <span className={`badge ${w.status === "Active" ? "badge-green" : "badge-amber"}`}>{w.status}</span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => webhooks.openModal("edit", w, idx)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => webhooks.openModal("edit", w, idx)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>
               </tr>
             ))}
@@ -166,23 +168,27 @@ export default function DeveloperPage() {
       </div>
 
       <div className="glass-card card-pad" style={{ maxWidth: 560 }}>
-        <div className="card-head"><h3>API Access</h3></div>
+        <div className="card-head"><h3>{t("apiAccessHeading")}</h3></div>
         <p style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 12 }}>
-          Base URL: <code>https://api.wellspend.example/v1</code> — authenticate with <code>Authorization: Bearer &lt;key&gt;</code>. Requests are rate-limited per key and every call is recorded in the audit log.
+          {t.rich("apiAccessDesc", {
+            baseUrl: "https://api.wellspend.example/v1",
+            authHeader: "Authorization: Bearer <key>",
+            code: (chunks) => <code>{chunks}</code>,
+          })}
         </p>
         <p style={{ fontSize: 12, color: "var(--ink-500)" }}>
-          Note: for production, issue and verify keys server-side; this page is a UI demo and keys are held in memory only.
+          {t("apiAccessNote")}
         </p>
       </div>
 
       {createOpen && (
-        <Modal title="Create API Key" onClose={() => setCreateOpen(false)}>
+        <Modal title={t("createApiKey")} onClose={() => setCreateOpen(false)}>
           <div className="field">
-            <label>Label</label>
-            <input type="text" placeholder="e.g. Payroll sync" value={label} onChange={(e) => setLabel(e.target.value)} />
+            <label>{t("thLabel")}</label>
+            <input type="text" placeholder={t("labelPlaceholder")} value={label} onChange={(e) => setLabel(e.target.value)} />
           </div>
           <div className="field">
-            <label>Scopes</label>
+            <label>{t("thScopes")}</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {SCOPES.map((s) => (
                 <label key={s} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, padding: "4px 10px", borderRadius: 999, background: selected.has(s) ? "var(--pink-100)" : "var(--card-solid)", cursor: "pointer" }}>
@@ -194,18 +200,18 @@ export default function DeveloperPage() {
           </div>
           <button className="btn btn-primary" style={{ width: "100%" }} onClick={generateKey}>
             <Icon name="key" size={16} style={{ marginRight: 8 }} />
-            Generate Key
+            {t("generateKey")}
           </button>
         </Modal>
       )}
 
       {newKey && (
-        <Modal title="API Key Created" onClose={() => setNewKey(null)}>
-          <p style={{ fontSize: 13, marginBottom: 8 }}>Copy this key now — it will never be shown again:</p>
+        <Modal title={t("keyCreatedTitle")} onClose={() => setNewKey(null)}>
+          <p style={{ fontSize: 13, marginBottom: 8 }}>{t("copyKeyNote")}</p>
           <div style={{ padding: 12, borderRadius: "var(--radius-sm)", background: "var(--card-solid)", fontFamily: "monospace", fontSize: 12, wordBreak: "break-all", marginBottom: 12 }}>
             {newKey}
           </div>
-          <button className="btn btn-primary" style={{ width: "100%" }} onClick={copyKey}>Copy to Clipboard</button>
+          <button className="btn btn-primary" style={{ width: "100%" }} onClick={copyKey}>{t("copyToClipboard")}</button>
         </Modal>
       )}
 

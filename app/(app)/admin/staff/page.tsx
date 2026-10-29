@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 
@@ -16,8 +17,9 @@ interface Staff {
 const STAFF_DATA: Staff[] = [];
 
 export default function StaffManagementPage() {
+  const t = useTranslations("Pages.adm_staff");
   const [searchTerm, setSearchTerm] = useState("");
-  const crud = useCrud(STAFF_DATA, "Staff Member");
+  const crud = useCrud(STAFF_DATA, t("entityName"));
 
   const filteredStaff = crud.items.filter(staff => 
     staff.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -37,19 +39,19 @@ export default function StaffManagementPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Staff Management</h2>
-          <p className="section-sub">Manage platform staff and permissions</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add Staff
+          {t("addStaff")}
         </button>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <input
           type="text"
-          placeholder="Search staff..."
+          placeholder={t("phSearch")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", marginBottom: 16 }}
@@ -58,11 +60,11 @@ export default function StaffManagementPage() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Staff Member</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Role</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Department</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("entityName")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colRole")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDepartment")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -97,15 +99,15 @@ export default function StaffManagementPage() {
 
       <div className="grid grid-3">
         <div className="glass-card card-pad">
-          <div className="stat-label">Total Staff</div>
+          <div className="stat-label">{t("totalStaff")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Active Now</div>
+          <div className="stat-label">{t("activeNow")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">On Leave</div>
+          <div className="stat-label">{t("onLeave")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>

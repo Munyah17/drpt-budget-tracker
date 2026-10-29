@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { EXPENSE_CATS, EXPENSE_ICONS } from "@/lib/data";
 import {  fmt, ukDate , sym } from "@/lib/format";
@@ -13,6 +14,7 @@ import SplitBillModal from "@/components/modals/SplitBillModal";
 import FilterBar from "@/components/FilterBar";
 
 export default function ExpensesPage() {
+  const t = useTranslations("Pages.expenses");
   const { expenses, deleteExpense, toast, totalExpenses } = useAppData();
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
@@ -44,43 +46,43 @@ export default function ExpensesPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Expenses</h2>
-          <p className="section-sub">Everything you&apos;ve spent this month</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button className="btn btn-ghost" onClick={() => setSplitOpen(true)}>
-            <Icon name="users" size={16} /> Split Bill
+            <Icon name="users" size={16} /> {t("splitBtn")}
           </button>
           <button className="btn btn-ghost" onClick={() => setSmsOpen(true)}>
-            <Icon name="smartphone" size={16} /> Import SMS
+            <Icon name="smartphone" size={16} /> {t("smsBtn")}
           </button>
           <button className="btn btn-primary" onClick={openAdd}>
-            <Icon name="plus" size={16} /> Add Expense
+            <Icon name="plus" size={16} /> {t("addBtn")}
           </button>
         </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Total Spent</span>
+          <span className="stat-label">{t("statTotal")}</span>
           <div className="stat-value">
             <CountUp end={totalExpenses} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Transactions</span>
+          <span className="stat-label">{t("statTx")}</span>
           <div className="stat-value">
             <CountUp end={expenses.length} decimals={0} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Recurring</span>
+          <span className="stat-label">{t("statRecurring")}</span>
           <div className="stat-value">
             <CountUp end={expenses.filter((e) => e.recurring).length} decimals={0} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Largest Expense</span>
+          <span className="stat-label">{t("statLargest")}</span>
           <div className="stat-value">
             <CountUp end={expenses.length ? Math.max(...expenses.map((e) => e.amount)) : 0} prefix={sym()} />
           </div>
@@ -89,7 +91,7 @@ export default function ExpensesPage() {
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search expenses..."
+          searchPlaceholder={t("phSearch")}
           categoryOptions={EXPENSE_CATS.map((c) => ({ value: c, label: c }))}
           onSearchChange={setSearch}
           onCategoryChange={setCatFilter}
@@ -98,12 +100,12 @@ export default function ExpensesPage() {
           <table>
             <thead>
               <tr>
-                <th>Merchant</th>
-                <th>Category</th>
-                <th>Account</th>
-                <th>Method</th>
-                <th>Date</th>
-                <th style={{ textAlign: "right" }}>Amount</th>
+                <th>{t("colMerchant")}</th>
+                <th>{t("colCategory")}</th>
+                <th>{t("colAccount")}</th>
+                <th>{t("colMethod")}</th>
+                <th>{t("colDate")}</th>
+                <th style={{ textAlign: "right" }}>{t("colAmount")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -111,7 +113,7 @@ export default function ExpensesPage() {
               {rows.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                    No expenses match your search.
+                    {t("empty")}
                   </td>
                 </tr>
               )}
@@ -125,7 +127,7 @@ export default function ExpensesPage() {
                       {e.merchant}
                       {e.recurring && (
                         <span className="badge badge-amber" style={{ marginLeft: 6 }}>
-                          Recurring
+                          {t("badgeRecurring")}
                         </span>
                       )}
                     </div>
@@ -140,15 +142,15 @@ export default function ExpensesPage() {
                     -{fmt(e.amount)}
                   </td>
                   <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
-                    <button className="btn btn-ghost btn-sm" data-tip="Edit" onClick={() => openEdit(e)}>
+                    <button className="btn btn-ghost btn-sm" data-tip={t("tipEdit")} onClick={() => openEdit(e)}>
                       <Icon name="pencil" size={14} />
                     </button>
                     <button
                       className="btn btn-ghost btn-sm"
-                      data-tip="Delete"
+                      data-tip={t("tipDelete")}
                       onClick={() => {
                         deleteExpense(e.id);
-                        toast("Expense deleted", "trash-2");
+                        toast(t("toastDeleted"), "trash-2");
                       }}
                     >
                       <Icon name="trash-2" size={14} />

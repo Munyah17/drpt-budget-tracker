@@ -3,7 +3,9 @@
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import LanguageSelect from "@/components/LanguageSelect";
 import { notifyEvent } from "@/lib/notifyClient";
 import { trackEvent } from "@/lib/analytics";
 import { minPriceLabel } from "@/lib/pricing";
@@ -22,6 +24,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, toast, isAuthenticated, authReady, user } = useAppData();
+  const t = useTranslations("Login");
   const [submitting, setSubmitting] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [email, setEmail] = useState("");
@@ -110,7 +113,7 @@ function LoginForm() {
         }, 350);
       } else {
         setSubmitting(false);
-        toast(result.error || "Invalid email or password", "x");
+        toast(result.error || t("invalid"), "x");
       }
     }
   }
@@ -127,75 +130,76 @@ function LoginForm() {
         <div className="login-visual">
           <div className="login-visual-caption">
             <h3>
-              Financial clarity,
-              <br />
-              every single day.
+              {t("visualTitle")}
             </h3>
-            <p>Track income, expenses and savings goals in one calm, beautiful place.</p>
+            <p>{t("visualText")}</p>
           </div>
         </div>
         <div className="login-form">
           <div className="login-logo">
             WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
           </div>
-          <h2>{isSignup ? "Create your account — $1 unlocks everything, forever" : "Welcome back! Sign in to continue to your account"}</h2>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+            <LanguageSelect compact />
+          </div>
+          <h2>{isSignup ? t("signupTitle") : t("signinTitle")}</h2>
           <form onSubmit={handleSubmit}>
             {isSignup && (
               <div className="field">
-                <label htmlFor="name">Full Name</label>
+                <label htmlFor="name">{t("fullName")}</label>
                 <input
                   id="name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  placeholder={t("namePh")}
                   required
                 />
               </div>
             )}
             <div className="field">
-              <label htmlFor="email">Email address</label>
+              <label htmlFor="email">{t("email")}</label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder={t("emailPh")}
                 required
               />
             </div>
             <div className="field">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t("password")}</label>
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder={t("passwordPh")}
                 required
               />
             </div>
             {!isSignup && (
               <div className="field-row">
                 <label className="remember">
-                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ accentColor: "var(--rose-500)" }} /> Remember me
+                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ accentColor: "var(--rose-500)" }} /> {t("remember")}
                 </label>
-                <a href="#">Forgot password?</a>
+                <a href="#">{t("forgot")}</a>
               </div>
             )}
             <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>
-              {submitting ? (isSignup ? "Creating account…" : "Signing in…") : (isSignup ? "Create Account & Pay $1" : "Sign In")}
+              {submitting ? (isSignup ? t("creating") : t("signingIn")) : (isSignup ? t("createPay") : t("signIn"))}
             </button>
           </form>
 
           <div className="login-footer">
-            {isSignup ? "Already have an account? " : "Don't have an account? "}
+            {isSignup ? t("haveAccount") : t("noAccount")}{" "}
             <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); }}>
-              {isSignup ? "Sign in" : "Sign up — $1 once"}
+              {isSignup ? t("signInLink") : t("signUpLink")}
             </a>
             <div style={{ marginTop: 8 }}>
               <Link href="/" style={{ color: "var(--ink-500)", fontWeight: 600, fontSize: 12 }}>
-                ← Back to home
+                <span className="back-arrow" aria-hidden="true">← </span>{t("backHome")}
               </Link>
             </div>
           </div>

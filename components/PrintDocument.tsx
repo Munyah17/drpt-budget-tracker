@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { formatCurrency, initials } from "@/lib/format";
 import { Currency } from "@/lib/types";
 
@@ -49,6 +50,7 @@ export interface PrintDocData {
  * a full-bleed dark footer band.
  */
 export default function PrintDocument({ doc }: { doc: PrintDocData }) {
+  const t = useTranslations("Pages.components");
   const cur = doc.currency;
   const money = (n: number) => formatCurrency(n, cur);
   const lineTotal = (it: DocItem) => it.qty * it.unitPrice - (it.discount ?? 0);
@@ -126,8 +128,8 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
           <div style={{ fontSize: "18pt", fontWeight: 700, color: BRAND, letterSpacing: "0.03em" }}>
             {doc.kind}
           </div>
-          <div style={{ fontSize: "9.5pt", color: "#5A5A5A", marginTop: "2mm" }}>No: {doc.number}</div>
-          <div style={{ fontSize: "9.5pt", color: "#5A5A5A", marginTop: "1mm" }}>Date: {doc.date}</div>
+          <div style={{ fontSize: "9.5pt", color: "#5A5A5A", marginTop: "2mm" }}>{t("print_no", { number: doc.number })}</div>
+          <div style={{ fontSize: "9.5pt", color: "#5A5A5A", marginTop: "1mm" }}>{t("print_date", { date: doc.date })}</div>
           <div style={{ fontSize: "13pt", fontWeight: 700, marginTop: "5mm" }}>{doc.companyName}</div>
           {doc.companyLines.map((l, i) => (
             <div key={i} style={{ fontSize: "9pt", color: "#5A5A5A", marginTop: "1.2mm" }}>
@@ -143,7 +145,7 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
       {/* ── Bill To ────────────────────────────────────────────── */}
       <div style={{ width: "90mm", background: "#F3F5FA", borderRadius: "2mm", padding: "4mm 5mm" }}>
         <div style={{ fontSize: "8.5pt", fontWeight: 700, color: "#6E6E6E", letterSpacing: "0.08em" }}>
-          BILL TO
+          {t("print_billTo")}
         </div>
         <div style={{ fontSize: "9.5pt", fontWeight: 700, marginTop: "2.5mm" }}>{doc.billToName}</div>
         {doc.billToLines.map((l, i) => (
@@ -157,11 +159,11 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "9mm", fontSize: "9pt" }}>
         <thead>
           <tr>
-            <th style={{ ...thBase, textAlign: "left", width: "50%" }}>Description</th>
-            <th style={{ ...thBase, textAlign: "right" }}>Qty</th>
-            <th style={{ ...thBase, textAlign: "right" }}>Unit Price</th>
-            <th style={{ ...thBase, textAlign: "right" }}>Discount</th>
-            <th style={{ ...thBase, textAlign: "right" }}>Total</th>
+            <th style={{ ...thBase, textAlign: "left", width: "50%" }}>{t("print_colDesc")}</th>
+            <th style={{ ...thBase, textAlign: "right" }}>{t("print_colQty")}</th>
+            <th style={{ ...thBase, textAlign: "right" }}>{t("print_colUnit")}</th>
+            <th style={{ ...thBase, textAlign: "right" }}>{t("print_colDiscount")}</th>
+            <th style={{ ...thBase, textAlign: "right" }}>{t("print_colTotal")}</th>
           </tr>
         </thead>
         <tbody>
@@ -180,7 +182,7 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
       {/* ── Totals ─────────────────────────────────────────────── */}
       <div style={{ marginLeft: "auto", marginTop: "6mm", width: "72mm" }}>
         <div style={{ display: "flex", justifyContent: "space-between", padding: "0 3mm", fontSize: "9.5pt" }}>
-          <span style={{ color: "#5A5A5A" }}>{doc.subtotalLabel ?? "Subtotal (ex VAT):"}</span>
+          <span style={{ color: "#5A5A5A" }}>{doc.subtotalLabel ?? t("print_subtotal")}</span>
           <span style={{ fontWeight: 600 }}>{money(subtotal)}</span>
         </div>
         {(doc.extraTotals ?? []).map((t, i) => (
@@ -205,7 +207,7 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
             color: BRAND,
           }}
         >
-          <span>TOTAL</span>
+          <span>{t("print_total")}</span>
           <span>{money(total)}</span>
         </div>
       </div>
@@ -213,7 +215,7 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
       {/* ── Notes / Banking ────────────────────────────────────── */}
       {!!doc.notes?.length && (
         <div style={{ marginTop: "9mm" }}>
-          <div style={labelStyle}>NOTES</div>
+          <div style={labelStyle}>{t("print_notes")}</div>
           {doc.notes.map((n, i) => (
             <div key={i} style={{ fontSize: "9pt", marginTop: "1.2mm" }}>
               {n}
@@ -223,7 +225,7 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
       )}
       {!!doc.banking?.length && (
         <div style={{ marginTop: "6mm" }}>
-          <div style={labelStyle}>BANKING DETAILS</div>
+          <div style={labelStyle}>{t("print_banking")}</div>
           {doc.banking.map((n, i) => (
             <div key={i} style={{ fontSize: "9pt", marginTop: "1.2mm" }}>
               {n}
@@ -243,9 +245,9 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
             color: "#6E6E6E",
           }}
         >
-          Prepared By
+          {t("print_preparedBy")}
         </div>
-        <div style={{ flex: 1, padding: "2mm 3mm", fontSize: "8.5pt", color: "#6E6E6E" }}>Approved By</div>
+        <div style={{ flex: 1, padding: "2mm 3mm", fontSize: "8.5pt", color: "#6E6E6E" }}>{t("print_approvedBy")}</div>
       </div>
 
       {/* ── Footer band ────────────────────────────────────────── */}
@@ -272,7 +274,7 @@ export default function PrintDocument({ doc }: { doc: PrintDocData }) {
           </div>
         )}
         <div style={{ position: "absolute", right: "3mm", bottom: "2.5mm", color: "#969BA8", fontSize: "7pt" }}>
-          Page 1 of 1
+          {t("print_page", { page: 1, pages: 1 })}
         </div>
       </div>
     </div>

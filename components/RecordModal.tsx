@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Modal from "./Modal";
 
 export type RowRecord = Record<string, string>;
@@ -40,6 +41,7 @@ function RecordModalInner({
   onSave,
   onDelete,
 }: RecordModalProps) {
+  const t = useTranslations("Pages.components");
   const [draft, setDraft] = useState<RowRecord>(record);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
@@ -73,7 +75,7 @@ function RecordModalInner({
         <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
           {editable && (
             <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleSubmit}>
-              {mode === "create" ? "Create" : "Save Changes"}
+              {mode === "create" ? t("record_create") : t("record_save")}
             </button>
           )}
           {mode === "view" && onDelete && !confirmingDelete && (
@@ -82,7 +84,7 @@ function RecordModalInner({
               style={{ flex: 1, color: "var(--red-500)" }}
               onClick={() => setConfirmingDelete(true)}
             >
-              Delete
+              {t("record_delete")}
             </button>
           )}
           {mode === "view" && onDelete && confirmingDelete && (
@@ -91,11 +93,11 @@ function RecordModalInner({
               style={{ flex: 1, background: "var(--red-500)" }}
               onClick={onDelete}
             >
-              Confirm Delete
+              {t("record_confirmDelete")}
             </button>
           )}
           <button className="btn btn-ghost" style={{ flex: 1 }} onClick={onClose}>
-            {editable ? "Cancel" : "Close"}
+            {editable ? t("record_cancel") : t("record_close")}
           </button>
         </div>
       </div>

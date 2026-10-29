@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import RecordModal, { RowRecord } from "@/components/RecordModal";
@@ -17,6 +18,7 @@ interface Plan {
 const PLANS_DATA: Plan[] = [];
 
 export default function PricingPage() {
+  const t = useTranslations("Pages.adm_pricing");
   const { toast } = useAppData();
   const [plans, setPlans] = useState<Plan[]>(PLANS_DATA);
   const [modal, setModal] = useState<{ mode: "edit" | "create"; record: RowRecord; index: number } | null>(null);
@@ -32,10 +34,10 @@ export default function PricingPage() {
     if (!modal) return;
     if (modal.mode === "create") {
       setPlans((prev) => [...prev, { name: values.name, price: values.price, tagline: values.tagline, status: values.status, popular: false, features: [] }]);
-      toast(`${values.name} plan created`);
+      toast(t("toastCreated", { name: values.name }));
     } else {
       setPlans((prev) => prev.map((p, i) => (i === modal.index ? { ...p, name: values.name, price: values.price, tagline: values.tagline, status: values.status } : p)));
-      toast(`${values.name} plan updated`);
+      toast(t("toastUpdated", { name: values.name }));
     }
     setModal(null);
   };
@@ -43,7 +45,7 @@ export default function PricingPage() {
   const handleDelete = () => {
     if (!modal) return;
     setPlans((prev) => prev.filter((_, i) => i !== modal.index));
-    toast("Plan deleted", "trash-2");
+    toast(t("toastDeleted"), "trash-2");
     setModal(null);
   };
 
@@ -51,12 +53,12 @@ export default function PricingPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Pricing</h2>
-          <p className="section-sub">Manage pricing plans and tiers</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add Plan
+          {t("addPlan")}
         </button>
       </div>
 
@@ -77,17 +79,17 @@ export default function PricingPage() {
                 </li>
               ))}
               {plan.features.length === 0 && (
-                <li style={{ padding: "8px 0", color: "var(--ink-500)" }}>No features configured yet</li>
+                <li style={{ padding: "8px 0", color: "var(--ink-500)" }}>{t("noFeatures")}</li>
               )}
             </ul>
-            <button className={`btn ${plan.popular ? "btn-primary" : "btn-ghost"}`} style={{ width: "100%" }} onClick={() => openModal("edit", plan, idx)}>Edit Plan</button>
+            <button className={`btn ${plan.popular ? "btn-primary" : "btn-ghost"}`} style={{ width: "100%" }} onClick={() => openModal("edit", plan, idx)}>{t("editPlan")}</button>
           </div>
         ))}
       </div>
       {modal && (
         <RecordModal
           mode={modal.mode === "create" ? "create" : "edit"}
-          title={modal.mode === "create" ? "Add Plan" : "Edit Plan"}
+          title={modal.mode === "create" ? t("addPlan") : t("editPlan")}
           record={modal.record}
           onClose={() => setModal(null)}
           onSave={handleSave}

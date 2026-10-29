@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCashFlow } from "@/lib/CashFlowContext";
 import { totalsFor } from "@/lib/cashflow";
@@ -12,20 +13,22 @@ interface ChatMsg {
   text: string;
 }
 
-const SUGGESTIONS = [
-  { label: "Where did my money go?", q: "Where did my money go this month?" },
-  { label: "What should I cut back?", q: "What am I spending too much on?" },
-  { label: "Can I afford a treat?", q: "Can I afford a holiday?" },
-  { label: "How much should I save?", q: "How much should I save each month?" },
+const SUGGESTION_KEYS = [
+  { label: "sugMoney", q: "sugMoneyQ" },
+  { label: "sugCut", q: "sugCutQ" },
+  { label: "sugTreat", q: "sugTreatQ" },
+  { label: "sugSave", q: "sugSaveQ" },
 ];
 
 let msgSeq = 1;
 
 export default function AiPage() {
+  const t = useTranslations("Pages.ai");
   const { user, currency } = useAppData();
   const { entries } = useCashFlow();
+  const SUGGESTIONS = SUGGESTION_KEYS.map((s) => ({ label: t(s.label), q: t(s.q) }));
   const [messages, setMessages] = useState<ChatMsg[]>([
-    { id: msgSeq++, who: "ai", text: "Hi, I'm your financial assistant — powered by real AI. Ask me anything about your income, spending or savings." },
+    { id: msgSeq++, who: "ai", text: t("welcome") },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -42,10 +45,10 @@ export default function AiPage() {
     setInput("");
     setTyping(true);
 
-    const t = totalsFor(entries, currency);
+    const totals = totalsFor(entries, currency);
     const context = JSON.stringify({
       currency,
-      totals: t,
+      totals,
       recentEntries: entries.slice(0, 30).map((e) => ({
         type: e.type, amount: e.amount, currency: e.currency,
         category: e.category, payee: e.payee, date: e.date.slice(0, 10),
@@ -71,12 +74,12 @@ export default function AiPage() {
       const data = await res.json();
       const reply = res.ok
         ? data.reply
-        : `Sorry, I couldn't reach the AI right now (${data.error ?? "unknown error"}).`;
+        : t("errReach", { error: data.error ?? t("unknownError") });
       setMessages((prev) => [...prev, { id: msgSeq++, who: "ai", text: reply }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { id: msgSeq++, who: "ai", text: "Sorry, I'm offline right now — check your connection and try again." },
+        { id: msgSeq++, who: "ai", text: t("errOffline") },
       ]);
     } finally {
       setTyping(false);
@@ -87,8 +90,8 @@ export default function AiPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">AI Assistant</h2>
-          <p className="section-sub">Ask anything about your finances</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
       <div className="glass-card card-pad">
@@ -126,14 +129,14 @@ export default function AiPage() {
           </div>
           <div className="chat-input-row">
             <input
-              placeholder="Ask me anything about your financesâ€¦"
+              placeholder={t("phAsk")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") sendChat(input);
               }}
             />
-            <button className="send-btn" onClick={() => sendChat(input)} aria-label="Send">
+            <button className="send-btn" onClick={() => sendChat(input)} aria-label={t("ariaSend")}>
               <Icon name="send" size={17} />
             </button>
           </div>

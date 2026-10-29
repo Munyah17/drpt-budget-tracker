@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { sym, fmt } from "@/lib/format";
 import CountUp from "@/components/CountUp";
@@ -17,6 +18,7 @@ const DEBTS_KEY = "drpt-debts";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export default function NetWorthPage() {
+  const t = useTranslations("Pages.net_worth");
   const { accounts, goals, income, expenses, totalBalance, toast } = useAppData();
   const [debts, setDebts] = useState<Debt[]>(() => {
     if (typeof window === "undefined") return [];
@@ -41,7 +43,7 @@ export default function NetWorthPage() {
     saveDebts([...debts, { id: Date.now(), name: debtName.trim(), amount }]);
     setDebtName("");
     setDebtAmount("");
-    toast("Liability added", "plus");
+    toast(t("toastAdded"), "plus");
   }
 
   const totalAssets = useMemo(
@@ -55,7 +57,7 @@ export default function NetWorthPage() {
   const now = new Date();
   const months = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
-    return { key: `${d.getFullYear()}-${d.getMonth()}`, label: MONTHS[d.getMonth()] };
+    return { key: `${d.getFullYear()}-${d.getMonth()}`, label: t(`mon${MONTHS[d.getMonth()]}`) };
   });
   const monthOf = (d: string) => {
     const t = new Date(d);
@@ -78,15 +80,15 @@ export default function NetWorthPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Net Worth</h2>
-          <p className="section-sub">Everything you own, minus everything you owe</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Net Worth</span>
+            <span className="stat-label">{t("statNet")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="target" size={17} />
             </div>
@@ -94,31 +96,31 @@ export default function NetWorthPage() {
           <div className="stat-value" style={{ color: netWorth < 0 ? "var(--red)" : undefined }}>
             <CountUp end={netWorth} prefix={sym()} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>assets − liabilities</span>
+          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>{t("statNetSub")}</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Total Assets</span>
+            <span className="stat-label">{t("statAssets")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--green)" }}>
               <Icon name="wallet" size={17} />
             </div>
           </div>
           <div className="stat-value"><CountUp end={totalAssets} prefix={sym()} /></div>
-          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>accounts + savings</span>
+          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>{t("statAssetsSub")}</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Total Liabilities</span>
+            <span className="stat-label">{t("statLiab")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--red)" }}>
               <Icon name="credit-card" size={17} />
             </div>
           </div>
           <div className="stat-value"><CountUp end={totalDebts} prefix={sym()} /></div>
-          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>debts &amp; loans</span>
+          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>{t("statLiabSub")}</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Saved in Goals</span>
+            <span className="stat-label">{t("statGoals")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="piggy-bank" size={17} />
             </div>
@@ -126,29 +128,29 @@ export default function NetWorthPage() {
           <div className="stat-value">
             <CountUp end={goals.reduce((s, g) => s + g.saved, 0)} prefix={sym()} />
           </div>
-          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>{goals.length} active goals</span>
+          <span className="stat-delta" style={{ color: "var(--ink-500)" }}>{t("statGoalsSub", { count: goals.length })}</span>
         </div>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div className="card-head"><h3>Net Worth Trend</h3></div>
+        <div className="card-head"><h3>{t("trend")}</h3></div>
         {hasData ? (
           <LineChart
             labels={months.map((m) => m.label)}
-            series={[{ name: "Net worth", color: "#c81057", data: cumulative }]}
+            series={[{ name: t("seriesName"), color: "#c81057", data: cumulative }]}
           />
         ) : (
           <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>
-            No transactions yet — the trend appears once you log income and expenses.
+            {t("trendEmpty")}
           </p>
         )}
       </div>
 
       <div className="grid grid-2">
         <div className="glass-card card-pad">
-          <h3 style={{ fontWeight: 600, marginBottom: 14, fontSize: 15 }}>Assets</h3>
+          <h3 style={{ fontWeight: 600, marginBottom: 14, fontSize: 15 }}>{t("assets")}</h3>
           {accounts.length === 0 && goals.length === 0 && (
-            <p style={{ color: "var(--ink-500)", fontSize: 13 }}>No accounts or savings recorded yet.</p>
+            <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("assetsEmpty")}</p>
           )}
           {accounts.map((a) => (
             <div key={a.name} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--card-border)", fontSize: 13.5 }}>
@@ -161,7 +163,7 @@ export default function NetWorthPage() {
           {goals.map((g) => (
             <div key={g.id} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--card-border)", fontSize: 13.5 }}>
               <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <Icon name="target" size={15} style={{ color: "var(--green)" }} /> {g.name} <span className="chip">goal</span>
+                <Icon name="target" size={15} style={{ color: "var(--green)" }} /> {g.name} <span className="chip">{t("goalChip")}</span>
               </span>
               <strong>{fmt(g.saved)}</strong>
             </div>
@@ -169,9 +171,9 @@ export default function NetWorthPage() {
         </div>
 
         <div className="glass-card card-pad">
-          <h3 style={{ fontWeight: 600, marginBottom: 14, fontSize: 15 }}>Liabilities</h3>
+          <h3 style={{ fontWeight: 600, marginBottom: 14, fontSize: 15 }}>{t("liabilities")}</h3>
           {debts.length === 0 && (
-            <p style={{ color: "var(--ink-500)", fontSize: 13 }}>No debts added — record loans, credit cards or money owed below.</p>
+            <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("liabEmpty")}</p>
           )}
           {debts.map((d) => (
             <div key={d.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--card-border)", fontSize: 13.5 }}>
@@ -180,7 +182,7 @@ export default function NetWorthPage() {
                 <strong style={{ color: "var(--red)" }}>-{fmt(d.amount)}</strong>
                 <button
                   className="btn btn-ghost btn-sm"
-                  data-tip="Remove"
+                  data-tip={t("removeTip")}
                   onClick={() => saveDebts(debts.filter((x) => x.id !== d.id))}
                 >
                   <Icon name="trash-2" size={13} />
@@ -191,14 +193,14 @@ export default function NetWorthPage() {
           <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
             <input
               type="text"
-              placeholder="e.g. Car loan"
+              placeholder={t("phDebtName")}
               value={debtName}
               onChange={(e) => setDebtName(e.target.value)}
               style={{ flex: 1, padding: "10px 12px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", fontSize: 13 }}
             />
             <input
               type="number"
-              placeholder="Amount"
+              placeholder={t("phAmount")}
               value={debtAmount}
               onChange={(e) => setDebtAmount(e.target.value)}
               style={{ width: 110, padding: "10px 12px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", fontSize: 13 }}

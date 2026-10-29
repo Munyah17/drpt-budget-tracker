@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
 import { downloadCsv } from "@/lib/download";
@@ -18,9 +19,10 @@ interface AuditLog {
 const AUDIT_DATA: AuditLog[] = [];
 
 export default function AdminAuditPage() {
+  const t = useTranslations("Pages.adm_risk_audit");
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
-  const crud = useCrud(AUDIT_DATA, "Audit Log");
+  const crud = useCrud(AUDIT_DATA, t("entityName"));
 
   const filteredData = useMemo(() => {
     return crud.items.filter((log) =>
@@ -32,42 +34,42 @@ export default function AdminAuditPage() {
 
   const exportLogs = () => {
     downloadCsv("risk-audit-logs.csv", filteredData.map((l) => ({ ...l })));
-    toast(`${filteredData.length} audit logs exported`, "download");
+    toast(t("logsExported", { count: filteredData.length }), "download");
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Audit Logs</h2>
-          <p className="section-sub">Track all system activity</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={exportLogs}>
           <Icon name="download" size={16} style={{ marginRight: 8 }} />
-          Export Logs
+          {t("exportLogs")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search audit logs..."
+          searchPlaceholder={t("searchPlaceholder")}
           onSearchChange={setSearch}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Timestamp</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>User</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Action</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Resource</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>IP Address</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thTimestamp")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thUser")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thAction")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thResource")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thIpAddress")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={5} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No audit logs match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}

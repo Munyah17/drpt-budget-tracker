@@ -1,0 +1,320 @@
+{
+  "Meta": {
+    "title": "WellSpend 预算追踪 ❤",
+    "description": "在一处安静美观的地方记录收入、支出和储蓄目标。"
+  },
+  "Language": {
+    "label": "语言"
+  },
+  "Nav": {
+    "user": {
+      "dashboard": "仪表盘",
+      "cashflow": "现金流",
+      "income": "收入",
+      "expenses": "支出",
+      "transactions": "交易记录",
+      "budget": "预算规划",
+      "savings": "储蓄目标",
+      "borrowing": "借贷",
+      "net-worth": "净资产",
+      "subscriptions": "订阅",
+      "bills": "账单",
+      "reports": "报表",
+      "analytics": "分析",
+      "ai": "AI 助手",
+      "calendar": "日历",
+      "settings": "设置",
+      "profile": "个人资料"
+    },
+    "admin": {
+      "overview": "概览",
+      "analytics": "分析",
+      "organisations": "组织机构",
+      "organisations_corporates": "企业客户",
+      "organisations_contracts": "合同",
+      "organisations_onboarding": "入驻引导",
+      "people": "用户管理",
+      "people_individuals": "个人客户",
+      "people_employees": "企业员工",
+      "people_staff": "内部员工",
+      "operations": "运营",
+      "operations_payroll": "工资批次",
+      "operations_payslips": "工资单发放",
+      "operations_exceptions": "异常与事件",
+      "finance": "财务",
+      "finance_invoices": "发票",
+      "finance_payments": "付款",
+      "finance_subscriptions": "订阅",
+      "integrations": "集成",
+      "integrations_banks": "银行连接",
+      "integrations_payroll": "薪资服务商",
+      "integrations_accounting": "会计",
+      "reports": "报表",
+      "risk-security": "风险与安全",
+      "risk-security_audit": "审计日志",
+      "risk-security_access": "访问控制",
+      "risk-security_incidents": "事件",
+      "settings": "设置"
+    },
+    "corporate": {
+      "overview": "仪表盘",
+      "employees": "员工",
+      "employees_directory": "员工名录",
+      "employees_onboarding": "入职办理",
+      "employees_import": "批量导入",
+      "payroll": "薪资",
+      "payroll_runs": "发薪批次",
+      "payroll_disbursements": "款项发放",
+      "payroll_payslips": "工资单",
+      "expense-claims": "费用报销",
+      "staff-loans": "员工贷款",
+      "announcements": "公告",
+      "benefits": "福利",
+      "hr": "人力资源",
+      "hr_leave": "请假管理",
+      "hr_attendance": "考勤",
+      "hr_recruitment": "招聘",
+      "hr_performance": "绩效",
+      "hr_documents": "文档",
+      "hr_offboarding": "离职办理",
+      "compliance": "合规",
+      "roles": "角色与权限",
+      "reports": "报表",
+      "integrations": "集成",
+      "developer": "开发者与 API",
+      "settings": "设置"
+    },
+    "employee": {
+      "employment": "雇佣信息",
+      "payslips": "工资单",
+      "salary": "薪资管理",
+      "leave": "请假",
+      "borrowing-emp": "借款",
+      "benefits": "福利"
+    }
+  },
+  "Shell": {
+    "closeMenu": "关闭菜单",
+    "logOut": "退出登录",
+    "openMenu": "打开菜单",
+    "greeting": "早上好,{name} 👋",
+    "guest": "用户",
+    "demoChip": "演示模式 — 内容不会被保存",
+    "overview": "这是您的财务概览",
+    "search": "搜索交易、账单…",
+    "toggleTheme": "切换主题",
+    "profile": "个人资料",
+    "settings": "设置",
+    "exitDemo": "退出演示",
+    "logout": "退出登录",
+    "loggingOut": "正在退出…",
+    "exitingDemo": "正在退出演示…"
+  },
+  "Settings": {
+    "title": "设置",
+    "sub": "管理您的偏好",
+    "preferences": "偏好设置",
+    "notifications": "通知",
+    "security": "安全",
+    "backup": "备份",
+    "currency": "货币",
+    "currencySub": "在应用内统一使用",
+    "dateFormat": "日期格式",
+    "dateFormatSub": "日期的显示方式",
+    "language": "语言",
+    "languageHint": "在您选择之前,将使用设备语言。",
+    "theme": "主题",
+    "themeSub": "浅色或深色外观",
+    "save": "保存更改",
+    "saved": "设置已保存"
+  },
+  "Login": {
+    "visualTitle": "每一天,财务都清晰可见。",
+    "visualText": "在一处安静美观的地方记录收入、支出和储蓄目标。",
+    "signupTitle": "创建账户 — $1 即可永久解锁全部功能",
+    "signinTitle": "欢迎回来!登录以继续使用您的账户",
+    "fullName": "姓名",
+    "namePh": "请输入您的姓名",
+    "email": "电子邮箱",
+    "emailPh": "请输入您的邮箱",
+    "password": "密码",
+    "passwordPh": "请输入您的密码",
+    "remember": "记住我",
+    "forgot": "忘记密码?",
+    "creating": "正在创建账户…",
+    "signingIn": "正在登录…",
+    "createPay": "创建账户并支付 $1",
+    "signIn": "登录",
+    "haveAccount": "已有账户?",
+    "noAccount": "还没有账户?",
+    "signInLink": "登录",
+    "signUpLink": "注册 — 仅需 $1",
+    "backHome": "返回首页",
+    "invalid": "邮箱或密码无效"
+  },
+  "Landing": {
+    "demoToast": "欢迎来到演示模式 — 随意探索,内容不会被保存。",
+    "nav": {
+      "features": "功能",
+      "how": "使用方法",
+      "business": "企业版",
+      "pricing": "价格",
+      "signIn": "登录",
+      "getStarted": "立即开始 — $1",
+      "startShort": "开始 — $1"
+    },
+    "hero": {
+      "badge": "仅需 $1 — 一次付费,永久使用",
+      "titleLine1": "您的钱,",
+      "titleEm": "终于清楚了。",
+      "lead": "WellSpend 预算追踪是一款平静而美观的记账应用,贴近真实生活。收入、支出、账单、目标和洞察 — 一切尽在一处,花费还不到一瓶水。",
+      "getStarted": "立即开始 — $1",
+      "seeDemo": "查看演示",
+      "note": "一次性支付 $1 · 永久解锁全部功能 · 支持 Paynow、银行卡、EcoCash 或银行转账。",
+      "balance": "总余额",
+      "income": "本月收入",
+      "budgetUsed": "已用预算"
+    },
+    "features": {
+      "heading": "您需要的一切",
+      "sub": "六大核心工具,覆盖您的全部财务生活 — 不臃肿,无学习成本。",
+      "budget": {
+        "title": "预算规划",
+        "text": "按类别设置每月预算,实时查看支出进度。"
+      },
+      "savings": {
+        "title": "储蓄目标",
+        "text": "设定带期限的目标,清楚看到每个目标的进度。"
+      },
+      "bills": {
+        "title": "账单与提醒",
+        "text": "不再错过到期日 — 即将到期、已付和逾期账单一目了然。"
+      },
+      "reports": {
+        "title": "报表与分析",
+        "text": "收入与支出对比、分类明细和真正有用的趋势。"
+      },
+      "ai": {
+        "title": "AI 助手",
+        "text": "用大白话提问您的钱,即刻获得答案。"
+      },
+      "safe": {
+        "title": "放心可花",
+        "text": "在扣除账单和目标之后,查看今天可以放心花费的确切金额。"
+      },
+      "rollover": {
+        "title": "结转与专项储备",
+        "text": "剩余预算自动结转到下个月 — 专项小金库为大额偶发支出慢慢攒钱。"
+      },
+      "currency": {
+        "title": "各种货币",
+        "text": "USD、ZWG、ZAR 以及所有 ISO 货币 — 您的钱,您的格式。"
+      },
+      "reminders": {
+        "title": "账单不再逾期",
+        "text": "订阅或账单扣费前提前提醒 — 不再有意外扣款。"
+      }
+    },
+    "how": {
+      "heading": "一分钟即可上手",
+      "sub": "只需三步,就能看清您的钱。",
+      "account": {
+        "title": "创建账户",
+        "text": "用姓名和邮箱注册 — 只需三十秒。"
+      },
+      "pay": {
+        "title": "支付 $1,仅此一次",
+        "text": "一美元,一次。Paynow、银行卡、EcoCash 或银行转账 — 任您选择。"
+      },
+      "currency": {
+        "title": "选择您的货币",
+        "text": "USD、ZWG、ZAR 及所有 ISO 货币 — 设置一次,处处通用。"
+      },
+      "budgets": {
+        "title": "设定预算",
+        "text": "给每个类别一个每月数字 — 您的支出计划就完成了。"
+      },
+      "accounts": {
+        "title": "添加账户",
+        "text": "银行、EcoCash、现金 — 列出您的钱实际所在的地方。"
+      },
+      "log": {
+        "title": "随手记录支出",
+        "text": "每条只需几秒钟 — 或者批量导入对账单 CSV。"
+      },
+      "watch": {
+        "title": "看着它累积",
+        "text": "图表、账单、可花金额 — 仪表盘让您保持自律。"
+      },
+      "own": {
+        "title": "掌控您的钱",
+        "text": "永久完整访问。所有功能、所有更新,无需订阅。"
+      }
+    },
+    "business": {
+      "badge": "WellSpend for Business",
+      "heading": "一体化人力资源解决方案",
+      "line": "薪资 · 请假 · 报销 · 贷款 · 员工 — 尽在一处。",
+      "sub": "商店、诊所、学校、NGO 或初创公司 — 只要您给员工发薪,WellSpend 就适合您。团队中的每个人都能拥有自己的记账应用,而能管理好自己薪资的人,才会留下来。",
+      "clicksV": "4 次点击",
+      "clicksK": "即可给整个团队发薪",
+      "papersV": "0 张纸",
+      "papersK": "工资单全部打印或电邮",
+      "staffV": "100%",
+      "staffK": "员工免费使用应用",
+      "setupV": "1 天",
+      "setupK": "即可完成部署",
+      "payTitle": "几分钟内给所有人发薪",
+      "payText": "选好日期、核对名单、点击发薪。奖金和补发可在额外批次中快速完成 — 搞定。",
+      "staffTitle": "员工自助服务",
+      "staffText": "工资单、请假申请和预支都在每个人自己的应用中完成。再也不用为了一张工资单在 WhatsApp 上找人事。",
+      "awayTitle": "谁在休假,一目了然",
+      "awayText": "一键批准请假,所有人看到同一个休假日历。不会撞期,没有意外。",
+      "loansTitle": "自动还款的贷款",
+      "loansText": "员工申请,您来审批,还款自动从工资单中扣除。不用催款,不用电子表格。",
+      "accessTitle": "每个人只看自己的部分",
+      "accessText": "为人事、财务和经理分配各自权限 — 薪资信息保持私密,审批流程井然有序。",
+      "fileTitle": "一个文件,全员发薪",
+      "fileText": "为您的银行或 EcoCash 企业版下载一个文件,整个团队就发薪完毕。发薪日,就这么简单。",
+      "walkthrough": "预约免费演示",
+      "signIn": "企业登录",
+      "note": "任何规模、任何行业 — 告诉我们您的业务,我们将在一天内让您的团队上线。"
+    },
+    "pricing": {
+      "heading": "一美元,仅此而已。",
+      "sub": "无订阅、无档位、无追加销售。一次付费,永久拥有。",
+      "lifetime": "终身使用",
+      "forever": "/ 永久",
+      "features": "全部功能,永久解锁",
+      "tracking": "收入、支出与预算记录",
+      "goals": "储蓄目标、账单与日历",
+      "reports": "报表、分析与 AI 助手",
+      "currencies": "全球所有货币",
+      "pay": "通过 Paynow、银行卡、EcoCash 或银行转账支付",
+      "create": "创建账户并支付 $1",
+      "businessChip": "WellSpend for Business",
+      "hrLine1": "一体化",
+      "hrLine2": "人力资源",
+      "payroll": "发薪批次与多级审批",
+      "portal": "员工自助门户",
+      "leave": "请假日历、报销与员工贷款",
+      "payout": "银行与 EcoCash 付款文件",
+      "free": "每位员工免费使用 WellSpend",
+      "setup": "为整个团队提供部署与演示",
+      "arrange": "预约演示或洽谈"
+    },
+    "cta": {
+      "heading": "想知道您的钱都花到哪了吗?",
+      "text": "注册时只需一次性支付 $1 — 之后整个应用都属于您。",
+      "button": "立即开始 — $1"
+    },
+    "footer": {
+      "features": "功能",
+      "business": "企业版",
+      "pricing": "价格",
+      "signIn": "登录",
+      "rights": "© {year} WellSpend 预算追踪。版权所有。",
+      "powered": "由 Global Space Web 提供支持 +263718560128"
+    }
+  }
+}

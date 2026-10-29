@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -10,16 +11,24 @@ import { useCorpStore, updateCorp, nextId, LeaveReq, LeaveStatus } from "@/lib/c
 const th = { padding: "12px 8px", fontWeight: 600, fontSize: 13 } as const;
 const td = { padding: "12px 8px", fontSize: 13 } as const;
 const badge = (s: LeaveStatus) => (s === "Approved" ? "badge-green" : s === "Rejected" ? "badge-red" : "badge-amber");
-const LEAVE_TYPES = ["Annual", "Sick", "Maternity/Paternity", "Compassionate", "Unpaid", "Study"];
+const LEAVE_TYPES = [
+  { value: "Annual", key: "typeAnnual" },
+  { value: "Sick", key: "typeSick" },
+  { value: "Maternity/Paternity", key: "typeMaternity" },
+  { value: "Compassionate", key: "typeCompassionate" },
+  { value: "Unpaid", key: "typeUnpaid" },
+  { value: "Study", key: "typeStudy" },
+] as const;
 
 const dayMs = 864e5;
 const today = new Date().toISOString().slice(0, 10);
 const inDays = (n: number) => new Date(Date.now() + n * dayMs).toISOString().slice(0, 10);
 
 function RequestModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.corp_hr_leave");
   const { toast } = useAppData();
   const [employee, setEmployee] = useState("");
-  const [type, setType] = useState(LEAVE_TYPES[0]);
+  const [type, setType] = useState<string>(LEAVE_TYPES[0].value);
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(today);
 
@@ -29,26 +38,26 @@ function RequestModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     const req: LeaveReq = { id: nextId("LV"), employee, type, from, to, days, status: "Pending" };
     updateCorp((s) => ({ ...s, leave: [req, ...s.leave] }));
-    toast(`Leave request for ${employee} submitted`, "check-circle");
+    toast(t("toastSubmitted", { employee }), "check-circle");
     onClose();
   }
 
   return (
-    <Modal title="New Leave Request" onClose={onClose}>
+    <Modal title={t("modalTitle")} onClose={onClose}>
       <form onSubmit={submit}>
-        <div className="field"><label>Employee</label><input required value={employee} onChange={(e) => setEmployee(e.target.value)} placeholder="Full name" /></div>
+        <div className="field"><label>{t("fieldEmployee")}</label><input required value={employee} onChange={(e) => setEmployee(e.target.value)} placeholder={t("namePlaceholder")} /></div>
         <div className="field">
-          <label>Type</label>
+          <label>{t("fieldType")}</label>
           <select className="settings-select" style={{ width: "100%" }} value={type} onChange={(e) => setType(e.target.value)}>
-            {LEAVE_TYPES.map((t) => <option key={t}>{t}</option>)}
+            {LEAVE_TYPES.map((lt) => <option key={lt.value} value={lt.value}>{t(lt.key)}</option>)}
           </select>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <div className="field"><label>From</label><input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></div>
-          <div className="field"><label>To</label><input type="date" value={to} min={from} onChange={(e) => setTo(e.target.value)} /></div>
+          <div className="field"><label>{t("fieldFrom")}</label><input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></div>
+          <div className="field"><label>{t("fieldTo")}</label><input type="date" value={to} min={from} onChange={(e) => setTo(e.target.value)} /></div>
         </div>
-        <p style={{ fontSize: 13, color: "var(--ink-500)", margin: "-4px 0 10px" }}><b style={{ color: "var(--rose-600)" }}>{days} day{days === 1 ? "" : "s"}</b> requested</p>
-        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Submit Request</button>
+        <p style={{ fontSize: 13, color: "var(--ink-500)", margin: "-4px 0 10px" }}><b style={{ color: "var(--rose-600)" }}>{t("dayCount", { count: days })}</b> {t("requested")}</p>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("submitRequest")}</button>
       </form>
     </Modal>
   );
@@ -56,6 +65,7 @@ function RequestModal({ onClose }: { onClose: () => void }) {
 
 /** Who's-off strip for the next 21 days. */
 function TeamCalendar({ leave }: { leave: LeaveReq[] }) {
+  const t = useTranslations("Pages.corp_hr_leave");
   const horizon = useMemo(() => Array.from({ length: 21 }, (_, i) => inDays(i)), []);
   const approved = leave.filter((l) => l.status === "Approved");
   const offOn = (d: string) => approved.filter((l) => l.from <= d && l.to >= d);
@@ -63,7 +73,7 @@ function TeamCalendar({ leave }: { leave: LeaveReq[] }) {
 
   return (
     <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-      <div className="card-head"><h3>Team Calendar — next 3 weeks</h3></div>
+      <div className="card-head"><h3>{t("calendarTitle")}</h3></div>
       <div style={{ overflowX: "auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(21, minmax(30px,1fr))", gap: 4, minWidth: 640 }}>
           {horizon.map((d) => {
@@ -82,7 +92,7 @@ function TeamCalendar({ leave }: { leave: LeaveReq[] }) {
               >
                 <div>{dt.toLocaleDateString("en-GB", { weekday: "narrow" })}</div>
                 <div style={{ fontWeight: 700 }}>{dt.getDate()}</div>
-                {off.length > 0 && <div style={{ fontSize: 9 }}>{off.length} off</div>}
+                {off.length > 0 && <div style={{ fontSize: 9 }}>{t("offCount", { count: off.length })}</div>}
               </div>
             );
           })}
@@ -100,6 +110,7 @@ function TeamCalendar({ leave }: { leave: LeaveReq[] }) {
 }
 
 export default function LeavePage() {
+  const t = useTranslations("Pages.corp_hr_leave");
   const { toast } = useAppData();
   const store = useCorpStore();
   const [search, setSearch] = useState("");
@@ -118,52 +129,52 @@ export default function LeavePage() {
 
   function decide(r: LeaveReq, status: LeaveStatus) {
     updateCorp((s) => ({ ...s, leave: s.leave.map((x) => (x.id === r.id ? { ...x, status } : x)) }));
-    toast(`Leave ${status.toLowerCase()} for ${r.employee}`, status === "Approved" ? "check-circle" : "x");
+    toast(t(status === "Approved" ? "toastApproved" : "toastRejected", { employee: r.employee }), status === "Approved" ? "check-circle" : "x");
   }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Leave Management</h2>
-          <p className="section-sub">Review and manage employee leave requests</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setCreating(true)}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          New Request
+          {t("newRequest")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">Pending</div>
+          <div className="stat-label">{t("statPending")}</div>
           <div className="stat-value" style={{ color: pending.length ? "var(--amber)" : undefined }}>{pending.length}</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Approved</div>
+          <div className="stat-label">{t("statApproved")}</div>
           <div className="stat-value">{store.leave.filter((r) => r.status === "Approved").length}</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Rejected</div>
+          <div className="stat-label">{t("statRejected")}</div>
           <div className="stat-value">{store.leave.filter((r) => r.status === "Rejected").length}</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">On Leave Today</div>
+          <div className="stat-label">{t("statOnLeaveToday")}</div>
           <div className="stat-value">{onLeaveToday}</div>
         </div>
       </div>
 
       {pending.length > 0 && (
         <div className="glass-card card-pad" style={{ marginBottom: 20, borderLeft: "3px solid var(--amber)" }}>
-          <div className="card-head"><h3>Needs your decision ({pending.length})</h3></div>
+          <div className="card-head"><h3>{t("needsDecision", { count: pending.length })}</h3></div>
           {pending.map((r) => (
             <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: "1px solid var(--card-border)", flexWrap: "wrap" }}>
               <div>
-                <b>{r.employee}</b> · {r.type} · {r.from} → {r.to} <span style={{ color: "var(--ink-500)" }}>({r.days}d)</span>
+                <b>{r.employee}</b> · {r.type} · {r.from} → {r.to} <span style={{ color: "var(--ink-500)" }}>{t("daysShort", { count: r.days })}</span>
               </div>
               <div>
-                <button className="btn btn-primary btn-sm" style={{ marginRight: 6 }} onClick={() => decide(r, "Approved")}><Icon name="check" size={13} style={{ marginRight: 4 }} />Approve</button>
-                <button className="btn btn-ghost btn-sm" onClick={() => decide(r, "Rejected")}><Icon name="x" size={13} style={{ marginRight: 4 }} />Reject</button>
+                <button className="btn btn-primary btn-sm" style={{ marginRight: 6 }} onClick={() => decide(r, "Approved")}><Icon name="check" size={13} style={{ marginRight: 4 }} />{t("approve")}</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => decide(r, "Rejected")}><Icon name="x" size={13} style={{ marginRight: 4 }} />{t("reject")}</button>
               </div>
             </div>
           ))}
@@ -174,28 +185,28 @@ export default function LeavePage() {
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search requests..."
-          statusOptions={[{ value: "Pending", label: "Pending" }, { value: "Approved", label: "Approved" }, { value: "Rejected", label: "Rejected" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Pending", label: t("statusPending") }, { value: "Approved", label: t("statusApproved") }, { value: "Rejected", label: t("statusRejected") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={th}>Employee</th>
-              <th style={th}>Type</th>
-              <th style={th}>From</th>
-              <th style={th}>To</th>
-              <th style={th}>Days</th>
-              <th style={th}>Status</th>
-              <th style={th}>Actions</th>
+              <th style={th}>{t("colEmployee")}</th>
+              <th style={th}>{t("colType")}</th>
+              <th style={th}>{t("colFrom")}</th>
+              <th style={th}>{t("colTo")}</th>
+              <th style={th}>{t("colDays")}</th>
+              <th style={th}>{t("colStatus")}</th>
+              <th style={th}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
               <tr>
                 <td colSpan={7} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No leave requests match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -212,8 +223,8 @@ export default function LeavePage() {
                 <td style={td}>
                   {r.status === "Pending" && (
                     <>
-                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--green)" }} onClick={() => decide(r, "Approved")}><Icon name="check" size={14} style={{ marginRight: 4 }} />Approve</button>
-                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => decide(r, "Rejected")}><Icon name="x" size={14} style={{ marginRight: 4 }} />Reject</button>
+                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--green)" }} onClick={() => decide(r, "Approved")}><Icon name="check" size={14} style={{ marginRight: 4 }} />{t("approve")}</button>
+                      <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => decide(r, "Rejected")}><Icon name="x" size={14} style={{ marginRight: 4 }} />{t("reject")}</button>
                     </>
                   )}
                 </td>

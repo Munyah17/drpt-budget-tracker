@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,6 +18,7 @@ interface Benefit {
 const BENEFITS_DATA: Benefit[] = [];
 
 export default function CorporateBenefitsPage() {
+  const t = useTranslations("Pages.corp_benefits");
   const { toast } = useAppData();
   const [benefits, setBenefits] = useState<Benefit[]>(BENEFITS_DATA);
   const [search, setSearch] = useState("");
@@ -42,10 +44,10 @@ export default function CorporateBenefitsPage() {
     const b: Benefit = { name: values.name, provider: values.provider, enrolled: values.enrolled, cost: values.cost, status: values.status || "Active" };
     if (modal.mode === "create") {
       setBenefits((prev) => [...prev, b]);
-      toast(`${b.name} benefit added`);
+      toast(t("toastAdded", { name: b.name }));
     } else {
       setBenefits((prev) => prev.map((e, i) => (i === modal.index ? b : e)));
-      toast(`${b.name} updated`);
+      toast(t("toastUpdated", { name: b.name }));
     }
     setModal(null);
   };
@@ -54,7 +56,7 @@ export default function CorporateBenefitsPage() {
     if (!modal) return;
     const name = modal.record.name;
     setBenefits((prev) => prev.filter((_, i) => i !== modal.index));
-    toast(`${name} removed`, "trash-2");
+    toast(t("toastRemoved", { name }), "trash-2");
     setModal(null);
   };
 
@@ -62,38 +64,38 @@ export default function CorporateBenefitsPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Employee Benefits</h2>
-          <p className="section-sub">Manage benefit schemes and enrolment</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add Benefit
+          {t("addBenefit")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search benefits..."
-          statusOptions={[{ value: "Active", label: "Active" }, { value: "Review", label: "Review" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Active", label: t("statusActive") }, { value: "Review", label: t("statusReview") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Benefit</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Provider</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Enrolled</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Monthly Cost</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thBenefit")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thProvider")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thEnrolled")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thMonthlyCost")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No benefits match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -105,12 +107,12 @@ export default function CorporateBenefitsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{b.cost}</td>
                 <td style={{ padding: "12px 8px" }}>
                   <span className={`badge ${b.status === "Active" ? "badge-green" : "badge-amber"}`}>
-                    {b.status}
+                    {b.status === "Active" ? t("statusActive") : b.status === "Review" ? t("statusReview") : b.status}
                   </span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", b, benefits.indexOf(b))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", b, benefits.indexOf(b))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", b, benefits.indexOf(b))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", b, benefits.indexOf(b))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>
               </tr>
             ))}
@@ -120,7 +122,7 @@ export default function CorporateBenefitsPage() {
       {modal && (
         <RecordModal
           mode={modal.mode}
-          title={modal.mode === "create" ? "Add Benefit" : modal.mode === "edit" ? "Edit Benefit" : "Benefit Details"}
+          title={modal.mode === "create" ? t("modalAdd") : modal.mode === "edit" ? t("modalEdit") : t("modalDetails")}
           record={modal.record}
           onClose={() => setModal(null)}
           onSave={handleSave}

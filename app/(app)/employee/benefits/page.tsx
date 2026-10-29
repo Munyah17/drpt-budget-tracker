@@ -1,30 +1,39 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import RecordModal, { RowRecord } from "@/components/RecordModal";
 
 const BENEFITS = [
-  { name: "Health Insurance", provider: "Vitality Health", status: "Enrolled", detail: "Family cover — $0 employee cost" },
-  { name: "Pension Scheme", provider: "Nest Pensions", status: "Enrolled", detail: "5% employee / 4% employer match" },
-  { name: "Life Insurance", provider: "Aviva", status: "Enrolled", detail: "4× annual salary cover" },
-  { name: "Dental Cover", provider: "Bupa", status: "Available", detail: "$12/mo employee contribution" },
-  { name: "Cycle to Work", provider: "Cyclescheme", status: "Available", detail: "Tax-free bike up to $1,000" },
+  { key: "healthInsurance", provider: "Vitality Health", status: "Enrolled" },
+  { key: "pensionScheme", provider: "Nest Pensions", status: "Enrolled" },
+  { key: "lifeInsurance", provider: "Aviva", status: "Enrolled" },
+  { key: "dentalCover", provider: "Bupa", status: "Available" },
+  { key: "cycleToWork", provider: "Cyclescheme", status: "Available" },
 ];
 
 export default function EmployeeBenefitsPage() {
   const { user, toast } = useAppData();
+  const t = useTranslations("Pages.emp_benefits");
   const [benefits, setBenefits] = useState(BENEFITS);
   const [managing, setManaging] = useState<RowRecord | null>(null);
 
-  const handleAction = (name: string, status: string) => {
+  const statusLabel = (s: string) => (s === "Enrolled" ? t("statusEnrolled") : s === "Available" ? t("statusAvailable") : s);
+
+  const handleAction = (key: string, status: string) => {
     if (status === "Enrolled") {
-      const b = benefits.find((x) => x.name === name);
-      if (b) setManaging({ name: b.name, provider: b.provider, status: b.status, detail: b.detail });
+      const b = benefits.find((x) => x.key === key);
+      if (b) setManaging({
+        [t("fieldName")]: t(`benefits.${b.key}.name`),
+        [t("fieldProvider")]: b.provider,
+        [t("fieldStatus")]: statusLabel(b.status),
+        [t("fieldDetail")]: t(`benefits.${b.key}.detail`),
+      });
     } else {
-      setBenefits((prev) => prev.map((x) => (x.name === name ? { ...x, status: "Enrolled" } : x)));
-      toast(`Enrolled in ${name}`);
+      setBenefits((prev) => prev.map((x) => (x.key === key ? { ...x, status: "Enrolled" } : x)));
+      toast(t("enrolledToast", { name: t(`benefits.${key}.name`) }));
     }
   };
 
@@ -32,14 +41,14 @@ export default function EmployeeBenefitsPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">My Benefits</h2>
-          <p className="section-sub">Provided by {user?.organisation ?? "your organisation"}</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle", { org: user?.organisation ?? t("yourOrganisation") })}</p>
         </div>
       </div>
 
       <div className="grid grid-2">
         {benefits.map((b) => (
-          <div key={b.name} className="glass-card card-pad" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+          <div key={b.key} className="glass-card card-pad" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{
                 width: 42, height: 42, borderRadius: 10,
@@ -49,20 +58,20 @@ export default function EmployeeBenefitsPage() {
                 <Icon name="heart-pulse" size={20} />
               </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{b.name}</div>
-                <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{b.provider} — {b.detail}</div>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>{t(`benefits.${b.key}.name`)}</div>
+                <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{b.provider} — {t(`benefits.${b.key}.detail`)}</div>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span className={`badge ${b.status === "Enrolled" ? "badge-green" : "badge-blue"}`}>{b.status}</span>
-              <button className="btn btn-ghost" style={{ padding: "6px 10px", fontSize: 12 }} onClick={() => handleAction(b.name, b.status)}>
-                {b.status === "Enrolled" ? "Manage" : "Enrol"}
+              <span className={`badge ${b.status === "Enrolled" ? "badge-green" : "badge-blue"}`}>{statusLabel(b.status)}</span>
+              <button className="btn btn-ghost" style={{ padding: "6px 10px", fontSize: 12 }} onClick={() => handleAction(b.key, b.status)}>
+                {b.status === "Enrolled" ? t("manage") : t("enrol")}
               </button>
             </div>
           </div>
         ))}
       </div>
-      {managing && <RecordModal mode="view" title="Benefit Details" record={managing} onClose={() => setManaging(null)} />}
+      {managing && <RecordModal mode="view" title={t("benefitDetails")} record={managing} onClose={() => setManaging(null)} />}
     </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,6 +18,7 @@ interface Employee {
 const EMPLOYEES_DATA: Employee[] = [];
 
 export default function CorporateEmployeesDirectoryPage() {
+  const t = useTranslations("Pages.corp_emp_directory");
   const { toast } = useAppData();
   const [employees, setEmployees] = useState<Employee[]>(EMPLOYEES_DATA);
   const [search, setSearch] = useState("");
@@ -42,10 +44,10 @@ export default function CorporateEmployeesDirectoryPage() {
     const emp: Employee = { name: values.name, email: values.email, department: values.department, role: values.role, status: values.status || "Active" };
     if (modal.mode === "create") {
       setEmployees((prev) => [...prev, emp]);
-      toast(`${emp.name} added to directory`);
+      toast(t("toastAdded", { name: emp.name }));
     } else {
       setEmployees((prev) => prev.map((e, i) => (i === modal.index ? emp : e)));
-      toast(`${emp.name} updated`);
+      toast(t("toastUpdated", { name: emp.name }));
     }
     setModal(null);
   };
@@ -54,7 +56,7 @@ export default function CorporateEmployeesDirectoryPage() {
     if (!modal) return;
     const name = modal.record.name;
     setEmployees((prev) => prev.filter((_, i) => i !== modal.index));
-    toast(`${name} removed`, "trash-2");
+    toast(t("toastRemoved", { name }), "trash-2");
     setModal(null);
   };
 
@@ -62,38 +64,38 @@ export default function CorporateEmployeesDirectoryPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Employee Directory</h2>
-          <p className="section-sub">All employees in your organisation</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add Employee
+          {t("addEmployee")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search employees..."
-          statusOptions={[{ value: "Active", label: "Active" }, { value: "On Leave", label: "On Leave" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Active", label: t("statusActive") }, { value: "On Leave", label: t("statusOnLeave") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Name</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Email</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Department</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Role</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colName")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colEmail")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDepartment")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colRole")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No employees match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}
@@ -105,8 +107,8 @@ export default function CorporateEmployeesDirectoryPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{emp.role}</td>
                 <td style={{ padding: "12px 8px" }}><span className={`badge ${emp.status === "Active" ? "badge-green" : "badge-amber"}`}>{emp.status}</span></td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", emp, employees.indexOf(emp))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", emp, employees.indexOf(emp))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("view", emp, employees.indexOf(emp))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openModal("edit", emp, employees.indexOf(emp))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>
               </tr>
             ))}
@@ -116,7 +118,7 @@ export default function CorporateEmployeesDirectoryPage() {
       {modal && (
         <RecordModal
           mode={modal.mode}
-          title={modal.mode === "create" ? "Add Employee" : modal.mode === "edit" ? "Edit Employee" : "Employee Details"}
+          title={modal.mode === "create" ? t("modalAdd") : modal.mode === "edit" ? t("modalEdit") : t("modalDetails")}
           record={modal.record}
           onClose={() => setModal(null)}
           onSave={handleSave}

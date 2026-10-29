@@ -1,25 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { CURRENCIES } from "@/lib/data";
 import { DEFAULT_CURRENCY, currencySymbol } from "@/lib/format";
 
 export default function AdminSettingsPage() {
+  const t = useTranslations("Pages.adm_settings");
   const { toast } = useAppData();
   const [defaultCurrency, setDefaultCurrency] = useState(DEFAULT_CURRENCY);
   const [activeTab, setActiveTab] = useState<"general" | "security" | "payroll" | "billing" | "notifications">("general");
 
   const handleSaveSettings = () => {
-    toast("Settings saved successfully", "check-circle");
+    toast(t("settingsSaved"), "check-circle");
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Platform Settings</h2>
-          <p className="section-sub">Configure platform-wide settings and preferences</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -28,45 +30,45 @@ export default function AdminSettingsPage() {
           className={`btn btn-ghost ${activeTab === "general" ? "active" : ""}`}
           onClick={() => setActiveTab("general")}
         >
-          General & Organisation</button>
+          {t("tabGeneral")}</button>
         <button
           className={`btn btn-ghost ${activeTab === "security" ? "active" : ""}`}
           onClick={() => setActiveTab("security")}
         >
-          Security & Access</button>
+          {t("tabSecurity")}</button>
         <button
           className={`btn btn-ghost ${activeTab === "payroll" ? "active" : ""}`}
           onClick={() => setActiveTab("payroll")}
         >
-          Payroll & Operations</button>
+          {t("tabPayroll")}</button>
         <button
           className={`btn btn-ghost ${activeTab === "billing" ? "active" : ""}`}
           onClick={() => setActiveTab("billing")}
         >
-          Plans & Billing</button>
+          {t("tabBilling")}</button>
         <button
           className={`btn btn-ghost ${activeTab === "notifications" ? "active" : ""}`}
           onClick={() => setActiveTab("notifications")}
         >
-          Notifications</button>
+          {t("tabNotifications")}</button>
       </div>
 
       {activeTab === "general" && (
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>General & Organisation Settings</h3>
+            <h3>{t("generalSettingsTitle")}</h3>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Platform Name</div>
-              <div className="sub">Display name for the platform</div>
+              <div className="label">{t("platformName")}</div>
+              <div className="sub">{t("platformNameSub")}</div>
             </div>
             <input type="text" defaultValue="WellSpend Budget Tracker" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 200 }} />
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Default Currency</div>
-              <div className="sub">Default currency for new users</div>
+              <div className="label">{t("defaultCurrency")}</div>
+              <div className="sub">{t("defaultCurrencySub")}</div>
             </div>
             <select className="settings-select" value={defaultCurrency} onChange={(e) => setDefaultCurrency(e.target.value)}>
               {CURRENCIES.map((c) => (
@@ -76,18 +78,18 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Default Language</div>
-              <div className="sub">Default interface language</div>
+              <div className="label">{t("defaultLanguage")}</div>
+              <div className="sub">{t("defaultLanguageSub")}</div>
             </div>
             <select className="settings-select" defaultValue="en">
-              <option>English (UK)</option>
-              <option>English (US)</option>
+              <option>{t("langEnglishUk")}</option>
+              <option>{t("langEnglishUs")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Time Zone</div>
-              <div className="sub">Platform default timezone</div>
+              <div className="label">{t("timeZone")}</div>
+              <div className="sub">{t("timeZoneSub")}</div>
             </div>
             <select className="settings-select" defaultValue="utc">
               <option>UTC</option>
@@ -97,8 +99,8 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Maintenance Mode</div>
-              <div className="sub">Disable the platform for maintenance</div>
+              <div className="label">{t("maintenanceMode")}</div>
+              <div className="sub">{t("maintenanceModeSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" />
@@ -111,36 +113,36 @@ export default function AdminSettingsPage() {
       {activeTab === "security" && (
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Security & Access Settings</h3>
+            <h3>{t("securitySettingsTitle")}</h3>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Session Timeout</div>
-              <div className="sub">Auto-logout after inactivity</div>
+              <div className="label">{t("sessionTimeout")}</div>
+              <div className="sub">{t("sessionTimeoutSub")}</div>
             </div>
             <select className="settings-select" defaultValue="30">
-              <option>15 minutes</option>
-              <option>30 minutes</option>
-              <option>1 hour</option>
-              <option>24 hours</option>
+              <option>{t("opt15Minutes")}</option>
+              <option>{t("opt30Minutes")}</option>
+              <option>{t("opt1Hour")}</option>
+              <option>{t("opt24Hours")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">API Rate Limit</div>
-              <div className="sub">Requests per minute per user</div>
+              <div className="label">{t("apiRateLimit")}</div>
+              <div className="sub">{t("apiRateLimitSub")}</div>
             </div>
             <select className="settings-select" defaultValue="100">
               <option>50</option>
               <option>100</option>
               <option>200</option>
-              <option>Unlimited</option>
+              <option>{t("optUnlimited")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Two-Factor Auth</div>
-              <div className="sub">Require 2FA for admin accounts</div>
+              <div className="label">{t("twoFactorAuth")}</div>
+              <div className="sub">{t("twoFactorAuthSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" defaultChecked />
@@ -149,8 +151,8 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Debug Mode</div>
-              <div className="sub">Enable detailed logging (technical only)</div>
+              <div className="label">{t("debugMode")}</div>
+              <div className="sub">{t("debugModeSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" />
@@ -159,13 +161,13 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Password Policy</div>
-              <div className="sub">Minimum password requirements</div>
+              <div className="label">{t("passwordPolicy")}</div>
+              <div className="sub">{t("passwordPolicySub")}</div>
             </div>
             <select className="settings-select" defaultValue="strong">
-              <option>Standard (8 chars)</option>
-              <option>Strong (12+ chars, mixed)</option>
-              <option>Very Strong (14+ chars, special)</option>
+              <option>{t("passwordStandard")}</option>
+              <option>{t("passwordStrong")}</option>
+              <option>{t("passwordVeryStrong")}</option>
             </select>
           </div>
         </div>
@@ -174,46 +176,46 @@ export default function AdminSettingsPage() {
       {activeTab === "payroll" && (
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Payroll & Operations Settings</h3>
+            <h3>{t("payrollSettingsTitle")}</h3>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Payroll Cutoff Day</div>
-              <div className="sub">Day of month payroll closes</div>
+              <div className="label">{t("payrollCutoffDay")}</div>
+              <div className="sub">{t("payrollCutoffDaySub")}</div>
             </div>
             <select className="settings-select" defaultValue="22">
-              <option>20th</option>
-              <option>22nd</option>
-              <option>25th</option>
-              <option>Last day</option>
+              <option>{t("day20th")}</option>
+              <option>{t("day22nd")}</option>
+              <option>{t("day25th")}</option>
+              <option>{t("lastDay")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Correction Deadline</div>
-              <div className="sub">Last day for payroll corrections</div>
+              <div className="label">{t("correctionDeadline")}</div>
+              <div className="sub">{t("correctionDeadlineSub")}</div>
             </div>
             <select className="settings-select" defaultValue="24">
-              <option>23rd</option>
-              <option>24th</option>
-              <option>25th</option>
+              <option>{t("day23rd")}</option>
+              <option>{t("day24th")}</option>
+              <option>{t("day25th")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Expected Payday</div>
-              <div className="sub">Default salary payment day</div>
+              <div className="label">{t("expectedPayday")}</div>
+              <div className="sub">{t("expectedPaydaySub")}</div>
             </div>
             <select className="settings-select" defaultValue="25">
-              <option>25th</option>
-              <option>Last working day</option>
-              <option>Last day</option>
+              <option>{t("day25th")}</option>
+              <option>{t("lastWorkingDay")}</option>
+              <option>{t("lastDay")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Auto-Approve Corrections</div>
-              <div className="sub">Automatically approve minor corrections</div>
+              <div className="label">{t("autoApproveCorrections")}</div>
+              <div className="sub">{t("autoApproveCorrectionsSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" />
@@ -226,48 +228,48 @@ export default function AdminSettingsPage() {
       {activeTab === "billing" && (
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Plans & Billing Settings</h3>
+            <h3>{t("billingSettingsTitle")}</h3>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Individual Plan Price</div>
-              <div className="sub">Annual individual subscription fee</div>
+              <div className="label">{t("individualPlanPrice")}</div>
+              <div className="sub">{t("individualPlanPriceSub")}</div>
             </div>
             <input type="text" defaultValue="$1" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 100 }} />
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Individual Plan Duration</div>
-              <div className="sub">Validity period for individual plans</div>
+              <div className="label">{t("individualPlanDuration")}</div>
+              <div className="sub">{t("individualPlanDurationSub")}</div>
             </div>
             <select className="settings-select" defaultValue="1">
-              <option>1 year</option>
-              <option>6 months</option>
-              <option>3 months</option>
+              <option>{t("opt1Year")}</option>
+              <option>{t("opt6Months")}</option>
+              <option>{t("opt3Months")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Invoice Due Days</div>
-              <div className="sub">Days before invoice becomes overdue</div>
+              <div className="label">{t("invoiceDueDays")}</div>
+              <div className="sub">{t("invoiceDueDaysSub")}</div>
             </div>
             <select className="settings-select" defaultValue="30">
-              <option>15 days</option>
-              <option>30 days</option>
-              <option>45 days</option>
-              <option>60 days</option>
+              <option>{t("opt15Days")}</option>
+              <option>{t("opt30Days")}</option>
+              <option>{t("opt45Days")}</option>
+              <option>{t("opt60Days")}</option>
             </select>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Grace Period</div>
-              <div className="sub">Days after expiry before access revoked</div>
+              <div className="label">{t("gracePeriod")}</div>
+              <div className="sub">{t("gracePeriodSub")}</div>
             </div>
             <select className="settings-select" defaultValue="7">
-              <option>3 days</option>
-              <option>7 days</option>
-              <option>14 days</option>
-              <option>30 days</option>
+              <option>{t("opt3Days")}</option>
+              <option>{t("opt7Days")}</option>
+              <option>{t("opt14Days")}</option>
+              <option>{t("opt30Days")}</option>
             </select>
           </div>
         </div>
@@ -276,12 +278,12 @@ export default function AdminSettingsPage() {
       {activeTab === "notifications" && (
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Notification Settings</h3>
+            <h3>{t("notificationSettingsTitle")}</h3>
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Email Notifications</div>
-              <div className="sub">Send email notifications to users</div>
+              <div className="label">{t("emailNotifications")}</div>
+              <div className="sub">{t("emailNotificationsSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" defaultChecked />
@@ -290,8 +292,8 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Push Notifications</div>
-              <div className="sub">Send push notifications to users</div>
+              <div className="label">{t("pushNotifications")}</div>
+              <div className="sub">{t("pushNotificationsSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" defaultChecked />
@@ -300,8 +302,8 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">SMS Notifications</div>
-              <div className="sub">Send SMS notifications for critical alerts</div>
+              <div className="label">{t("smsNotifications")}</div>
+              <div className="sub">{t("smsNotificationsSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" />
@@ -310,8 +312,8 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Admin Alerts</div>
-              <div className="sub">Send alerts to admin for critical events</div>
+              <div className="label">{t("adminAlerts")}</div>
+              <div className="sub">{t("adminAlertsSub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" defaultChecked />
@@ -320,8 +322,8 @@ export default function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="label">Payslip Delivery</div>
-              <div className="sub">Notify employees when payslip available</div>
+              <div className="label">{t("payslipDelivery")}</div>
+              <div className="sub">{t("payslipDeliverySub")}</div>
             </div>
             <label className="switch">
               <input type="checkbox" defaultChecked />
@@ -332,7 +334,7 @@ export default function AdminSettingsPage() {
       )}
 
       <div style={{ marginTop: 20 }}>
-        <button className="btn btn-primary" onClick={handleSaveSettings}>Save Settings</button>
+        <button className="btn btn-primary" onClick={handleSaveSettings}>{t("saveSettings")}</button>
       </div>
     </>
   );

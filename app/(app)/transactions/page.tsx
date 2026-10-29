@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { ACCOUNTS } from "@/lib/data";
 import { fmt, ukDate } from "@/lib/format";
@@ -13,6 +14,7 @@ type SortKey = "date-desc" | "date-asc" | "amt-desc" | "amt-asc";
 const PAGE_SIZE = 15;
 
 export default function TransactionsPage() {
+  const t = useTranslations("Pages.transactions");
   const { allTransactions, toast } = useAppData();
   const [search, setSearch] = useState("");
   const [accFilter, setAccFilter] = useState("");
@@ -45,20 +47,20 @@ export default function TransactionsPage() {
   const pageRows = rows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   function exportCsv() {
-    downloadCsv("transactions.csv", rows.map((t) => ({
-      description: t.name,
-      category: t.category,
-      account: t.account,
-      date: t.date,
-      type: t.type,
-      amount: String(t.amount),
+    downloadCsv("transactions.csv", rows.map((r) => ({
+      [t("csvDescription")]: r.name,
+      [t("csvCategory")]: r.category,
+      [t("csvAccount")]: r.account,
+      [t("csvDate")]: r.date,
+      [t("csvType")]: r.type,
+      [t("csvAmount")]: String(r.amount),
     })));
-    toast(`Exported ${rows.length} transactions to CSV`, "download");
+    toast(t("toastExportedCsv", { count: rows.length }), "download");
   }
 
   function exportPdf() {
     downloadBlob("transactions-report.txt", rows.map((t) => `${t.date}  ${t.name}  ${t.category}  ${t.amount > 0 ? "+" : ""}${t.amount}`).join("\n"));
-    toast(`Exported ${rows.length} transactions`, "file-down");
+    toast(t("toastExported", { count: rows.length }), "file-down");
   }
 
   function toggleRow(id: string) {
@@ -79,37 +81,37 @@ export default function TransactionsPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Transactions</h2>
-          <p className="section-sub">Master view of every movement across your accounts</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button className="btn btn-ghost" onClick={exportCsv}>
-            <Icon name="download" size={15} /> Export CSV
+            <Icon name="download" size={15} /> {t("exportCsvBtn")}
           </button>
           <button className="btn btn-ghost" onClick={exportPdf}>
-            <Icon name="file-down" size={15} /> Export PDF
+            <Icon name="file-down" size={15} /> {t("exportPdfBtn")}
           </button>
         </div>
       </div>
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search transactions..."
+          searchPlaceholder={t("phSearch")}
           categoryOptions={categories.map((c) => ({ value: c, label: c }))}
           onSearchChange={setSearch}
           onCategoryChange={setCatFilter}
         />
         <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
           <select value={accFilter} onChange={(e) => setAccFilter(e.target.value)} style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", minWidth: 150 }}>
-            <option value="">All Accounts</option>
+            <option value="">{t("optAllAccounts")}</option>
             {ACCOUNTS.map((a) => (
               <option key={a.name}>{a.name}</option>
             ))}
           </select>
           <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", minWidth: 150 }}>
-            <option value="date-desc">Newest first</option>
-            <option value="date-asc">Oldest first</option>
-            <option value="amt-desc">Highest amount</option>
-            <option value="amt-asc">Lowest amount</option>
+            <option value="date-desc">{t("sortNew")}</option>
+            <option value="date-asc">{t("sortOld")}</option>
+            <option value="amt-desc">{t("sortHigh")}</option>
+            <option value="amt-asc">{t("sortLow")}</option>
           </select>
         </div>
         <div className="table-wrap">
@@ -119,18 +121,18 @@ export default function TransactionsPage() {
                 <th>
                   <input type="checkbox" checked={selectAll} onChange={(e) => toggleAll(e.target.checked)} />
                 </th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Account</th>
-                <th>Date</th>
-                <th style={{ textAlign: "right" }}>Amount</th>
+                <th>{t("colDesc")}</th>
+                <th>{t("colCategory")}</th>
+                <th>{t("colAccount")}</th>
+                <th>{t("colDate")}</th>
+                <th style={{ textAlign: "right" }}>{t("colAmount")}</th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 && (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                    No transactions found.
+                    {t("empty")}
                   </td>
                 </tr>
               )}
@@ -166,13 +168,13 @@ export default function TransactionsPage() {
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, fontSize: 13, color: "var(--ink-500)" }}>
           <span>
-            Showing {pageRows.length} of {rows.length} transactions
+            {t("showing", { shown: pageRows.length, total: rows.length })}
           </span>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <button className="btn btn-ghost btn-sm" disabled={safePage <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
               <Icon name="chevron-left" size={14} />
             </button>
-            <span style={{ fontSize: 13, padding: "0 6px" }}>Page {safePage} of {pageCount}</span>
+            <span style={{ fontSize: 13, padding: "0 6px" }}>{t("pageOf", { page: safePage, pages: pageCount })}</span>
             <button className="btn btn-ghost btn-sm" disabled={safePage >= pageCount} onClick={() => setPage((p) => Math.min(pageCount, p + 1))}>
               <Icon name="chevron-right" size={14} />
             </button>
@@ -182,7 +184,7 @@ export default function TransactionsPage() {
       {viewing && (
         <RecordModal
           mode="view"
-          title="Transaction Details"
+          title={t("modalTitle")}
           record={viewing}
           onClose={() => setViewing(null)}
         />

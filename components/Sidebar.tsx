@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { NAV_ITEMS, ADMIN_NAV_ITEMS, CORPORATE_NAV_ITEMS, EMPLOYEE_NAV_ITEMS } from "@/lib/data";
 import { useAppData } from "@/lib/AppDataContext";
+import { textDirection } from "@/lib/i18n/config";
 import Icon from "./Icon";
 
 export default function Sidebar() {
@@ -12,6 +14,18 @@ export default function Sidebar() {
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen, logout, user } = useAppData();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const rtl = textDirection(useLocale()) === "rtl";
+  const navNs =
+    user?.role === "admin"
+      ? "admin"
+      : user?.role === "corporate"
+        ? "corporate"
+        : user?.role === "employee"
+          ? "employee"
+          : "user";
+  const tNav = useTranslations(`Nav.${navNs}`);
+  const tShell = useTranslations("Shell");
+  const labelFor = (id: string, fallback: string) => (tNav.has(id) ? tNav(id) : fallback);
 
   const navItems =
     user?.role === "admin"
@@ -50,7 +64,7 @@ export default function Sidebar() {
         WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
         <button
           className="sidebar-close"
-          aria-label="Close menu"
+          aria-label={tShell("closeMenu")}
           onClick={() => setSidebarOpen(false)}
         >
           <Icon name="x" size={18} />
@@ -79,18 +93,18 @@ export default function Sidebar() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <Icon name={n.icon} />
-                  {n.label}
+                  {labelFor(n.id, n.label)}
                 </div>
                 {hasSub && (
                   <Icon 
-                    name={isExpanded ? "chevron-down" : "chevron-right"} 
+                    name={isExpanded ? "chevron-down" : rtl ? "chevron-left" : "chevron-right"} 
                     size={14}
-                    style={{ transition: "transform 0.2s", transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)" }}
+                    style={{ transition: "transform 0.2s", transform: isExpanded || rtl ? "rotate(0deg)" : "rotate(-90deg)" }}
                   />
                 )}
               </button>
               {hasSub && isExpanded && (
-                <div style={{ marginLeft: 16, marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+                <div style={{ marginInlineStart: 16, marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
                   {n.subItems.map((sub) => {
                     const subHref = `${rolePrefix}/${n.id}/${sub.id}`;
                     const subActive = pathname === subHref;
@@ -101,13 +115,13 @@ export default function Sidebar() {
                         className="nav-item"
                         style={{ 
                           fontSize: 13, 
-                          paddingLeft: 26,
+                          paddingInlineStart: 26,
                           background: subActive ? "var(--pink-100)" : "transparent",
                           color: subActive ? "var(--rose-600)" : "var(--ink-500)"
                         }}
                         onClick={() => setSidebarOpen(false)}
                       >
-                        {sub.label}
+                        {labelFor(`${n.id}_${sub.id}`, sub.label)}
                       </Link>
                     );
                   })}
@@ -126,7 +140,7 @@ export default function Sidebar() {
           }}
         >
           <Icon name="log-out" />
-          Log out
+          {tShell("logOut")}
         </button>
       </div>
     </aside>

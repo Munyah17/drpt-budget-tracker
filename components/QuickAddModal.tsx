@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { sym } from "@/lib/format";
 
 import { FormEvent, useState } from "react";
@@ -7,6 +8,7 @@ import { ACCOUNTS, EXPENSE_CATS, INCOME_CATEGORIES, PAYMENT_METHODS } from "@/li
 import Modal from "./Modal";
 
 export default function QuickAddModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.components");
   const { addIncome, addExpense, toast } = useAppData();
   const [type, setType] = useState<"expense" | "income">("expense");
   const [amount, setAmount] = useState("");
@@ -29,30 +31,30 @@ export default function QuickAddModal({ onClose }: { onClose: () => void }) {
     } else {
       addExpense({ merchant: desc || category, category, date, amount: amt, account, method, tags: [], recurring: false });
     }
-    toast("Transaction saved");
+    toast(t("quickAdd_toastSaved"));
     onClose();
   }
 
   const tabs = (
     <div className="modal-tabs">
       <button type="button" className={"tab-btn" + (type === "expense" ? " active" : "")} onClick={() => switchType("expense")}>
-        Expense
+        {t("quickAdd_expense")}
       </button>
       <button type="button" className={"tab-btn" + (type === "income" ? " active" : "")} onClick={() => switchType("income")}>
-        Income
+        {t("quickAdd_income")}
       </button>
     </div>
   );
 
   return (
-    <Modal title="Add Transaction" onClose={onClose} tabs={tabs}>
+    <Modal title={t("quickAdd_title")} onClose={onClose} tabs={tabs}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Amount ({sym()})</label>
+          <label>{t("quickAdd_amount", { sym: sym() })}</label>
           <input required type="number" step="0.01" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <div className="field">
-          <label>Category</label>
+          <label>{t("quickAdd_category")}</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             {(type === "income" ? INCOME_CATEGORIES : EXPENSE_CATS).map((c) => (
               <option key={c}>{c}</option>
@@ -60,15 +62,15 @@ export default function QuickAddModal({ onClose }: { onClose: () => void }) {
           </select>
         </div>
         <div className="field">
-          <label>Description</label>
-          <input placeholder="e.g. Fuel at Shell Station" value={desc} onChange={(e) => setDesc(e.target.value)} />
+          <label>{t("quickAdd_desc")}</label>
+          <input placeholder={t("quickAdd_phDesc")} value={desc} onChange={(e) => setDesc(e.target.value)} />
         </div>
         <div className="field">
-          <label>Date</label>
+          <label>{t("quickAdd_date")}</label>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </div>
         <div className="field">
-          <label>Payment Method</label>
+          <label>{t("quickAdd_method")}</label>
           <select value={method} onChange={(e) => setMethod(e.target.value)}>
             {PAYMENT_METHODS.map((m) => (
               <option key={m}>{m}</option>
@@ -76,7 +78,7 @@ export default function QuickAddModal({ onClose }: { onClose: () => void }) {
           </select>
         </div>
         <div className="field">
-          <label>Account</label>
+          <label>{t("quickAdd_account")}</label>
           <select value={account} onChange={(e) => setAccount(e.target.value)}>
             {ACCOUNTS.map((a) => (
               <option key={a.name}>{a.name}</option>
@@ -84,7 +86,7 @@ export default function QuickAddModal({ onClose }: { onClose: () => void }) {
           </select>
         </div>
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">
-          Save Transaction
+          {t("quickAdd_save")}
         </button>
       </form>
     </Modal>

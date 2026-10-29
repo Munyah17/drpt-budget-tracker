@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Modal from "@/components/Modal";
 import Icon from "@/components/Icon";
 import { useAppData } from "@/lib/AppDataContext";
@@ -9,6 +10,7 @@ import { EXPENSE_CATS } from "@/lib/data";
 
 /** Split a shared bill — computes each person's share and logs yours as an expense. */
 export default function SplitBillModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.components");
   const { addExpense, accounts, toast } = useAppData();
   const [label, setLabel] = useState("");
   const [total, setTotal] = useState("");
@@ -23,16 +25,16 @@ export default function SplitBillModal({ onClose }: { onClose: () => void }) {
   function logShare() {
     if (perPerson <= 0) return;
     addExpense({
-      merchant: label.trim() ? `${label.trim()} (my share)` : "Split bill (my share)",
+      merchant: label.trim() ? t("split_merchantShare", { label: label.trim() }) : t("split_merchantDefault"),
       category: EXPENSE_CATS.includes(category) ? category : "Other",
       date: new Date().toISOString().slice(0, 10),
       amount: Math.round(perPerson * 100) / 100,
       account: accounts[0]?.name ?? "Cash",
       method: "Card",
-      tags: [`split ${people} ways`],
+      tags: [t("split_tagWays", { count: people })],
       recurring: false,
     });
-    toast(`Your share of ${fmt(perPerson)} logged`, "check");
+    toast(t("split_toast", { amount: fmt(perPerson) }), "check");
     onClose();
   }
 
@@ -46,11 +48,11 @@ export default function SplitBillModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <Modal title="Split the bill" onClose={onClose}>
+    <Modal title={t("split_title")} onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <input
           type="text"
-          placeholder="What was it? e.g. Dinner at Mermaids"
+          placeholder={t("split_phLabel")}
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           style={field}
@@ -58,12 +60,12 @@ export default function SplitBillModal({ onClose }: { onClose: () => void }) {
         <div style={{ display: "flex", gap: 10 }}>
           <div style={{ flex: 1 }}>
             <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>
-              Total ({sym()})
+              {t("split_total", { sym: sym() })}
             </label>
             <input type="number" min="0" step="0.01" value={total} onChange={(e) => setTotal(e.target.value)} style={field} />
           </div>
           <div style={{ width: 110 }}>
-            <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>People</label>
+            <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>{t("split_people")}</label>
             <input
               type="number"
               min={1}
@@ -76,7 +78,7 @@ export default function SplitBillModal({ onClose }: { onClose: () => void }) {
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <div style={{ flex: 1 }}>
-            <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>Tip %</label>
+            <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>{t("split_tip")}</label>
             <input
               type="number"
               min={0}
@@ -87,7 +89,7 @@ export default function SplitBillModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div style={{ flex: 1 }}>
-            <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>Category</label>
+            <label style={{ fontSize: 12, color: "var(--ink-500)", display: "block", marginBottom: 4 }}>{t("split_category")}</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ ...field, background: "var(--card-solid)" }}>
               {EXPENSE_CATS.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -101,20 +103,20 @@ export default function SplitBillModal({ onClose }: { onClose: () => void }) {
           style={{ padding: "14px 16px", textAlign: "center", background: "var(--pink-100)", border: "none" }}
         >
           <div style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em" }}>
-            Each person pays
+            {t("split_eachPays")}
           </div>
           <div style={{ fontSize: 28, fontWeight: 800, color: "var(--rose-600)", margin: "4px 0" }}>
             {fmt(perPerson)}
           </div>
           {tipPct > 0 && (
             <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
-              incl. {tipPct}% tip on {fmt(totalNum)}
+              {t("split_inclTip", { pct: tipPct, amount: fmt(totalNum) })}
             </div>
           )}
         </div>
 
         <button className="btn btn-primary" onClick={logShare} disabled={perPerson <= 0}>
-          <Icon name="check" size={15} style={{ marginRight: 6 }} /> Log my share as an expense
+          <Icon name="check" size={15} style={{ marginRight: 6 }} /> {t("split_logBtn")}
         </button>
       </div>
     </Modal>

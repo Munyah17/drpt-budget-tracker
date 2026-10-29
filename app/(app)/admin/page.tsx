@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { supabase } from "@/lib/supabase";
 import CountUp from "@/components/CountUp";
@@ -44,25 +45,8 @@ interface AnalyticsData {
   recent: AnalyticsRecent[];
 }
 
-const EVENT_LABELS: Record<string, string> = {
-  page_view: "Page view",
-  landing_view: "Landing visit",
-  signup: "User registered",
-  payment: "Payment confirmed",
-  demo_start: "Demo started",
-  login: "User logged in",
-};
-
-function timeAgo(iso: string) {
-  const mins = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
-}
-
 export default function AdminDashboardPage() {
+  const t = useTranslations("Pages.adm_home");
   const { user } = useAppData();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -86,29 +70,48 @@ export default function AdminDashboardPage() {
       if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
       setData(json);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load");
+      setError(e instanceof Error ? e.message : t("failedToLoad"));
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, t]);
 
   useEffect(() => {
     queueMicrotask(() => void load());
   }, [load]);
 
-  const t = data?.totals;
-  const signupsPct = t && t.visitors14d > 0 ? Math.round((t.signups14d / t.visitors14d) * 100) : 0;
-  const paymentsPct = t && t.signups14d > 0 ? Math.round((t.payments14d / t.signups14d) * 100) : 0;
+  const totals = data?.totals;
+  const signupsPct = totals && totals.visitors14d > 0 ? Math.round((totals.signups14d / totals.visitors14d) * 100) : 0;
+  const paymentsPct = totals && totals.signups14d > 0 ? Math.round((totals.payments14d / totals.signups14d) * 100) : 0;
+
+  const eventLabels: Record<string, string> = {
+    page_view: t("eventPageView"),
+    landing_view: t("eventLandingVisit"),
+    signup: t("eventSignup"),
+    payment: t("eventPayment"),
+    demo_start: t("eventDemoStart"),
+    login: t("eventLogin"),
+  };
+
+  function timeAgo(iso: string) {
+    // eslint-disable-next-line react-hooks/purity -- relative-time labels need the current time at render
+    const mins = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
+    if (mins < 1) return t("justNow");
+    if (mins < 60) return t("minutesAgo", { mins });
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return t("hoursAgo", { hrs });
+    return t("daysAgo", { days: Math.floor(hrs / 24) });
+  }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Operations Dashboard</h2>
-          <p className="section-sub">Platform-wide metrics and system health</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <div className="badge badge-green" style={{ fontSize: 13, fontWeight: 600 }}>
-          Admin: {user?.name}
+          {t("adminBadge", { name: user?.name ?? "" })}
         </div>
       </div>
 
@@ -116,49 +119,49 @@ export default function AdminDashboardPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Registered Users</span>
+            <span className="stat-label">{t("statRegisteredUsers")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="users" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.registeredUsers ?? 0} decimals={0} />
+            <CountUp end={totals?.registeredUsers ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Active Users (14d)</span>
+            <span className="stat-label">{t("statActiveUsers")}</span>
             <div className="stat-icon" style={{ background: "rgba(26,156,109,.12)", color: "var(--green)" }}>
               <Icon name="user-circle" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.activeUsers14d ?? 0} decimals={0} />
+            <CountUp end={totals?.activeUsers14d ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Page Views (14d)</span>
+            <span className="stat-label">{t("statPageViews")}</span>
             <div className="stat-icon" style={{ background: "rgba(26,156,109,.12)", color: "var(--green)" }}>
               <Icon name="eye" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.views14d ?? 0} decimals={0} />
+            <CountUp end={totals?.views14d ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Paid Users</span>
+            <span className="stat-label">{t("statPaidUsers")}</span>
             <div className="stat-icon" style={{ background: "rgba(224,38,75,.12)", color: "var(--red)" }}>
               <Icon name="credit-card" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.paidUsers ?? 0} decimals={0} />
+            <CountUp end={totals?.paidUsers ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
@@ -168,49 +171,49 @@ export default function AdminDashboardPage() {
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Signups (14d)</span>
+            <span className="stat-label">{t("statSignups")}</span>
             <div className="stat-icon" style={{ background: "var(--pink-100)", color: "var(--rose-600)" }}>
               <Icon name="user-plus" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.signups14d ?? 0} decimals={0} />
+            <CountUp end={totals?.signups14d ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Payments (14d)</span>
+            <span className="stat-label">{t("statPayments")}</span>
             <div className="stat-icon" style={{ background: "rgba(26,156,109,.12)", color: "var(--green)" }}>
               <Icon name="shield" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.payments14d ?? 0} decimals={0} />
+            <CountUp end={totals?.payments14d ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Demo Starts (14d)</span>
+            <span className="stat-label">{t("statDemoStarts")}</span>
             <div className="stat-icon" style={{ background: "rgba(217,140,14,.12)", color: "var(--amber)" }}>
               <Icon name="zap" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.demos14d ?? 0} decimals={0} />
+            <CountUp end={totals?.demos14d ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--amber)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
           <div className="stat-top">
-            <span className="stat-label">Logins (14d)</span>
+            <span className="stat-label">{t("statLogins")}</span>
             <div className="stat-icon" style={{ background: "rgba(26,156,109,.12)", color: "var(--green)" }}>
               <Icon name="check-circle" size={17} />
             </div>
           </div>
           <div className="stat-value">
-            <CountUp end={t?.logins14d ?? 0} decimals={0} />
+            <CountUp end={totals?.logins14d ?? 0} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--green)" }}>—</span>
         </div>
@@ -218,7 +221,7 @@ export default function AdminDashboardPage() {
 
       {error && (
         <div className="glass-card card-pad" style={{ marginBottom: 20, color: "var(--ink-500)", fontSize: 13 }}>
-          Analytics unavailable — {error}
+          {t("analyticsUnavailable", { error })}
         </div>
       )}
 
@@ -226,24 +229,24 @@ export default function AdminDashboardPage() {
         {/* Activity chart — real event data */}
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Platform Activity</h3>
-            <span className="chip">Last 14 days</span>
+            <h3>{t("platformActivity")}</h3>
+            <span className="chip">{t("last14Days")}</span>
           </div>
           {loading ? (
-            <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>Loading…</p>
+            <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>{t("loading")}</p>
           ) : data && data.days.some((d) => d.views + d.signups + d.payments + d.demos > 0) ? (
             <BarChart
               labels={data.days.map((d) => d.label)}
               series={[
-                { name: "Page views", color: "#e91e63", data: data.days.map((d) => d.views) },
-                { name: "Signups", color: "#1a9c6d", data: data.days.map((d) => d.signups) },
-                { name: "Payments", color: "#d98c0e", data: data.days.map((d) => d.payments) },
-                { name: "Demos", color: "#1E40AF", data: data.days.map((d) => d.demos) },
+                { name: t("seriesPageViews"), color: "#e91e63", data: data.days.map((d) => d.views) },
+                { name: t("seriesSignups"), color: "#1a9c6d", data: data.days.map((d) => d.signups) },
+                { name: t("seriesPayments"), color: "#d98c0e", data: data.days.map((d) => d.payments) },
+                { name: t("seriesDemos"), color: "#1E40AF", data: data.days.map((d) => d.demos) },
               ]}
             />
           ) : (
             <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>
-              No activity recorded yet — events appear here as visitors use the site.
+              {t("noActivity")}
             </p>
           )}
         </div>
@@ -251,20 +254,20 @@ export default function AdminDashboardPage() {
         {/* Top Pages — real */}
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Top Pages</h3>
+            <h3>{t("topPages")}</h3>
             <span className="chip">14d</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {(data?.topPages ?? []).slice(0, 8).map((p) => (
               <div key={p.path} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ fontWeight: 600, fontSize: 13.5 }}>{p.path}</span>
-                <span style={{ color: "var(--ink-500)", fontWeight: 700, fontSize: 13 }}>{p.views} views</span>
+                <span style={{ color: "var(--ink-500)", fontWeight: 700, fontSize: 13 }}>{t("viewsCount", { count: p.views })}</span>
               </div>
             ))}
             {!loading && (data?.topPages ?? []).length === 0 && (
-              <p style={{ color: "var(--ink-500)", fontSize: 13 }}>No page views recorded yet.</p>
+              <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("noPageViews")}</p>
             )}
-            {loading && <p style={{ color: "var(--ink-500)", fontSize: 13 }}>Loading…</p>}
+            {loading && <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("loading")}</p>}
           </div>
         </div>
       </div>
@@ -273,14 +276,14 @@ export default function AdminDashboardPage() {
         {/* Conversion funnel — real */}
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Conversion Funnel</h3>
+            <h3>{t("conversionFunnel")}</h3>
             <span className="chip">14d</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
-              { label: "Visitors", value: t?.visitors14d ?? 0, pct: 100 },
-              { label: "Signups", value: t?.signups14d ?? 0, pct: signupsPct },
-              { label: "Payments", value: t?.payments14d ?? 0, pct: paymentsPct },
+              { label: t("funnelVisitors"), value: totals?.visitors14d ?? 0, pct: 100 },
+              { label: t("funnelSignups"), value: totals?.signups14d ?? 0, pct: signupsPct },
+              { label: t("funnelPayments"), value: totals?.payments14d ?? 0, pct: paymentsPct },
             ].map((step) => (
               <div key={step.label}>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
@@ -306,8 +309,8 @@ export default function AdminDashboardPage() {
         {/* Recent Activity — real events */}
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Recent Activity</h3>
-            <span className="chip">Live</span>
+            <h3>{t("recentActivity")}</h3>
+            <span className="chip">{t("live")}</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {(data?.recent ?? []).slice(0, 8).map((e, i) => (
@@ -322,18 +325,18 @@ export default function AdminDashboardPage() {
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 13.5 }}>{EVENT_LABELS[e.event] ?? e.event}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13.5 }}>{eventLabels[e.event] ?? e.event}</div>
                   <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
-                    {e.user_email ?? (e.visitor_id ? `visitor ${e.visitor_id.slice(0, 8)}` : "anonymous")}
+                    {e.user_email ?? (e.visitor_id ? t("visitorLabel", { id: e.visitor_id.slice(0, 8) }) : t("anonymous"))}
                   </div>
                 </div>
                 <span style={{ fontSize: 12, color: "var(--ink-500)" }}>{timeAgo(e.created_at)}</span>
               </div>
             ))}
             {!loading && (data?.recent ?? []).length === 0 && (
-              <p style={{ color: "var(--ink-500)", fontSize: 13 }}>No events recorded yet.</p>
+              <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("noEvents")}</p>
             )}
-            {loading && <p style={{ color: "var(--ink-500)", fontSize: 13 }}>Loading…</p>}
+            {loading && <p style={{ color: "var(--ink-500)", fontSize: 13 }}>{t("loading")}</p>}
           </div>
         </div>
       </div>

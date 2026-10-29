@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import Icon from "./Icon";
 
 export default function Modal({
@@ -14,6 +15,7 @@ export default function Modal({
   children: ReactNode;
   tabs?: ReactNode;
 }) {
+  const t = useTranslations("Pages.components");
   return (
     <div
       className="modal-overlay"
@@ -24,7 +26,7 @@ export default function Modal({
       <div className="modal-box">
         <div className="modal-head">
           <h3>{title}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Close">
+          <button className="modal-close" onClick={onClose} aria-label={t("modal_close")}>
             <Icon name="x" size={16} />
           </button>
         </div>

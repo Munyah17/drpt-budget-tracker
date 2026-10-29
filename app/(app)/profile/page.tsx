@@ -1,12 +1,14 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import {  fmt, initials , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 
 function EditProfileModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.profile");
   const { user, updateUser, toast } = useAppData();
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
@@ -14,28 +16,29 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     updateUser({ name, email });
-    toast("Profile updated");
+    toast(t("toastUpdated"));
     onClose();
   }
 
   return (
-    <Modal title="Edit Profile" onClose={onClose}>
+    <Modal title={t("editTitle")} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Full name</label>
+          <label>{t("fullName")}</label>
           <input required value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="field">
-          <label>Email address</label>
+          <label>{t("email")}</label>
           <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
-        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Save Profile</button>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("saveBtn")}</button>
       </form>
     </Modal>
   );
 }
 
 function AddAccountModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.profile");
   const { addAccount, toast } = useAppData();
   const [name, setName] = useState("");
   const [balance, setBalance] = useState("");
@@ -43,40 +46,41 @@ function AddAccountModal({ onClose }: { onClose: () => void }) {
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     addAccount({ name, balance: parseFloat(balance) || 0, icon: "landmark" });
-    toast(`${name} account linked`);
+    toast(t("toastLinked", { name }));
     onClose();
   }
 
   return (
-    <Modal title="Link Account" onClose={onClose}>
+    <Modal title={t("linkTitle")} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Account name</label>
-          <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Barclays Current" />
+          <label>{t("acctName")}</label>
+          <input required value={name} onChange={(e) => setName(e.target.value)} placeholder={t("phAccount")} />
         </div>
         <div className="field">
-          <label>Current balance ({sym()})</label>
+          <label>{t("balanceLabel", { sym: sym() })}</label>
           <input required type="number" step="0.01" value={balance} onChange={(e) => setBalance(e.target.value)} />
         </div>
-        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Link Account</button>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("linkTitle")}</button>
       </form>
     </Modal>
   );
 }
 
 export default function ProfilePage() {
+  const t = useTranslations("Pages.profile");
   const { accounts, user } = useAppData();
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
-  const displayName = user?.name ?? "User";
+  const displayName = user?.name ?? t("defaultUser");
   const displayEmail = user?.email ?? "";
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Profile</h2>
-          <p className="section-sub">Your account details and linked accounts</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
@@ -88,29 +92,29 @@ export default function ProfilePage() {
               <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{displayEmail}</div>
               <div style={{ fontSize: 12.5, color: "var(--ink-500)", display: "flex", alignItems: "center", gap: 5, marginTop: 2 }}>
                 <Icon name="map-pin" size={12} />
-                United Kingdom
+                {t("country")}
               </div>
             </div>
           </div>
           <button className="btn btn-primary" onClick={() => setEditOpen(true)}>
-            Edit Profile <Icon name="pencil" size={14} />
+            {t("editTitle")} <Icon name="pencil" size={14} />
           </button>
           <div style={{ marginTop: 24 }}>
             <div className="field">
-              <label>Profession</label>
-              <input value="NHS Doctor / Private Practice" disabled style={{ background: "var(--pink-100)" }} />
+              <label>{t("profession")}</label>
+              <input value={t("professionValue")} disabled style={{ background: "var(--pink-100)" }} />
             </div>
             <div className="field">
-              <label>Member since</label>
-              <input value="January 2023" disabled style={{ background: "var(--pink-100)" }} />
+              <label>{t("memberSince")}</label>
+              <input value={t("memberSinceValue")} disabled style={{ background: "var(--pink-100)" }} />
             </div>
           </div>
         </div>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Linked Accounts</h3>
+            <h3>{t("linkedTitle")}</h3>
             <button className="btn btn-ghost btn-sm" onClick={() => setAddOpen(true)}>
-              <Icon name="plus" size={14} /> Add Account
+              <Icon name="plus" size={14} /> {t("addBtn")}
             </button>
           </div>
           {accounts.map((a) => (

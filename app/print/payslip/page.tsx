@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useTranslations } from "next-intl";
 import { PAYSLIP_KEY, PayslipDoc } from "@/lib/payslip";
 
 const EMPTY: PayslipDoc = {
@@ -53,6 +54,7 @@ const DetailCell = ({ label, value }: { label: string; value: string }) => (
 );
 
 export default function PrintPayslipPage() {
+  const t = useTranslations("Pages.print_payslip");
   const doc = useSyncExternalStore<PayslipDoc>(emptySubscribe, readDoc, () => EMPTY);
 
   const totalEarnings = doc.earnings.reduce((s, e) => s + e.amount, 0);
@@ -101,40 +103,40 @@ export default function PrintPayslipPage() {
       `}</style>
 
       <div className="print-toolbar">
-        <button className="pt-primary" onClick={() => window.print()}>Print / Save as PDF</button>
-        <button className="pt-ghost" onClick={() => window.close()}>Close</button>
+        <button className="pt-primary" onClick={() => window.print()}>{t("printPdf")}</button>
+        <button className="pt-ghost" onClick={() => window.close()}>{t("close")}</button>
       </div>
 
       <div className="sheet">
         <div className="ps-frame">
           <div className="ps-head">
-            <div className="ps-company">{doc.company || "Company Name"}</div>
+            <div className="ps-company">{doc.company || t("companyName")}</div>
             <div className="ps-addr">{doc.companyAddress}</div>
-            <div className="ps-title">Payslip for the period of {doc.period}</div>
+            <div className="ps-title">{t("title", { period: doc.period })}</div>
           </div>
 
           <div className="ps-details">
             <div className="ps-col">
-              <DetailCell label="Employee Id" value={doc.employeeId} />
-              <DetailCell label="Department" value={doc.department} />
-              <DetailCell label="Date Of Joining" value={doc.dateOfJoining} />
-              <DetailCell label="Bank Name, Branch" value={doc.bankNameBranch} />
+              <DetailCell label={t("employeeId")} value={doc.employeeId} />
+              <DetailCell label={t("department")} value={doc.department} />
+              <DetailCell label={t("dateOfJoining")} value={doc.dateOfJoining} />
+              <DetailCell label={t("bankNameBranch")} value={doc.bankNameBranch} />
             </div>
             <div className="ps-col">
-              <DetailCell label="Name" value={doc.name} />
-              <DetailCell label="Designation" value={doc.designation} />
-              <DetailCell label="Days Worked" value={doc.daysWorked} />
-              <DetailCell label="Bank Acct/Cheque Number" value={doc.bankAccount} />
+              <DetailCell label={t("name")} value={doc.name} />
+              <DetailCell label={t("designation")} value={doc.designation} />
+              <DetailCell label={t("daysWorked")} value={doc.daysWorked} />
+              <DetailCell label={t("bankAccount")} value={doc.bankAccount} />
             </div>
           </div>
 
           <table className="ps">
             <thead>
               <tr>
-                <th>Earnings</th>
-                <th className="amt">Amount</th>
-                <th>Deductions</th>
-                <th className="amt">Amount</th>
+                <th>{t("earnings")}</th>
+                <th className="amt">{t("amount")}</th>
+                <th>{t("deductions")}</th>
+                <th className="amt">{t("amount")}</th>
               </tr>
             </thead>
             <tbody>
@@ -147,28 +149,28 @@ export default function PrintPayslipPage() {
                 </tr>
               ))}
               <tr className="tot">
-                <td>Total Earnings</td>
+                <td>{t("totalEarnings")}</td>
                 <td className="amt">{fmt(totalEarnings)}</td>
-                <td>Total Deductions</td>
+                <td>{t("totalDeductions")}</td>
                 <td className="amt">{fmt(totalDeductions)}</td>
               </tr>
               <tr className="net">
-                <td colSpan={3}>Net Pay (Rounded)</td>
+                <td colSpan={3}>{t("netPay")}</td>
                 <td className="amt">{fmt(netPay)}</td>
               </tr>
             </tbody>
           </table>
 
-          <div className="ps-note">(All figures in {doc.currencyLabel})</div>
+          <div className="ps-note">{t("allFigures", { currency: doc.currencyLabel })}</div>
 
           <div className="ps-sigs">
             <div className="ps-sig">
               <div className="line" />
-              Employer&apos;s Signature
+              {t("employerSig")}
             </div>
             <div className="ps-sig">
               <div className="line" />
-              Employee&apos;s Signature
+              {t("employeeSig")}
             </div>
           </div>
         </div>

@@ -5,10 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { trackEvent } from "@/lib/analytics";
 import Icon from "@/components/Icon";
+import { useTranslations } from "next-intl";
 
 type Phase = "verifying" | "paid" | "pending" | "error";
 
 function SuccessInner() {
+  const t = useTranslations("Pages.payment_success");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast, updateUser, user } = useAppData();
@@ -43,7 +45,7 @@ function SuccessInner() {
           updateUser({ isPaid: true });
           trackEvent("payment", { provider }, user);
           setPhase("paid");
-          toast("Payment confirmed — welcome aboard!", "check-circle");
+          toast(t("confirmedToast"), "check-circle");
           setTimeout(() => router.push("/dashboard"), 1600);
         } else {
           // Paynow can lag a few seconds after redirect — allow one retry poll
@@ -83,10 +85,10 @@ function SuccessInner() {
   }
 
   const body: Record<Phase, { title: string; text: string }> = {
-    verifying: { title: "Confirming your payment…", text: "Hold tight, we're checking with the payment provider." },
-    paid: { title: "Payment confirmed 🎉", text: "Full access unlocked. Taking you to your dashboard…" },
-    pending: { title: "Payment still processing", text: "Your provider hasn't confirmed yet — it can take a minute. Check again below." },
-    error: { title: "We couldn't confirm that payment", text: "If you were charged, send your receipt via WhatsApp and we'll sort it out." },
+    verifying: { title: t("verifyingTitle"), text: t("verifyingText") },
+    paid: { title: t("paidTitle"), text: t("paidText") },
+    pending: { title: t("pendingTitle"), text: t("pendingText") },
+    error: { title: t("errorTitle"), text: t("errorText") },
   };
 
   return (
@@ -106,18 +108,18 @@ function SuccessInner() {
         <p style={{ color: "var(--ink-500)", fontSize: 14, margin: "0 0 22px" }}>{body[phase].text}</p>
         {phase === "pending" && (
           <button className="btn btn-primary" style={{ width: "100%" }} onClick={recheck}>
-            Check payment status again
+            {t("checkAgain")}
           </button>
         )}
         {(phase === "pending" || phase === "error") && (
           <a
             className="btn btn-ghost"
             style={{ width: "100%", marginTop: 10, textDecoration: "none" }}
-            href={`https://wa.me/263718560128?text=${encodeURIComponent("Hi, my WellSpend payment needs a manual check.\nEmail: " + (user?.email ?? "") + "\nRef: ")}`}
+            href={`https://wa.me/263718560128?text=${encodeURIComponent(t("whatsappHelp", { email: user?.email ?? "" }))}`}
             target="_blank"
             rel="noreferrer"
           >
-            <Icon name="send" size={15} /> Get help on WhatsApp
+            <Icon name="send" size={15} /> {t("getHelp")}
           </a>
         )}
       </div>

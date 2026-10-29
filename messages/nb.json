@@ -1,0 +1,320 @@
+{
+  "Meta": {
+    "title": "WellSpend Budget Tracker ❤",
+    "description": "Hold oversikt over inntekter, utgifter og sparemål på ett rolig, vakkert sted."
+  },
+  "Language": {
+    "label": "Språk"
+  },
+  "Nav": {
+    "user": {
+      "dashboard": "Oversikt",
+      "cashflow": "Kontantstrøm",
+      "income": "Inntekter",
+      "expenses": "Utgifter",
+      "transactions": "Transaksjoner",
+      "budget": "Budsjettplanlegger",
+      "savings": "Sparemål",
+      "borrowing": "Lån",
+      "net-worth": "Nettoformue",
+      "subscriptions": "Abonnementer",
+      "bills": "Regninger",
+      "reports": "Rapporter",
+      "analytics": "Analyse",
+      "ai": "AI-assistent",
+      "calendar": "Kalender",
+      "settings": "Innstillinger",
+      "profile": "Profil"
+    },
+    "admin": {
+      "overview": "Oversikt",
+      "analytics": "Analyse",
+      "organisations": "Organisasjoner",
+      "organisations_corporates": "Bedriftskunder",
+      "organisations_contracts": "Kontrakter",
+      "organisations_onboarding": "Onboarding",
+      "people": "Brukeradministrasjon",
+      "people_individuals": "Privatkunder",
+      "people_employees": "Bedriftsansatte",
+      "people_staff": "Internt personale",
+      "operations": "Drift",
+      "operations_payroll": "Lønnsbatcher",
+      "operations_payslips": "Utsendelse av lønnsslipper",
+      "operations_exceptions": "Unntak & hendelser",
+      "finance": "Økonomi",
+      "finance_invoices": "Fakturaer",
+      "finance_payments": "Betalinger",
+      "finance_subscriptions": "Abonnementer",
+      "integrations": "Integrasjoner",
+      "integrations_banks": "Banktilkoblinger",
+      "integrations_payroll": "Lønnsleverandører",
+      "integrations_accounting": "Regnskap",
+      "reports": "Rapporter",
+      "risk-security": "Risiko & sikkerhet",
+      "risk-security_audit": "Revisjonslogger",
+      "risk-security_access": "Tilgangskontroll",
+      "risk-security_incidents": "Hendelser",
+      "settings": "Innstillinger"
+    },
+    "corporate": {
+      "overview": "Oversikt",
+      "employees": "Ansatte",
+      "employees_directory": "Register",
+      "employees_onboarding": "Onboarding",
+      "employees_import": "Masseimport",
+      "payroll": "Lønn",
+      "payroll_runs": "Lønnskjøringer",
+      "payroll_disbursements": "Utbetalinger",
+      "payroll_payslips": "Lønnsslipper",
+      "expense-claims": "Utlegg",
+      "staff-loans": "Personallån",
+      "announcements": "Kunngjøringer",
+      "benefits": "Fordeler",
+      "hr": "HR",
+      "hr_leave": "Permisjonsbehandling",
+      "hr_attendance": "Oppmøte",
+      "hr_recruitment": "Rekruttering",
+      "hr_performance": "Prestasjoner",
+      "hr_documents": "Dokumenter",
+      "hr_offboarding": "Offboarding",
+      "compliance": "Etterlevelse",
+      "roles": "Roller & tilgang",
+      "reports": "Rapporter",
+      "integrations": "Integrasjoner",
+      "developer": "Utvikler & API",
+      "settings": "Innstillinger"
+    },
+    "employee": {
+      "employment": "Ansettelse",
+      "payslips": "Lønnsslipper",
+      "salary": "Lønnsadministrasjon",
+      "leave": "Permisjon",
+      "borrowing-emp": "Lån",
+      "benefits": "Fordeler"
+    }
+  },
+  "Shell": {
+    "closeMenu": "Lukk meny",
+    "logOut": "Logg ut",
+    "openMenu": "Åpne meny",
+    "greeting": "God morgen, {name} 👋",
+    "guest": "Bruker",
+    "demoChip": "Demo — ingenting lagres",
+    "overview": "Her er din økonomiske oversikt",
+    "search": "Søk i transaksjoner, regninger…",
+    "toggleTheme": "Bytt tema",
+    "profile": "Profil",
+    "settings": "Innstillinger",
+    "exitDemo": "Avslutt demo",
+    "logout": "Logg ut",
+    "loggingOut": "Logger ut...",
+    "exitingDemo": "Avslutter demo..."
+  },
+  "Settings": {
+    "title": "Innstillinger",
+    "sub": "Administrer preferansene dine",
+    "preferences": "Preferanser",
+    "notifications": "Varsler",
+    "security": "Sikkerhet",
+    "backup": "Sikkerhetskopi",
+    "currency": "Valuta",
+    "currencySub": "Brukes i hele appen",
+    "dateFormat": "Datoformat",
+    "dateFormatSub": "Hvordan datoer vises",
+    "language": "Språk",
+    "languageHint": "Bruker enhetens språk til du velger et her.",
+    "theme": "Tema",
+    "themeSub": "Lyst eller mørkt utseende",
+    "save": "Lagre endringer",
+    "saved": "Innstillinger lagret"
+  },
+  "Login": {
+    "visualTitle": "Økonomisk klarhet, hver eneste dag.",
+    "visualText": "Hold oversikt over inntekter, utgifter og sparemål på ett rolig, vakkert sted.",
+    "signupTitle": "Opprett kontoen din — $1 låser opp alt, for alltid",
+    "signinTitle": "Velkommen tilbake! Logg inn for å fortsette til kontoen din",
+    "fullName": "Fullt navn",
+    "namePh": "Skriv inn navnet ditt",
+    "email": "E-postadresse",
+    "emailPh": "Skriv inn e-posten din",
+    "password": "Passord",
+    "passwordPh": "Skriv inn passordet ditt",
+    "remember": "Husk meg",
+    "forgot": "Glemt passord?",
+    "creating": "Oppretter konto…",
+    "signingIn": "Logger inn…",
+    "createPay": "Opprett konto & betal $1",
+    "signIn": "Logg inn",
+    "haveAccount": "Har du allerede en konto?",
+    "noAccount": "Har du ikke konto?",
+    "signInLink": "Logg inn",
+    "signUpLink": "Registrer deg — $1 én gang",
+    "backHome": "Tilbake til forsiden",
+    "invalid": "Ugyldig e-post eller passord"
+  },
+  "Landing": {
+    "demoToast": "Velkommen til demoen — utforsk fritt, ingenting lagres.",
+    "nav": {
+      "features": "Funksjoner",
+      "how": "Slik fungerer det",
+      "business": "For bedrifter",
+      "pricing": "Priser",
+      "signIn": "Logg inn",
+      "getStarted": "Kom i gang — $1",
+      "startShort": "Start — $1"
+    },
+    "hero": {
+      "badge": "Bare $1 — én gang, for alltid",
+      "titleLine1": "Pengene dine,",
+      "titleEm": "endelig oversiktlige.",
+      "lead": "WellSpend Budget Tracker er en rolig, vakker budsjettapp for det virkelige liv. Inntekter, utgifter, regninger, mål og innsikt — alt på ett sted, for mindre enn en flaske vann.",
+      "getStarted": "Kom i gang — $1",
+      "seeDemo": "Se demo",
+      "note": "Engangsbetaling på $1 · Alle funksjoner låst opp for alltid · Paynow, kort, Ecocash eller bank.",
+      "balance": "Total saldo",
+      "income": "Inntekter denne måneden",
+      "budgetUsed": "Brukt budsjett"
+    },
+    "features": {
+      "heading": "Alt du trenger",
+      "sub": "Seks fokuserte verktøy som dekker hele økonomien din — ingen fyllmasse, ingen innkjøringskurve.",
+      "budget": {
+        "title": "Budsjettplanlegger",
+        "text": "Sett månedsbudsjetter per kategori og se i sanntid hvordan forbruket følger dem."
+      },
+      "savings": {
+        "title": "Sparemål",
+        "text": "Definer mål med frister og se nøyaktig hvor langt hvert enkelt har kommet."
+      },
+      "bills": {
+        "title": "Regninger & påminnelser",
+        "text": "Mist aldri en forfallsdato — kommende, betalte og forfalte regninger med ett blikk."
+      },
+      "reports": {
+        "title": "Rapporter & analyse",
+        "text": "Inntekter mot utgifter, kategorifordelinger og trender som faktisk gir mening."
+      },
+      "ai": {
+        "title": "AI-assistent",
+        "text": "Still spørsmål om pengene dine på vanlig språk og få svar med en gang."
+      },
+      "safe": {
+        "title": "Trygt å bruke",
+        "text": "Se det nøyaktige beløpet som er trygt å bruke i dag etter at regninger og mål er dekket."
+      },
+      "rollover": {
+        "title": "Videreføring & sparebøsser",
+        "text": "Budsjett til overs ruller inn i neste måned — og sidepotter bygges opp til de store, sjeldne utgiftene."
+      },
+      "currency": {
+        "title": "Alle valutaer",
+        "text": "USD, ZWG, ZAR og alle ISO-valutaer — dine penger, ditt format."
+      },
+      "reminders": {
+        "title": "Regninger aldri for sent",
+        "text": "Varsler om fornyelse før et abonnement eller en regning belaster deg — ingen overraskende trekk."
+      }
+    },
+    "how": {
+      "heading": "I gang på et minutt",
+      "sub": "Tre steg mellom deg og et klart bilde av pengene dine.",
+      "account": {
+        "title": "Opprett kontoen din",
+        "text": "Registrer deg med navn og e-post — det tar tretti sekunder."
+      },
+      "pay": {
+        "title": "Betal $1 én gang",
+        "text": "Én dollar. Én gang. Paynow, kort, Ecocash eller bankoverføring — du velger."
+      },
+      "currency": {
+        "title": "Velg valutaen din",
+        "text": "USD, ZWG, ZAR og alle ISO-valutaer — sett én gang, formatert overalt."
+      },
+      "budgets": {
+        "title": "Sett budsjettene dine",
+        "text": "Gi hver kategori et månedlig beløp — da er utgiftsplanen din klar."
+      },
+      "accounts": {
+        "title": "Legg til kontoene dine",
+        "text": "Bank, EcoCash, kontanter — list opp hvor pengene dine faktisk befinner seg."
+      },
+      "log": {
+        "title": "Logg mens du bruker",
+        "text": "Noen sekunder per oppføring — eller masseimporter et kontoutdrag som CSV."
+      },
+      "watch": {
+        "title": "Se det vokse",
+        "text": "Diagrammer, regninger, trygt å bruke — dashbordet holder deg ærlig."
+      },
+      "own": {
+        "title": "Pengene dine er dine",
+        "text": "Full tilgang for alltid. Hver funksjon, hver oppdatering, ingen abonnementer."
+      }
+    },
+    "business": {
+      "badge": "WellSpend for Business",
+      "heading": "Samlede HR-løsninger",
+      "line": "Lønn · Permisjon · Utlegg · Lån · Mennesker — alt på ett sted.",
+      "sub": "Butikk, klinikk, skole, NGO eller startup — hvis du betaler folk, fungerer WellSpend for deg. Alle på teamet får sin egen penge-app, og folk som kan forvalte lønnen sin, blir værende.",
+      "clicksV": "4 klikk",
+      "clicksK": "for å betale hele teamet",
+      "papersV": "0 papirer",
+      "papersK": "lønnsslipper skrevet ut eller sendt på e-post",
+      "staffV": "100%",
+      "staffK": "av de ansatte får appen gratis",
+      "setupV": "1 dag",
+      "setupK": "for å komme i gang",
+      "payTitle": "Betal alle på få minutter",
+      "payText": "Velg en dato, sjekk listen, trykk betal. Bonuser og korrigeringer legges i en rask ekstrakjøring — ferdig.",
+      "staffTitle": "De ansatte ordner det selv",
+      "staffText": "Lønnsslipper, permisjonssøknader og forskudd skjer i hver persons egen app. Ikke flere WhatsApp-meldinger til HR for en lønnsslipp.",
+      "awayTitle": "Se hvem som er borte, med ett blikk",
+      "awayText": "Godkjenn permisjoner med ett trykk, og alle ser den samme fraværskalenderen. Ingen dobbeltbookinger, ingen overraskelser.",
+      "loansTitle": "Lån som betaler seg selv tilbake",
+      "loansText": "Ansatte søker, du godkjenner, og nedbetalingen trekkes automatisk fra lønnsslippen. Ingen purringer, ingen regneark.",
+      "accessTitle": "Alle ser bare sin del",
+      "accessText": "Gi HR, regnskap og ledere hver sin tilgang — lønnsinformasjon forblir privat, godkjenninger holder orden.",
+      "fileTitle": "Én fil betaler alle",
+      "fileText": "Last ned én fil til banken din eller EcoCash for Business, så er hele teamet betalt. Det var lønningsdagen, ferdig.",
+      "walkthrough": "Bestill en gratis gjennomgang",
+      "signIn": "Bedriftsinnlogging",
+      "note": "Alle størrelser, alle bransjer — fortell oss om bedriften din, så har vi teamet ditt i gang i løpet av en dag."
+    },
+    "pricing": {
+      "heading": "Én dollar. Det er alt.",
+      "sub": "Ingen abonnementer, ingen nivåer, ingen mersalg. Betal én gang, behold det for alltid.",
+      "lifetime": "Livstidstilgang",
+      "forever": "/ for alltid",
+      "features": "Alle funksjoner låst opp, for alltid",
+      "tracking": "Sporing av inntekter, utgifter & budsjett",
+      "goals": "Sparemål, regninger & kalender",
+      "reports": "Rapporter, analyse & AI-assistent",
+      "currencies": "Alle verdens valutaer",
+      "pay": "Betal via Paynow, kort, Ecocash eller bankoverføring",
+      "create": "Opprett konto & betal $1",
+      "businessChip": "WellSpend for Business",
+      "hrLine1": "Samlet",
+      "hrLine2": "HR",
+      "payroll": "Lønnskjøringer & godkjenninger i flere trinn",
+      "portal": "Selvbetjeningsportal for ansatte",
+      "leave": "Permisjonskalender, utlegg & personallån",
+      "payout": "Utbetalingsfiler for bank & EcoCash",
+      "free": "Hver ansatt får WellSpend gratis",
+      "setup": "Oppsett & gjennomgang for hele teamet",
+      "arrange": "Avtal en demo eller en prat"
+    },
+    "cta": {
+      "heading": "Klar til å se hvor pengene dine tar veien?",
+      "text": "Registreringen fullføres med en engangsbetaling på $1 — så er hele appen din.",
+      "button": "Kom i gang — $1"
+    },
+    "footer": {
+      "features": "Funksjoner",
+      "business": "For bedrifter",
+      "pricing": "Priser",
+      "signIn": "Logg inn",
+      "rights": "© {year} WellSpend Budget Tracker. Alle rettigheter forbeholdt.",
+      "powered": "Drevet av Global Space Web +263718560128"
+    }
+  }
+}

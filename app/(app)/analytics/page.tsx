@@ -1,5 +1,6 @@
 "use client";
-import { sym } from "@/lib/format";
+import { useTranslations } from "next-intl";
+import { sym, formatMonthYear, formatShortMonth } from "@/lib/format";
 
 import { useAppData } from "@/lib/AppDataContext";
 import { CATEGORY_COLORS } from "@/lib/data";
@@ -7,9 +8,8 @@ import CountUp from "@/components/CountUp";
 import DonutChart from "@/components/charts/DonutChart";
 import LineChart from "@/components/charts/LineChart";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 export default function AnalyticsPage() {
+  const t = useTranslations("Pages.analytics");
   const { totalIncome, totalExpenses, income, expenses, categorySpend, allTransactions } = useAppData();
   const savingsRate = totalIncome ? Math.round(((totalIncome - totalExpenses) / totalIncome) * 100) : 0;
   const largestExpense = expenses.length ? Math.max(...expenses.map((e) => e.amount)) : 0;
@@ -18,7 +18,7 @@ export default function AnalyticsPage() {
   const now = new Date();
   const months = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
-    return { key: `${d.getFullYear()}-${d.getMonth()}`, label: MONTHS[d.getMonth()] };
+    return { key: `${d.getFullYear()}-${d.getMonth()}`, label: formatShortMonth(d) };
   });
   const monthOf = (d: string) => {
     const t = new Date(d);
@@ -39,38 +39,38 @@ export default function AnalyticsPage() {
     .forEach((e) => { daySpend[new Date(e.date).getDate() - 1] += e.amount; });
   const dayMax = Math.max(...daySpend, 0);
   const heatmap = daySpend.map((v) => (dayMax > 0 ? v / dayMax : 0));
-  const monthName = now.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  const monthName = formatMonthYear(now);
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Analytics</h2>
-          <p className="section-sub">Deeper insight into your financial patterns</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Average Daily Spend</span>
+          <span className="stat-label">{t("statDaily")}</span>
           <div className="stat-value">
             <CountUp end={totalExpenses / 31} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Savings Rate</span>
+          <span className="stat-label">{t("statSavings")}</span>
           <div className="stat-value">
             <CountUp end={savingsRate} decimals={0} />
           </div>
           <span className="stat-delta" style={{ color: "var(--ink-500)" }}>—</span>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Largest Expense</span>
+          <span className="stat-label">{t("statLargest")}</span>
           <div className="stat-value">
             <CountUp end={largestExpense} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Total Transactions</span>
+          <span className="stat-label">{t("statTotal")}</span>
           <div className="stat-value">
             <CountUp end={allTransactions.length} decimals={0} />
           </div>
@@ -79,32 +79,32 @@ export default function AnalyticsPage() {
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", marginBottom: 20 }}>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Spending by Category</h3>
+            <h3>{t("spendByCat")}</h3>
           </div>
           <DonutChart data={categorySpend} colors={CATEGORY_COLORS} size={180} />
         </div>
         <div className="glass-card card-pad">
           <div className="card-head">
-            <h3>Monthly Trend</h3>
+            <h3>{t("monthlyTrend")}</h3>
           </div>
           {hasTrend ? (
             <LineChart
               labels={months.map((m) => m.label)}
               series={[
-                { name: "Income", color: "#1a9c6d", data: incM },
-                { name: "Expenses", color: "#e91e63", data: expM },
+                { name: t("income"), color: "#1a9c6d", data: incM },
+                { name: t("expenses"), color: "#e91e63", data: expM },
               ]}
             />
           ) : (
             <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "48px 0", textAlign: "center" }}>
-              No transactions yet — the trend appears once you log income and expenses.
+              {t("trendEmpty")}
             </p>
           )}
         </div>
       </div>
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>Spending Heatmap — {monthName}</h3>
+          <h3>{t("heatmapTitle", { month: monthName })}</h3>
         </div>
         <div className="cal-grid">
           {heatmap.map((intensity, idx) => {

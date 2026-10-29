@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
@@ -27,11 +28,12 @@ const REVIEWS_DATA: Review[] = [];
 const GOALS_DATA: Goal[] = [];
 
 export default function PerformancePage() {
+  const t = useTranslations("Pages.corp_hr_performance");
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const reviews = useCrud(REVIEWS_DATA, "Review");
-  const goals = useCrud(GOALS_DATA, "Goal");
+  const reviews = useCrud(REVIEWS_DATA, t("entityReview"));
+  const goals = useCrud(GOALS_DATA, t("entityGoal"));
 
   const filteredReviews = useMemo(() => {
     return reviews.items.filter((r) =>
@@ -42,46 +44,46 @@ export default function PerformancePage() {
 
   const completeReview = (r: Review) => {
     reviews.setItems((prev) => prev.map((x) => (x === r ? { ...x, status: "Completed", rating: "4.0 / 5" } : x)));
-    toast(`Review for ${r.employee} marked complete`, "check-circle");
+    toast(t("toastCompleted", { employee: r.employee }), "check-circle");
   };
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Performance</h2>
-          <p className="section-sub">Reviews, goals and appraisals</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => reviews.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Schedule Review
+          {t("scheduleReview")}
         </button>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div className="card-head"><h3>Performance Reviews</h3></div>
+        <div className="card-head"><h3>{t("reviewsHeading")}</h3></div>
         <FilterBar
-          searchPlaceholder="Search reviews..."
-          statusOptions={[{ value: "Completed", label: "Completed" }, { value: "Scheduled", label: "Scheduled" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Completed", label: t("statusCompleted") }, { value: "Scheduled", label: t("statusScheduled") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Employee</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Reviewer</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Period</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Rating</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colEmployee")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colReviewer")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colPeriod")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colRating")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredReviews.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No reviews match your search.
+                  {t("emptyReviews")}
                 </td>
               </tr>
             )}
@@ -97,10 +99,10 @@ export default function PerformancePage() {
                 <td style={{ padding: "12px 8px" }}>
                   {r.status !== "Completed" && (
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--green)" }} onClick={() => completeReview(r)}>
-                      <Icon name="check" size={14} style={{ marginRight: 4 }} />Complete
+                      <Icon name="check" size={14} style={{ marginRight: 4 }} />{t("complete")}
                     </button>
                   )}
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => reviews.openModal("view", r, reviews.items.indexOf(r))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />View</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => reviews.openModal("view", r, reviews.items.indexOf(r))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                 </td>
               </tr>
             ))}
@@ -110,21 +112,21 @@ export default function PerformancePage() {
 
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>Goals &amp; Objectives</h3>
+          <h3>{t("goalsHeading")}</h3>
           <button className="btn btn-ghost" onClick={() => goals.openModal("create")}>
             <Icon name="plus" size={14} style={{ marginRight: 6 }} />
-            Add Goal
+            {t("addGoal")}
           </button>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Employee</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Goal</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Due</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Progress</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colEmployee")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colGoal")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDue")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colProgress")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -145,7 +147,7 @@ export default function PerformancePage() {
                   <span className={`badge ${g.status === "On Track" ? "badge-green" : g.status === "Complete" ? "badge-blue" : "badge-amber"}`}>{g.status}</span>
                 </td>
                 <td style={{ padding: "12px 8px" }}>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => goals.openModal("edit", g, idx)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />Edit</button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => goals.openModal("edit", g, idx)}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>
               </tr>
             ))}

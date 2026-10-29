@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import RecordModal, { RowRecord } from "@/components/RecordModal";
 
@@ -12,14 +13,12 @@ interface CrudModal {
   index: number;
 }
 
-const titleFor = (mode: ModalMode, label: string) =>
-  mode === "create" ? `Add ${label}` : mode === "edit" ? `Edit ${label}` : `${label} Details`;
-
 /**
  * Generic list-CRUD hook for table pages with static seed data.
  * T must be an object with string fields (the typical admin table shape).
  */
 export function useCrud<T extends object>(initial: T[], label: string) {
+  const t = useTranslations("Pages.components");
   const { toast } = useAppData();
   const [items, setItems] = useState<T[]>(initial);
   const [modal, setModal] = useState<CrudModal | null>(null);
@@ -35,10 +34,10 @@ export function useCrud<T extends object>(initial: T[], label: string) {
     if (!modal) return;
     if (modal.mode === "create") {
       setItems((prev) => [...prev, values as unknown as T]);
-      toast(`${label} created`);
+      toast(t("crud_created", { label }));
     } else {
       setItems((prev) => prev.map((e, i) => (i === modal.index ? ({ ...e, ...values } as T) : e)));
-      toast(`${label} updated`);
+      toast(t("crud_updated", { label }));
     }
     setModal(null);
   };
@@ -46,14 +45,20 @@ export function useCrud<T extends object>(initial: T[], label: string) {
   const handleDelete = () => {
     if (!modal) return;
     setItems((prev) => prev.filter((_, i) => i !== modal.index));
-    toast(`${label} deleted`, "trash-2");
+    toast(t("crud_deleted", { label }), "trash-2");
     setModal(null);
   };
 
   const modalNode = modal && (
     <RecordModal
       mode={modal.mode}
-      title={titleFor(modal.mode, label)}
+      title={
+        modal.mode === "create"
+          ? t("crud_add", { label })
+          : modal.mode === "edit"
+            ? t("crud_edit", { label })
+            : t("crud_details", { label })
+      }
       record={modal.record}
       onClose={() => setModal(null)}
       onSave={handleSave}

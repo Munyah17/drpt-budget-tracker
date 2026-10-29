@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, FormEvent, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import { downloadCsv } from "@/lib/download";
@@ -46,6 +47,7 @@ function parseCsv(text: string): CorpEmployee[] {
 }
 
 export default function EmployeeImportPage() {
+  const t = useTranslations("Pages.corp_emp_import");
   const { toast } = useAppData();
   const store = useCorpStore();
   const [text, setText] = useState("");
@@ -56,9 +58,9 @@ export default function EmployeeImportPage() {
 
   function parse() {
     const rows = parseCsv(text);
-    if (!rows.length) { toast("No valid rows found — check the format below", "x"); return; }
+    if (!rows.length) { toast(t("toastNoRows"), "x"); return; }
     setStaged(rows);
-    toast(`${rows.length} employee${rows.length === 1 ? "" : "s"} parsed — review then import`, "check");
+    toast(t("toastParsed", { count: rows.length }), "check");
   }
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -70,12 +72,12 @@ export default function EmployeeImportPage() {
   function doImport(e: FormEvent) {
     e.preventDefault();
     const rows = text.trim() ? parseCsv(text) : staged;
-    if (!rows.length) { toast("Nothing to import", "x"); return; }
+    if (!rows.length) { toast(t("toastNothing"), "x"); return; }
     const existing = new Set(store.employees.map((x) => x.email.toLowerCase()).filter(Boolean));
     const fresh = rows.filter((r) => !r.email || !existing.has(r.email.toLowerCase()));
     const dupes = rows.length - fresh.length;
     updateCorp((s) => ({ ...s, employees: [...s.employees, ...fresh] }));
-    toast(`${fresh.length} imported${dupes ? `, ${dupes} duplicate${dupes === 1 ? "" : "s"} skipped` : ""}`, "check-circle");
+    toast(t("toastImported", { imported: fresh.length, dupes }), "check-circle");
     setText(""); setStaged([]);
   }
 
@@ -84,7 +86,7 @@ export default function EmployeeImportPage() {
       name: e.name, email: e.email, department: e.department, job_title: e.jobTitle,
       gross_pay: String(e.grossPay), bank: e.bankName, account: e.bankAccount,
     })));
-    toast("Employee CSV downloaded", "download");
+    toast(t("toastCsv"), "download");
   }
 
   function remove(id: string) {
@@ -95,20 +97,20 @@ export default function EmployeeImportPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Bulk Employee Import</h2>
-          <p className="section-sub">Paste or upload a CSV — preview, then import in one click</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-ghost" onClick={exportCsv} disabled={!store.employees.length}>
-          <Icon name="download" size={15} style={{ marginRight: 6 }} />Export CSV
+          <Icon name="download" size={15} style={{ marginRight: 6 }} />{t("exportCsv")}
         </button>
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div className="card-head"><h3>Paste CSV</h3>
+        <div className="card-head"><h3>{t("pasteCsv")}</h3>
           <div>
             <input ref={fileRef} type="file" accept=".csv,text/csv,text/plain" style={{ display: "none" }} onChange={onFile} />
             <button className="btn btn-ghost btn-sm" onClick={() => fileRef.current?.click()}>
-              <Icon name="upload-cloud" size={14} style={{ marginRight: 5 }} />Upload file
+              <Icon name="upload-cloud" size={14} style={{ marginRight: 5 }} />{t("uploadFile")}
             </button>
           </div>
         </div>
@@ -120,30 +122,30 @@ export default function EmployeeImportPage() {
           style={{ width: "100%", fontFamily: "monospace", fontSize: 12, padding: 12, borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", background: "var(--card-solid)", color: "var(--ink-900)", resize: "vertical" }}
         />
         <form onSubmit={doImport} style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
-          <button type="button" className="btn btn-ghost" onClick={parse}>Preview</button>
-          <button type="submit" className="btn btn-primary"><Icon name="check" size={14} style={{ marginRight: 5 }} />Import {preview.length ? `(${preview.length})` : ""}</button>
+          <button type="button" className="btn btn-ghost" onClick={parse}>{t("preview")}</button>
+          <button type="submit" className="btn btn-primary"><Icon name="check" size={14} style={{ marginRight: 5 }} />{t("import")}{preview.length ? ` (${preview.length})` : ""}</button>
         </form>
         <p style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 10 }}>
-          Columns: name, email, department, job_title, gross_pay, bank, account — header row optional, any order.
+          {t("columnsHint")}
         </p>
       </div>
 
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>{preview.length ? "Import preview" : `Employees (${store.employees.length})`}</h3>
+          <h3>{preview.length ? t("importPreview") : t("employeesCount", { count: store.employees.length })}</h3>
         </div>
         <div className="table-wrap">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-                <th style={th}>Name</th><th style={th}>Email</th><th style={th}>Department</th>
-                <th style={th}>Job Title</th><th style={th}>Gross Pay</th><th style={th}>Bank</th><th style={th}>Account</th>
+                <th style={th}>{t("colName")}</th><th style={th}>{t("colEmail")}</th><th style={th}>{t("colDepartment")}</th>
+                <th style={th}>{t("colJobTitle")}</th><th style={th}>{t("colGrossPay")}</th><th style={th}>{t("colBank")}</th><th style={th}>{t("colAccount")}</th>
                 {!preview.length && <th style={th}></th>}
               </tr>
             </thead>
             <tbody>
               {(preview.length ? preview : store.employees).length === 0 && (
-                <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>No employees yet — paste a CSV above to get started.</td></tr>
+                <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>{t("emptyState")}</td></tr>
               )}
               {(preview.length ? preview : store.employees).map((e) => (
                 <tr key={e.id} style={{ borderBottom: "1px solid var(--card-border)" }}>

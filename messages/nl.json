@@ -1,0 +1,320 @@
+{
+  "Meta": {
+    "title": "WellSpend Budget Tracker ❤",
+    "description": "Houd inkomsten, uitgaven en spaardoelen bij op één rustige, mooie plek."
+  },
+  "Language": {
+    "label": "Taal"
+  },
+  "Nav": {
+    "user": {
+      "dashboard": "Dashboard",
+      "cashflow": "Cashflow",
+      "income": "Inkomsten",
+      "expenses": "Uitgaven",
+      "transactions": "Transacties",
+      "budget": "Budgetplanner",
+      "savings": "Spaardoelen",
+      "borrowing": "Lenen",
+      "net-worth": "Netto vermogen",
+      "subscriptions": "Abonnementen",
+      "bills": "Rekeningen",
+      "reports": "Rapporten",
+      "analytics": "Analyses",
+      "ai": "AI-assistent",
+      "calendar": "Kalender",
+      "settings": "Instellingen",
+      "profile": "Profiel"
+    },
+    "admin": {
+      "overview": "Overzicht",
+      "analytics": "Analyses",
+      "organisations": "Organisaties",
+      "organisations_corporates": "Zakelijke klanten",
+      "organisations_contracts": "Contracten",
+      "organisations_onboarding": "Onboarding",
+      "people": "Gebruikersbeheer",
+      "people_individuals": "Individuele klanten",
+      "people_employees": "Bedrijfsmedewerkers",
+      "people_staff": "Intern personeel",
+      "operations": "Bedrijfsvoering",
+      "operations_payroll": "Salarisbatches",
+      "operations_payslips": "Loonstrookverzending",
+      "operations_exceptions": "Uitzonderingen & incidenten",
+      "finance": "Financiën",
+      "finance_invoices": "Facturen",
+      "finance_payments": "Betalingen",
+      "finance_subscriptions": "Abonnementen",
+      "integrations": "Integraties",
+      "integrations_banks": "Bankkoppelingen",
+      "integrations_payroll": "Salarisverwerkers",
+      "integrations_accounting": "Boekhouding",
+      "reports": "Rapporten",
+      "risk-security": "Risico & beveiliging",
+      "risk-security_audit": "Auditlogs",
+      "risk-security_access": "Toegangsbeheer",
+      "risk-security_incidents": "Incidenten",
+      "settings": "Instellingen"
+    },
+    "corporate": {
+      "overview": "Dashboard",
+      "employees": "Medewerkers",
+      "employees_directory": "Medewerkerslijst",
+      "employees_onboarding": "Onboarding",
+      "employees_import": "Bulkimport",
+      "payroll": "Loonadministratie",
+      "payroll_runs": "Salarisruns",
+      "payroll_disbursements": "Uitbetalingen",
+      "payroll_payslips": "Loonstroken",
+      "expense-claims": "Onkostendeclaraties",
+      "staff-loans": "Personeelsleningen",
+      "announcements": "Aankondigingen",
+      "benefits": "Voordelen",
+      "hr": "HR",
+      "hr_leave": "Verlofbeheer",
+      "hr_attendance": "Aanwezigheid",
+      "hr_recruitment": "Werving",
+      "hr_performance": "Prestaties",
+      "hr_documents": "Documenten",
+      "hr_offboarding": "Offboarding",
+      "compliance": "Naleving",
+      "roles": "Rollen & toegang",
+      "reports": "Rapporten",
+      "integrations": "Integraties",
+      "developer": "Developer & API",
+      "settings": "Instellingen"
+    },
+    "employee": {
+      "employment": "Dienstverband",
+      "payslips": "Loonstroken",
+      "salary": "Salarisbeheer",
+      "leave": "Verlof",
+      "borrowing-emp": "Lenen",
+      "benefits": "Voordelen"
+    }
+  },
+  "Shell": {
+    "closeMenu": "Menu sluiten",
+    "logOut": "Uitloggen",
+    "openMenu": "Menu openen",
+    "greeting": "Goedemorgen, {name} 👋",
+    "guest": "Gebruiker",
+    "demoChip": "Demo — er wordt niets opgeslagen",
+    "overview": "Hier is je financiële overzicht",
+    "search": "Zoek transacties, rekeningen…",
+    "toggleTheme": "Thema wisselen",
+    "profile": "Profiel",
+    "settings": "Instellingen",
+    "exitDemo": "Demo afsluiten",
+    "logout": "Uitloggen",
+    "loggingOut": "Uitloggen...",
+    "exitingDemo": "Demo afsluiten..."
+  },
+  "Settings": {
+    "title": "Instellingen",
+    "sub": "Beheer je voorkeuren",
+    "preferences": "Voorkeuren",
+    "notifications": "Meldingen",
+    "security": "Beveiliging",
+    "backup": "Back-up",
+    "currency": "Valuta",
+    "currencySub": "Gebruikt in de hele app",
+    "dateFormat": "Datumnotatie",
+    "dateFormatSub": "Hoe datums worden weergegeven",
+    "language": "Taal",
+    "languageHint": "Gebruikt de taal van je apparaat totdat je er hier een kiest.",
+    "theme": "Thema",
+    "themeSub": "Lichte of donkere weergave",
+    "save": "Wijzigingen opslaan",
+    "saved": "Instellingen opgeslagen"
+  },
+  "Login": {
+    "visualTitle": "Financiële duidelijkheid, elke dag weer.",
+    "visualText": "Houd inkomsten, uitgaven en spaardoelen bij op één rustige, mooie plek.",
+    "signupTitle": "Maak je account aan — $1 ontgrendelt alles, voor altijd",
+    "signinTitle": "Welkom terug! Log in om verder te gaan naar je account",
+    "fullName": "Volledige naam",
+    "namePh": "Vul je naam in",
+    "email": "E-mailadres",
+    "emailPh": "Vul je e-mail in",
+    "password": "Wachtwoord",
+    "passwordPh": "Vul je wachtwoord in",
+    "remember": "Onthoud mij",
+    "forgot": "Wachtwoord vergeten?",
+    "creating": "Account aanmaken…",
+    "signingIn": "Inloggen…",
+    "createPay": "Account aanmaken & $1 betalen",
+    "signIn": "Inloggen",
+    "haveAccount": "Heb je al een account?",
+    "noAccount": "Nog geen account?",
+    "signInLink": "Inloggen",
+    "signUpLink": "Registreren — eenmalig $1",
+    "backHome": "Terug naar home",
+    "invalid": "Ongeldig e-mailadres of wachtwoord"
+  },
+  "Landing": {
+    "demoToast": "Welkom bij de demo — kijk gerust rond, er wordt niets opgeslagen.",
+    "nav": {
+      "features": "Functies",
+      "how": "Hoe het werkt",
+      "business": "Voor bedrijven",
+      "pricing": "Prijzen",
+      "signIn": "Inloggen",
+      "getStarted": "Aan de slag — $1",
+      "startShort": "Start — $1"
+    },
+    "hero": {
+      "badge": "Slechts $1 — eenmalig, voor altijd",
+      "titleLine1": "Je geld,",
+      "titleEm": "eindelijk helder.",
+      "lead": "WellSpend Budget Tracker is een rustige, mooie budgettracker voor het echte leven. Inkomsten, uitgaven, rekeningen, doelen en inzichten — alles op één plek, voor minder dan een flesje water.",
+      "getStarted": "Aan de slag — $1",
+      "seeDemo": "Bekijk demo",
+      "note": "Eenmalige betaling van $1 · Elke functie voor altijd ontgrendeld · Paynow, kaart, Ecocash of bank.",
+      "balance": "Totaalsaldo",
+      "income": "Inkomsten deze maand",
+      "budgetUsed": "Budget gebruikt"
+    },
+    "features": {
+      "heading": "Alles wat je nodig hebt",
+      "sub": "Zes toegespitste tools die je hele financiële leven dekken — geen overbodige ballast, geen leercurve.",
+      "budget": {
+        "title": "Budgetplanner",
+        "text": "Stel maandelijkse budgetten per categorie in en zie in realtime hoe je uitgaven ertegen afzetten."
+      },
+      "savings": {
+        "title": "Spaardoelen",
+        "text": "Stel doelen met deadlines en zie precies hoe ver elk doel is."
+      },
+      "bills": {
+        "title": "Rekeningen & herinneringen",
+        "text": "Mis nooit meer een vervaldatum — aankomende, betaalde en achterstallige rekeningen in één oogopslag."
+      },
+      "reports": {
+        "title": "Rapporten & analyses",
+        "text": "Inkomsten vs. uitgaven, uitsplitsingen per categorie en trends die echt logisch zijn."
+      },
+      "ai": {
+        "title": "AI-assistent",
+        "text": "Stel vragen over je geld in gewone taal en krijg direct antwoord."
+      },
+      "safe": {
+        "title": "Vrij te besteden",
+        "text": "Zie het exacte bedrag dat je vandaag veilig kunt uitgeven nadat rekeningen en doelen zijn gedekt."
+      },
+      "rollover": {
+        "title": "Rollover & spaarpotjes",
+        "text": "Overgebleven budget gaat mee naar de volgende maand — en aparte potjes groeien voor de grote, zeldzame uitgaven."
+      },
+      "currency": {
+        "title": "Elke valuta",
+        "text": "USD, ZWG, ZAR en elke ISO-valuta — jouw geld, jouw notatie."
+      },
+      "reminders": {
+        "title": "Rekeningen nooit te laat",
+        "text": "Waarschuwingen voor verlenging voordat een abonnement of rekening wordt afgeschreven — geen verrassingen."
+      }
+    },
+    "how": {
+      "heading": "Binnen een minuut aan de slag",
+      "sub": "Drie stappen tussen jou en een helder beeld van je geld.",
+      "account": {
+        "title": "Maak je account aan",
+        "text": "Registreer met je naam en e-mail — het duurt dertig seconden."
+      },
+      "pay": {
+        "title": "Betaal eenmalig $1",
+        "text": "Eén dollar. Eenmalig. Paynow, kaart, Ecocash of bankoverschrijving — de keuze is aan jou."
+      },
+      "currency": {
+        "title": "Kies je valuta",
+        "text": "USD, ZWG, ZAR en elke ISO-valuta — eenmalig instellen, overal netjes weergegeven."
+      },
+      "budgets": {
+        "title": "Stel je budgetten in",
+        "text": "Geef elke categorie een maandelijks bedrag — dan is je uitgavenplan klaar."
+      },
+      "accounts": {
+        "title": "Voeg je accounts toe",
+        "text": "Bank, EcoCash, contant — zet op een rij waar je geld echt zit."
+      },
+      "log": {
+        "title": "Log terwijl je uitgeeft",
+        "text": "Een paar seconden per invoer — of importeer in bulk een CSV-aanschrift."
+      },
+      "watch": {
+        "title": "Zie hoe het optelt",
+        "text": "Grafieken, rekeningen, vrij te besteden — het dashboard houdt je eerlijk."
+      },
+      "own": {
+        "title": "Jouw geld is van jou",
+        "text": "Volledige toegang voor altijd. Elke functie, elke update, geen abonnementen."
+      }
+    },
+    "business": {
+      "badge": "WellSpend for Business",
+      "heading": "Complete HR-oplossingen",
+      "line": "Loonadministratie · Verlof · Declaraties · Leningen · Mensen — alles op één plek.",
+      "sub": "Winkel, kliniek, school, NGO of startup — als je mensen betaalt, werkt WellSpend voor jou. Iedereen in je team krijgt een eigen geld-app, en mensen die hun salaris kunnen beheren, blijven.",
+      "clicksV": "4 klikken",
+      "clicksK": "om je hele team te betalen",
+      "papersV": "0 papieren",
+      "papersK": "loonstroken geprint of gemaild",
+      "staffV": "100%",
+      "staffK": "van het personeel krijgt de app gratis",
+      "setupV": "1 dag",
+      "setupK": "om alles in te richten",
+      "payTitle": "Betaal iedereen binnen enkele minuten",
+      "payText": "Kies een datum, controleer de lijst, druk op betalen. Bonussen en correcties gaan mee in een snelle extra run — klaar.",
+      "staffTitle": "Medewerkers helpen zichzelf",
+      "staffText": "Loonstroken, verlofaanvragen en voorschotten regelt iedereen in de eigen app. Geen WhatsApp meer naar HR voor een loonstrookje.",
+      "awayTitle": "Zie in één oogopslag wie er afwezig is",
+      "awayText": "Keur verlof goed met één tik en iedereen ziet dezelfde afwezigheidskalender. Geen dubbele boekingen, geen verrassingen.",
+      "loansTitle": "Leningen die zichzelf terugbetalen",
+      "loansText": "Personeel vraagt aan, jij keurt goed, en de aflossing gaat automatisch van de loonstrook af. Geen gezeur, geen spreadsheets.",
+      "accessTitle": "Iedereen ziet alleen het eigen deel",
+      "accessText": "Geef HR, financiën en managers hun eigen toegang — salarisgegevens blijven privé, goedkeuringen blijven op orde.",
+      "fileTitle": "Eén bestand betaalt ze allemaal",
+      "fileText": "Download één bestand voor je bank of EcoCash for Business en het hele team is betaald. Dat was de betaaldag — geregeld.",
+      "walkthrough": "Boek een gratis rondleiding",
+      "signIn": "Zakelijk inloggen",
+      "note": "Elke omvang, elke branche — vertel ons over je bedrijf en wij hebben je team binnen een dag draaiende."
+    },
+    "pricing": {
+      "heading": "Eén dollar. Meer niet.",
+      "sub": "Geen abonnementen, geen pakketten, geen upsell. Eenmalig betalen, voor altijd van jou.",
+      "lifetime": "Levenslange toegang",
+      "forever": "/ voor altijd",
+      "features": "Elke functie ontgrendeld, voor altijd",
+      "tracking": "Inkomsten-, uitgaven- en budgettracking",
+      "goals": "Spaardoelen, rekeningen & kalender",
+      "reports": "Rapporten, analyses & AI-assistent",
+      "currencies": "Alle valuta''s ter wereld",
+      "pay": "Betaal via Paynow, kaart, Ecocash of bankoverschrijving",
+      "create": "Account aanmaken & $1 betalen",
+      "businessChip": "WellSpend for Business",
+      "hrLine1": "Geïntegreerde",
+      "hrLine2": "HR",
+      "payroll": "Salarisruns & goedkeuringen in meerdere stappen",
+      "portal": "Zelfserviceportaal voor medewerkers",
+      "leave": "Verlofkalender, declaraties & personeelsleningen",
+      "payout": "Uitbetalingsbestanden voor bank & EcoCash",
+      "free": "Elke medewerker krijgt WellSpend gratis",
+      "setup": "Inrichting & rondleiding voor je hele team",
+      "arrange": "Plan een demo of gesprek"
+    },
+    "cta": {
+      "heading": "Klaar om te zien waar je geld blijft?",
+      "text": "Je registratie wordt afgerond met een eenmalige betaling van $1 — daarna is de hele app van jou.",
+      "button": "Aan de slag — $1"
+    },
+    "footer": {
+      "features": "Functies",
+      "business": "Voor bedrijven",
+      "pricing": "Prijzen",
+      "signIn": "Inloggen",
+      "rights": "© {year} WellSpend Budget Tracker. Alle rechten voorbehouden.",
+      "powered": "Mogelijk gemaakt door Global Space Web +263718560128"
+    }
+  }
+}

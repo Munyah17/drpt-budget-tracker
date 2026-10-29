@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -17,9 +18,10 @@ interface Contract {
 const CONTRACTS_DATA: Contract[] = [];
 
 export default function AdminContractsPage() {
+  const t = useTranslations("Pages.adm_orgs_contracts");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(CONTRACTS_DATA, "Contract");
+  const crud = useCrud(CONTRACTS_DATA, t("entityName"));
 
   const filteredData = useMemo(() => {
     return crud.items.filter((contract) =>
@@ -32,38 +34,38 @@ export default function AdminContractsPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Contracts</h2>
-          <p className="section-sub">Manage organisation contracts</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add Contract
+          {t("addContract")}
         </button>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search contracts..."
-          statusOptions={[{ value: "Active", label: "Active" }]}
+          searchPlaceholder={t("searchPlaceholder")}
+          statusOptions={[{ value: "Active", label: t("statusActive") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Organisation</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Plan</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Monthly Fee</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Start Date</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Renewal</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thOrganisation")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thPlan")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thMonthlyFee")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStartDate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thRenewal")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thStatus")}</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length === 0 && (
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                  No contracts match your search.
+                  {t("emptyState")}
                 </td>
               </tr>
             )}

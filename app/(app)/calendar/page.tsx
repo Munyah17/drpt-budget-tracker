@@ -1,16 +1,20 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { EVENT_COLOR, CalEvent } from "@/lib/data";
 import { fmt, ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 
-const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DOW_KEYS = ["dowMon", "dowTue", "dowWed", "dowThu", "dowFri", "dowSat", "dowSun"];
+const MONTH_KEYS = ["monthJan","monthFeb","monthMar","monthApr","monthMay","monthJun","monthJul","monthAug","monthSep","monthOct","monthNov","monthDec"];
 
 export default function CalendarPage() {
+  const t = useTranslations("Pages.calendar");
   const { income, expenses, bills } = useAppData();
+  const DOW = DOW_KEYS.map((k) => t(k));
+  const MONTH_NAMES = MONTH_KEYS.map((k) => t(k));
   const now = new Date();
   const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const [selected, setSelected] = useState<string | null>(null);
@@ -24,10 +28,10 @@ export default function CalendarPage() {
     income.forEach((i) => push(i.date.slice(0, 10), { type: "income", label: i.source, amount: i.amount }));
     expenses.forEach((e) => push(e.date.slice(0, 10), { type: "expense", label: e.merchant, amount: -e.amount }));
     bills.forEach((b) => {
-      if (b.due) push(b.due.slice(0, 10), { type: "bill", label: `${b.name} due`, amount: -b.amount });
+      if (b.due) push(b.due.slice(0, 10), { type: "bill", label: t("dueLabel", { name: b.name }), amount: -b.amount });
     });
     return map;
-  }, [income, expenses, bills]);
+  }, [income, expenses, bills, t]);
 
   const daysInMonth = new Date(year, mon + 1, 0).getDate();
   // Day of week for the 1st, converted to Mon=0..Sun=6
@@ -54,36 +58,36 @@ export default function CalendarPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Calendar</h2>
-          <p className="section-sub">Income, expenses, bills and savings at a glance</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
       </div>
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div className="card-head">
-          <button className="btn btn-ghost btn-icon" onClick={prevMonth} aria-label="Previous month">
+          <button className="btn btn-ghost btn-icon" onClick={prevMonth} aria-label={t("prevMonth")}>
             <Icon name="chevron-left" size={16} />
           </button>
           <h3>{MONTH_NAMES[mon]} {year}</h3>
-          <button className="btn btn-ghost btn-icon" onClick={nextMonth} aria-label="Next month">
+          <button className="btn btn-ghost btn-icon" onClick={nextMonth} aria-label={t("nextMonth")}>
             <Icon name="chevron-right" size={16} />
           </button>
         </div>
         <div style={{ display: "flex", gap: 16, marginBottom: 14, fontSize: 12.5, fontWeight: 600, color: "var(--ink-500)" }}>
           <span>
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: EVENT_COLOR.income, marginRight: 5 }} />
-            Income
+            {t("income")}
           </span>
           <span>
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: EVENT_COLOR.expense, marginRight: 5 }} />
-            Expenses
+            {t("expenses")}
           </span>
           <span>
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: EVENT_COLOR.bill, marginRight: 5 }} />
-            Bills
+            {t("bills")}
           </span>
           <span>
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: EVENT_COLOR.savings, marginRight: 5 }} />
-            Savings
+            {t("savings")}
           </span>
         </div>
         <div className="cal-grid" style={{ marginBottom: 6 }}>
@@ -124,10 +128,10 @@ export default function CalendarPage() {
         {!selected && (
           <>
             <div className="card-head">
-              <h3>Upcoming this week</h3>
+              <h3>{t("upcomingTitle")}</h3>
             </div>
             <p style={{ color: "var(--ink-500)", fontSize: 13.5 }}>
-              Click any date above to see a full breakdown of income, expenses and bills for that day.
+              {t("upcomingHint")}
             </p>
           </>
         )}
@@ -136,7 +140,7 @@ export default function CalendarPage() {
             <div className="card-head">
               <h3>{ukDate(selected)}</h3>
             </div>
-            <p style={{ color: "var(--ink-500)", fontSize: 13.5 }}>No activity recorded on this day.</p>
+            <p style={{ color: "var(--ink-500)", fontSize: 13.5 }}>{t("noActivity")}</p>
           </>
         )}
         {selected && selectedEvents && (

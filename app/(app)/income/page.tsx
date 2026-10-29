@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { INCOME_ICONS } from "@/lib/data";
 import {  fmt, ukDate , sym } from "@/lib/format";
@@ -11,6 +12,7 @@ import IncomeModal from "@/components/modals/IncomeModal";
 import FilterBar from "@/components/FilterBar";
 
 export default function IncomePage() {
+  const t = useTranslations("Pages.income");
   const { income, deleteIncome, toast, totalIncome } = useAppData();
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
@@ -41,35 +43,35 @@ export default function IncomePage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Income</h2>
-          <p className="section-sub">All income sources for May 2025</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub")}</p>
         </div>
         <button className="btn btn-primary" onClick={openAdd}>
-          <Icon name="plus" size={16} /> Add Income
+          <Icon name="plus" size={16} /> {t("addBtn")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Total Income</span>
+          <span className="stat-label">{t("statTotal")}</span>
           <div className="stat-value">
             <CountUp end={totalIncome} prefix={sym()} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Sources</span>
+          <span className="stat-label">{t("statSources")}</span>
           <div className="stat-value">
             <CountUp end={income.length} decimals={0} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Recurring</span>
+          <span className="stat-label">{t("statRecurring")}</span>
           <div className="stat-value">
             <CountUp end={income.filter((i) => i.recurring !== "None").length} decimals={0} />
           </div>
         </div>
         <div className="glass-card hoverable stat-card">
-          <span className="stat-label">Avg per source</span>
+          <span className="stat-label">{t("statAvg")}</span>
           <div className="stat-value">
             <CountUp end={income.length ? totalIncome / income.length : 0} prefix={sym()} />
           </div>
@@ -78,7 +80,7 @@ export default function IncomePage() {
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search income..."
+          searchPlaceholder={t("phSearch")}
           categoryOptions={categories.map((c) => ({ value: c, label: c }))}
           onSearchChange={setSearch}
           onCategoryChange={setCatFilter}
@@ -87,11 +89,11 @@ export default function IncomePage() {
           <table>
             <thead>
               <tr>
-                <th>Source</th>
-                <th>Category</th>
-                <th>Date</th>
-                <th>Recurring</th>
-                <th style={{ textAlign: "right" }}>Amount</th>
+                <th>{t("colSource")}</th>
+                <th>{t("colCategory")}</th>
+                <th>{t("colDate")}</th>
+                <th>{t("colRecurring")}</th>
+                <th style={{ textAlign: "right" }}>{t("colAmount")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -99,7 +101,7 @@ export default function IncomePage() {
               {rows.length === 0 && (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                    No income entries match your search.
+                    {t("empty")}
                   </td>
                 </tr>
               )}
@@ -117,20 +119,20 @@ export default function IncomePage() {
                     <span className="chip">{i.category}</span>
                   </td>
                   <td>{ukDate(i.date)}</td>
-                  <td>{i.recurring === "None" ? <span style={{ color: "var(--ink-500)" }}>One-off</span> : i.recurring}</td>
+                  <td>{i.recurring === "None" ? <span style={{ color: "var(--ink-500)" }}>{t("oneOff")}</span> : i.recurring}</td>
                   <td style={{ textAlign: "right" }} className="amt-pos">
                     +{fmt(i.amount)}
                   </td>
                   <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
-                    <button className="btn btn-ghost btn-sm" data-tip="Edit" onClick={() => openEdit(i)}>
+                    <button className="btn btn-ghost btn-sm" data-tip={t("tipEdit")} onClick={() => openEdit(i)}>
                       <Icon name="pencil" size={14} />
                     </button>
                     <button
                       className="btn btn-ghost btn-sm"
-                      data-tip="Delete"
+                      data-tip={t("tipDelete")}
                       onClick={() => {
                         deleteIncome(i.id);
-                        toast("Income entry deleted", "trash-2");
+                        toast(t("toastDeleted"), "trash-2");
                       }}
                     >
                       <Icon name="trash-2" size={14} />

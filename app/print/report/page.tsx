@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { fmt, ukDate } from "@/lib/format";
 
@@ -9,18 +10,19 @@ import { fmt, ukDate } from "@/lib/format";
  * or save as PDF. Opens the print dialog automatically on load.
  */
 export default function MonthlyReportPrintPage() {
+  const t = useTranslations("Pages.print_report");
   const { user, income, expenses, budgets, goals, totalIncome, totalExpenses } = useAppData();
 
   useEffect(() => {
-    const t = setTimeout(() => window.print(), 600);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => window.print(), 600);
+    return () => clearTimeout(timer);
   }, []);
 
   const now = new Date();
   const monthLabel = now.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   const inMonth = (d: string) => {
-    const t = new Date(d);
-    return t.getMonth() === now.getMonth() && t.getFullYear() === now.getFullYear();
+    const date = new Date(d);
+    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
   };
   const monthInc = income.filter((i) => inMonth(i.date));
   const monthExp = expenses.filter((e) => inMonth(e.date));
@@ -44,20 +46,20 @@ export default function MonthlyReportPrintPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "3px solid #c81057", paddingBottom: 16 }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 700, color: "#c81057" }}>WellSpend ❤</div>
-          <h1 style={h1}>Monthly Money Report</h1>
-          <div style={{ fontSize: 12.5, color: "#666", marginTop: 4 }}>{user?.name ?? "Account holder"} · {monthLabel}</div>
+          <h1 style={h1}>{t("title")}</h1>
+          <div style={{ fontSize: 12.5, color: "#666", marginTop: 4 }}>{user?.name ?? t("accountHolder")} · {monthLabel}</div>
         </div>
         <div style={{ textAlign: "right", fontSize: 11, color: "#888" }}>
-          Generated {ukDate(now.toISOString().slice(0, 10))}
+          {t("generated", { date: ukDate(now.toISOString().slice(0, 10)) })}
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginTop: 22 }}>
         {[
-          ["Income", fmt(incTotal), "#1a9c6d"],
-          ["Expenses", fmt(expTotal), "#e91e63"],
-          ["Net", fmt(net), net >= 0 ? "#1a9c6d" : "#e91e63"],
-          ["Savings rate", `${Math.max(0, savingsRate)}%`, "#c81057"],
+          [t("income"), fmt(incTotal), "#1a9c6d"],
+          [t("expenses"), fmt(expTotal), "#e91e63"],
+          [t("net"), fmt(net), net >= 0 ? "#1a9c6d" : "#e91e63"],
+          [t("savingsRate"), `${Math.max(0, savingsRate)}%`, "#c81057"],
         ].map(([label, val, color]) => (
           <div key={label as string} style={{ border: "1px solid #eee", borderRadius: 10, padding: "12px 14px" }}>
             <div style={{ fontSize: 10.5, color: "#888", fontWeight: 700, textTransform: "uppercase" }}>{label}</div>
@@ -66,8 +68,8 @@ export default function MonthlyReportPrintPage() {
         ))}
       </div>
 
-      <h2 style={h2}>Spending by category</h2>
-      {cats.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>No expenses logged this month.</p>}
+      <h2 style={h2}>{t("spendingByCategory")}</h2>
+      {cats.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>{t("noExpenses")}</p>}
       {cats.map(([cat, amt]) => (
         <div key={cat} style={row}>
           <span>{cat}</span>
@@ -80,7 +82,7 @@ export default function MonthlyReportPrintPage() {
         </div>
       ))}
 
-      <h2 style={h2}>Largest expenses</h2>
+      <h2 style={h2}>{t("largestExpenses")}</h2>
       {topMerchants.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>—</p>}
       {topMerchants.map((e) => (
         <div key={e.id} style={row}>
@@ -89,31 +91,31 @@ export default function MonthlyReportPrintPage() {
         </div>
       ))}
 
-      <h2 style={h2}>Budget check-in</h2>
-      {budgets.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>No budgets set — add them in Budget Planner.</p>}
+      <h2 style={h2}>{t("budgetCheckIn")}</h2>
+      {budgets.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>{t("noBudgets")}</p>}
       {budgets.map((b) => {
         const pct = b.budget > 0 ? Math.round((b.spent / b.budget) * 100) : 0;
         return (
           <div key={b.category} style={row}>
             <span>{b.category}</span>
             <span style={{ color: pct >= 100 ? "#e91e63" : undefined }}>
-              {fmt(b.spent)} of {fmt(b.budget)} · {pct}%
+              {t("budgetProgress", { spent: fmt(b.spent), budget: fmt(b.budget), pct })}
             </span>
           </div>
         );
       })}
 
-      <h2 style={h2}>Savings goals</h2>
-      {goals.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>No goals yet.</p>}
+      <h2 style={h2}>{t("savingsGoals")}</h2>
+      {goals.length === 0 && <p style={{ fontSize: 12.5, color: "#888" }}>{t("noGoals")}</p>}
       {goals.map((g) => (
         <div key={g.id} style={row}>
           <span>{g.name}</span>
-          <span>{fmt(g.saved)} of {fmt(g.target)} · {g.target > 0 ? Math.round((g.saved / g.target) * 100) : 0}%</span>
+          <span>{t("goalProgress", { saved: fmt(g.saved), target: fmt(g.target), pct: g.target > 0 ? Math.round((g.saved / g.target) * 100) : 0 })}</span>
         </div>
       ))}
 
       <div style={{ marginTop: 40, fontSize: 10.5, color: "#999", borderTop: "1px solid #eee", paddingTop: 12 }}>
-        Generated by WellSpend ❤ — {monthLabel}. Lifetime totals: {fmt(totalIncome)} income, {fmt(totalExpenses)} expenses.
+        {t("footer", { month: monthLabel, income: fmt(totalIncome), expenses: fmt(totalExpenses) })}
       </div>
     </div>
   );

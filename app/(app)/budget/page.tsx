@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import {  fmt , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
@@ -17,25 +18,26 @@ function budgetStatus(pct: number) {
 }
 
 function EditBudgetModal({ budget, onClose }: { budget: Budget; onClose: () => void }) {
+  const t = useTranslations("Pages.budget");
   const { updateBudget, toast } = useAppData();
   const [amount, setAmount] = useState(String(budget.budget));
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     updateBudget(budget.category, parseFloat(amount) || 0);
-    toast(`Budget for ${budget.category} updated`);
+    toast(t("toastUpdated", { category: budget.category }));
     onClose();
   }
 
   return (
-    <Modal title={`Edit ${budget.category} Budget`} onClose={onClose}>
+    <Modal title={t("editTitle", { category: budget.category })} onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Monthly budget ({sym()})</label>
+          <label>{t("monthlyBudget", { sym: sym() })}</label>
           <input required type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">
-          Save Budget
+          {t("saveBtn")}
         </button>
       </form>
     </Modal>
@@ -43,6 +45,7 @@ function EditBudgetModal({ budget, onClose }: { budget: Budget; onClose: () => v
 }
 
 export default function BudgetPage() {
+  const t = useTranslations("Pages.budget");
   const { budgets, month, expenses, toast } = useAppData();
   const prefs = useFinancePrefs();
   const [editing, setEditing] = useState<Budget | null>(null);
@@ -68,7 +71,7 @@ export default function BudgetPage() {
       perMonth: Math.ceil(target / monthsLeft), saved: 0, dueMonth: fundMonth,
     };
     updatePrefs((p) => ({ ...p, sinking: [...p.sinking, fund] }));
-    toast(`Sinking fund "${fundName}" created — put aside ${fmt(fund.perMonth)}/month`, "piggy-bank");
+    toast(t("toastFundCreated", { name: fundName, perMonth: fmt(fund.perMonth) }), "piggy-bank");
     setAddingFund(false); setFundName(""); setFundTarget(""); setFundMonth("");
   }
 
@@ -87,21 +90,21 @@ export default function BudgetPage() {
 
   function shareBudget(name: string, share: number) {
     const lines = budgets.map((b) => `${b.category}: ${fmt(b.budget * share / 100)}`);
-    const text = `Household budget — ${month}\n${name}'s share (${share}%):\n${lines.join("\n")}\nTotal: ${fmt(totalBudget * share / 100)}`;
+    const text = t("shareText", { month, name, share, lines: lines.join("\n"), total: fmt(totalBudget * share / 100) });
     window.open(whatsappLink("", text), "_blank");
-    toast(`Budget summary opened in WhatsApp for ${name}`, "send");
+    toast(t("toastShared", { name }), "send");
   }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Budget Planner</h2>
-          <p className="section-sub">{month} — track spending against your monthly plan</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("sub", { month })}</p>
         </div>
-        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, cursor: "pointer" }} title="Unspent budget carries into next month">
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, cursor: "pointer" }} title={t("rolloverTip")}>
           <input type="checkbox" checked={prefs.rollover} onChange={(e) => updatePrefs((p) => ({ ...p, rollover: e.target.checked }))} />
-          Rollover unspent
+          {t("rollover")}
         </label>
       </div>
       <Envelopes />
@@ -110,11 +113,11 @@ export default function BudgetPage() {
           <table>
             <thead>
               <tr>
-                <th>Category</th>
-                <th>Budget</th>
-                <th>Spent</th>
-                <th>Remaining</th>
-                <th style={{ width: 220 }}>Progress</th>
+                <th>{t("colCategory")}</th>
+                <th>{t("colBudget")}</th>
+                <th>{t("colSpent")}</th>
+                <th>{t("colRemaining")}</th>
+                <th style={{ width: 220 }}>{t("colProgress")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -130,7 +133,7 @@ export default function BudgetPage() {
                     <td style={{ fontWeight: 700 }}>{b.category}</td>
                     <td>
                       {fmt(eff)}
-                      {carry > 0 && <div style={{ fontSize: 10, color: "var(--green)" }}>+{fmt(carry)} carried</div>}
+                      {carry > 0 && <div style={{ fontSize: 10, color: "var(--green)" }}>{t("carried", { amount: fmt(carry) })}</div>}
                     </td>
                     <td>{fmt(b.spent)}</td>
                     <td style={{ color: remaining < 0 ? "var(--red)" : "var(--ink-900)" }}>{fmt(remaining)}</td>
@@ -141,7 +144,7 @@ export default function BudgetPage() {
                       </div>
                     </td>
                     <td>
-                      <button className="btn btn-ghost btn-sm" data-tip="Edit budget" onClick={() => setEditing(b)}>
+                      <button className="btn btn-ghost btn-sm" data-tip={t("editTip")} onClick={() => setEditing(b)}>
                         <Icon name="pencil" size={14} />
                       </button>
                     </td>
@@ -149,7 +152,7 @@ export default function BudgetPage() {
                 );
               })}
               <tr style={{ fontWeight: 800 }}>
-                <td>Total{prefs.rollover && " (incl. rollover)"}</td>
+                <td>{t("total")}{prefs.rollover && t("inclRollover")}</td>
                 <td>{fmt(totalBudget)}</td>
                 <td>{fmt(totalSpent)}</td>
                 <td>{fmt(totalBudget - totalSpent)}</td>
@@ -162,11 +165,11 @@ export default function BudgetPage() {
       {/* ── Sinking funds — smooth irregular expenses into monthly set-asides ── */}
       <div className="glass-card card-pad" style={{ marginTop: 20 }}>
         <div className="card-head">
-          <h3>Sinking Funds <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>— save monthly for big irregular costs</span></h3>
-          <button className="btn btn-ghost btn-sm" onClick={() => setAddingFund(true)}><Icon name="plus" size={13} style={{ marginRight: 4 }} />New Fund</button>
+          <h3>{t("sinkingTitle")} <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>{t("sinkingSub")}</span></h3>
+          <button className="btn btn-ghost btn-sm" onClick={() => setAddingFund(true)}><Icon name="plus" size={13} style={{ marginRight: 4 }} />{t("newFund")}</button>
         </div>
         {prefs.sinking.length === 0 ? (
-          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "12px 0" }}>No funds yet — try one for car service, school fees or December holidays.</p>
+          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "12px 0" }}>{t("sinkingEmpty")}</p>
         ) : (
           <div className="grid grid-3">
             {prefs.sinking.map((f) => {
@@ -181,11 +184,11 @@ export default function BudgetPage() {
                     </button>
                   </div>
                   <div style={{ fontSize: 12, color: "var(--ink-500)", marginBottom: 8 }}>
-                    {fmt(f.saved)} of {fmt(f.target)} · {f.dueMonth || "no due date"} · {fmt(f.perMonth)}/mo
+                    {t("fundMeta", { saved: fmt(f.saved), target: fmt(f.target), due: f.dueMonth || t("noDueDate"), perMonth: fmt(f.perMonth) })}
                   </div>
                   <ProgressBar pct={pct} color={pct >= 100 ? "var(--green)" : "var(--rose-600)"} />
                   <button className="btn btn-ghost btn-sm" style={{ marginTop: 8 }} onClick={() => contribute(f, f.perMonth)}>
-                    <Icon name="plus" size={12} style={{ marginRight: 4 }} />Log {fmt(f.perMonth)} set aside
+                    <Icon name="plus" size={12} style={{ marginRight: 4 }} />{t("logSetAside", { amount: fmt(f.perMonth) })}
                   </button>
                 </div>
               );
@@ -197,19 +200,19 @@ export default function BudgetPage() {
       {/* ── Household — split the budget with a partner and share over WhatsApp ── */}
       <div className="glass-card card-pad" style={{ marginTop: 20 }}>
         <div className="card-head">
-          <h3>Household <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>— share each person&apos;s budget share</span></h3>
-          <button className="btn btn-ghost btn-sm" onClick={() => setAddingMember(true)}><Icon name="plus" size={13} style={{ marginRight: 4 }} />Add Member</button>
+          <h3>{t("householdTitle")} <span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 400 }}>{t("householdSub")}</span></h3>
+          <button className="btn btn-ghost btn-sm" onClick={() => setAddingMember(true)}><Icon name="plus" size={13} style={{ marginRight: 4 }} />{t("addMember")}</button>
         </div>
         {prefs.household.length === 0 ? (
-          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "12px 0" }}>Add a partner or family member, then send them their share of the budget via WhatsApp.</p>
+          <p style={{ color: "var(--ink-500)", fontSize: 13, padding: "12px 0" }}>{t("householdEmpty")}</p>
         ) : (
           prefs.household.map((m, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--card-border)", flexWrap: "wrap", gap: 8 }}>
               <div>
-                <b>{m.name}</b> <span style={{ color: "var(--ink-500)", fontSize: 12.5 }}>· {m.share}% share · {fmt(totalBudget * m.share / 100)}</span>
+                <b>{m.name}</b> <span style={{ color: "var(--ink-500)", fontSize: 12.5 }}>{t("shareMeta", { share: m.share, amount: fmt(totalBudget * m.share / 100) })}</span>
               </div>
               <div>
-                <button className="btn btn-ghost btn-sm" onClick={() => shareBudget(m.name, m.share)}><Icon name="send" size={13} style={{ marginRight: 4 }} />WhatsApp their share</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => shareBudget(m.name, m.share)}><Icon name="send" size={13} style={{ marginRight: 4 }} />{t("whatsappShare")}</button>
                 <button className="btn btn-ghost btn-sm" style={{ color: "var(--red)" }}
                   onClick={() => updatePrefs((p) => ({ ...p, household: p.household.filter((_, j) => j !== i) }))}>
                   <Icon name="trash-2" size={12} />
@@ -222,21 +225,21 @@ export default function BudgetPage() {
 
       {editing && <EditBudgetModal budget={editing} onClose={() => setEditing(null)} />}
       {addingFund && (
-        <Modal title="New Sinking Fund" onClose={() => setAddingFund(false)}>
+        <Modal title={t("newFundTitle")} onClose={() => setAddingFund(false)}>
           <form onSubmit={addFund}>
-            <div className="field"><label>Name</label><input required value={fundName} onChange={(e) => setFundName(e.target.value)} placeholder="Car service" /></div>
-            <div className="field"><label>Target ({sym()})</label><input required type="number" min="1" step="0.01" value={fundTarget} onChange={(e) => setFundTarget(e.target.value)} /></div>
-            <div className="field"><label>Needed by (month)</label><input type="month" value={fundMonth} onChange={(e) => setFundMonth(e.target.value)} /></div>
-            <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Create Fund</button>
+            <div className="field"><label>{t("name")}</label><input required value={fundName} onChange={(e) => setFundName(e.target.value)} placeholder={t("phFundName")} /></div>
+            <div className="field"><label>{t("target", { sym: sym() })}</label><input required type="number" min="1" step="0.01" value={fundTarget} onChange={(e) => setFundTarget(e.target.value)} /></div>
+            <div className="field"><label>{t("neededBy")}</label><input type="month" value={fundMonth} onChange={(e) => setFundMonth(e.target.value)} /></div>
+            <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("createFund")}</button>
           </form>
         </Modal>
       )}
       {addingMember && (
-        <Modal title="Add Household Member" onClose={() => setAddingMember(false)}>
+        <Modal title={t("addMemberTitle")} onClose={() => setAddingMember(false)}>
           <form onSubmit={addMember}>
-            <div className="field"><label>Name</label><input required value={memberName} onChange={(e) => setMemberName(e.target.value)} placeholder="Partner's name" /></div>
-            <div className="field"><label>Budget share (%)</label><input required type="number" min="1" max="100" value={memberShare} onChange={(e) => setMemberShare(e.target.value)} /></div>
-            <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Add Member</button>
+            <div className="field"><label>{t("name")}</label><input required value={memberName} onChange={(e) => setMemberName(e.target.value)} placeholder={t("phMemberName")} /></div>
+            <div className="field"><label>{t("budgetShare")}</label><input required type="number" min="1" max="100" value={memberShare} onChange={(e) => setMemberShare(e.target.value)} /></div>
+            <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("addMember")}</button>
           </form>
         </Modal>
       )}

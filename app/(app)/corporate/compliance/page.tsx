@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
@@ -9,19 +10,20 @@ import { useCorpStore, updateCorp, nextId, daysUntil, CorpDoc } from "@/lib/corp
 
 const th = { padding: "12px 8px", fontWeight: 600, fontSize: 13 } as const;
 const td = { padding: "12px 8px", fontSize: 13 } as const;
-const DOC_TYPES = ["Employment Contract", "Work Permit", "Passport/ID", "Professional Certificate", "Drivers Licence", "Medical Certificate", "Visa"];
+const DOC_TYPES = ["employmentContract", "workPermit", "passportId", "professionalCertificate", "driversLicence", "medicalCertificate", "visa"] as const;
 
 function expiryBadge(days: number) {
-  if (days < 0) return { cls: "badge-red", label: "Expired" };
-  if (days <= 30) return { cls: "badge-red", label: `${days}d left` };
-  if (days <= 90) return { cls: "badge-amber", label: `${days}d left` };
-  return { cls: "badge-green", label: `${days}d left` };
+  if (days < 0) return { cls: "badge-red", key: "badgeExpired" };
+  if (days <= 30) return { cls: "badge-red", key: "badgeDaysLeft" };
+  if (days <= 90) return { cls: "badge-amber", key: "badgeDaysLeft" };
+  return { cls: "badge-green", key: "badgeDaysLeft" };
 }
 
 function DocModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.corp_compliance");
   const { toast } = useAppData();
   const [employee, setEmployee] = useState("");
-  const [docType, setDocType] = useState(DOC_TYPES[0]);
+  const [docType, setDocType] = useState<string>(DOC_TYPES[0]);
   const [expires, setExpires] = useState("");
 
   function submit(e: FormEvent) {
@@ -30,33 +32,36 @@ function DocModal({ onClose }: { onClose: () => void }) {
       ...s,
       docs: [...s.docs, { id: nextId("doc"), employee, docType, expires }],
     }));
-    toast("Document registered — expiry alerts armed", "check-circle");
+    toast(t("toastRegistered"), "check-circle");
     onClose();
   }
 
   return (
-    <Modal title="Register Document" onClose={onClose}>
+    <Modal title={t("registerDocument")} onClose={onClose}>
       <form onSubmit={submit}>
-        <div className="field"><label>Employee</label><input required value={employee} onChange={(e) => setEmployee(e.target.value)} placeholder="Full name" /></div>
+        <div className="field"><label>{t("thEmployee")}</label><input required value={employee} onChange={(e) => setEmployee(e.target.value)} placeholder={t("fullNamePlaceholder")} /></div>
         <div className="field">
-          <label>Document type</label>
+          <label>{t("fieldDocType")}</label>
           <select className="settings-select" style={{ width: "100%" }} value={docType} onChange={(e) => setDocType(e.target.value)}>
-            {DOC_TYPES.map((d) => <option key={d}>{d}</option>)}
+            {DOC_TYPES.map((d) => <option key={d} value={d}>{t(`docType.${d}`)}</option>)}
           </select>
         </div>
-        <div className="field"><label>Expiry date</label><input required type="date" value={expires} onChange={(e) => setExpires(e.target.value)} /></div>
-        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">Register</button>
+        <div className="field"><label>{t("fieldExpiry")}</label><input required type="date" value={expires} onChange={(e) => setExpires(e.target.value)} /></div>
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("register")}</button>
       </form>
     </Modal>
   );
 }
 
 export default function CompliancePage() {
+  const t = useTranslations("Pages.corp_compliance");
   const { toast } = useAppData();
   const store = useCorpStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [creating, setCreating] = useState(false);
+
+  const docTypeLabel = (v: string) => (t.has(`docType.${v}`) ? t(`docType.${v}`) : v);
 
   const withDays = useMemo(
     () =>
@@ -85,35 +90,35 @@ export default function CompliancePage() {
 
   function remove(doc: CorpDoc) {
     updateCorp((s) => ({ ...s, docs: s.docs.filter((x) => x.id !== doc.id) }));
-    toast("Document removed", "trash-2");
+    toast(t("toastRemoved"), "trash-2");
   }
 
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Compliance & Document Expiry</h2>
-          <p className="section-sub">Contracts, permits and certificates — flagged before they lapse</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setCreating(true)}>
-          <Icon name="plus" size={16} style={{ marginRight: 8 }} />Register Document
+          <Icon name="plus" size={16} style={{ marginRight: 8 }} />{t("registerDocument")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
-        <div className="glass-card card-pad"><div className="stat-label">Tracked Docs</div><div className="stat-value">{store.docs.length}</div></div>
-        <div className="glass-card card-pad"><div className="stat-label">Expired</div><div className="stat-value" style={{ color: expired ? "var(--red)" : undefined }}>{expired}</div></div>
-        <div className="glass-card card-pad"><div className="stat-label">Expiring ≤90d</div><div className="stat-value" style={{ color: expiring ? "var(--amber)" : undefined }}>{expiring}</div></div>
-        <div className="glass-card card-pad"><div className="stat-label">Valid</div><div className="stat-value" style={{ color: "var(--green)" }}>{withDays.filter((d) => d.days > 90).length}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statTracked")}</div><div className="stat-value">{store.docs.length}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statExpired")}</div><div className="stat-value" style={{ color: expired ? "var(--red)" : undefined }}>{expired}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statExpiring")}</div><div className="stat-value" style={{ color: expiring ? "var(--amber)" : undefined }}>{expiring}</div></div>
+        <div className="glass-card card-pad"><div className="stat-label">{t("statValid")}</div><div className="stat-value" style={{ color: "var(--green)" }}>{withDays.filter((d) => d.days > 90).length}</div></div>
       </div>
 
       <div className="glass-card card-pad">
         <FilterBar
-          searchPlaceholder="Search documents..."
+          searchPlaceholder={t("searchPlaceholder")}
           statusOptions={[
-            { value: "Expired", label: "Expired" },
-            { value: "Expiring", label: "Expiring ≤90d" },
-            { value: "Valid", label: "Valid >90d" },
+            { value: "Expired", label: t("statExpired") },
+            { value: "Expiring", label: t("statExpiring") },
+            { value: "Valid", label: t("filterValid") },
           ]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
@@ -121,14 +126,14 @@ export default function CompliancePage() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={th}>Employee</th><th style={th}>Document</th><th style={th}>Expires</th>
-              <th style={th}>Status</th><th style={th}>Actions</th>
+              <th style={th}>{t("thEmployee")}</th><th style={th}>{t("thDocument")}</th><th style={th}>{t("thExpires")}</th>
+              <th style={th}>{t("thStatus")}</th><th style={th}>{t("thActions")}</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
               <tr><td colSpan={5} style={{ textAlign: "center", color: "var(--ink-500)", padding: 30 }}>
-                No documents registered — add contracts, permits and certificates to track them.
+                {t("emptyState")}
               </td></tr>
             )}
             {filtered.map((d) => {
@@ -136,14 +141,14 @@ export default function CompliancePage() {
               return (
                 <tr key={d.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
                   <td style={{ ...td, fontWeight: 600 }}>{d.employee}</td>
-                  <td style={td}>{d.docType}</td>
+                  <td style={td}>{docTypeLabel(d.docType)}</td>
                   <td style={td}>{d.expires}</td>
-                  <td style={td}><span className={"badge " + b.cls}>{b.label}</span></td>
+                  <td style={td}><span className={"badge " + b.cls}>{t(b.key, { days: d.days })}</span></td>
                   <td style={td}>
                     {d.days <= 30 && d.days >= 0 && (
                       <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--rose-600)" }}
-                        onClick={() => toast(`Reminder queued to ${d.employee} about their ${d.docType}`, "bell")}>
-                        <Icon name="bell" size={13} style={{ marginRight: 4 }} />Remind
+                        onClick={() => toast(t("toastReminder", { employee: d.employee, docType: docTypeLabel(d.docType) }), "bell")}>
+                        <Icon name="bell" size={13} style={{ marginRight: 4 }} />{t("remind")}
                       </button>
                     )}
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--red)" }} onClick={() => remove(d)}>

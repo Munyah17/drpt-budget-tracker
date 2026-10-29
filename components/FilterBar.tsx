@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Icon from "./Icon";
 
 interface FilterOption {
@@ -19,7 +20,7 @@ interface FilterBarProps {
 }
 
 export default function FilterBar({
-  searchPlaceholder = "Search...",
+  searchPlaceholder,
   categoryOptions = [],
   statusOptions = [],
   onSearchChange,
@@ -27,6 +28,7 @@ export default function FilterBar({
   onStatusChange,
   onClear,
 }: FilterBarProps) {
+  const t = useTranslations("Pages.components");
   const [searchValue, setSearchValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
   const [statusValue, setStatusValue] = useState("");
@@ -66,7 +68,7 @@ export default function FilterBar({
       <div className="search-box" style={{ flex: 1, minWidth: 200 }}>
         <Icon name="search" />
         <input
-          placeholder={searchPlaceholder}
+          placeholder={searchPlaceholder ?? t("filter_searchPh")}
           value={searchValue}
           onChange={handleSearchChange}
         />
@@ -78,7 +80,7 @@ export default function FilterBar({
           onChange={handleCategoryChange}
           style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", minWidth: 150 }}
         >
-          <option value="">All Categories</option>
+          <option value="">{t("filter_allCats")}</option>
           {categoryOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -93,7 +95,7 @@ export default function FilterBar({
           onChange={handleStatusChange}
           style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", minWidth: 150 }}
         >
-          <option value="">All Status</option>
+          <option value="">{t("filter_allStatus")}</option>
           {statusOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -108,7 +110,7 @@ export default function FilterBar({
           style={{ padding: "10px 16px", display: "flex", alignItems: "center", gap: 8 }}
         >
           <Icon name="x" size={16} />
-          Clear Filters
+          {t("filter_clear")}
         </button>
       )}
     </div>

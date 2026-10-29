@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
 import Icon from "@/components/Icon";
@@ -18,10 +19,11 @@ interface User {
 const USERS_DATA: User[] = [];
 
 export default function UserManagementPage() {
+  const t = useTranslations("Pages.adm_users");
   const { toast } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "suspended">("all");
-  const crud = useCrud(USERS_DATA, "User");
+  const crud = useCrud(USERS_DATA, t("entityName"));
 
   const filteredUsers = crud.items.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -43,12 +45,12 @@ export default function UserManagementPage() {
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">User Management</h2>
-          <p className="section-sub">Manage all platform users</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          Add User
+          {t("addUser")}
         </button>
       </div>
 
@@ -57,7 +59,7 @@ export default function UserManagementPage() {
           <div style={{ flex: 1 }}>
             <input
               type="text"
-              placeholder="Search users..."
+              placeholder={t("phSearch")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ width: "100%", padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}
@@ -68,22 +70,22 @@ export default function UserManagementPage() {
             onChange={(e) => setStatusFilter(e.target.value as "all" | "active" | "inactive" | "suspended")}
             style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="suspended">Suspended</option>
+            <option value="all">{t("optAllStatus")}</option>
+            <option value="active">{t("optActive")}</option>
+            <option value="inactive">{t("optInactive")}</option>
+            <option value="suspended">{t("suspended")}</option>
           </select>
         </div>
 
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>User</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Status</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Plan</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Joined</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Last Active</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Actions</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("entityName")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colStatus")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colPlan")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colJoined")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colLastActive")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colActions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -122,7 +124,7 @@ export default function UserManagementPage() {
                       style={{ padding: "6px 10px", color: user.status === "suspended" ? "var(--green)" : "var(--red)" }}
                       onClick={() => {
                         crud.setItems((prev) => prev.map((u) => (u.id === user.id ? { ...u, status: u.status === "suspended" ? "active" : "suspended" } : u)));
-                        toast(user.status === "suspended" ? `${user.name} reactivated` : `${user.name} suspended`, "x-circle");
+                        toast(user.status === "suspended" ? t("toastReactivated", { name: user.name }) : t("toastSuspended", { name: user.name }), "x-circle");
                       }}
                     >
                       <Icon name="x-circle" size={16} />
@@ -137,19 +139,19 @@ export default function UserManagementPage() {
 
       <div className="grid grid-4">
         <div className="glass-card card-pad">
-          <div className="stat-label">Total Users</div>
+          <div className="stat-label">{t("totalUsers")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Active Users</div>
+          <div className="stat-label">{t("activeUsers")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Paid Users</div>
+          <div className="stat-label">{t("paidUsers")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Suspended</div>
+          <div className="stat-label">{t("suspended")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>

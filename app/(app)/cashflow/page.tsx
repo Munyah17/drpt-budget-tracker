@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCashFlow } from "@/lib/CashFlowContext";
 import {
@@ -35,17 +36,17 @@ interface AdviceCard {
   text: string;
 }
 
-const ADVICE_STYLE: Record<AdviceCard["type"], { icon: string; color: string; bg: string; label: string }> = {
-  warn: { icon: "zap", color: "var(--red)", bg: "var(--pink-100)", label: "Cut back" },
-  tip: { icon: "sparkles", color: "var(--amber)", bg: "var(--pink-100)", label: "Tip" },
-  praise: { icon: "check-circle", color: "var(--green)", bg: "var(--pink-100)", label: "Well done" },
-  action: { icon: "target", color: "var(--rose-600)", bg: "var(--pink-100)", label: "Do this" },
-};
-
 const monthKey = (iso: string) => iso.slice(0, 7); // yyyy-mm
 const MONTH_ALL = "all";
 
 export default function CashFlowPage() {
+  const t = useTranslations("Pages.cashflow");
+  const ADVICE_STYLE: Record<AdviceCard["type"], { icon: string; color: string; bg: string; label: string }> = {
+    warn: { icon: "zap", color: "var(--red)", bg: "var(--pink-100)", label: t("adviceWarn") },
+    tip: { icon: "sparkles", color: "var(--amber)", bg: "var(--pink-100)", label: t("adviceTip") },
+    praise: { icon: "check-circle", color: "var(--green)", bg: "var(--pink-100)", label: t("advicePraise") },
+    action: { icon: "target", color: "var(--rose-600)", bg: "var(--pink-100)", label: t("adviceAction") },
+  };
   const { user, currency, toast, isDemo, budgets } = useAppData();
   const {
     entries, addEntry, deleteEntry, syncing, lastSync, syncNow,
@@ -88,9 +89,9 @@ export default function CashFlowPage() {
       canvas.getContext("2d")?.drawImage(img, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(url);
       setReceipt(canvas.toDataURL("image/jpeg", 0.72));
-      toast("Receipt attached", "check-circle");
+      toast(t("toastReceipt"), "check-circle");
     };
-    img.onerror = () => { URL.revokeObjectURL(url); toast("Could not read that image", "x"); };
+    img.onerror = () => { URL.revokeObjectURL(url); toast(t("toastImgFail"), "x"); };
     img.src = url;
   }
 
@@ -110,7 +111,7 @@ export default function CashFlowPage() {
     };
     const Rec = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!Rec) {
-      toast("Voice input isn't supported in this browser", "x");
+      toast(t("toastVoiceUnsupported"), "x");
       return;
     }
     const rec = new Rec();
@@ -118,7 +119,7 @@ export default function CashFlowPage() {
     rec.interimResults = false;
     rec.onresult = async (e: Event) => {
       const transcript = (e as unknown as { results: { 0: { 0: { transcript: string } } } }).results[0][0].transcript;
-      toast(`Heard: “${transcript}”`, "sparkles");
+      toast(t("toastHeard", { text: transcript }), "sparkles");
       try {
         const res = await fetch("/api/ai/chat", {
           method: "POST",
@@ -136,14 +137,14 @@ export default function CashFlowPage() {
           if (p.amount) setAmount(String(p.amount));
           if (p.payee) setPayee(p.payee);
           if (p.note) setNote(p.note);
-          toast("Voice entry filled — check and save", "check-circle");
+          toast(t("toastVoiceFilled"), "check-circle");
         }
       } catch {
-        toast("Couldn't parse that — fill it in manually", "x");
+        toast(t("toastParseFail"), "x");
       }
     };
     rec.onend = () => setListening(false);
-    rec.onerror = () => { setListening(false); toast("Voice capture failed", "x"); };
+    rec.onerror = () => { setListening(false); toast(t("toastVoiceFail"), "x"); };
     setListening(true);
     rec.start();
   }
@@ -155,9 +156,9 @@ export default function CashFlowPage() {
     setWalletBusy(false);
     if (w) {
       setWalletName("");
-      toast(`Wallet created — share code ${w.code} with your people`, "users");
+      toast(t("toastWalletCreated", { code: w.code }), "users");
     } else {
-      toast("Couldn't create wallet (cloud tables needed)", "x");
+      toast(t("toastWalletFail"), "x");
     }
   }
 
@@ -168,9 +169,9 @@ export default function CashFlowPage() {
     setWalletBusy(false);
     if (w) {
       setJoinCode("");
-      toast(`Joined “${w.name}”`, "users");
+      toast(t("toastJoined", { name: w.name }), "users");
     } else {
-      toast("No wallet found with that code", "x");
+      toast(t("toastJoinFail"), "x");
     }
   }
 
@@ -207,13 +208,13 @@ export default function CashFlowPage() {
         body: JSON.stringify({ mode: "digest", context }),
       });
       const data = await res.json();
-      const text = res.ok ? data.reply : "Couldn't generate the digest right now.";
+      const text = res.ok ? data.reply : t("digestFail");
       setDigest(text);
       if (res.ok && !isDemo) {
         try { localStorage.setItem(`drpt-digest-${user?.id}-${weekKey}`, text); } catch { /* fine */ }
       }
     } catch {
-      setDigest("Couldn't generate the digest right now — check your connection.");
+      setDigest(t("digestFailConn"));
     } finally {
       setDigestLoading(false);
     }
@@ -223,12 +224,12 @@ export default function CashFlowPage() {
     e.preventDefault();
     const n = parseFloat(amount);
     if (!n || n <= 0) {
-      toast("Enter an amount first", "x");
+      toast(t("toastNoAmount"), "x");
       amountRef.current?.focus();
       return;
     }
     if (!payee.trim()) {
-      toast(type === "expense" ? "Who was the money for?" : "Where did it come from?", "x");
+      toast(type === "expense" ? t("toastPayeeExpense") : t("toastPayeeIncome"), "x");
       return;
     }
     const saved = addEntry({
@@ -242,7 +243,7 @@ export default function CashFlowPage() {
       wallet_id: activeWalletId ?? undefined,
       date: new Date(date + "T" + new Date().toTimeString().slice(0, 8)).toISOString(),
     });
-    toast(`${type === "expense" ? "Spent" : "Received"} ${formatCurrency(n, entryCurrency)} — saved`, "check-circle");
+    toast(t("toastSaved", { action: type === "expense" ? t("spent") : t("received"), amount: formatCurrency(n, entryCurrency) }), "check-circle");
 
     // Budget alerts: warn at 80% and 100% of the mapped planner budget
     if (type === "expense") {
@@ -252,9 +253,9 @@ export default function CashFlowPage() {
         const spent = monthSpendByKind([saved, ...entries], category, entryCurrency);
         const pct = (spent / b.budget) * 100;
         if (pct >= 100) {
-          toast(`${budgetCat} budget exceeded (${Math.round(pct)}%) — ease off this category`, "zap");
+          toast(t("toastBudgetOver", { category: budgetCat, pct: Math.round(pct) }), "zap");
         } else if (pct >= 80) {
-          toast(`${budgetCat} budget at ${Math.round(pct)}% — watch it`, "zap");
+          toast(t("toastBudgetWarn", { category: budgetCat, pct: Math.round(pct) }), "zap");
         }
       }
     }
@@ -300,23 +301,23 @@ export default function CashFlowPage() {
   function exportCsv() {
     downloadCsv(`cash-statement-${activeCurrency}-${monthFilter}.csv`,
       rows.map(({ entry: e, balance }) => ({
-        Date: new Date(e.date).toLocaleDateString("en-GB"),
-        Type: e.type,
-        Description: e.payee,
-        Category: e.category,
-        Note: e.note ?? "",
-        "Money In": e.type === "income" ? e.amount.toFixed(2) : "",
-        "Money Out": e.type === "expense" ? e.amount.toFixed(2) : "",
-        [`Balance ${activeCurrency}`]: balance.toFixed(2),
+        [t("colDate")]: new Date(e.date).toLocaleDateString("en-GB"),
+        [t("colType")]: e.type,
+        [t("colDesc")]: e.payee,
+        [t("colCategory")]: e.category,
+        [t("colNote")]: e.note ?? "",
+        [t("colMoneyIn")]: e.type === "income" ? e.amount.toFixed(2) : "",
+        [t("colMoneyOut")]: e.type === "expense" ? e.amount.toFixed(2) : "",
+        [t("colBalanceCur", { cur: activeCurrency })]: balance.toFixed(2),
       })));
-    toast("CSV downloaded", "download");
+    toast(t("toastCsv"), "download");
   }
 
   function exportXls() {
     downloadXls(
       `cash-statement-${activeCurrency}-${monthFilter}.xls`,
-      `Cash Statement — ${user?.name ?? ""} (${activeCurrency})`,
-      ["Date", "Type", "Description", "Category", "Note", `In ${activeCurrency}`, `Out ${activeCurrency}`, "Balance"],
+      t("xlsTitle", { name: user?.name ?? "", cur: activeCurrency }),
+      [t("colDate"), t("colType"), t("colDesc"), t("colCategory"), t("colNote"), t("colInCur", { cur: activeCurrency }), t("colOutCur", { cur: activeCurrency }), t("colBalance")],
       rows.map(({ entry: e, balance }) => [
         new Date(e.date).toLocaleDateString("en-GB"),
         e.type,
@@ -328,15 +329,15 @@ export default function CashFlowPage() {
         balance.toFixed(2),
       ])
     );
-    toast("Excel file downloaded", "download");
+    toast(t("toastXls"), "download");
   }
 
   function exportPdf() {
     const doc = {
-      title: "Cash Statement",
+      title: t("tabStatement"),
       accountName: `${user?.name ?? ""} · ${user?.email ?? ""}`,
       currency: activeCurrency,
-      period: monthFilter === MONTH_ALL ? "All time" : monthLabel(monthFilter),
+      period: monthFilter === MONTH_ALL ? t("optAllTime") : monthLabel(monthFilter),
       generated: new Date().toLocaleString("en-GB"),
       opening: "",
       totalIn: cf(rows.reduce((s, { entry: e }) => s + (e.type === "income" ? e.amount : 0), 0)),
@@ -401,10 +402,10 @@ export default function CashFlowPage() {
         body: JSON.stringify({ mode: "advice", context: JSON.stringify(summary) }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "AI unavailable");
+      if (!res.ok) throw new Error(data.error || t("aiUnavailable"));
       setAdvice(data.cards as AdviceCard[]);
     } catch (err) {
-      setAdviceError(err instanceof Error ? err.message : "Could not load advice");
+      setAdviceError(err instanceof Error ? err.message : t("adviceLoadFail"));
     } finally {
       setAdviceLoading(false);
     }
@@ -418,15 +419,15 @@ export default function CashFlowPage() {
       {/* header */}
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Cash Flow</h2>
+          <h2 className="section-title">{t("title")}</h2>
           <p className="section-sub">
-            Log every cent in and out — works offline, syncs to the cloud
-            {lastSync ? ` · synced ${new Date(lastSync).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}` : ""}
-            {isDemo ? " · demo (not saved)" : ""}
+            {t("sub")}
+            {lastSync ? ` · ${t("syncedAt", { time: new Date(lastSync).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) })}` : ""}
+            {isDemo ? ` · ${t("demoNote")}` : ""}
           </p>
         </div>
         <button className="btn btn-ghost btn-sm" onClick={syncNow} disabled={syncing}>
-          <Icon name="refresh-cw" size={15} /> {syncing ? "Syncing…" : "Sync now"}
+          <Icon name="refresh-cw" size={15} /> {syncing ? t("syncing") : t("syncNow")}
         </button>
       </div>
 
@@ -435,26 +436,26 @@ export default function CashFlowPage() {
         <form onSubmit={handleAdd}>
           <div className="cash-add-grid">
             <div>
-              <label className="field-label">Type</label>
+              <label className="field-label">{t("labelType")}</label>
               <div className="cash-type-toggle">
                 <button
                   type="button"
                   className={"cash-type-btn out" + (type === "expense" ? " active" : "")}
                   onClick={() => { setType("expense"); setCategory("Person"); }}
                 >
-                  <Icon name="arrow-up-right" size={15} /> Money out
+                  <Icon name="arrow-up-right" size={15} /> {t("moneyOut")}
                 </button>
                 <button
                   type="button"
                   className={"cash-type-btn in" + (type === "income" ? " active" : "")}
                   onClick={() => { setType("income"); setCategory("Salary"); }}
                 >
-                  <Icon name="arrow-down-left" size={15} /> Money in
+                  <Icon name="arrow-down-left" size={15} /> {t("moneyIn")}
                 </button>
               </div>
             </div>
             <div>
-              <label className="field-label">Amount</label>
+              <label className="field-label">{t("labelAmount")}</label>
               <div style={{ display: "flex", gap: 8 }}>
                 <input
                   ref={amountRef}
@@ -472,7 +473,7 @@ export default function CashFlowPage() {
                   value={entryCurrency}
                   onChange={(e) => setEntryCurrency(e.target.value as Currency)}
                   style={{ width: 92 }}
-                  aria-label="Currency"
+                  aria-label={t("ariaCurrency")}
                 >
                   {CURRENCIES.map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -481,10 +482,10 @@ export default function CashFlowPage() {
               </div>
             </div>
             <div>
-              <label className="field-label">{type === "expense" ? "To whom / what for?" : "From whom / what source?"}</label>
+              <label className="field-label">{type === "expense" ? t("labelPayeeExpense") : t("labelPayeeIncome")}</label>
               <input
                 type="text"
-                placeholder={type === "expense" ? "e.g. Mai Dube, OK Mart, Netflix…" : "e.g. Employer, John, client…"}
+                placeholder={type === "expense" ? t("phPayeeExpense") : t("phPayeeIncome")}
                 value={payee}
                 onChange={(e) => setPayee(e.target.value)}
                 required
@@ -508,7 +509,7 @@ export default function CashFlowPage() {
           <div className="cash-add-footer">
             <input
               type="text"
-              placeholder="Note (optional)"
+              placeholder={t("phNote")}
               value={note}
               onChange={(e) => setNote(e.target.value)}
               style={{ flex: 1, minWidth: 140 }}
@@ -519,12 +520,12 @@ export default function CashFlowPage() {
               max={new Date().toISOString().slice(0, 10)}
               onChange={(e) => setDate(e.target.value)}
               style={{ width: 150 }}
-              aria-label="Date"
+              aria-label={t("ariaDate")}
             />
             <button
               type="button"
               className={"icon-btn" + (listening ? " mic-live" : "")}
-              title="Voice quick-add"
+              title={t("titleVoice")}
               onClick={startVoice}
             >
               <Icon name="radio" size={16} style={listening ? { color: "var(--red)" } : undefined} />
@@ -540,13 +541,13 @@ export default function CashFlowPage() {
             <button
               type="button"
               className="icon-btn"
-              title={receipt ? "Receipt attached — tap to replace" : "Attach receipt"}
+              title={receipt ? t("titleReceiptReplace") : t("titleReceipt")}
               onClick={() => fileRef.current?.click()}
             >
               <Icon name={receipt ? "check-circle" : "receipt"} size={16} style={receipt ? { color: "var(--green)" } : undefined} />
             </button>
             <button type="submit" className="btn btn-primary">
-              <Icon name="plus" size={16} /> Save entry
+              <Icon name="plus" size={16} /> {t("saveBtn")}
             </button>
           </div>
         </form>
@@ -555,17 +556,17 @@ export default function CashFlowPage() {
       {/* wallet */}
       <div className="wallet-row" style={{ marginBottom: 20 }}>
         <div className="glass-card wallet-card">
-          <div className="w-label"><Icon name="arrow-down-left" size={15} style={{ color: "var(--green)" }} /> Money in</div>
+          <div className="w-label"><Icon name="arrow-down-left" size={15} style={{ color: "var(--green)" }} /> {t("moneyIn")}</div>
           <div className="w-value" style={{ color: "var(--green)" }}>{cf(totals.income)}</div>
-          <div className="w-sub">{activeCurrency} · all time</div>
+          <div className="w-sub">{activeCurrency} · {t("allTime")}</div>
         </div>
         <div className="glass-card wallet-card">
-          <div className="w-label"><Icon name="arrow-up-right" size={15} style={{ color: "var(--rose-600)" }} /> Money out</div>
+          <div className="w-label"><Icon name="arrow-up-right" size={15} style={{ color: "var(--rose-600)" }} /> {t("moneyOut")}</div>
           <div className="w-value" style={{ color: "var(--rose-600)" }}>{cf(totals.expense)}</div>
-          <div className="w-sub">{activeCurrency} · all time</div>
+          <div className="w-sub">{activeCurrency} · {t("allTime")}</div>
         </div>
         <div className="glass-card wallet-card">
-          <div className="w-label"><Icon name="wallet" size={15} style={{ color: "var(--rose-600)" }} /> In your pocket</div>
+          <div className="w-label"><Icon name="wallet" size={15} style={{ color: "var(--rose-600)" }} /> {t("pocketLabel")}</div>
           <div className="w-value">{cf(totals.balance)}</div>
           <div className="w-sub">
             {currencies.length > 1
@@ -578,13 +579,13 @@ export default function CashFlowPage() {
                     {c}
                   </button>
                 ))
-              : `${activeCurrency} · balance`}
+              : `${activeCurrency} · ${t("balanceWord")}`}
           </div>
         </div>
         <div className="glass-card wallet-card">
-          <div className="w-label"><Icon name="zap" size={15} style={{ color: "var(--amber)" }} /> Logging streak</div>
+          <div className="w-label"><Icon name="zap" size={15} style={{ color: "var(--amber)" }} /> {t("streakLabel")}</div>
           <div className="w-value">
-            {streak === 0 ? "—" : `${streak} day${streak === 1 ? "" : "s"}`}
+            {streak === 0 ? "—" : t("streakDays", { count: streak })}
             {streak > 0 && <span style={{ fontSize: 20, marginLeft: 6 }}>🔥</span>}
           </div>
           <div className="w-sub" style={{ gap: 4 }}>
@@ -592,7 +593,7 @@ export default function CashFlowPage() {
               <span
                 key={b}
                 className={"badge-chip" + (streak >= b ? " earned" : "")}
-                title={`${b}-day badge`}
+                title={t("badgeTitle", { days: b })}
               >
                 {b}d
               </span>
@@ -605,7 +606,7 @@ export default function CashFlowPage() {
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div className="st-toolbar" style={{ marginBottom: wallets.length ? 12 : 0 }}>
           <h3 style={{ margin: 0, fontSize: 15 }}>
-            <Icon name="users" size={16} style={{ color: "var(--rose-600)", verticalAlign: "-2px" }} /> Shared wallet
+            <Icon name="users" size={16} style={{ color: "var(--rose-600)", verticalAlign: "-2px" }} /> {t("sharedTitle")}
           </h3>
           {wallets.length > 0 && (
             <div className="st-exports">
@@ -613,14 +614,14 @@ export default function CashFlowPage() {
                 className={"cur-chip" + (!activeWalletId ? " active" : "")}
                 onClick={() => setActiveWalletId(null)}
               >
-                Personal
+                {t("personalChip")}
               </button>
               {wallets.map((w) => (
                 <button
                   key={w.id}
                   className={"cur-chip" + (activeWalletId === w.id ? " active" : "")}
                   onClick={() => setActiveWalletId(w.id)}
-                  title={`Share code: ${w.code}`}
+                  title={t("shareCodeTitle", { code: w.code })}
                 >
                   {w.name} · {w.code}
                 </button>
@@ -631,37 +632,39 @@ export default function CashFlowPage() {
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <input
             type="text"
-            placeholder="New wallet name (e.g. Home)"
+            placeholder={t("phWalletName")}
             value={walletName}
             onChange={(e) => setWalletName(e.target.value)}
             style={{ flex: "1 1 170px", border: "1.5px solid var(--card-border)", borderRadius: 12, padding: "10px 13px", fontSize: 13.5, background: "var(--card-solid)", color: "var(--ink-900)" }}
           />
           <button className="btn btn-ghost btn-sm" onClick={handleCreateWallet} disabled={walletBusy}>
-            <Icon name="plus" size={14} /> Create
+            <Icon name="plus" size={14} /> {t("createBtn")}
           </button>
           <input
             type="text"
-            placeholder="Join code"
+            placeholder={t("phJoinCode")}
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
             maxLength={6}
             style={{ width: 110, border: "1.5px solid var(--card-border)", borderRadius: 12, padding: "10px 13px", fontSize: 13.5, background: "var(--card-solid)", color: "var(--ink-900)", textTransform: "uppercase" }}
           />
           <button className="btn btn-ghost btn-sm" onClick={handleJoinWallet} disabled={walletBusy || !joinCode.trim()}>
-            Join
+            {t("joinBtn")}
           </button>
         </div>
         {activeWalletId && (
           <p style={{ fontSize: 12, color: "var(--ink-500)", margin: "10px 0 0" }}>
-            New entries are logged to <b>{wallets.find((w) => w.id === activeWalletId)?.name}</b> —
-            everyone with the code sees them in real time.
+            {t.rich("sharedNote", {
+              name: wallets.find((w) => w.id === activeWalletId)?.name ?? "",
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         )}
       </div>
 
       {/* tabs */}
       <div className="tabs" style={{ marginBottom: 18 }}>
-        {([["statement", "Cash Statement"], ["leaderboard", "Leaderboard"], ["coach", "AI Coach"]] as [Tab, string][]).map(([id, label]) => (
+        {([["statement", t("tabStatement")], ["leaderboard", t("tabLeaderboard")], ["coach", t("tabCoach")]] as [Tab, string][]).map(([id, label]) => (
           <button
             key={id}
             className={"tab-btn" + (tab === id ? " active" : "")}
@@ -677,8 +680,8 @@ export default function CashFlowPage() {
         <div className="glass-card card-pad">
           <div className="st-toolbar">
             <div className="st-filters">
-              <select value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} aria-label="Month">
-                <option value={MONTH_ALL}>All time</option>
+              <select value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} aria-label={t("ariaMonth")}>
+                <option value={MONTH_ALL}>{t("optAllTime")}</option>
                 {months.map((m) => (
                   <option key={m} value={m}>{monthLabel(m)}</option>
                 ))}
@@ -686,7 +689,7 @@ export default function CashFlowPage() {
               <div style={{ position: "relative", flex: 1, minWidth: 140 }}>
                 <input
                   type="search"
-                  placeholder="Search payee, category, note…"
+                  placeholder={t("phSearchStmt")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   style={{ width: "100%", paddingLeft: 34 }}
@@ -711,11 +714,11 @@ export default function CashFlowPage() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Description</th>
-                  <th style={{ textAlign: "right" }}>In</th>
-                  <th style={{ textAlign: "right" }}>Out</th>
-                  <th style={{ textAlign: "right" }}>Balance</th>
+                  <th>{t("colDate")}</th>
+                  <th>{t("colDesc")}</th>
+                  <th style={{ textAlign: "right" }}>{t("colIn")}</th>
+                  <th style={{ textAlign: "right" }}>{t("colOut")}</th>
+                  <th style={{ textAlign: "right" }}>{t("colBalance")}</th>
                   <th style={{ width: 44 }}></th>
                 </tr>
               </thead>
@@ -734,7 +737,7 @@ export default function CashFlowPage() {
                         {e.receipt && (
                           <button
                             className="receipt-btn"
-                            title="View receipt"
+                            title={t("titleViewReceipt")}
                             onClick={() => setReceiptPreview(e.receipt!)}
                           >
                             <Icon name="receipt" size={13} />
@@ -742,7 +745,7 @@ export default function CashFlowPage() {
                         )}
                       </div>
                       <div style={{ fontSize: 11, color: "var(--ink-500)" }}>
-                        {e.category}{e.note ? ` · ${e.note}` : ""}{e.wallet_id ? ` · ${wallets.find((w) => w.id === e.wallet_id)?.name ?? "shared"}` : ""}{e.currency !== activeCurrency ? ` · ${e.currency} ${e.amount.toFixed(2)}` : ""}
+                        {e.category}{e.note ? ` · ${e.note}` : ""}{e.wallet_id ? ` · ${wallets.find((w) => w.id === e.wallet_id)?.name ?? t("sharedFallback")}` : ""}{e.currency !== activeCurrency ? ` · ${e.currency} ${e.amount.toFixed(2)}` : ""}
                       </div>
                     </td>
                     <td style={{ textAlign: "right", color: "var(--green)", fontWeight: 600 }}>
@@ -756,13 +759,13 @@ export default function CashFlowPage() {
                       {confirmDelete === e.id ? (
                         <button
                           className="icon-btn"
-                          title="Confirm delete"
-                          onClick={() => { deleteEntry(e.id); setConfirmDelete(null); toast("Entry deleted", "trash-2"); }}
+                          title={t("titleConfirmDelete")}
+                          onClick={() => { deleteEntry(e.id); setConfirmDelete(null); toast(t("toastEntryDeleted"), "trash-2"); }}
                         >
                           <Icon name="check" size={15} style={{ color: "var(--red)" }} />
                         </button>
                       ) : (
-                        <button className="icon-btn" title="Delete" onClick={() => setConfirmDelete(e.id)}>
+                        <button className="icon-btn" title={t("titleDelete")} onClick={() => setConfirmDelete(e.id)}>
                           <Icon name="trash-2" size={15} />
                         </button>
                       )}
@@ -772,7 +775,7 @@ export default function CashFlowPage() {
                 {!rows.length && (
                   <tr>
                     <td colSpan={6} style={{ textAlign: "center", padding: 36, color: "var(--ink-500)" }}>
-                      Nothing here yet — add your first entry above.
+                      {t("stmtEmpty")}
                     </td>
                   </tr>
                 )}
@@ -787,10 +790,10 @@ export default function CashFlowPage() {
         <div className="glass-card card-pad">
           <div className="st-toolbar" style={{ marginBottom: 14 }}>
             <h3 style={{ margin: 0, fontSize: 16 }}>
-              <Icon name="star" size={16} style={{ color: "var(--amber)", verticalAlign: "-2px" }} /> Spending table
+              <Icon name="star" size={16} style={{ color: "var(--amber)", verticalAlign: "-2px" }} /> {t("leaderTitle")}
             </h3>
             <div className="st-exports">
-              {([["payee", "By who"], ["category", "By category"]] as [LeaderBy, string][]).map(([id, label]) => (
+              {([["payee", t("byPayee")], ["category", t("byCategory")]] as [LeaderBy, string][]).map(([id, label]) => (
                 <button
                   key={id}
                   className={"cur-chip" + (leaderBy === id ? " active" : "")}
@@ -804,7 +807,7 @@ export default function CashFlowPage() {
 
           {leaders.length === 0 && (
             <p style={{ textAlign: "center", color: "var(--ink-500)", padding: "30px 0" }}>
-              No expenses yet — your league table appears once you start logging.
+              {t("leaderEmpty")}
             </p>
           )}
 
@@ -836,7 +839,7 @@ export default function CashFlowPage() {
           </div>
           {leaders.length > 0 && (
             <p style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 12, marginBottom: 0 }}>
-              Ranked by total spent in {activeCurrency} — the higher the rank, the more that payee/category eats.
+              {t("leaderFoot", { cur: activeCurrency })}
             </p>
           )}
         </div>
@@ -846,8 +849,8 @@ export default function CashFlowPage() {
       {receiptPreview && (
         <div className="receipt-lightbox" onClick={() => setReceiptPreview(null)}>
           {/* eslint-disable-next-line @next/next/no-img-element -- dataURL receipt preview */}
-          <img src={receiptPreview} alt="Receipt" />
-          <div className="receipt-hint">Tap anywhere to close</div>
+          <img src={receiptPreview} alt={t("altReceipt")} />
+          <div className="receipt-hint">{t("receiptHint")}</div>
         </div>
       )}
 
@@ -856,10 +859,10 @@ export default function CashFlowPage() {
         <div className="glass-card card-pad">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
             <h3 style={{ margin: 0, fontSize: 16 }}>
-              <Icon name="sparkles" size={16} style={{ color: "var(--rose-500)", verticalAlign: "-2px" }} /> Your money coach
+              <Icon name="sparkles" size={16} style={{ color: "var(--rose-500)", verticalAlign: "-2px" }} /> {t("coachTitle")}
             </h3>
             <button className="btn btn-primary btn-sm" onClick={getAdvice} disabled={adviceLoading}>
-              {adviceLoading ? "Thinking…" : advice ? "Refresh advice" : "Analyse my money"}
+              {adviceLoading ? t("coachThinking") : advice ? t("coachRefresh") : t("coachAnalyse")}
             </button>
           </div>
 
@@ -867,8 +870,7 @@ export default function CashFlowPage() {
 
           {!advice && !adviceLoading && !adviceError && (
             <p style={{ color: "var(--ink-500)", fontSize: 13.5, margin: 0 }}>
-              Tap the button and your AI coach will study your entries — what to cut back,
-              where money is leaking, and concrete ways to save more. Powered by Groq.
+              {t("coachIntro")}
             </p>
           )}
 
@@ -901,20 +903,20 @@ export default function CashFlowPage() {
           {recurringHits.length > 0 && (
             <div style={{ marginTop: 20 }}>
               <h4 style={{ margin: "0 0 10px", fontSize: 14 }}>
-                <Icon name="repeat" size={15} style={{ color: "var(--rose-500)", verticalAlign: "-2px" }} /> Looks recurring
+                <Icon name="repeat" size={15} style={{ color: "var(--rose-500)", verticalAlign: "-2px" }} /> {t("recurringTitle")}
               </h4>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {recurringHits.map((h) => (
                   <div key={h.payee} className="recurring-row">
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <b>{h.payee}</b> hits you ~every {h.avgGapDays} days ({h.count}× logged)
+                      <b>{h.payee}</b> {t("recurringLine", { days: h.avgGapDays, count: h.count })}
                       <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
-                        ~{formatCurrency(h.avgAmount, h.currency)} each · ~{formatCurrency(h.avgAmount * (30 / Math.max(h.avgGapDays, 1)), h.currency)}/month
+                        {t("recurringSub", { each: formatCurrency(h.avgAmount, h.currency), monthly: formatCurrency(h.avgAmount * (30 / Math.max(h.avgGapDays, 1)), h.currency) })}
                       </div>
                     </div>
                     <button
                       className="icon-btn"
-                      title="Dismiss"
+                      title={t("titleDismiss")}
                       onClick={() => setDismissedRecurring((prev) => new Set(prev).add(h.payee.toLowerCase()))}
                     >
                       <Icon name="x" size={14} />
@@ -929,11 +931,11 @@ export default function CashFlowPage() {
           <div style={{ marginTop: 20, paddingTop: 18, borderTop: "1px solid var(--card-border)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 10 }}>
               <h4 style={{ margin: 0, fontSize: 14 }}>
-                <Icon name="file-text" size={15} style={{ color: "var(--rose-500)", verticalAlign: "-2px" }} /> Weekly digest · {weekKey}
+                <Icon name="file-text" size={15} style={{ color: "var(--rose-500)", verticalAlign: "-2px" }} /> {t("digestTitle", { week: weekKey })}
               </h4>
               <div style={{ display: "flex", gap: 8 }}>
                 <button className="btn btn-ghost btn-sm" onClick={getDigest} disabled={digestLoading}>
-                  {digestLoading ? "Writing…" : digest ? "Regenerate" : "Generate digest"}
+                  {digestLoading ? t("digestWriting") : digest ? t("digestRegen") : t("digestGen")}
                 </button>
                 {digest && (
                   <a
@@ -943,7 +945,7 @@ export default function CashFlowPage() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon name="send" size={13} /> Share
+                    <Icon name="send" size={13} /> {t("shareBtn")}
                   </a>
                 )}
               </div>
@@ -953,7 +955,7 @@ export default function CashFlowPage() {
             )}
             {!digest && !digestLoading && (
               <p style={{ fontSize: 12.5, color: "var(--ink-500)", margin: 0 }}>
-                Your AI-written weekly money recap — generated fresh each week, shareable on WhatsApp.
+                {t("digestIntro")}
               </p>
             )}
           </div>

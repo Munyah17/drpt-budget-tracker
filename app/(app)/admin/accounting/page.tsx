@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Icon from "@/components/Icon";
 import { useCrud } from "@/lib/useCrud";
 
@@ -13,50 +14,51 @@ interface Entry {
 const ENTRIES_DATA: Entry[] = [];
 
 export default function AccountingPage() {
-  const crud = useCrud(ENTRIES_DATA, "Entry");
+  const t = useTranslations("Pages.adm_accounting");
+  const crud = useCrud(ENTRIES_DATA, t("entryLabel"));
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>
         <div>
-          <h2 className="section-title">Accounting</h2>
-          <p className="section-sub">Financial records and accounting</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-sub">{t("subtitle")}</p>
         </div>
         <button className="btn btn-primary" onClick={() => crud.openModal("create")}>
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
-          New Entry
+          {t("newEntry")}
         </button>
       </div>
 
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="glass-card card-pad">
-          <div className="stat-label">Total Revenue</div>
+          <div className="stat-label">{t("statTotalRevenue")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Expenses</div>
+          <div className="stat-label">{t("statExpenses")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Net Profit</div>
+          <div className="stat-label">{t("statNetProfit")}</div>
           <div className="stat-value">—</div>
         </div>
         <div className="glass-card card-pad">
-          <div className="stat-label">Pending Invoices</div>
+          <div className="stat-label">{t("statPendingInvoices")}</div>
           <div className="stat-value">—</div>
         </div>
       </div>
 
       <div className="glass-card card-pad">
         <div className="card-head">
-          <h3>Recent Transactions</h3>
+          <h3>{t("recentTransactions")}</h3>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Date</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Description</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Type</th>
-              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>Amount</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDate")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colDescription")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colType")}</th>
+              <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("colAmount")}</th>
             </tr>
           </thead>
           <tbody>
