@@ -150,7 +150,21 @@
     "signInLink": "Ngena",
     "signUpLink": "Bhalisa — $1 kanye kuphela",
     "backHome": "Buyela ekhaya",
-    "invalid": "I-imeyili noma iphasiwedi engalungile"
+    "invalid": "I-imeyili noma iphasiwedi engalungile",
+    "confirmPassword": "Qinisekisa iphasiwedi",
+    "confirmPasswordPh": "Faka iphasiwedi yakho futhi",
+    "pwMismatch": "Amaphasiwedi awafani",
+    "gender": "Ubulili",
+    "genderPh": "Khetha",
+    "genderMale": "Owesilisa",
+    "genderFemale": "Owesifazane",
+    "genderOther": "Okunye",
+    "phone": "Inombolo yefoni",
+    "phonePh": "isib. +263771234567",
+    "profession": "Umsebenzi",
+    "professionPh": "isib. Uthisha, Unesi, Unjiniyela",
+    "referralCode": "Ikhodi Yokudalulwa (okungafuneki)",
+    "referralCodePh": "Uma unayo"
   },
   "Landing": {
     "demoToast": "Wamukelekile kwidemo — hlola nganoma, akukho lutho olugciniwe.",

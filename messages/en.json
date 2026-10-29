@@ -193,7 +193,21 @@
     "signInLink": "Sign in",
     "signUpLink": "Sign up — $1 once",
     "backHome": "Back to home",
-    "invalid": "Invalid email or password"
+    "invalid": "Invalid email or password",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPh": "Re-enter your password",
+    "pwMismatch": "Passwords don''t match",
+    "gender": "Gender",
+    "genderPh": "Select",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other",
+    "phone": "Phone number",
+    "phonePh": "e.g. +263771234567",
+    "profession": "Profession",
+    "professionPh": "e.g. Teacher, Nurse, Engineer",
+    "referralCode": "Referral Code (optional)",
+    "referralCodePh": "If you have one"
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",

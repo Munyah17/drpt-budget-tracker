@@ -32,6 +32,11 @@ function LoginForm() {
   const [remember, setRemember] = useState(false);
   const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
   const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [phone, setPhone] = useState("");
+  const [profession, setProfession] = useState("");
+  const [referralCode, setReferralCode] = useState("");
 
   // Where the user was headed before the auth guard sent them here
   const nextParam = searchParams.get("next");
@@ -47,15 +52,25 @@ function LoginForm() {
     setSubmitting(true);
 
     if (isSignup) {
+      if (password !== confirmPassword) {
+        setSubmitting(false);
+        toast(t("pwMismatch"), "x");
+        return;
+      }
+      const kyc = {
+        name: name || email.split('@')[0],
+        phone,
+        gender,
+        profession,
+        referral_code: referralCode || null,
+      };
       // Create account — registration completes only after the $1 payment
       const { data, error } = await (await import("@/lib/supabase")).supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : 'https://drpt-budget-tracker.vercel.app',
-          data: {
-            name: name || email.split('@')[0],
-          }
+          data: kyc,
         },
       });
 
@@ -75,7 +90,7 @@ function LoginForm() {
         const confirmRes = await fetch("/api/auth/confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: data.user.id, email, name: displayName }),
+          body: JSON.stringify({ userId: data.user.id, email, ...kyc, name: displayName }),
         }).catch(() => null);
 
         if (confirmRes?.ok) {
@@ -145,17 +160,59 @@ function LoginForm() {
           <h2>{isSignup ? t("signupTitle") : t("signinTitle")}</h2>
           <form onSubmit={handleSubmit}>
             {isSignup && (
-              <div className="field">
-                <label htmlFor="name">{t("fullName")}</label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={t("namePh")}
-                  required
-                />
-              </div>
+              <>
+                <div className="field">
+                  <label htmlFor="name">{t("fullName")}</label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={t("namePh")}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="phone">{t("phone")}</label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder={t("phonePh")}
+                    required
+                  />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <div className="field">
+                    <label htmlFor="gender">{t("gender")}</label>
+                    <select
+                      id="gender"
+                      className="settings-select"
+                      style={{ width: "100%" }}
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      required
+                    >
+                      <option value="" disabled>{t("genderPh")}</option>
+                      <option value="male">{t("genderMale")}</option>
+                      <option value="female">{t("genderFemale")}</option>
+                      <option value="other">{t("genderOther")}</option>
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label htmlFor="profession">{t("profession")}</label>
+                    <input
+                      id="profession"
+                      type="text"
+                      value={profession}
+                      onChange={(e) => setProfession(e.target.value)}
+                      placeholder={t("professionPh")}
+                      required
+                    />
+                  </div>
+                </div>
+              </>
             )}
             <div className="field">
               <label htmlFor="email">{t("email")}</label>
@@ -179,6 +236,31 @@ function LoginForm() {
                 required
               />
             </div>
+            {isSignup && (
+              <>
+                <div className="field">
+                  <label htmlFor="confirm-password">{t("confirmPassword")}</label>
+                  <input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder={t("confirmPasswordPh")}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="referral-code">{t("referralCode")}</label>
+                  <input
+                    id="referral-code"
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    placeholder={t("referralCodePh")}
+                  />
+                </div>
+              </>
+            )}
             {!isSignup && (
               <div className="field-row">
                 <label className="remember">

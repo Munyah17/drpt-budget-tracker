@@ -150,7 +150,21 @@
     "signInLink": "Přihlásit se",
     "signUpLink": "Registrovat — $1 jednou",
     "backHome": "Zpět domů",
-    "invalid": "Neplatný e-mail nebo heslo"
+    "invalid": "Neplatný e-mail nebo heslo",
+    "confirmPassword": "Potvrď heslo",
+    "confirmPasswordPh": "Zadej heslo znovu",
+    "pwMismatch": "Hesla se neshodují",
+    "gender": "Pohlaví",
+    "genderPh": "Vyber",
+    "genderMale": "Muž",
+    "genderFemale": "Žena",
+    "genderOther": "Jiné",
+    "phone": "Telefonní číslo",
+    "phonePh": "např. +420601234567",
+    "profession": "Profese",
+    "professionPh": "např. Učitel, Zdravotní sestra, Inženýr",
+    "referralCode": "Referenční kód (nepovinné)",
+    "referralCodePh": "Pokud ho máš"
   },
   "Landing": {
     "demoToast": "Vítej v demu — zkoumej volně, nic se neukládá.",

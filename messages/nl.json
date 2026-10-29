@@ -150,7 +150,21 @@
     "signInLink": "Inloggen",
     "signUpLink": "Registreren — eenmalig $1",
     "backHome": "Terug naar home",
-    "invalid": "Ongeldig e-mailadres of wachtwoord"
+    "invalid": "Ongeldig e-mailadres of wachtwoord",
+    "confirmPassword": "Bevestig wachtwoord",
+    "confirmPasswordPh": "Voer je wachtwoord opnieuw in",
+    "pwMismatch": "Wachtwoorden komen niet overeen",
+    "gender": "Geslacht",
+    "genderPh": "Selecteren",
+    "genderMale": "Man",
+    "genderFemale": "Vrouw",
+    "genderOther": "Anders",
+    "phone": "Telefoonnummer",
+    "phonePh": "bijv. +31612345678",
+    "profession": "Beroep",
+    "professionPh": "bijv. Docent, Verpleegkundige, Ingenieur",
+    "referralCode": "Verwijzingscode (optioneel)",
+    "referralCodePh": "Als je er een hebt"
   },
   "Landing": {
     "demoToast": "Welkom bij de demo — kijk gerust rond, er wordt niets opgeslagen.",

@@ -150,7 +150,21 @@
     "signInLink": "Logga in",
     "signUpLink": "Registrera dig — $1 en gång",
     "backHome": "Tillbaka till startsidan",
-    "invalid": "Ogiltig e-post eller lösenord"
+    "invalid": "Ogiltig e-post eller lösenord",
+    "confirmPassword": "Bekräfta lösenord",
+    "confirmPasswordPh": "Ange ditt lösenord igen",
+    "pwMismatch": "Lösenorden matchar inte",
+    "gender": "Kön",
+    "genderPh": "Välj",
+    "genderMale": "Man",
+    "genderFemale": "Kvinna",
+    "genderOther": "Annat",
+    "phone": "Telefonnummer",
+    "phonePh": "t.ex. +46701234567",
+    "profession": "Yrke",
+    "professionPh": "t.ex. Lärare, Sjuksköterska, Ingenjör",
+    "referralCode": "Värvningskod (valfritt)",
+    "referralCodePh": "Om du har en"
   },
   "Landing": {
     "demoToast": "Välkommen till demon — utforska fritt, inget sparas.",

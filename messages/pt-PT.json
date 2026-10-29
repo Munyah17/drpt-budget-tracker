@@ -150,7 +150,21 @@
     "signInLink": "Iniciar sessão",
     "signUpLink": "Regista-te — $1 uma vez",
     "backHome": "Voltar à página inicial",
-    "invalid": "Email ou palavra-passe inválidos"
+    "invalid": "Email ou palavra-passe inválidos",
+    "confirmPassword": "Confirmar palavra-passe",
+    "confirmPasswordPh": "Volta a escrever a tua palavra-passe",
+    "pwMismatch": "As palavras-passe não coincidem",
+    "gender": "Género",
+    "genderPh": "Selecionar",
+    "genderMale": "Masculino",
+    "genderFemale": "Feminino",
+    "genderOther": "Outro",
+    "phone": "Número de telefone",
+    "phonePh": "ex.: +351912345678",
+    "profession": "Profissão",
+    "professionPh": "ex.: Professor, Enfermeiro, Engenheiro",
+    "referralCode": "Código de Referência (opcional)",
+    "referralCodePh": "Se tiveres um"
   },
   "Landing": {
     "demoToast": "Bem-vindo à demo — explora à vontade, nada é guardado.",

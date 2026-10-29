@@ -150,7 +150,21 @@
     "signInLink": "Войти",
     "signUpLink": "Регистрация — $1 один раз",
     "backHome": "На главную",
-    "invalid": "Неверный e-mail или пароль"
+    "invalid": "Неверный e-mail или пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "confirmPasswordPh": "Введите пароль ещё раз",
+    "pwMismatch": "Пароли не совпадают",
+    "gender": "Пол",
+    "genderPh": "Выбрать",
+    "genderMale": "Мужской",
+    "genderFemale": "Женский",
+    "genderOther": "Другой",
+    "phone": "Номер телефона",
+    "phonePh": "напр. +79123456789",
+    "profession": "Профессия",
+    "professionPh": "напр. Учитель, Медсестра, Инженер",
+    "referralCode": "Реферальный код (необязательно)",
+    "referralCodePh": "Если он у тебя есть"
   },
   "Landing": {
     "demoToast": "Добро пожаловать в демо — изучай свободно, ничего не сохраняется.",

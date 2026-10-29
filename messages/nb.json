@@ -150,7 +150,21 @@
     "signInLink": "Logg inn",
     "signUpLink": "Registrer deg — $1 én gang",
     "backHome": "Tilbake til forsiden",
-    "invalid": "Ugyldig e-post eller passord"
+    "invalid": "Ugyldig e-post eller passord",
+    "confirmPassword": "Bekreft passord",
+    "confirmPasswordPh": "Skriv passordet på nytt",
+    "pwMismatch": "Passordene stemmer ikke overens",
+    "gender": "Kjønn",
+    "genderPh": "Velg",
+    "genderMale": "Mann",
+    "genderFemale": "Kvinne",
+    "genderOther": "Annet",
+    "phone": "Telefonnummer",
+    "phonePh": "f.eks. +4791234567",
+    "profession": "Yrke",
+    "professionPh": "f.eks. Lærer, Sykepleier, Ingeniør",
+    "referralCode": "Henvisningskode (valgfritt)",
+    "referralCodePh": "Hvis du har en"
   },
   "Landing": {
     "demoToast": "Velkommen til demoen — utforsk fritt, ingenting lagres.",

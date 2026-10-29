@@ -19,7 +19,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
 
-  const { userId, email, name } = await req.json().catch(() => ({}));
+  const { userId, email, name, phone, gender, profession, referral_code } = await req
+    .json()
+    .catch(() => ({}));
   if (!email && !userId) {
     return NextResponse.json({ error: "email or userId required" }, { status: 400 });
   }
@@ -76,17 +78,33 @@ export async function POST(req: NextRequest) {
     // client-side insert fails when confirmation is required). Merge: never
     // overwrite is_paid/role on an existing row.
     if (userId) {
-      await fetch(`${SUPABASE_URL}/rest/v1/profiles?on_conflict=id`, {
+      const base = {
+        id: uid,
+        email,
+        name: name || String(email).split("@")[0],
+        role: "user",
+        currency: "USD",
+      };
+      // KYC columns may not exist in the table yet — try with them first,
+      // then fall back to the guaranteed payload. The same data also lives
+      // in auth user_metadata from signUp, so nothing is lost either way.
+      const kyc = Object.fromEntries(
+        Object.entries({ phone, gender, profession, referral_code }).filter(
+          ([, v]) => typeof v === "string" && v
+        )
+      );
+      const upsert = await fetch(`${SUPABASE_URL}/rest/v1/profiles?on_conflict=id`, {
         method: "POST",
         headers: { ...headers, Prefer: "resolution=merge-duplicates" },
-        body: JSON.stringify({
-          id: uid,
-          email,
-          name: name || String(email).split("@")[0],
-          role: "user",
-          currency: "USD",
-        }),
+        body: JSON.stringify({ ...base, ...kyc }),
       });
+      if (!upsert.ok && Object.keys(kyc).length) {
+        await fetch(`${SUPABASE_URL}/rest/v1/profiles?on_conflict=id`, {
+          method: "POST",
+          headers: { ...headers, Prefer: "resolution=merge-duplicates" },
+          body: JSON.stringify(base),
+        });
+      }
     }
 
     return NextResponse.json({ ok: true, uid });

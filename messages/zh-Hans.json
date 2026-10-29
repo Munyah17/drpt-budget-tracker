@@ -150,7 +150,21 @@
     "signInLink": "登录",
     "signUpLink": "注册 — 仅需 $1",
     "backHome": "返回首页",
-    "invalid": "邮箱或密码无效"
+    "invalid": "邮箱或密码无效",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPh": "再次输入你的密码",
+    "pwMismatch": "两次输入的密码不一致",
+    "gender": "性别",
+    "genderPh": "请选择",
+    "genderMale": "男",
+    "genderFemale": "女",
+    "genderOther": "其他",
+    "phone": "电话号码",
+    "phonePh": "例如 +8613912345678",
+    "profession": "职业",
+    "professionPh": "例如 教师、护士、工程师",
+    "referralCode": "推荐码(可选)",
+    "referralCodePh": "如果有的话"
   },
   "Landing": {
     "demoToast": "欢迎来到演示模式 — 随意探索,内容不会被保存。",
