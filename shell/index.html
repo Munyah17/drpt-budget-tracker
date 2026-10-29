@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WellSpend</title>
+<style>
+html,body{margin:0;height:100%;background:#fff7fa;font-family:-apple-system,BlinkMacSystemFont,"Source Sans 3",sans-serif;color:#3b1226}
+main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;gap:14px}
+.logo{width:84px;height:84px;border-radius:20px;background:#c81057;color:#fff;font-weight:700;font-size:34px;display:flex;align-items:center;justify-content:center}
+h1{font-size:22px;margin:6px 0 0}p{margin:0;color:#7a4a60;max-width:300px;line-height:1.45}
+button{margin-top:10px;background:#c81057;color:#fff;border:0;border-radius:14px;padding:14px 26px;font-size:16px;font-weight:600}
+</style></head><body><main>
+<div class="logo">PT</div><h1>WellSpend</h1>
+<p id="msg">Opening your budget…</p>
+<button id="retry" hidden onclick="location.replace('https://drpt-budget-tracker.vercel.app/')">Try again</button>
+</main>
+<script>
+// Shown only if the live app cannot be reached (offline or first launch without data).
+setTimeout(function(){document.getElementById('msg').textContent="You're offline. Connect to the internet to open WellSpend. Your data is safe in your account.";document.getElementById('retry').hidden=false},4000);
+</script></body></html>

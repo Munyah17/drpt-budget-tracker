@@ -7,6 +7,7 @@ import { AppDataProvider } from "@/lib/AppDataContext";
 import { CashFlowProvider } from "@/lib/CashFlowContext";
 import ToastHost from "@/components/ToastHost";
 import PwaRegister from "@/components/PwaRegister";
+import NativeLock from "@/components/NativeLock";
 import LocaleSync from "@/components/LocaleSync";
 import { textDirection } from "@/lib/i18n/config";
 
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <AppDataProvider>
             <CashFlowProvider>
               <PwaRegister />
+              <NativeLock />
               {children}
               <ToastHost />
             </CashFlowProvider>
