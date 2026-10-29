@@ -1,12 +1,31 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useAppData } from "@/lib/AppDataContext";
+import { useCorpStore } from "@/lib/corpStore";
+import { accruedWages } from "@/lib/ewa";
+import { usd } from "@/lib/payslip";
 import Icon from "@/components/Icon";
+
+const NETPAY_KEY = "drpt-emp-netpay";
 
 export default function EmployeeHomePage() {
   const { user } = useAppData();
   const t = useTranslations("Pages.emp_home");
+  const store = useCorpStore();
+
+  const directoryMatch = store.employees.find(
+    (e) => e.name === user?.name || e.email === user?.email
+  );
+  const storedNet = typeof window !== "undefined" ? Number(localStorage.getItem(NETPAY_KEY) || 0) : 0;
+  const netPay = directoryMatch ? Math.round(directoryMatch.grossPay * 0.75 * 100) / 100 : storedNet;
+  const now = new Date();
+  const earned = accruedWages(netPay, now);
+  const liveAmount = store.advances
+    .filter((a) => a.employee === user?.name && (a.status === "Pending" || a.status === "Approved" || a.status === "Paid Out"))
+    .reduce((s, a) => s + a.amount, 0);
+  const available = netPay ? Math.max(0, Math.round((earned * store.ewa.maxAccruedPct) / 100 - liveAmount)) : 0;
 
   return (
     <>
@@ -35,6 +54,25 @@ export default function EmployeeHomePage() {
           <div className="stat-value">—</div>
         </div>
       </div>
+
+      {store.ewa.enabled && (
+        <div className="glass-card card-pad" style={{ marginBottom: 20, display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div className="merchant-ic" style={{ width: 46, height: 46, borderRadius: 14 }}>
+              <Icon name="zap" size={20} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>{t("earlyPayTitle")}</div>
+              <div style={{ fontSize: 12.5, color: "var(--ink-500)" }}>
+                {netPay ? t("earlyPayAvailable", { amount: usd(available) }) : t("earlyPaySetup")}
+              </div>
+            </div>
+          </div>
+          <Link href="/employee/borrowing" className="btn btn-primary btn-sm">
+            {t("earlyPayCta")}
+          </Link>
+        </div>
+      )}
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>

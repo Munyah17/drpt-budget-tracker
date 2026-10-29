@@ -150,7 +150,7 @@ export const CORPORATE_NAV_ITEMS = [
     ]
   },
   { id: "expense-claims", label: "Expense Claims", icon: "receipt" },
-  { id: "staff-loans", label: "Staff Loans", icon: "banknote" },
+  { id: "staff-loans", label: "Early Pay & Loans", icon: "banknote" },
   { id: "announcements", label: "Announcements", icon: "bell" },
   { id: "benefits", label: "Benefits", icon: "heart-pulse" },
   {
@@ -181,7 +181,7 @@ export const EMPLOYEE_NAV_ITEMS = [
   { id: "payslips", label: "Payslips", icon: "file-text", href: "/employee/payslips" },
   { id: "salary", label: "Salary Management", icon: "dollar-sign", href: "/employee/salary" },
   { id: "leave", label: "Leave", icon: "calendar", href: "/employee/leave" },
-  { id: "borrowing-emp", label: "Borrowing", icon: "credit-card", href: "/employee/borrowing" },
+  { id: "borrowing-emp", label: "Early Pay", icon: "zap", href: "/employee/borrowing" },
   { id: "benefits", label: "Benefits", icon: "heart-pulse", href: "/employee/benefits" },
   ...NAV_ITEMS.filter((n) => n.id !== "borrowing"),
 ];

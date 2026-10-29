@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import { useAppData } from "@/lib/AppDataContext";
 import { buildPayslipDoc, openPayslipPdf, payslipTotals, usd, PayslipDoc } from "@/lib/payslip";
+import { useCorpStore } from "@/lib/corpStore";
 
 interface Payslip {
   period: string;
@@ -23,6 +24,7 @@ const PAYSLIP_PERIODS: Omit<Payslip, "doc">[] = [
 export default function EmployeePayslipsPage() {
   const { user, toast } = useAppData();
   const t = useTranslations("Pages.emp_payslips");
+  const store = useCorpStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
@@ -31,15 +33,27 @@ export default function EmployeePayslipsPage() {
 
   const payslips = useMemo<Payslip[]>(
     () =>
-      PAYSLIP_PERIODS.map((p) => ({
-        ...p,
-        doc: buildPayslipDoc({
+      PAYSLIP_PERIODS.map((p) => {
+        const doc = buildPayslipDoc({
           employee: user?.name ?? "Emma Wilson",
           period: p.period,
           company: user?.organisation ?? undefined,
-        }),
-      })),
-    [user]
+        });
+        // Early Pay repayments come off the current (pending) payslip
+        if (p.status === "Pending") {
+          const owed = store.advances.filter(
+            (a) => a.employee === user?.name && (a.status === "Approved" || a.status === "Paid Out")
+          );
+          if (owed.length) {
+            doc.deductions = [
+              ...doc.deductions,
+              ...owed.map((a) => ({ label: `${t("deductionEarlyPay")} (${a.id})`, amount: a.repay })),
+            ];
+          }
+        }
+        return { ...p, doc };
+      }),
+    [user, store.advances, t]
   );
 
   const filteredData = useMemo(() => {

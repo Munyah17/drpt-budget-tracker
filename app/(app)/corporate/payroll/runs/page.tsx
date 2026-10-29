@@ -82,6 +82,14 @@ function NewRunModal({ onClose }: { onClose: () => void }) {
             <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={t("reasonPlaceholder")} />
           </div>
         )}
+        {store.advances.filter((a) => a.status === "Approved" || a.status === "Paid Out").length > 0 && (
+          <p style={{ fontSize: 12.5, color: "var(--ink-500)", margin: "-4px 0 10px" }}>
+            {t("earlyPayDeductions", {
+              count: store.advances.filter((a) => a.status === "Approved" || a.status === "Paid Out").length,
+              total: usd(store.advances.filter((a) => a.status === "Approved" || a.status === "Paid Out").reduce((s, a) => s + a.repay, 0)),
+            })}
+          </p>
+        )}
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("createRun")}</button>
       </form>
     </Modal>
@@ -120,6 +128,14 @@ export default function CorporatePayrollRunsPage() {
           ? { ...r, status: next, ...(next === "Approved" ? { approvedBy: user?.name } : {}) }
           : r
       ),
+      // Payday settles every Early Pay advance that was paid out
+      ...(next === "Paid"
+        ? {
+            advances: s.advances.map((a) =>
+              a.status === "Paid Out" ? { ...a, status: "Settled" as const, settledRunId: run.id } : a
+            ),
+          }
+        : {}),
     }));
     toast(t("toastAdvanced", { id: run.id, status: next }), next === "Paid" ? "check-circle" : "check");
   }

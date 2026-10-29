@@ -15,6 +15,7 @@ const KEY = "drpt-corp-store";
 export type PayrollStatus = "Draft" | "Pending Review" | "Approved" | "Paid" | "Rejected";
 export type ClaimStatus = "Pending" | "Approved" | "Rejected" | "Reimbursed";
 export type LeaveStatus = "Pending" | "Approved" | "Rejected";
+export type AdvanceStatus = "Pending" | "Approved" | "Paid Out" | "Settled" | "Rejected";
 
 export interface PayrollRunRec {
   id: string;
@@ -94,10 +95,42 @@ export interface CorpEmployee {
   bankAccount: string;
 }
 
+/** Earned Wage Access request — "Early Pay". */
+export interface SalaryAdvance {
+  id: string;
+  employee: string;
+  /** What the employee receives now */
+  amount: number;
+  /** Flat access fee */
+  fee: number;
+  /** Total deducted from the next payslip (amount + fee) */
+  repay: number;
+  status: AdvanceStatus;
+  requestedAt: string; // ISO date
+  decidedBy?: string;
+  paidOutAt?: string;
+  settledRunId?: string;
+}
+
+/** Employer-level Early Pay policy. */
+export interface EwaConfig {
+  enabled: boolean;
+  /** Access fee as % of the advance (e.g. 10 → get $90, repay $100) */
+  feePct: number;
+  /** Max share of already-earned wages an employee may access, % */
+  maxAccruedPct: number;
+  /** Advances at or below this amount skip manual approval (0 = always review) */
+  autoApproveBelow: number;
+  /** Max advances per employee per calendar month */
+  maxPerMonth: number;
+}
+
 export interface CorpStore {
   payrollRuns: PayrollRunRec[];
   claims: ExpenseClaim[];
   loans: StaffLoan[];
+  advances: SalaryAdvance[];
+  ewa: EwaConfig;
   leave: LeaveReq[];
   roles: CorpRoleRec[];
   announcements: Announcement[];
@@ -132,6 +165,14 @@ const empty = (): CorpStore => ({
   payrollRuns: [],
   claims: [],
   loans: [],
+  advances: [],
+  ewa: {
+    enabled: true,
+    feePct: 10,
+    maxAccruedPct: 50,
+    autoApproveBelow: 0,
+    maxPerMonth: 2,
+  },
   leave: [],
   roles: [
     { id: "r1", name: "Org Admin", description: "Full control over the organisation", members: 1, perms: [...ALL_PERMS] },
