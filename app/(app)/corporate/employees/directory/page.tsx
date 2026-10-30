@@ -6,7 +6,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
-import RecordModal, { RowRecord } from "@/components/RecordModal";
+import RecordModal from "@/components/RecordModal";
 import { useCorpStore, updateCorp, nextId, CorpEmployee } from "@/lib/corpStore";
 import { usd } from "@/lib/payslip";
 
