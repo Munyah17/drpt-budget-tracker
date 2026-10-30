@@ -27,10 +27,13 @@ function NewRunModal({ onClose }: { onClose: () => void }) {
   const store = useCorpStore();
   const [period, setPeriod] = useState("");
   const [kind, setKind] = useState<"Regular" | "Off-cycle">("Regular");
+  const [sbu, setSbu] = useState("all");
   const [employees, setEmployees] = useState(String(store.employees.length || ""));
   const [total, setTotal] = useState("");
   const [payDate, setPayDate] = useState("");
   const [note, setNote] = useState("");
+
+  const sbuCount = sbu === "all" ? store.employees.length : store.employees.filter((e) => (e.sbuId ?? "sbu-hq") === sbu).length;
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -38,7 +41,8 @@ function NewRunModal({ onClose }: { onClose: () => void }) {
       id: `RUN-${Date.now().toString(36).toUpperCase()}`,
       period: period || new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
       kind,
-      employees: parseInt(employees) || store.employees.length || 0,
+      sbu,
+      employees: parseInt(employees) || sbuCount || 0,
       totalAmount: parseFloat(total) || 0,
       status: "Draft",
       payDate: payDate || "—",
@@ -65,8 +69,15 @@ function NewRunModal({ onClose }: { onClose: () => void }) {
           <input value={period} onChange={(e) => setPeriod(e.target.value)} placeholder={kind === "Regular" ? t("periodPlaceholderRegular") : t("periodPlaceholderOffCycle")} />
         </div>
         <div className="field">
+          <label>{t("fieldSbu")}</label>
+          <select className="settings-select" style={{ width: "100%" }} value={sbu} onChange={(e) => setSbu(e.target.value)}>
+            <option value="all">{t("sbuAll")}</option>
+            {store.sbus.map((s) => <option key={s.id} value={s.id}>{s.name} ({store.employees.filter((e) => (e.sbuId ?? "sbu-hq") === s.id).length})</option>)}
+          </select>
+        </div>
+        <div className="field">
           <label>{t("fieldEmployees")}</label>
-          <input type="number" min="0" value={employees} onChange={(e) => setEmployees(e.target.value)} />
+          <input type="number" min="0" value={employees || sbuCount} onChange={(e) => setEmployees(e.target.value)} />
         </div>
         <div className="field">
           <label>{t("fieldTotal")}</label>
@@ -189,6 +200,7 @@ export default function CorporatePayrollRunsPage() {
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
               <th style={th}>{t("colRunId")}</th>
               <th style={th}>{t("colPeriod")}</th>
+              <th style={th}>{t("colSbu")}</th>
               <th style={th}>{t("colType")}</th>
               <th style={th}>{t("colEmployees")}</th>
               <th style={th}>{t("colTotal")}</th>
@@ -207,6 +219,7 @@ export default function CorporatePayrollRunsPage() {
                 <tr key={run.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
                   <td style={td}>{run.id}</td>
                   <td style={{ ...td, fontWeight: 600 }}>{run.period}</td>
+                  <td style={td}><span className="chip">{run.sbu && run.sbu !== "all" ? (store.sbus.find((s) => s.id === run.sbu)?.code ?? "HQ") : t("sbuAllShort")}</span></td>
                   <td style={td}><span className="chip">{run.kind}</span></td>
                   <td style={td}>{run.employees}</td>
                   <td style={{ ...td, fontWeight: 600 }}>{usd(run.totalAmount)}</td>

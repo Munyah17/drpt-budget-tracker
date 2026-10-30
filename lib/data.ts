@@ -162,6 +162,7 @@ export const CORPORATE_NAV_ITEMS = [
       { id: "leave", label: "Leave Management" },
       { id: "attendance", label: "Attendance" },
       { id: "recruitment", label: "Recruitment" },
+      { id: "contracts", label: "Contracts & Letters" },
       { id: "performance", label: "Performance" },
       { id: "documents", label: "Documents" },
       { id: "offboarding", label: "Offboarding" }

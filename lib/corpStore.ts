@@ -21,6 +21,7 @@ export interface PayrollRunRec {
   id: string;
   period: string;
   kind: "Regular" | "Off-cycle";
+  sbu?: string; // "all" (consolidated) or an SBU id
   employees: number;
   totalAmount: number;
   status: PayrollStatus;
@@ -84,6 +85,12 @@ export interface CorpDoc {
   expires: string; // ISO date
 }
 
+export interface CorpSbu {
+  id: string;
+  name: string;
+  code: string; // short tag, e.g. HQ, LAG, MAH
+}
+
 export interface CorpEmployee {
   id: string;
   name: string;
@@ -93,6 +100,8 @@ export interface CorpEmployee {
   grossPay: number;
   bankName: string;
   bankAccount: string;
+  sbuId?: string; // empty → Head Office
+  manager?: string;
 }
 
 /** Earned Wage Access request — "Early Pay". */
@@ -138,6 +147,7 @@ export interface CorpStore {
   announcements: Announcement[];
   docs: CorpDoc[];
   employees: CorpEmployee[];
+  sbus: CorpSbu[];
   leaveQuotaDays: number;
 }
 
@@ -186,6 +196,7 @@ const empty = (): CorpStore => ({
   announcements: [],
   docs: [],
   employees: [],
+  sbus: [{ id: "sbu-hq", name: "Head Office", code: "HQ" }],
   leaveQuotaDays: 21,
 });
 

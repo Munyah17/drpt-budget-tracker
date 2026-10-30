@@ -1,14 +1,70 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCorpStore } from "@/lib/corpStore";
 import { accruedWages } from "@/lib/ewa";
 import { usd } from "@/lib/payslip";
+import { ukDate } from "@/lib/format";
 import Icon from "@/components/Icon";
 
 const NETPAY_KEY = "drpt-emp-netpay";
+
+interface EmpNotice {
+  id: string; title: string; body: string; category: string;
+  pinned: boolean; acked: boolean; created_at: string;
+}
+
+function NoticeBoard({ employee }: { employee: string }) {
+  const t = useTranslations("Pages.emp_home");
+  const [notices, setNotices] = useState<EmpNotice[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/hr/notices?employee=${encodeURIComponent(employee)}`)
+      .then((r) => r.json()).then((rows) => setNotices(Array.isArray(rows) ? rows.slice(0, 4) : []))
+      .catch(() => {});
+  }, [employee]);
+
+  async function ack(n: EmpNotice) {
+    await fetch("/api/hr/notices/ack", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ notice_id: n.id, employee_name: employee }),
+    });
+    setNotices((p) => p.map((x) => (x.id === n.id ? { ...x, acked: true } : x)));
+  }
+
+  if (!notices.length) return null;
+  return (
+    <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+        <Icon name="bell" size={18} style={{ color: "var(--rose-600)" }} />
+        <h3 style={{ fontWeight: 600, fontSize: 15 }}>{t("noticesTitle")}</h3>
+      </div>
+      {notices.map((n) => (
+        <div key={n.id} style={{ borderTop: "1px solid var(--card-border)", padding: "12px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            {n.pinned && <Icon name="pin" size={12} style={{ color: "var(--rose-600)" }} />}
+            <b style={{ fontSize: 13.5 }}>{n.title}</b>
+            <span className={`badge ${n.category === "Urgent" ? "badge-red" : n.category === "Policy" ? "badge-blue" : "badge-green"}`} style={{ fontSize: 10.5 }}>{n.category}</span>
+            <span style={{ marginLeft: "auto", fontSize: 11.5, color: "var(--ink-500)" }}>{ukDate(n.created_at.slice(0, 10))}</span>
+          </div>
+          <p style={{ fontSize: 12.5, color: "var(--ink-500)", margin: "0 0 8px", lineHeight: 1.55 }}>{n.body}</p>
+          {!n.acked ? (
+            <button className="btn btn-ghost btn-sm" style={{ fontSize: 12, color: "var(--rose-600)" }} onClick={() => ack(n)}>
+              <Icon name="check-circle" size={13} style={{ marginRight: 5 }} />{t("ackBtn")}
+            </button>
+          ) : (
+            <span style={{ fontSize: 12, color: "var(--green)", display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <Icon name="check-circle" size={13} />{t("ackDone")}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function EmployeeHomePage() {
   const { user } = useAppData();
@@ -74,6 +130,8 @@ export default function EmployeeHomePage() {
         </div>
       )}
 
+      <NoticeBoard employee={user?.name ?? ""} />
+
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <Icon name="briefcase" size={18} style={{ color: "var(--rose-600)" }} />
@@ -86,16 +144,20 @@ export default function EmployeeHomePage() {
               <td style={{ padding: "10px 6px", fontWeight: 600 }}>{user?.organisation ?? "—"}</td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
+              <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>{t("labelSbu")}</td>
+              <td style={{ padding: "10px 6px" }}>{store.sbus.find((s) => s.id === directoryMatch?.sbuId)?.name ?? store.sbus[0]?.name ?? "—"}</td>
+            </tr>
+            <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>{t("labelDepartment")}</td>
-              <td style={{ padding: "10px 6px" }}>—</td>
+              <td style={{ padding: "10px 6px" }}>{directoryMatch?.department ?? "—"}</td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>{t("labelJobTitle")}</td>
-              <td style={{ padding: "10px 6px" }}>—</td>
+              <td style={{ padding: "10px 6px" }}>{directoryMatch?.jobTitle ?? "—"}</td>
             </tr>
             <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>{t("labelContractType")}</td>
-              <td style={{ padding: "10px 6px" }}>—</td>
+              <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>{t("labelManager")}</td>
+              <td style={{ padding: "10px 6px" }}>{directoryMatch?.manager ?? "—"}</td>
             </tr>
             <tr>
               <td style={{ padding: "10px 6px", fontSize: 13, color: "var(--ink-500)" }}>{t("labelStartDate")}</td>
