@@ -11,6 +11,7 @@ import CountUp from "@/components/CountUp";
 import ExpenseModal from "@/components/modals/ExpenseModal";
 import SmsImportModal from "@/components/modals/SmsImportModal";
 import SplitBillModal from "@/components/modals/SplitBillModal";
+import ImportModal from "@/components/import/ImportModal";
 import FilterBar from "@/components/FilterBar";
 
 export default function ExpensesPage() {
@@ -21,6 +22,7 @@ export default function ExpensesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [smsOpen, setSmsOpen] = useState(false);
   const [splitOpen, setSplitOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<ExpenseEntry | undefined>(undefined);
 
   const rows = useMemo(
@@ -52,6 +54,9 @@ export default function ExpensesPage() {
         <div style={{ display: "flex", gap: 10 }}>
           <button className="btn btn-ghost" onClick={() => setSplitOpen(true)}>
             <Icon name="users" size={16} /> {t("splitBtn")}
+          </button>
+          <button className="btn btn-ghost" onClick={() => setImportOpen(true)}>
+            <Icon name="scan-line" size={16} /> {t("scanBtn")}
           </button>
           <button className="btn btn-ghost" onClick={() => setSmsOpen(true)}>
             <Icon name="smartphone" size={16} /> {t("smsBtn")}
@@ -164,6 +169,7 @@ export default function ExpensesPage() {
       </div>
 
       {modalOpen && <ExpenseModal editing={editing} onClose={() => setModalOpen(false)} />}
+      {importOpen && <ImportModal onClose={() => setImportOpen(false)} />}
       {smsOpen && <SmsImportModal onClose={() => setSmsOpen(false)} />}
       {splitOpen && <SplitBillModal onClose={() => setSplitOpen(false)} />}
     </>

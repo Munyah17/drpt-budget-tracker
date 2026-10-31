@@ -25,7 +25,8 @@
       "calendar": "日历",
       "settings": "设置",
       "profile": "个人资料",
-      "wallet": "钱包"
+      "wallet": "钱包",
+      "banking": "银行存款"
     },
     "admin": {
       "overview": "概览",
@@ -92,7 +93,8 @@
       "leave": "请假",
       "borrowing-emp": "提前支薪",
       "benefits": "福利",
-      "wallet": "钱包"
+      "wallet": "钱包",
+      "banking": "银行存款"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "推荐码(可选)",
     "referralCodePh": "如果有的话",
     "createdFree": "账户已创建 — 欢迎使用WellSpend!",
-    "signUpLinkFree": "注册"
+    "signUpLinkFree": "注册",
+    "signupTitleFree": "创建您的免费帐户",
+    "createFree": "创建账户"
   },
   "Landing": {
     "demoToast": "欢迎来到演示模式 — 随意探索,内容不会被保存。",
@@ -332,7 +336,9 @@
       "pricing": "价格",
       "signIn": "登录",
       "rights": "© {year} WellSpend 预算追踪。版权所有。",
-      "powered": "由 Global Space Web 提供支持 +263718560128"
+      "powered": "由 Global Space Web 提供支持 +263718560128",
+      "privacy": "隐私",
+      "terms": "条款"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "你的当前方案不含此功能",
       "lockBody": "仪表盘,个人资料和设置已开放.其余功能在方案激活后解锁."
+    },
+    "import": {
+      "title": "扫描或上传",
+      "desc": "拍摄收据，或上传银行对账单、付款证明、屏幕截图、CSV 或 Excel 文件 - 我们将提取交易供您检查。",
+      "cameraBtn": "拍张照片",
+      "fileBtn": "选择一个文件",
+      "busy": "正在阅读您的文档...",
+      "reviewHint": "检查下面的详细信息，取消勾选任何错误的内容，然后添加。",
+      "errGeneric": "无法读取该文件",
+      "errService": "目前无法提取 - 请稍后重试",
+      "fallbackIncome": "进口收入",
+      "fallbackExpense": "进口费用",
+      "toastAdded": "添加了 {count} 个条目",
+      "rowInclude": "包含此条目",
+      "typeToggleTip": "点击切换类型",
+      "typeIncome": "收入",
+      "typeExpense": "费用",
+      "payeePh": "商户/收款人",
+      "colAmount": "数量",
+      "colDate": "日期",
+      "colCategory": "类别",
+      "lowConfidence": "低可信度 — 请仔细检查",
+      "cancel": "取消",
+      "addBtn": "添加 {count} 条条目"
+    },
+    "banking": {
+      "title": "银行存款",
+      "sub": "连接您的银行并自行导入交易",
+      "syncBtn": "立即同步",
+      "consentExpiring": "您的银行同意将在 {days} 天后到期 - 重新连接以保持 Feed 运行。",
+      "connectTitle": "连接您的银行",
+      "connectDesc": "通过开放银行的安全、只读链接。我们可以看到交易——但我们永远无法转移资金。",
+      "pendingNote": "您开始连接 - 在银行应用程序中完成连接或再次选择一家银行。",
+      "expiredNote": "您的同意已过期 — 重新连接以恢复导入。",
+      "countryLabel": "国家",
+      "findBanksBtn": "找到我的银行",
+      "noBanks": "没有找到该国家/地区的银行。",
+      "yourBank": "你的银行",
+      "consentUntil": "同意截止日期：{日期}",
+      "accounts": "账户",
+      "disconnectBtn": "断开",
+      "disconnectSure": "删除连接和所有同步事务？",
+      "disconnectConfirm": "是的，断开连接",
+      "cancel": "取消",
+      "feedTitle": "等待导入",
+      "feedEmpty": "一切都赶上了——没有什么新东西可以导入。",
+      "addTxn": "添加",
+      "dismissTip": "不是我的/已登录",
+      "matchHint": "看起来像“{merchant}”——已经登录？",
+      "matchLink": "链接它",
+      "loading": "加载中…",
+      "toastConnected": "银行连接",
+      "toastSynced": "同步完成 — {count} 笔交易",
+      "toastDisconnected": "银行已断开连接",
+      "toastImported": "添加到您的条目中",
+      "fallbackIncome": "银行收入",
+      "fallbackExpense": "银行付款",
+      "errConnect_generic": "无法连接银行",
+      "errConnect_missing-ref": "银行在没有参考信息的情况下退回 — 再试一次",
+      "errConnect_not-found": "未找到连接尝试 — 再试一次",
+      "errConnect_incomplete": "银行应用程序中未完成同意",
+      "errConnect_finalize": "已连接，但完成失败 - 尝试同步",
+      "paywallLine": "连接 {bank} 需要花费 {price} — 一次性解锁",
+      "toastUnlocked": "解锁 — 完成连接您的银行",
+      "errCheckout": "无法开始结帐 - 请重试"
+    },
+    "expenses": {
+      "scanBtn": "扫描"
     }
   }
 }

@@ -25,7 +25,8 @@
       "calendar": "Calendario",
       "settings": "Ajustes",
       "profile": "Perfil",
-      "wallet": "Billetera"
+      "wallet": "Billetera",
+      "banking": "Flujo bancario"
     },
     "admin": {
       "overview": "Vista General",
@@ -92,7 +93,8 @@
       "leave": "Ausencias",
       "borrowing-emp": "Salario Anticipado",
       "benefits": "Beneficios",
-      "wallet": "Billetera"
+      "wallet": "Billetera",
+      "banking": "Flujo bancario"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Código de Referido (opcional)",
     "referralCodePh": "Si tienes uno",
     "createdFree": "Cuenta creada — ¡bienvenido a WellSpend!",
-    "signUpLinkFree": "Crear cuenta"
+    "signUpLinkFree": "Crear cuenta",
+    "signupTitleFree": "Crea tu cuenta gratuita",
+    "createFree": "Crear cuenta"
   },
   "Landing": {
     "demoToast": "Bienvenido a la demo — explora libremente, nada se guarda.",
@@ -332,7 +336,9 @@
       "pricing": "Precios",
       "signIn": "Iniciar sesión",
       "rights": "© {year} WellSpend Budget Tracker. Todos los derechos reservados.",
-      "powered": "Desarrollado por Global Space Web +263718560128"
+      "powered": "Desarrollado por Global Space Web +263718560128",
+      "privacy": "Privacidad",
+      "terms": "Términos"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Esta función no está disponible en tu plan",
       "lockBody": "El panel, el perfil y los ajustes están abiertos. Todo lo demás se desbloquea cuando tu plan está activo."
+    },
+    "import": {
+      "title": "Escanear o subir",
+      "desc": "Fotografía un recibo o sube un extracto bancario, comprobante de pago, captura de pantalla, CSV o Excel — extraeremos las transacciones para que las revises.",
+      "cameraBtn": "Tomar una foto",
+      "fileBtn": "Elegir un archivo",
+      "busy": "Leyendo tu documento…",
+      "reviewHint": "Revisa los datos, desmarca lo incorrecto y añade.",
+      "errGeneric": "No se pudo leer ese archivo",
+      "errService": "La extracción no está disponible — inténtalo más tarde",
+      "fallbackIncome": "Ingreso importado",
+      "fallbackExpense": "Gasto importado",
+      "toastAdded": "{count} registros añadidos",
+      "rowInclude": "Incluir este registro",
+      "typeToggleTip": "Toca para cambiar el tipo",
+      "typeIncome": "Ingreso",
+      "typeExpense": "Gasto",
+      "payeePh": "Comercio / beneficiario",
+      "colAmount": "Importe",
+      "colDate": "Fecha",
+      "colCategory": "Categoría",
+      "lowConfidence": "Confianza baja — revísalo",
+      "cancel": "Cancelar",
+      "addBtn": "Añadir {count} registros"
+    },
+    "banking": {
+      "title": "Flujo bancario",
+      "sub": "Conecta tu banco y las transacciones se importan solas",
+      "syncBtn": "Sincronizar",
+      "consentExpiring": "Tu consentimiento caduca en {days} días — reconéctate para seguir importando.",
+      "connectTitle": "Conectar tu banco",
+      "connectDesc": "Enlace seguro de solo lectura vía open banking. Vemos transacciones — nunca podemos mover dinero.",
+      "pendingNote": "Empezaste a conectar — termínalo en la app de tu banco o elige un banco.",
+      "expiredNote": "Tu consentimiento caducó — reconéctate para reanudar.",
+      "countryLabel": "País",
+      "findBanksBtn": "Buscar mi banco",
+      "noBanks": "No hay bancos para este país.",
+      "yourBank": "Tu banco",
+      "consentUntil": "Consentimiento hasta {date}",
+      "accounts": "cuentas",
+      "disconnectBtn": "Desconectar",
+      "disconnectSure": "¿Borrar la conexión y todas las transacciones sincronizadas?",
+      "disconnectConfirm": "Sí, desconectar",
+      "cancel": "Cancelar",
+      "feedTitle": "Pendiente de importar",
+      "feedEmpty": "Todo al día — nada nuevo que importar.",
+      "addTxn": "Añadir",
+      "dismissTip": "No es mío / ya registrado",
+      "matchHint": "Parece «{merchant}» — ¿ya registrado?",
+      "matchLink": "Vincular",
+      "loading": "Cargando…",
+      "toastConnected": "Banco conectado",
+      "toastSynced": "Sincronización lista — {count} transacciones",
+      "toastDisconnected": "Banco desconectado",
+      "toastImported": "Añadido a tus registros",
+      "fallbackIncome": "Ingreso bancario",
+      "fallbackExpense": "Pago bancario",
+      "errConnect_generic": "No se pudo conectar el banco",
+      "errConnect_missing-ref": "El banco respondió sin referencia — inténtalo de nuevo",
+      "errConnect_not-found": "Intento de conexión no encontrado — inténtalo de nuevo",
+      "errConnect_incomplete": "El consentimiento no se completó en la app del banco",
+      "errConnect_finalize": "Conectado, pero falló al finalizar — prueba a sincronizar",
+      "paywallLine": "Conectar {bank} cuesta {price} — desbloqueo único",
+      "toastUnlocked": "Desbloqueado — termina de conectar tu banco",
+      "errCheckout": "No se pudo iniciar el pago — inténtalo de nuevo"
+    },
+    "expenses": {
+      "scanBtn": "Escanear"
     }
   }
 }

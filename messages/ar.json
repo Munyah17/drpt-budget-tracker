@@ -25,7 +25,8 @@
       "calendar": "التقويم",
       "settings": "الإعدادات",
       "profile": "الملف الشخصي",
-      "wallet": "المحفظة"
+      "wallet": "المحفظة",
+      "banking": "الموجز البنكي"
     },
     "admin": {
       "overview": "نظرة عامة",
@@ -92,7 +93,8 @@
       "leave": "الإجازات",
       "borrowing-emp": "الراتب المبكر",
       "benefits": "المزايا",
-      "wallet": "المحفظة"
+      "wallet": "المحفظة",
+      "banking": "الموجز البنكي"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "رمز الإحالة (اختياري)",
     "referralCodePh": "إذا كان لديك واحد",
     "createdFree": "تم إنشاء الحساب — أهلاً بك في WellSpend!",
-    "signUpLinkFree": "إنشاء حساب"
+    "signUpLinkFree": "إنشاء حساب",
+    "signupTitleFree": "أنشئ حسابك المجاني",
+    "createFree": "إنشاء حساب"
   },
   "Landing": {
     "demoToast": "مرحبًا بك في الوضع التجريبي — استكشف بحرية، لا يتم حفظ أي شيء.",
@@ -332,7 +336,9 @@
       "pricing": "الأسعار",
       "signIn": "تسجيل الدخول",
       "rights": "© {year} WellSpend Budget Tracker. جميع الحقوق محفوظة.",
-      "powered": "مدعوم من Global Space Web +263718560128"
+      "powered": "مدعوم من Global Space Web +263718560128",
+      "privacy": "الخصوصية",
+      "terms": "الشروط"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "هذه الميزة غير متوفرة في خطتك",
       "lockBody": "لوحة التحكم والملف الشخصي والإعدادات مفتوحة. يفتح الباقي بمجرد تفعيل خطتك."
+    },
+    "import": {
+      "title": "مسح أو رفع",
+      "desc": "صوّر إيصالاً أو ارفع كشف حساب بنكي أو إثبات دفع أو لقطة شاشة أو ملف CSV أو Excel — وسنستخرج المعاملات لمراجعتها.",
+      "cameraBtn": "التقاط صورة",
+      "fileBtn": "اختيار ملف",
+      "busy": "جارٍ قراءة المستند…",
+      "reviewHint": "تحقق من التفاصيل وألغِ تحديد الأخطاء ثم أضِف.",
+      "errGeneric": "تعذّر قراءة الملف",
+      "errService": "الاستخراج غير متاح حالياً — حاول لاحقاً",
+      "fallbackIncome": "دخل مستورَد",
+      "fallbackExpense": "مصروف مستورَد",
+      "toastAdded": "تمت إضافة {count} قيود",
+      "rowInclude": "تضمين هذا القيد",
+      "typeToggleTip": "اضغط لتبديل النوع",
+      "typeIncome": "دخل",
+      "typeExpense": "مصروف",
+      "payeePh": "التاجر / المستفيد",
+      "colAmount": "المبلغ",
+      "colDate": "التاريخ",
+      "colCategory": "الفئة",
+      "lowConfidence": "ثقة منخفضة — تحقق جيداً",
+      "cancel": "إلغاء",
+      "addBtn": "إضافة {count} قيود"
+    },
+    "banking": {
+      "title": "الموجز البنكي",
+      "sub": "اربط بنكك وتُستورَد المعاملات تلقائياً",
+      "syncBtn": "مزامنة الآن",
+      "consentExpiring": "تنتهي موافقة البنك خلال {days} يوماً — أعد الربط للمتابعة.",
+      "connectTitle": "ربط بنكك",
+      "connectDesc": "ربط آمن للقراءة فقط عبر الخدمات المصرفية المفتوحة. نرى المعاملات — ولا يمكننا تحريك الأموال أبداً.",
+      "pendingNote": "بدأت الربط — أكمله في تطبيق بنكك أو اختر بنكاً.",
+      "expiredNote": "انتهت الموافقة — أعد الربط لاستئناف الاستيراد.",
+      "countryLabel": "الدولة",
+      "findBanksBtn": "ابحث عن بنكي",
+      "noBanks": "لا توجد بنوك لهذه الدولة.",
+      "yourBank": "بنكك",
+      "consentUntil": "الموافقة حتى {date}",
+      "accounts": "حسابات",
+      "disconnectBtn": "قطع الاتصال",
+      "disconnectSure": "حذف الاتصال وكل المعاملات المتزامنة؟",
+      "disconnectConfirm": "نعم، قطع الاتصال",
+      "cancel": "إلغاء",
+      "feedTitle": "بانتظار الاستيراد",
+      "feedEmpty": "كل شيء محدَّث — لا جديد للاستيراد.",
+      "addTxn": "إضافة",
+      "dismissTip": "ليست لي / مسجلة مسبقاً",
+      "matchHint": "تشبه «{merchant}» — مسجلة مسبقاً؟",
+      "matchLink": "ربط",
+      "loading": "جارٍ التحميل…",
+      "toastConnected": "تم ربط البنك",
+      "toastSynced": "اكتملت المزامنة — {count} معاملة",
+      "toastDisconnected": "تم قطع البنك",
+      "toastImported": "أُضيفت إلى قيودك",
+      "fallbackIncome": "دخل بنكي",
+      "fallbackExpense": "دفعة بنكية",
+      "errConnect_generic": "تعذّر ربط البنك",
+      "errConnect_missing-ref": "ردّ البنك بلا مرجع — حاول مجدداً",
+      "errConnect_not-found": "محاولة الاتصال غير موجودة — حاول مجدداً",
+      "errConnect_incomplete": "لم تُكمل الموافقة في تطبيق البنك",
+      "errConnect_finalize": "تم الربط لكن الإكمال فشل — جرّب المزامنة",
+      "paywallLine": "ربط {bank} يكلف {price} — فتح لمرة واحدة",
+      "toastUnlocked": "تم الفتح — أكمل ربط بنكك",
+      "errCheckout": "تعذّر بدء الدفع — حاول مجدداً"
+    },
+    "expenses": {
+      "scanBtn": "مسح"
     }
   }
 }

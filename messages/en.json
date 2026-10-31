@@ -25,7 +25,8 @@
       "calendar": "Calendar",
       "settings": "Settings",
       "profile": "Profile",
-      "wallet": "Wallet"
+      "wallet": "Wallet",
+      "banking": "Bank Feed"
     },
     "admin": {
       "overview": "Overview",
@@ -92,7 +93,8 @@
       "leave": "Leave",
       "borrowing-emp": "Early Pay",
       "benefits": "Benefits",
-      "wallet": "Wallet"
+      "wallet": "Wallet",
+      "banking": "Bank Feed"
     }
   },
   "Shell": {
@@ -216,7 +218,9 @@
     "step1Sub": "Your sign-in details",
     "step2Sub": "A little about you",
     "createdFree": "Account created — welcome to WellSpend!",
-    "signUpLinkFree": "Sign up"
+    "signUpLinkFree": "Sign up",
+    "signupTitleFree": "Create your free account",
+    "createFree": "Create Account"
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",
@@ -380,7 +384,9 @@
       "pricing": "Pricing",
       "signIn": "Sign in",
       "rights": "© {year} WellSpend Budget Tracker. All rights reserved.",
-      "powered": "Powered By Global Space Web +263718560128"
+      "powered": "Powered By Global Space Web +263718560128",
+      "privacy": "Privacy",
+      "terms": "Terms"
     }
   },
   "Pages": {
@@ -2866,7 +2872,8 @@
       "badgeRecurring": "Recurring",
       "tipEdit": "Edit",
       "tipDelete": "Delete",
-      "toastDeleted": "Expense deleted"
+      "toastDeleted": "Expense deleted",
+      "scanBtn": "Scan"
     },
     "income": {
       "title": "Income",
@@ -3282,6 +3289,71 @@
       "errSubmit": "Something went wrong — please try again.",
       "doneTitle": "Application received",
       "doneText": "Thank you — your application has been submitted and the hiring team will review it."
+    },
+    "import": {
+      "title": "Scan or upload",
+      "desc": "Photograph a receipt, or upload a bank statement, proof of payment, screenshot, CSV or Excel file — we'll pull out the transactions for you to check.",
+      "cameraBtn": "Take a photo",
+      "fileBtn": "Choose a file",
+      "busy": "Reading your document…",
+      "reviewHint": "Check the details below, untick anything wrong, then add.",
+      "errGeneric": "Couldn't read that file",
+      "errService": "Extraction isn't available right now — try again later",
+      "fallbackIncome": "Imported income",
+      "fallbackExpense": "Imported expense",
+      "toastAdded": "Added {count} entries",
+      "rowInclude": "Include this entry",
+      "typeToggleTip": "Tap to switch type",
+      "typeIncome": "Income",
+      "typeExpense": "Expense",
+      "payeePh": "Merchant / payee",
+      "colAmount": "Amount",
+      "colDate": "Date",
+      "colCategory": "Category",
+      "lowConfidence": "Low confidence — please double-check",
+      "cancel": "Cancel",
+      "addBtn": "Add {count} entries"
+    },
+    "banking": {
+      "title": "Bank Feed",
+      "sub": "Connect your bank and transactions import themselves",
+      "syncBtn": "Sync now",
+      "consentExpiring": "Your bank consent expires in {days} days — reconnect to keep the feed running.",
+      "connectTitle": "Connect your bank",
+      "connectDesc": "Secure, read-only link via open banking. We can see transactions — we can never move money.",
+      "pendingNote": "You started connecting — finish it in your bank app or pick a bank again.",
+      "expiredNote": "Your consent expired — reconnect to resume imports.",
+      "countryLabel": "Country",
+      "findBanksBtn": "Find my bank",
+      "noBanks": "No banks found for this country.",
+      "yourBank": "Your bank",
+      "consentUntil": "Consent until {date}",
+      "accounts": "accounts",
+      "disconnectBtn": "Disconnect",
+      "disconnectSure": "Delete the connection and all synced transactions?",
+      "disconnectConfirm": "Yes, disconnect",
+      "cancel": "Cancel",
+      "feedTitle": "Waiting to import",
+      "feedEmpty": "All caught up — nothing new to import.",
+      "addTxn": "Add",
+      "dismissTip": "Not mine / already logged",
+      "matchHint": "Looks like “{merchant}” — already logged?",
+      "matchLink": "Link it",
+      "loading": "Loading…",
+      "toastConnected": "Bank connected",
+      "toastSynced": "Sync complete — {count} transactions",
+      "toastDisconnected": "Bank disconnected",
+      "toastImported": "Added to your entries",
+      "fallbackIncome": "Bank income",
+      "fallbackExpense": "Bank payment",
+      "errConnect_generic": "Couldn't connect the bank",
+      "errConnect_missing-ref": "Bank returned without a reference — try again",
+      "errConnect_not-found": "Connection attempt not found — try again",
+      "errConnect_incomplete": "Consent wasn't finished in the bank app",
+      "errConnect_finalize": "Connected, but finishing failed — try syncing",
+      "paywallLine": "Connecting {bank} costs {price} — a one-off unlock",
+      "toastUnlocked": "Unlocked — finish connecting your bank",
+      "errCheckout": "Couldn't start the checkout — try again"
     }
   },
   "Native": {

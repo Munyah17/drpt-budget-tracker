@@ -25,7 +25,8 @@
       "calendar": "Kalendář",
       "settings": "Nastavení",
       "profile": "Profil",
-      "wallet": "Peněženka"
+      "wallet": "Peněženka",
+      "banking": "Bankovní kanál"
     },
     "admin": {
       "overview": "Přehled",
@@ -92,7 +93,8 @@
       "leave": "Dovolená",
       "borrowing-emp": "Předčasná výplata",
       "benefits": "Benefity",
-      "wallet": "Peněženka"
+      "wallet": "Peněženka",
+      "banking": "Bankovní kanál"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Referenční kód (nepovinné)",
     "referralCodePh": "Pokud ho máš",
     "createdFree": "Účet vytvořen — vítej v WellSpend!",
-    "signUpLinkFree": "Zaregistrovat se"
+    "signUpLinkFree": "Zaregistrovat se",
+    "signupTitleFree": "Vytvoř si bezplatný účet",
+    "createFree": "Vytvořit účet"
   },
   "Landing": {
     "demoToast": "Vítej v demu — zkoumej volně, nic se neukládá.",
@@ -332,7 +336,9 @@
       "pricing": "Ceny",
       "signIn": "Přihlásit se",
       "rights": "© {year} WellSpend Budget Tracker. Všechna práva vyhrazena.",
-      "powered": "Pohání Global Space Web +263718560128"
+      "powered": "Pohání Global Space Web +263718560128",
+      "privacy": "Soukromí",
+      "terms": "Podmínky"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Tato funkce není ve tvém plánu dostupná",
       "lockBody": "Přehled, profil a nastavení jsou otevřené. Všechno ostatní se odemkne, až bude tvůj plán aktivní."
+    },
+    "import": {
+      "title": "Naskenovat nebo nahrát",
+      "desc": "Vyfoťte účtenku nebo nahrajte bankovní výpis, doklad o platbě, snímek obrazovky, CSV či Excel — transakce vytáhneme k vaší kontrole.",
+      "cameraBtn": "Vyfotit",
+      "fileBtn": "Vybrat soubor",
+      "busy": "Čtu dokument…",
+      "reviewHint": "Zkontrolujte údaje, odškrtněte chyby a přidejte.",
+      "errGeneric": "Soubor se nepodařilo přečíst",
+      "errService": "Extrakce není dostupná — zkuste to později",
+      "fallbackIncome": "Importovaný příjem",
+      "fallbackExpense": "Importovaný výdaj",
+      "toastAdded": "Přidáno {count} položek",
+      "rowInclude": "Zahrnout položku",
+      "typeToggleTip": "Klepnutím změníte typ",
+      "typeIncome": "Příjem",
+      "typeExpense": "Výdaj",
+      "payeePh": "Obchod / příjemce",
+      "colAmount": "Částka",
+      "colDate": "Datum",
+      "colCategory": "Kategorie",
+      "lowConfidence": "Nízká jistota — zkontrolujte",
+      "cancel": "Zrušit",
+      "addBtn": "Přidat {count} položek"
+    },
+    "banking": {
+      "title": "Bankovní kanál",
+      "sub": "Propojte banku a transakce se importují samy",
+      "syncBtn": "Synchronizovat",
+      "consentExpiring": "Souhlas banky vyprší za {days} dní — propojte znovu.",
+      "connectTitle": "Propojit vaši banku",
+      "connectDesc": "Bezpečné propojení jen pro čtení přes open banking. Vidíme transakce — nikdy nemůžeme hýbat s penězi.",
+      "pendingNote": "Propojení zahájeno — dokončete v aplikaci banky nebo zvolte banku.",
+      "expiredNote": "Souhlas vypršel — propojte znovu pro obnovení importů.",
+      "countryLabel": "Země",
+      "findBanksBtn": "Najít moji banku",
+      "noBanks": "Pro tuto zemi nebyly nalezeny žádné banky.",
+      "yourBank": "Vaše banka",
+      "consentUntil": "Souhlas do {date}",
+      "accounts": "účty",
+      "disconnectBtn": "Odpojit",
+      "disconnectSure": "Smazat propojení a všechny synchronizované transakce?",
+      "disconnectConfirm": "Ano, odpojit",
+      "cancel": "Zrušit",
+      "feedTitle": "Čeká na import",
+      "feedEmpty": "Vše aktuální — nic k importu.",
+      "addTxn": "Přidat",
+      "dismissTip": "Není moje / už zapsáno",
+      "matchHint": "Vypadá jako „{merchant}“ — už zapsáno?",
+      "matchLink": "Propojit",
+      "loading": "Načítání…",
+      "toastConnected": "Banka propojena",
+      "toastSynced": "Synchronizace — {count} transakcí",
+      "toastDisconnected": "Banka odpojena",
+      "toastImported": "Přidáno do vašich záznamů",
+      "fallbackIncome": "Bankovní příjem",
+      "fallbackExpense": "Bankovní platba",
+      "errConnect_generic": "Banku se nepodařilo propojit",
+      "errConnect_missing-ref": "Banka odpověděla bez reference — zkuste znovu",
+      "errConnect_not-found": "Pokus o propojení nenalezen — zkuste znovu",
+      "errConnect_incomplete": "Souhlas nebyl dokončen v aplikaci banky",
+      "errConnect_finalize": "Propojeno, ale dokončení selhalo — zkuste synchronizaci",
+      "paywallLine": "Propojení {bank} stojí {price} — jednorázové odemčení",
+      "toastUnlocked": "Odemčeno — dokončete propojení banky",
+      "errCheckout": "Nepodařilo se spustit platbu — zkuste znovu"
+    },
+    "expenses": {
+      "scanBtn": "Skenovat"
     }
   }
 }

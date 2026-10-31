@@ -46,6 +46,7 @@ export const NAV_ITEMS = [
   { id: "income", label: "Income", icon: "wallet" },
   { id: "expenses", label: "Expenses", icon: "shopping-bag" },
   { id: "transactions", label: "Transactions", icon: "list" },
+  { id: "banking", label: "Bank Feed", icon: "link" },
   { id: "wallet", label: "Wallet", icon: "landmark" },
   { id: "budget", label: "Budget Planner", icon: "pie-chart" },
   { id: "savings", label: "Savings Goals", icon: "target" },

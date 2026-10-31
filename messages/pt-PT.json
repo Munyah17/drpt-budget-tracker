@@ -25,7 +25,8 @@
       "calendar": "Calendário",
       "settings": "Definições",
       "profile": "Perfil",
-      "wallet": "Carteira"
+      "wallet": "Carteira",
+      "banking": "Feed bancário"
     },
     "admin": {
       "overview": "Visão Geral",
@@ -92,7 +93,8 @@
       "leave": "Ausências",
       "borrowing-emp": "Salário Antecipado",
       "benefits": "Benefícios",
-      "wallet": "Carteira"
+      "wallet": "Carteira",
+      "banking": "Feed bancário"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Código de Referência (opcional)",
     "referralCodePh": "Se tiveres um",
     "createdFree": "Conta criada — bem-vindo ao WellSpend!",
-    "signUpLinkFree": "Criar conta"
+    "signUpLinkFree": "Criar conta",
+    "signupTitleFree": "Cria a tua conta gratuita",
+    "createFree": "Criar conta"
   },
   "Landing": {
     "demoToast": "Bem-vindo à demo — explora à vontade, nada é guardado.",
@@ -332,7 +336,9 @@
       "pricing": "Preços",
       "signIn": "Iniciar sessão",
       "rights": "© {year} WellSpend Budget Tracker. Todos os direitos reservados.",
-      "powered": "Desenvolvido por Global Space Web +263718560128"
+      "powered": "Desenvolvido por Global Space Web +263718560128",
+      "privacy": "Privacidade",
+      "terms": "Termos"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Esta funcionalidade não está disponível no teu plano",
       "lockBody": "O painel, o perfil e as definições estão abertos. Tudo o resto desbloqueia quando o teu plano estiver ativo."
+    },
+    "import": {
+      "title": "Digitalizar ou carregar",
+      "desc": "Fotografa um recibo ou carrega um extrato bancário, comprovativo de pagamento, captura de ecrã, CSV ou Excel — extraímos as transações para verificares.",
+      "cameraBtn": "Tirar uma foto",
+      "fileBtn": "Escolher ficheiro",
+      "busy": "A ler o documento…",
+      "reviewHint": "Verifica os dados, desmarca os erros e adiciona.",
+      "errGeneric": "Não foi possível ler esse ficheiro",
+      "errService": "A extração não está disponível — tenta mais tarde",
+      "fallbackIncome": "Receita importada",
+      "fallbackExpense": "Despesa importada",
+      "toastAdded": "{count} registos adicionados",
+      "rowInclude": "Incluir este registo",
+      "typeToggleTip": "Toca para mudar o tipo",
+      "typeIncome": "Receita",
+      "typeExpense": "Despesa",
+      "payeePh": "Comerciante / beneficiário",
+      "colAmount": "Montante",
+      "colDate": "Data",
+      "colCategory": "Categoria",
+      "lowConfidence": "Baixa confiança — verifica",
+      "cancel": "Cancelar",
+      "addBtn": "Adicionar {count} registos"
+    },
+    "banking": {
+      "title": "Feed bancário",
+      "sub": "Liga o teu banco e as transações importam-se sozinhas",
+      "syncBtn": "Sincronizar",
+      "consentExpiring": "O consentimento expira em {days} dias — volta a ligar.",
+      "connectTitle": "Ligar o teu banco",
+      "connectDesc": "Ligação segura só de leitura via open banking. Vemos transações — nunca podemos mexer no dinheiro.",
+      "pendingNote": "Começaste a ligação — termina na app do banco ou escolhe um banco.",
+      "expiredNote": "O consentimento expirou — volta a ligar para retomar.",
+      "countryLabel": "País",
+      "findBanksBtn": "Encontrar o meu banco",
+      "noBanks": "Nenhum banco encontrado para este país.",
+      "yourBank": "O teu banco",
+      "consentUntil": "Consentimento até {date}",
+      "accounts": "contas",
+      "disconnectBtn": "Desligar",
+      "disconnectSure": "Apagar a ligação e todas as transações sincronizadas?",
+      "disconnectConfirm": "Sim, desligar",
+      "cancel": "Cancelar",
+      "feedTitle": "À espera de importar",
+      "feedEmpty": "Tudo em dia — nada novo para importar.",
+      "addTxn": "Adicionar",
+      "dismissTip": "Não é minha / já registada",
+      "matchHint": "Parece «{merchant}» — já registada?",
+      "matchLink": "Ligar",
+      "loading": "A carregar…",
+      "toastConnected": "Banco ligado",
+      "toastSynced": "Sincronização — {count} transações",
+      "toastDisconnected": "Banco desligado",
+      "toastImported": "Adicionado aos teus registos",
+      "fallbackIncome": "Receita bancária",
+      "fallbackExpense": "Pagamento bancário",
+      "errConnect_generic": "Não foi possível ligar o banco",
+      "errConnect_missing-ref": "O banco respondeu sem referência — tenta de novo",
+      "errConnect_not-found": "Tentativa de ligação não encontrada — tenta de novo",
+      "errConnect_incomplete": "Consentimento não concluído na app do banco",
+      "errConnect_finalize": "Ligado, mas a finalização falhou — tenta sincronizar",
+      "paywallLine": "Ligar {bank} custa {price} — desbloqueio único",
+      "toastUnlocked": "Desbloqueado — termina de ligar o teu banco",
+      "errCheckout": "Não foi possível iniciar o pagamento — tenta de novo"
+    },
+    "expenses": {
+      "scanBtn": "Digitalizar"
     }
   }
 }

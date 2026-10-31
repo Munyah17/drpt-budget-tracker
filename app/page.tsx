@@ -300,17 +300,35 @@ export default function LandingPage() {
           <a href="#features">{t("footer.features")}</a>
           <a href="#business">{t("footer.business")}</a>
           <a href="#pricing">{t("footer.pricing")}</a>
+          <Link href="/privacy">{t("footer.privacy")}</Link>
+          <Link href="/terms">{t("footer.terms")}</Link>
           <Link href="/login">{t("footer.signIn")}</Link>
         </div>
         <div>{t("footer.rights", { year: String(new Date().getFullYear()) })}</div>
         <div>{t("footer.powered")}</div>
       </footer>
       {!native && (
-        <div className="landing-sticky">
-          <Link href="/login?signup=1" className="btn btn-primary">
-            {t("hero.getStarted")} <Icon name="arrow-up-right" size={16} />
-          </Link>
-        </div>
+        <nav className="landing-sticky" aria-label="Sections">
+          <a href="#features" className="landing-tab-item">
+            <Icon name="sparkles" size={20} />
+            <span>{t("nav.features")}</span>
+          </a>
+          <a href="#how" className="landing-tab-item">
+            <Icon name="git-branch" size={20} />
+            <span>{t("nav.how")}</span>
+          </a>
+          <button className="landing-tab-add" aria-label={t("hero.seeDemo")} onClick={handleDemo}>
+            <Icon name="layout-dashboard" size={26} />
+          </button>
+          <a href="#business" className="landing-tab-item">
+            <Icon name="briefcase" size={20} />
+            <span>{t("nav.business")}</span>
+          </a>
+          <a href="#pricing" className="landing-tab-item">
+            <Icon name="tag" size={20} />
+            <span>{t("nav.pricing")}</span>
+          </a>
+        </nav>
       )}
     </div>
   );

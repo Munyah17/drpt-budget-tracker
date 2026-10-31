@@ -25,7 +25,8 @@
       "calendar": "Ikhalenda",
       "settings": "Izilungiselelo",
       "profile": "Iphrofayela",
-      "wallet": "Iwalethi"
+      "wallet": "Iwalethi",
+      "banking": "OkweBhange"
     },
     "admin": {
       "overview": "Isishwankathelo",
@@ -92,7 +93,8 @@
       "leave": "Ilivi",
       "borrowing-emp": "Umholo Wangaphambili",
       "benefits": "Izinzuzo",
-      "wallet": "Iwalethi"
+      "wallet": "Iwalethi",
+      "banking": "OkweBhange"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Ikhodi Yokudalulwa (okungafuneki)",
     "referralCodePh": "Uma unayo",
     "createdFree": "I-akhawunti yenziwe — wamukelekile ku-WellSpend!",
-    "signUpLinkFree": "Bhalisa"
+    "signUpLinkFree": "Bhalisa",
+    "signupTitleFree": "Yenza i-akhawunti yakho yamahhala",
+    "createFree": "Yenza i-akhawunti"
   },
   "Landing": {
     "demoToast": "Wamukelekile kwidemo — hlola nganoma, akukho lutho olugciniwe.",
@@ -332,7 +336,9 @@
       "pricing": "Izintengo",
       "signIn": "Ngena",
       "rights": "© {year} WellSpend Budget Tracker. Zonke izilungelo zilondoloziwe.",
-      "powered": "Isekelwe yi-Global Space Web +263718560128"
+      "powered": "Isekelwe yi-Global Space Web +263718560128",
+      "privacy": "Ubumfihlo",
+      "terms": "Imigomo"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Le sici asitholakali ohlelweni lwakho",
       "lockBody": "Ideshibhodi, iphrofayili nezilungiselelo zivuliwe. Okunye konke kuvulwa lapho uhlelo lwakho lusebenza."
+    },
+    "import": {
+      "title": "Skena noma layisha",
+      "desc": "Thatha isithombe serisidi noma ulayishe isitatimende sebhange, ubufakazi bokukhokha, isithombe-skrini, i-CSV noma i-Excel — sizokhipha izintengiso uzozihlola.",
+      "cameraBtn": "Thatha isithombe",
+      "fileBtn": "Khetha ifayela",
+      "busy": "Sifunda idokhumenti yakho…",
+      "reviewHint": "Hlola imininingwane, susa okungalungile, bese wengeza.",
+      "errGeneric": "Asikwazanga ukufunda lelo fayela",
+      "errService": "Ukwenziwa kwalo msebenzi akutholakali — zama futhi",
+      "fallbackIncome": "Imali engenayo eyangenisiwe",
+      "fallbackExpense": "Ukukepha okwengenisiwe",
+      "toastAdded": "Kungeziwe okungu-{count}",
+      "rowInclude": "Faka le nkomba",
+      "typeToggleTip": "Thepha ukuze uguqule uhlobo",
+      "typeIncome": "Imali engenayo",
+      "typeExpense": "Ukukepha",
+      "payeePh": "Ithengisi / umamukeli",
+      "colAmount": "Inani",
+      "colDate": "Usuku",
+      "colCategory": "Isigaba",
+      "lowConfidence": "Asiqinisekile — sicela uhlolo",
+      "cancel": "Khansela",
+      "addBtn": "Engeza okungu-{count}"
+    },
+    "banking": {
+      "title": "OkweBhange",
+      "sub": "Xhuma ibhange lakho izintengiso zizangena zodwa",
+      "syncBtn": "Vumelanisa manje",
+      "consentExpiring": "Imvume yebhange iphelelwa izinsuku ezi-{days} — xhuma futhi.",
+      "connectTitle": "Xhuma ibhange lakho",
+      "connectDesc": "Uxhumano oluphephile lokufunda kuphela nge-open banking. Sibona izintengiso — asisoze sihambise imali.",
+      "pendingNote": "Uqale ukuxhuma — qedela kuhlelo lwebhange noma khetha ibhange.",
+      "expiredNote": "Imvume iphelelwe — xhuma futhi ukuze uqhubeke.",
+      "countryLabel": "Izwe",
+      "findBanksBtn": "Thola ibhange lami",
+      "noBanks": "Azikho ibhange zeli zwe.",
+      "yourBank": "Ibhange lakho",
+      "consentUntil": "Imvume kuze ku-{date}",
+      "accounts": "ama-akhawunti",
+      "disconnectBtn": "Nqamula",
+      "disconnectSure": "Susa uxhumano nayo yonke izintengiso?",
+      "disconnectConfirm": "Yebo, nqamula",
+      "cancel": "Khansela",
+      "feedTitle": "Ilinde ukungeniswa",
+      "feedEmpty": "Konke kubuyekeziwe — akukho okusha.",
+      "addTxn": "Engeza",
+      "dismissTip": "Asiyona eyami / selivele yabhaliswa",
+      "matchHint": "Kufana no-\"{merchant}\" — sekubhalisiwe?",
+      "matchLink": "Xhumanisa",
+      "loading": "Iyalayisha…",
+      "toastConnected": "Ibhange lixhumiwe",
+      "toastSynced": "Ukuvumelanisa kwediwe — izintengiso ezi-{count}",
+      "toastDisconnected": "Ibhange linqunyiwe",
+      "toastImported": "Kungeziwe ezincombeni zakho",
+      "fallbackIncome": "Imali engenayo yebhange",
+      "fallbackExpense": "Inkokhelo yebhange",
+      "errConnect_generic": "Asikwazanga ukuxhuma ibhange",
+      "errConnect_missing-ref": "Ibhange liphendule ngaphandle kwereferensi — zama futhi",
+      "errConnect_not-found": "Umzamo wokuxhuma awutholakali — zama futhi",
+      "errConnect_incomplete": "Imvume ayiqedwanga kuhlelo lwebhange",
+      "errConnect_finalize": "Luxhumiwe kodwa ukuqedwa kwehlulekile — zama ukuvumelanisa",
+      "paywallLine": "Ukuxhuma i-{bank} kubiza {price} — uvulwa kanye kuphela",
+      "toastUnlocked": "Kuvulwe — qedela ukuxhuma ibhange",
+      "errCheckout": "Asikwazanga ukuqala inkokhelo — zama futhi"
+    },
+    "expenses": {
+      "scanBtn": "Skena"
     }
   }
 }

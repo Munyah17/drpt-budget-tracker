@@ -25,7 +25,8 @@
       "calendar": "Kalendarz",
       "settings": "Ustawienia",
       "profile": "Profil",
-      "wallet": "Portfel"
+      "wallet": "Portfel",
+      "banking": "Kanał bankowy"
     },
     "admin": {
       "overview": "Przegląd",
@@ -92,7 +93,8 @@
       "leave": "Urlopy",
       "borrowing-emp": "Wcześniejsza wypłata",
       "benefits": "Benefity",
-      "wallet": "Portfel"
+      "wallet": "Portfel",
+      "banking": "Kanał bankowy"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Kod polecający (opcjonalnie)",
     "referralCodePh": "Jeśli go masz",
     "createdFree": "Konto utworzone — witamy w WellSpend!",
-    "signUpLinkFree": "Zarejestruj się"
+    "signUpLinkFree": "Zarejestruj się",
+    "signupTitleFree": "Utwórz darmowe konto",
+    "createFree": "Utwórz konto"
   },
   "Landing": {
     "demoToast": "Witaj w wersji demo — eksploruj swobodnie, nic nie jest zapisywane.",
@@ -332,7 +336,9 @@
       "pricing": "Cennik",
       "signIn": "Zaloguj się",
       "rights": "© {year} WellSpend Budget Tracker. Wszelkie prawa zastrzeżone.",
-      "powered": "Zasilane przez Global Space Web +263718560128"
+      "powered": "Zasilane przez Global Space Web +263718560128",
+      "privacy": "Prywatność",
+      "terms": "Warunki"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Ta funkcja nie jest dostępna w Twoim planie",
       "lockBody": "Panel, profil i ustawienia są otwarte. Wszystko inne odblokuje się, gdy Twój plan będzie aktywny."
+    },
+    "import": {
+      "title": "Skanuj lub prześlij",
+      "desc": "Sfotografuj paragon lub prześlij wyciąg bankowy, potwierdzenie płatności, zrzut ekranu, CSV lub Excel — wyciągniemy transakcje do sprawdzenia.",
+      "cameraBtn": "Zrób zdjęcie",
+      "fileBtn": "Wybierz plik",
+      "busy": "Odczytywanie dokumentu…",
+      "reviewHint": "Sprawdź dane, odznacz błędy i dodaj.",
+      "errGeneric": "Nie udało się odczytać pliku",
+      "errService": "Ekstrakcja niedostępna — spróbuj później",
+      "fallbackIncome": "Importowany przychód",
+      "fallbackExpense": "Importowany wydatek",
+      "toastAdded": "Dodano {count} pozycji",
+      "rowInclude": "Uwzględnij pozycję",
+      "typeToggleTip": "Dotknij, by zmienić typ",
+      "typeIncome": "Przychód",
+      "typeExpense": "Wydatek",
+      "payeePh": "Sklep / odbiorca",
+      "colAmount": "Kwota",
+      "colDate": "Data",
+      "colCategory": "Kategoria",
+      "lowConfidence": "Niska pewność — sprawdź",
+      "cancel": "Anuluj",
+      "addBtn": "Dodaj {count} pozycji"
+    },
+    "banking": {
+      "title": "Kanał bankowy",
+      "sub": "Połącz bank, a transakcje będą importować się same",
+      "syncBtn": "Synchronizuj",
+      "consentExpiring": "Zgoda bankowa wygasa za {days} dni — połącz ponownie.",
+      "connectTitle": "Połącz swój bank",
+      "connectDesc": "Bezpieczne połączenie tylko do odczytu przez open banking. Widzimy transakcje — nigdy nie możemy ruszyć pieniędzy.",
+      "pendingNote": "Połączenie rozpoczęte — dokończ w aplikacji banku lub wybierz bank.",
+      "expiredNote": "Zgoda wygasła — połącz ponownie, by wznowić import.",
+      "countryLabel": "Kraj",
+      "findBanksBtn": "Znajdź mój bank",
+      "noBanks": "Brak banków dla tego kraju.",
+      "yourBank": "Twój bank",
+      "consentUntil": "Zgoda do {date}",
+      "accounts": "kont",
+      "disconnectBtn": "Rozłącz",
+      "disconnectSure": "Usunąć połączenie i wszystkie transakcje?",
+      "disconnectConfirm": "Tak, rozłącz",
+      "cancel": "Anuluj",
+      "feedTitle": "Oczekuje na import",
+      "feedEmpty": "Wszystko na bieżąco — nic do importu.",
+      "addTxn": "Dodaj",
+      "dismissTip": "Nie moja / już wpisana",
+      "matchHint": "Wygląda jak „{merchant}” — już wpisana?",
+      "matchLink": "Powiąż",
+      "loading": "Ładowanie…",
+      "toastConnected": "Bank połączony",
+      "toastSynced": "Synchronizacja — {count} transakcji",
+      "toastDisconnected": "Bank rozłączony",
+      "toastImported": "Dodano do wpisów",
+      "fallbackIncome": "Przychód bankowy",
+      "fallbackExpense": "Płatność bankowa",
+      "errConnect_generic": "Nie udało się połączyć banku",
+      "errConnect_missing-ref": "Bank odpowiedział bez referencji — spróbuj ponownie",
+      "errConnect_not-found": "Nie znaleziono próby połączenia — spróbuj ponownie",
+      "errConnect_incomplete": "Zgoda nie została dokończona w aplikacji banku",
+      "errConnect_finalize": "Połączono, ale finalizacja nie powiodła się — spróbuj synchronizacji",
+      "paywallLine": "Połączenie {bank} kosztuje {price} — jednorazowe odblokowanie",
+      "toastUnlocked": "Odblokowano — dokończ łączenie banku",
+      "errCheckout": "Nie udało się uruchomić płatności — spróbuj ponownie"
+    },
+    "expenses": {
+      "scanBtn": "Skanuj"
     }
   }
 }

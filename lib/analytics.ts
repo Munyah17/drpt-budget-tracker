@@ -47,7 +47,19 @@ export type TrackEventName =
   | "signup_failed"
   | "login"
   | "payment"
-  | "payment_failed";
+  | "payment_failed"
+  | "import_open"
+  | "import_extracted"
+  | "import_confirmed"
+  | "import_failed"
+  | "bank_connect_start"
+  | "bank_paywall"
+  | "bank_unlock_paid"
+  | "bank_connected"
+  | "bank_sync"
+  | "bank_txn_imported"
+  | "bank_txn_linked"
+  | "bank_txn_dismissed";
 
 export function trackEvent(
   event: TrackEventName | string,

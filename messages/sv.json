@@ -25,7 +25,8 @@
       "calendar": "Kalender",
       "settings": "Inställningar",
       "profile": "Profil",
-      "wallet": "Plånbok"
+      "wallet": "Plånbok",
+      "banking": "Bankflöde"
     },
     "admin": {
       "overview": "Översikt",
@@ -92,7 +93,8 @@
       "leave": "Ledighet",
       "borrowing-emp": "Lön i förtid",
       "benefits": "Förmåner",
-      "wallet": "Plånbok"
+      "wallet": "Plånbok",
+      "banking": "Bankflöde"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Värvningskod (valfritt)",
     "referralCodePh": "Om du har en",
     "createdFree": "Konto skapat — välkommen till WellSpend!",
-    "signUpLinkFree": "Registrera dig"
+    "signUpLinkFree": "Registrera dig",
+    "signupTitleFree": "Skapa ditt gratiskonto",
+    "createFree": "Skapa konto"
   },
   "Landing": {
     "demoToast": "Välkommen till demon — utforska fritt, inget sparas.",
@@ -332,7 +336,9 @@
       "pricing": "Priser",
       "signIn": "Logga in",
       "rights": "© {year} WellSpend Budget Tracker. Alla rättigheter förbehållna.",
-      "powered": "Drivs av Global Space Web +263718560128"
+      "powered": "Drivs av Global Space Web +263718560128",
+      "privacy": "Integritet",
+      "terms": "Villkor"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Den här funktionen är inte tillgänglig i din plan",
       "lockBody": "Översikt, profil och inställningar är öppna. Allt annat låses upp när din plan är aktiv."
+    },
+    "import": {
+      "title": "Skanna eller ladda upp",
+      "desc": "Fota ett kvitto eller ladda upp ett kontoutdrag, betalningsbevis, skärmdump, CSV- eller Excel-fil — vi plockar ut transaktionerna åt dig att kontrollera.",
+      "cameraBtn": "Ta ett foto",
+      "fileBtn": "Välj fil",
+      "busy": "Läser ditt dokument…",
+      "reviewHint": "Kolla uppgifterna, bocka ur fel och lägg till.",
+      "errGeneric": "Kunde inte läsa filen",
+      "errService": "Extrahering är inte tillgänglig — försök senare",
+      "fallbackIncome": "Importerad inkomst",
+      "fallbackExpense": "Importerad utgift",
+      "toastAdded": "{count} poster tillagda",
+      "rowInclude": "Ta med posten",
+      "typeToggleTip": "Tryck för att byta typ",
+      "typeIncome": "Inkomst",
+      "typeExpense": "Utgift",
+      "payeePh": "Butik / mottagare",
+      "colAmount": "Belopp",
+      "colDate": "Datum",
+      "colCategory": "Kategori",
+      "lowConfidence": "Låg säkerhet — dubbelkolla",
+      "cancel": "Avbryt",
+      "addBtn": "Lägg till {count} poster"
+    },
+    "banking": {
+      "title": "Bankflöde",
+      "sub": "Koppla banken så importeras transaktioner av sig själva",
+      "syncBtn": "Synka nu",
+      "consentExpiring": "Ditt banksamtycke går ut om {days} dagar — koppla om.",
+      "connectTitle": "Koppla din bank",
+      "connectDesc": "Säker skrivskyddad koppling via open banking. Vi ser transaktioner — vi kan aldrig flytta pengar.",
+      "pendingNote": "Koppling påbörjad — slutför i bankappen eller välj en bank.",
+      "expiredNote": "Samtycket har gått ut — koppla om för att fortsätta.",
+      "countryLabel": "Land",
+      "findBanksBtn": "Hitta min bank",
+      "noBanks": "Inga banker hittades för landet.",
+      "yourBank": "Din bank",
+      "consentUntil": "Samtycke till {date}",
+      "accounts": "konton",
+      "disconnectBtn": "Koppla från",
+      "disconnectSure": "Ta bort kopplingen och alla synkade transaktioner?",
+      "disconnectConfirm": "Ja, koppla från",
+      "cancel": "Avbryt",
+      "feedTitle": "Väntar på import",
+      "feedEmpty": "Allt ikapp — inget nytt att importera.",
+      "addTxn": "Lägg till",
+      "dismissTip": "Inte min / redan loggad",
+      "matchHint": "Ser ut som ”{merchant}” — redan loggad?",
+      "matchLink": "Länka",
+      "loading": "Laddar…",
+      "toastConnected": "Bank kopplad",
+      "toastSynced": "Synk klar — {count} transaktioner",
+      "toastDisconnected": "Bank frankopplad",
+      "toastImported": "Tillagd i dina poster",
+      "fallbackIncome": "Bankinkomst",
+      "fallbackExpense": "Bankbetalning",
+      "errConnect_generic": "Kunde inte koppla banken",
+      "errConnect_missing-ref": "Banken svarade utan referens — försök igen",
+      "errConnect_not-found": "Kopplingsförsöket hittades inte — försök igen",
+      "errConnect_incomplete": "Samtycket slutfördes inte i bankappen",
+      "errConnect_finalize": "Kopplad, men slutförandet misslyckades — prova att synka",
+      "paywallLine": "Att koppla {bank} kostar {price} — engångsupplåsning",
+      "toastUnlocked": "Upplåst — slutför bankkopplingen",
+      "errCheckout": "Kunde inte starta betalningen — försök igen"
+    },
+    "expenses": {
+      "scanBtn": "Skanna"
     }
   }
 }

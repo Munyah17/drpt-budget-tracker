@@ -28,6 +28,10 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>WellSpend uses Face ID to unlock your budget so only you can open it.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>WellSpend uses the camera to photograph receipts so your expenses can be filled in automatically.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>WellSpend reads photos you choose so receipts and statements can be imported.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

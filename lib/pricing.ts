@@ -22,15 +22,38 @@ export type PaymentChannel = "stripe" | "paynow" | "ecocash" | "bank";
 const IS_APP_STORE = process.env.NEXT_PUBLIC_PLATFORM === "appstore";
 const STORE_RATE = IS_APP_STORE ? APP_STORE_FEE_RATE : 0;
 
-/** Price in cents that the client is charged, grossed up so we net $1. */
-export function priceCents(method: PaymentChannel): number {
+/** Gross-up: cents the client is charged so we net `netUsd` after channel fees. */
+function grossCents(netUsd: number, method: PaymentChannel): number {
   const rate =
     STORE_RATE +
     (method === "stripe" ? STRIPE_FEE_RATE : method === "paynow" ? PAYNOW_FEE_RATE : 0);
   const fixed = method === "stripe" ? STRIPE_FEE_FIXED : 0;
   const transfer = method === "ecocash" || method === "bank" ? TRANSFER_FEE_USD : 0;
   // gross = (net + fixed) / (1 - total rate), rounded UP to the cent
-  return Math.ceil(((NET_PRICE_USD + fixed) / (1 - rate)) * 100 - 1e-9) + Math.round(transfer * 100);
+  return Math.ceil(((netUsd + fixed) / (1 - rate)) * 100 - 1e-9) + Math.round(transfer * 100);
+}
+
+/** Price in cents that the client is charged, grossed up so we net $1. */
+export function priceCents(method: PaymentChannel): number {
+  return grossCents(NET_PRICE_USD, method);
+}
+
+/**
+ * Provider-side cost per bank connection by ISO country (USD one-off
+ * equivalent). GoCardless Bank Account Data is free for UK/EU, so this map
+ * stays empty until a paid provider/region is added (e.g. Plaid for US/CA) —
+ * then the fee is passed through on top of our $1 margin.
+ */
+export const OPEN_BANKING_FEE_USD: Record<string, number> = {};
+
+/** One-off unlock price per bank connection for free-tier users. */
+export function bankingPriceCents(method: PaymentChannel, country = "gb"): number {
+  const providerFee = OPEN_BANKING_FEE_USD[country.toLowerCase()] ?? 0;
+  return grossCents(NET_PRICE_USD + providerFee, method);
+}
+
+export function bankingPriceLabel(method: PaymentChannel, country = "gb"): string {
+  return `$${(bankingPriceCents(method, country) / 100).toFixed(2)}`;
 }
 
 export function priceUsd(method: PaymentChannel): number {

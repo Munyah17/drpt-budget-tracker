@@ -187,7 +187,7 @@ function LoginForm() {
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
             <LanguageSelect compact />
           </div>
-          <h2>{signup ? t("signupTitle") : t("signinTitle")}</h2>
+          <h2>{signup ? (native ? t("signupTitleFree") : t("signupTitle")) : t("signinTitle")}</h2>
           {signup && (
             <div className="signup-steps" aria-label={t("stepLabel", { step })}>
               <div className="signup-bar"><span style={{ width: step === 1 ? "50%" : "100%" }} /></div>
@@ -312,7 +312,7 @@ function LoginForm() {
               </div>
             )}
             <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>
-              {signup && step === 1 ? t("continue") : submitting ? (signup ? t("creating") : t("signingIn")) : (signup ? t("createPay") : t("signIn"))}
+              {signup && step === 1 ? t("continue") : submitting ? (signup ? t("creating") : t("signingIn")) : (signup ? (native ? t("createFree") : t("createPay")) : t("signIn"))}
             </button>
             {signup && step === 2 && (
               <button type="button" className="btn btn-ghost" style={{ width: "100%", marginTop: 8 }} onClick={() => setStep(1)}>

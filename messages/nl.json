@@ -25,7 +25,8 @@
       "calendar": "Kalender",
       "settings": "Instellingen",
       "profile": "Profiel",
-      "wallet": "Wallet"
+      "wallet": "Wallet",
+      "banking": "Bankfeed"
     },
     "admin": {
       "overview": "Overzicht",
@@ -92,7 +93,8 @@
       "leave": "Verlof",
       "borrowing-emp": "Vervroegd loon",
       "benefits": "Voordelen",
-      "wallet": "Wallet"
+      "wallet": "Wallet",
+      "banking": "Bankfeed"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Verwijzingscode (optioneel)",
     "referralCodePh": "Als je er een hebt",
     "createdFree": "Account aangemaakt — welkom bij WellSpend!",
-    "signUpLinkFree": "Aanmelden"
+    "signUpLinkFree": "Aanmelden",
+    "signupTitleFree": "Maak je gratis account aan",
+    "createFree": "Account aanmaken"
   },
   "Landing": {
     "demoToast": "Welkom bij de demo — kijk gerust rond, er wordt niets opgeslagen.",
@@ -332,7 +336,9 @@
       "pricing": "Prijzen",
       "signIn": "Inloggen",
       "rights": "© {year} WellSpend Budget Tracker. Alle rechten voorbehouden.",
-      "powered": "Mogelijk gemaakt door Global Space Web +263718560128"
+      "powered": "Mogelijk gemaakt door Global Space Web +263718560128",
+      "privacy": "Privacy",
+      "terms": "Voorwaarden"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Deze functie is niet beschikbaar in jouw plan",
       "lockBody": "Dashboard, profiel en instellingen zijn open. Alles wordt ontgrendeld zodra je plan actief is."
+    },
+    "import": {
+      "title": "Scannen of uploaden",
+      "desc": "Fotografeer een bon of upload een bankafschrift, betaalbewijs, screenshot, CSV- of Excelbestand — wij halen de transacties eruit om te controleren.",
+      "cameraBtn": "Foto maken",
+      "fileBtn": "Kies een bestand",
+      "busy": "Document wordt gelezen…",
+      "reviewHint": "Controleer de gegevens, vink fouten uit en voeg toe.",
+      "errGeneric": "Kon dat bestand niet lezen",
+      "errService": "Extractie is nu niet beschikbaar — probeer later opnieuw",
+      "fallbackIncome": "Geïmporteerde inkomsten",
+      "fallbackExpense": "Geïmporteerde uitgave",
+      "toastAdded": "{count} posten toegevoegd",
+      "rowInclude": "Deze post meenemen",
+      "typeToggleTip": "Tik om van type te wisselen",
+      "typeIncome": "Inkomsten",
+      "typeExpense": "Uitgave",
+      "payeePh": "Winkel / begunstigde",
+      "colAmount": "Bedrag",
+      "colDate": "Datum",
+      "colCategory": "Categorie",
+      "lowConfidence": "Lage zekerheid — controleer dit",
+      "cancel": "Annuleren",
+      "addBtn": "{count} posten toevoegen"
+    },
+    "banking": {
+      "title": "Bankfeed",
+      "sub": "Koppel je bank en transacties importeren zichzelf",
+      "syncBtn": "Nu synchroniseren",
+      "consentExpiring": "Je banktoestemming verloopt over {days} dagen — verbind opnieuw.",
+      "connectTitle": "Verbind je bank",
+      "connectDesc": "Veilige alleen-lezen koppeling via open banking. Wij zien transacties — wij kunnen nooit geld verplaatsen.",
+      "pendingNote": "Verbinding gestart — rond af in je bank-app of kies een bank.",
+      "expiredNote": "Toestemming verlopen — verbind opnieuw om imports te hervatten.",
+      "countryLabel": "Land",
+      "findBanksBtn": "Zoek mijn bank",
+      "noBanks": "Geen banken gevonden voor dit land.",
+      "yourBank": "Je bank",
+      "consentUntil": "Toestemming tot {date}",
+      "accounts": "rekeningen",
+      "disconnectBtn": "Ontkoppelen",
+      "disconnectSure": "Verbinding en alle gesynchroniseerde transacties verwijderen?",
+      "disconnectConfirm": "Ja, ontkoppelen",
+      "cancel": "Annuleren",
+      "feedTitle": "Wacht op import",
+      "feedEmpty": "Alles bij — niets nieuws te importeren.",
+      "addTxn": "Toevoegen",
+      "dismissTip": "Niet van mij / al ingevoerd",
+      "matchHint": "Lijkt op “{merchant}” — al ingevoerd?",
+      "matchLink": "Koppel",
+      "loading": "Laden…",
+      "toastConnected": "Bank verbonden",
+      "toastSynced": "Sync klaar — {count} transacties",
+      "toastDisconnected": "Bank ontkoppeld",
+      "toastImported": "Toegevoegd aan je posten",
+      "fallbackIncome": "Bankinkomsten",
+      "fallbackExpense": "Bankbetaling",
+      "errConnect_generic": "Kon de bank niet verbinden",
+      "errConnect_missing-ref": "Bank antwoordde zonder referentie — probeer opnieuw",
+      "errConnect_not-found": "Verbindingspoging niet gevonden — probeer opnieuw",
+      "errConnect_incomplete": "Toestemming niet afgerond in de bank-app",
+      "errConnect_finalize": "Verbonden, maar afronden mislukt — probeer te syncen",
+      "paywallLine": "{bank} verbinden kost {price} — eenmalige ontgrendeling",
+      "toastUnlocked": "Ontgrendeld — rond het verbinden van je bank af",
+      "errCheckout": "Kon de checkout niet starten — probeer opnieuw"
+    },
+    "expenses": {
+      "scanBtn": "Scannen"
     }
   }
 }

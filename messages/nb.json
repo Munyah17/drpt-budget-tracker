@@ -25,7 +25,8 @@
       "calendar": "Kalender",
       "settings": "Innstillinger",
       "profile": "Profil",
-      "wallet": "Lommebok"
+      "wallet": "Lommebok",
+      "banking": "Bankflyt"
     },
     "admin": {
       "overview": "Oversikt",
@@ -92,7 +93,8 @@
       "leave": "Permisjon",
       "borrowing-emp": "Tidig lønn",
       "benefits": "Fordeler",
-      "wallet": "Lommebok"
+      "wallet": "Lommebok",
+      "banking": "Bankflyt"
     }
   },
   "Shell": {
@@ -168,7 +170,9 @@
     "referralCode": "Henvisningskode (valgfritt)",
     "referralCodePh": "Hvis du har en",
     "createdFree": "Konto opprettet — velkommen til WellSpend!",
-    "signUpLinkFree": "Registrer deg"
+    "signUpLinkFree": "Registrer deg",
+    "signupTitleFree": "Lag gratiskontoen din",
+    "createFree": "Opprett konto"
   },
   "Landing": {
     "demoToast": "Velkommen til demoen — utforsk fritt, ingenting lagres.",
@@ -332,7 +336,9 @@
       "pricing": "Priser",
       "signIn": "Logg inn",
       "rights": "© {year} WellSpend Budget Tracker. Alle rettigheter forbeholdt.",
-      "powered": "Drevet av Global Space Web +263718560128"
+      "powered": "Drevet av Global Space Web +263718560128",
+      "privacy": "Personvern",
+      "terms": "Vilkår"
     }
   },
   "Pages": {
@@ -716,6 +722,74 @@
     "components": {
       "lockTitle": "Denne funksjonen er ikke tilgjengelig i planen din",
       "lockBody": "Dashbord, profil og innstillinger er åpne. Alt annet låses opp når planen din er aktiv."
+    },
+    "import": {
+      "title": "Skann eller last opp",
+      "desc": "Ta bilde av en kvittering eller last opp et kontoutskrift, betalingsbevis, skjermbilde, CSV- eller Excel-fil — vi henter ut transaksjonene slik at du kan sjekke dem.",
+      "cameraBtn": "Ta et bilde",
+      "fileBtn": "Velg en fil",
+      "busy": "Leser dokumentet…",
+      "reviewHint": "Sjekk detaljene, hake av det som er feil, og legg til.",
+      "errGeneric": "Kunne ikke lese filen",
+      "errService": "Uttrekk er ikke tilgjengelig — prøv igjen senere",
+      "fallbackIncome": "Importert inntekt",
+      "fallbackExpense": "Importert utgift",
+      "toastAdded": "{count} oppføringer lagt til",
+      "rowInclude": "Ta med oppføringen",
+      "typeToggleTip": "Trykk for å bytte type",
+      "typeIncome": "Inntekt",
+      "typeExpense": "Utgift",
+      "payeePh": "Butikk / mottaker",
+      "colAmount": "Beløp",
+      "colDate": "Dato",
+      "colCategory": "Kategori",
+      "lowConfidence": "Lav sikkerhet — dobbeltsjekk",
+      "cancel": "Avbryt",
+      "addBtn": "Legg til {count} oppføringer"
+    },
+    "banking": {
+      "title": "Bankflyt",
+      "sub": "Koble til banken, så importeres transaksjoner av seg selv",
+      "syncBtn": "Synk nå",
+      "consentExpiring": "Banksamtykket utløper om {days} dager — koble til på nytt.",
+      "connectTitle": "Koble til banken din",
+      "connectDesc": "Sikker skrivebeskyttet tilkobling via open banking. Vi ser transaksjoner — vi kan aldri flytte penger.",
+      "pendingNote": "Tilkobling startet — fullfør i bankappen eller velg en bank.",
+      "expiredNote": "Samtykket er utløpt — koble til på nytt.",
+      "countryLabel": "Land",
+      "findBanksBtn": "Finn banken min",
+      "noBanks": "Ingen banker funnet for dette landet.",
+      "yourBank": "Banken din",
+      "consentUntil": "Samtykke til {date}",
+      "accounts": "kontoer",
+      "disconnectBtn": "Koble fra",
+      "disconnectSure": "Slette tilkoblingen og alle synkede transaksjoner?",
+      "disconnectConfirm": "Ja, koble fra",
+      "cancel": "Avbryt",
+      "feedTitle": "Venter på import",
+      "feedEmpty": "Alt ajour — ingenting nytt å importere.",
+      "addTxn": "Legg til",
+      "dismissTip": "Ikke min / allerede logget",
+      "matchHint": "Ligner «{merchant}» — allerede logget?",
+      "matchLink": "Koble",
+      "loading": "Laster…",
+      "toastConnected": "Bank tilkoblet",
+      "toastSynced": "Synk ferdig — {count} transaksjoner",
+      "toastDisconnected": "Bank frakoblet",
+      "toastImported": "Lagt til i oppføringene dine",
+      "fallbackIncome": "Bankinntekt",
+      "fallbackExpense": "Bankbetaling",
+      "errConnect_generic": "Kunne ikke koble til banken",
+      "errConnect_missing-ref": "Banken svarte uten referanse — prøv igjen",
+      "errConnect_not-found": "Tilkoblingsforsøk ikke funnet — prøv igjen",
+      "errConnect_incomplete": "Samtykket ble ikke fullført i bankappen",
+      "errConnect_finalize": "Tilkoblet, men fullføring feilet — prøv å synke",
+      "paywallLine": "Å koble {bank} koster {price} — engangsopplåsing",
+      "toastUnlocked": "Låst opp — fullfør tilkoblingen av banken",
+      "errCheckout": "Kunne ikke starte betalingen — prøv igjen"
+    },
+    "expenses": {
+      "scanBtn": "Skann"
     }
   }
 }

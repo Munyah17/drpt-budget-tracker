@@ -40,6 +40,23 @@ export async function sbInsert<T>(
   return (data?.[0] as T) ?? null;
 }
 
+export async function sbUpsert(
+  table: string,
+  rows: Record<string, unknown>[],
+  onConflict = ""
+): Promise<boolean> {
+  if (!rows.length) return true;
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/${table}${onConflict ? `?on_conflict=${onConflict}` : ""}`,
+    {
+      method: "POST",
+      headers: headers({ Prefer: "resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify(rows),
+    }
+  );
+  return res.ok;
+}
+
 export async function sbPatch(
   table: string,
   match: string,
@@ -64,7 +81,7 @@ export async function sbDelete(table: string, match: string): Promise<boolean> {
 export async function sbUpload(
   bucket: string,
   path: string,
-  body: ArrayBuffer,
+  body: ArrayBuffer | Uint8Array,
   contentType: string
 ): Promise<boolean> {
   const res = await fetch(
@@ -77,7 +94,7 @@ export async function sbUpload(
         "Content-Type": contentType,
         "x-upsert": "true",
       },
-      body,
+      body: new Blob([body as ArrayBuffer], { type: contentType }),
     }
   );
   return res.ok;

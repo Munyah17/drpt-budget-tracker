@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { markProfilePaid } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
+import { sbUpsert } from "@/lib/server/supabaseAdmin";
 
 /**
  * POST /api/webhooks/stripe — Stripe sends checkout.session.completed here.
@@ -60,12 +61,40 @@ export async function POST(req: NextRequest) {
     event.type === "checkout.session.async_payment_succeeded"
   ) {
     const session = event.data?.object ?? {};
+    const meta = (session.metadata as Record<string, string> | undefined) ?? {};
     const uid =
-      (session.client_reference_id as string) ??
-      (session.metadata as Record<string, string> | undefined)?.user_id ??
-      "";
+      (session.client_reference_id as string) ?? meta.user_id ?? "";
     const paidStatus = session.payment_status as string | undefined;
-    if (uid && (paidStatus === "paid" || event.type === "checkout.session.async_payment_succeeded")) {
+    const paid = paidStatus === "paid" || event.type === "checkout.session.async_payment_succeeded";
+
+    // Per-bank unlock (free-tier users) — records the entitlement WITHOUT
+    // marking the whole profile paid.
+    if (meta.purpose === "banking_unlock") {
+      if (uid && meta.institution_id && paid) {
+        await sbUpsert(
+          "banking_unlocks",
+          [{
+            user_key: uid,
+            institution_id: meta.institution_id,
+            amount_cents: Number(session.amount_total) || 0,
+            currency: String(session.currency ?? "usd"),
+            provider: "stripe",
+            session_id: String(session.id ?? ""),
+          }],
+          "user_key,institution_id"
+        );
+        const customer = session.customer_details as Record<string, string> | undefined;
+        await notifyAdmin("payment_success", {
+          email: customer?.email ?? (session.customer_email as string) ?? "",
+          name: customer?.name ?? "",
+          method: "stripe",
+          detail: `banking unlock ${meta.institution_id} — session ${session.id ?? ""}`,
+        });
+      }
+      return NextResponse.json({ received: true }, { status: 200 });
+    }
+
+    if (uid && paid) {
       await markProfilePaid(uid);
       const customer = session.customer_details as Record<string, string> | undefined;
       await notifyAdmin("payment_success", {
