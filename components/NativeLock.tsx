@@ -66,7 +66,7 @@ export default function NativeLock() {
     >
       <div style={{ width: 84, height: 84, borderRadius: 20, background: "#c81057", color: "#fff", fontWeight: 700, fontSize: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>PT</div>
       <h1 style={{ fontSize: 22, margin: 0 }}>WellSpend is locked</h1>
-      <p style={{ margin: 0, color: "#7a4a60" }}>Unlock with Face ID to see your budget.</p>
+      <p style={{ margin: 0, color: "#7a4a60" }}>Unlock with biometrics or your device passcode to see your budget.</p>
       <button
         onClick={() => void unlock()}
         disabled={busy}

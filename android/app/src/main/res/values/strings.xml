@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">WellSpend</string>
+    <string name="title_activity_main">WellSpend</string>
+    <string name="package_name">com.kmgvitallinks.wellspend</string>
+    <string name="custom_url_scheme">com.kmgvitallinks.wellspend</string>
+</resources>
