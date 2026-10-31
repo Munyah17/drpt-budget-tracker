@@ -167,7 +167,8 @@
     "professionPh": "t.ex. Lärare, Sjuksköterska, Ingenjör",
     "referralCode": "Värvningskod (valfritt)",
     "referralCodePh": "Om du har en",
-    "createdFree": "Konto skapat — välkommen till WellSpend!"
+    "createdFree": "Konto skapat — välkommen till WellSpend!",
+    "signUpLinkFree": "Registrera dig"
   },
   "Landing": {
     "demoToast": "Välkommen till demon — utforska fritt, inget sparas.",

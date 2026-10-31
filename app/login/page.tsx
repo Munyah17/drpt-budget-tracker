@@ -324,7 +324,7 @@ function LoginForm() {
           <div className="login-footer">
             {signup ? t("haveAccount") : t("noAccount")}{" "}
             <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); setStep(1); }}>
-              {signup ? t("signInLink") : t("signUpLink")}
+              {signup ? t("signInLink") : native ? t("signUpLinkFree") : t("signUpLink")}
             </a>
             <div style={{ marginTop: 8 }}>
               <Link href="/" style={{ color: "var(--ink-500)", fontWeight: 600, fontSize: 12 }}>

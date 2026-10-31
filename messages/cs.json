@@ -167,7 +167,8 @@
     "professionPh": "např. Učitel, Zdravotní sestra, Inženýr",
     "referralCode": "Referenční kód (nepovinné)",
     "referralCodePh": "Pokud ho máš",
-    "createdFree": "Účet vytvořen — vítej v WellSpend!"
+    "createdFree": "Účet vytvořen — vítej v WellSpend!",
+    "signUpLinkFree": "Zaregistrovat se"
   },
   "Landing": {
     "demoToast": "Vítej v demu — zkoumej volně, nic se neukládá.",

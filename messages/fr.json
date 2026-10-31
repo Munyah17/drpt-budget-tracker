@@ -167,7 +167,8 @@
     "professionPh": "ex. : Enseignant, Infirmière, Ingénieur",
     "referralCode": "Code de Parrainage (facultatif)",
     "referralCodePh": "Si tu en as un",
-    "createdFree": "Compte créé — bienvenue dans WellSpend !"
+    "createdFree": "Compte créé — bienvenue dans WellSpend !",
+    "signUpLinkFree": "S''inscrire"
   },
   "Landing": {
     "demoToast": "Bienvenue dans la démo — explore librement, rien n''est enregistré.",

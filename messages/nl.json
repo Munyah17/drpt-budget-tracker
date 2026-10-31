@@ -167,7 +167,8 @@
     "professionPh": "bijv. Docent, Verpleegkundige, Ingenieur",
     "referralCode": "Verwijzingscode (optioneel)",
     "referralCodePh": "Als je er een hebt",
-    "createdFree": "Account aangemaakt — welkom bij WellSpend!"
+    "createdFree": "Account aangemaakt — welkom bij WellSpend!",
+    "signUpLinkFree": "Aanmelden"
   },
   "Landing": {
     "demoToast": "Welkom bij de demo — kijk gerust rond, er wordt niets opgeslagen.",

@@ -167,7 +167,8 @@
     "professionPh": "例如 教师、护士、工程师",
     "referralCode": "推荐码(可选)",
     "referralCodePh": "如果有的话",
-    "createdFree": "账户已创建 — 欢迎使用WellSpend!"
+    "createdFree": "账户已创建 — 欢迎使用WellSpend!",
+    "signUpLinkFree": "注册"
   },
   "Landing": {
     "demoToast": "欢迎来到演示模式 — 随意探索,内容不会被保存。",

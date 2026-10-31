@@ -215,7 +215,8 @@
     "back": "Back",
     "step1Sub": "Your sign-in details",
     "step2Sub": "A little about you",
-    "createdFree": "Account created — welcome to WellSpend!"
+    "createdFree": "Account created — welcome to WellSpend!",
+    "signUpLinkFree": "Sign up"
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",

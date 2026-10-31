@@ -167,7 +167,8 @@
     "professionPh": "f.eks. Lærer, Sykepleier, Ingeniør",
     "referralCode": "Henvisningskode (valgfritt)",
     "referralCodePh": "Hvis du har en",
-    "createdFree": "Konto opprettet — velkommen til WellSpend!"
+    "createdFree": "Konto opprettet — velkommen til WellSpend!",
+    "signUpLinkFree": "Registrer deg"
   },
   "Landing": {
     "demoToast": "Velkommen til demoen — utforsk fritt, ingenting lagres.",
