@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sendMail } from "@/lib/server/notify";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
+
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
 
 /**
  * POST /api/auth/confirm { userId?, email, name? }
@@ -105,6 +109,22 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify(base),
         });
       }
+
+      // Welcome email — the only channel where we can legally talk about
+      // activation (the iOS app must stay silent about payment). Fire and
+      // forget so a slow SMTP relay never blocks the signup response.
+      void sendMail({
+        to: email,
+        subject: "Welcome to WellSpend",
+        text:
+          `Hi ${name || email.split("@")[0]},\n\n` +
+          `Your WellSpend account is ready — sign in with ${email}.\n\n` +
+          `To activate every feature (transactions, budgets, savings goals and reports), ` +
+          `a one-time $1 activation applies. On the web, sign in at ${APP_URL} and follow ` +
+          `the activation step — it takes about a minute. Once activated, your plan unlocks ` +
+          `everywhere, including the iPhone app.\n\n` +
+          `WellSpend ❤`,
+      }).catch(() => {});
     }
 
     return NextResponse.json({ ok: true, uid });

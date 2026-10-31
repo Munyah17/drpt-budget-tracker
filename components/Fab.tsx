@@ -4,11 +4,14 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Icon from "./Icon";
 import QuickAddModal from "./QuickAddModal";
+import { useFreeTier } from "@/lib/native";
 
 export default function Fab() {
   const t = useTranslations("Pages.components");
+  const freeTier = useFreeTier();
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
+  if (freeTier) return null;
   return (
     <>
       <button

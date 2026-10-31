@@ -9,21 +9,26 @@ import Topbar from "@/components/Topbar";
 import Fab from "@/components/Fab";
 import TabBar from "@/components/TabBar";
 import WelcomeTour from "@/components/WelcomeTour";
-import { useIsNative } from "@/lib/native";
-import { useTranslations } from "next-intl";
+import LockedScreen from "@/components/LockedScreen";
+import { useIsNative, FREE_TIER_ROUTES } from "@/lib/native";
 
 export default function AppShellLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, authReady, user, sidebarOpen, setSidebarOpen, logout } = useAppData();
+  const { isAuthenticated, authReady, user, sidebarOpen, setSidebarOpen } = useAppData();
   const router = useRouter();
   const pathname = usePathname();
   const native = useIsNative();
-  const tNative = useTranslations("Native");
 
-  // Every registration must pay — unpaid standard users never reach app content.
-  // Demo/admin/corporate/employee accounts carry isPaid or a non-user role, so
-  // they pass through. /payment itself lives outside this layout, so no loop.
-  // Fail closed: authenticated with no profile loaded counts as unpaid.
+  // Web: every registration must pay — unpaid standard users never reach app
+  // content. Native (iPhone app): unpaid users get a free tier instead —
+  // dashboard, profile and settings work; every other route renders a
+  // LockedScreen. No purchase path exists inside the app either way.
+  // Demo/admin/corporate/employee accounts carry isPaid or a non-user role,
+  // so they pass through. Fail closed: no profile = locked, not free.
   const isUnpaid = !user || (user.role === "user" && !user.isPaid);
+  const freeTier = native && isUnpaid;
+  const freeRoute = FREE_TIER_ROUTES.some(
+    (r) => pathname === r || pathname.startsWith(r + "/")
+  );
 
   useEffect(() => {
     if (!authReady) return;
@@ -44,16 +49,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   }, [authReady, isAuthenticated, isUnpaid, pathname, uid]);
 
   if (!authReady || !isAuthenticated) return null;
-  if (isUnpaid) {
-    // Inside the iPhone app an inactive account just sees a plain notice: no pricing, no purchase path.
-    return native ? (
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, padding: 32, textAlign: "center" }}>
-        <h1 style={{ fontSize: 22, margin: 0 }}>{tNative("inactiveTitle")}</h1>
-        <p style={{ margin: 0, color: "var(--ink-500)", maxWidth: 320 }}>{tNative("inactiveBody")}</p>
-        <button className="btn btn-primary" onClick={() => { logout(); router.replace("/login"); }}>{tNative("signOut")}</button>
-      </div>
-    ) : null;
-  }
+  if (isUnpaid && !native) return null;
 
   return (
     <div id="main-app" className={user?.role === "user" ? "has-tabbar" : undefined}>
@@ -67,7 +63,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
         <Topbar />
         <div className="page-container">
           <div className="page active fade-up" key={pathname}>
-            {children}
+            {freeTier && !freeRoute ? <LockedScreen /> : children}
           </div>
         </div>
       </div>

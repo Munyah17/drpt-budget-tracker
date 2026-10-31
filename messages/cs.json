@@ -166,7 +166,8 @@
     "profession": "Profese",
     "professionPh": "např. Učitel, Zdravotní sestra, Inženýr",
     "referralCode": "Referenční kód (nepovinné)",
-    "referralCodePh": "Pokud ho máš"
+    "referralCodePh": "Pokud ho máš",
+    "createdFree": "Účet vytvořen — vítej v WellSpend!"
   },
   "Landing": {
     "demoToast": "Vítej v demu — zkoumej volně, nic se neukládá.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} odebrán",
       "toastCopied": "Pozvánka zkopírována — vlož ji a pošli jejich kontaktu",
       "toastError": "Firemního klienta se nepodařilo vytvořit"
+    },
+    "components": {
+      "lockTitle": "Tato funkce není ve tvém plánu dostupná",
+      "lockBody": "Přehled, profil a nastavení jsou otevřené. Všechno ostatní se odemkne, až bude tvůj plán aktivní."
     }
   }
 }

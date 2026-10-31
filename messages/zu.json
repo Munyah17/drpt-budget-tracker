@@ -166,7 +166,8 @@
     "profession": "Umsebenzi",
     "professionPh": "isib. Uthisha, Unesi, Unjiniyela",
     "referralCode": "Ikhodi Yokudalulwa (okungafuneki)",
-    "referralCodePh": "Uma unayo"
+    "referralCodePh": "Uma unayo",
+    "createdFree": "I-akhawunti yenziwe — wamukelekile ku-WellSpend!"
   },
   "Landing": {
     "demoToast": "Wamukelekile kwidemo — hlola nganoma, akukho lutho olugciniwe.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} isusiwe",
       "toastCopied": "Isimemo sikopishiwe — sinamathisele futhi usithumele kumuntu wabo oxhumwayo",
       "toastError": "Kwehlulekile ukwakha ikhasimende lenkampani"
+    },
+    "components": {
+      "lockTitle": "Le sici asitholakali ohlelweni lwakho",
+      "lockBody": "Ideshibhodi, iphrofayili nezilungiselelo zivuliwe. Okunye konke kuvulwa lapho uhlelo lwakho lusebenza."
     }
   }
 }

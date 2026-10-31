@@ -34,8 +34,10 @@ function LoginForm() {
   const native = useIsNative();
   const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
   const [step, setStep] = useState(1);
-  // The iPhone app only signs in: accounts are created and paid for elsewhere.
-  const signup = isSignup && !native;
+  // Signup is allowed everywhere. On the web it continues to the $1
+  // activation; in the iPhone app it lands on the free tier instead —
+  // registration isn't a purchase, so no IAP is required.
+  const signup = isSignup;
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
@@ -114,6 +116,19 @@ function LoginForm() {
         } else {
           notifyEvent("signup_failed", { email, name, detail: "account confirm failed" });
           trackEvent("signup_failed", { detail: "account confirm failed" }, { email });
+        }
+
+        if (native) {
+          // Free tier: sign them in and go to the dashboard. The welcome
+          // email (sent by the confirm route) carries activation details —
+          // the app itself never mentions payment.
+          await login(email, password, true);
+          setFadingOut(true);
+          toast(t("createdFree"), "check-circle");
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 350);
+          return;
         }
 
         // Carry identity to the payment page even without a live session
@@ -307,14 +322,10 @@ function LoginForm() {
           </form>
 
           <div className="login-footer">
-            {!native && (
-              <>
-                {signup ? t("haveAccount") : t("noAccount")}{" "}
-                <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); setStep(1); }}>
-                  {signup ? t("signInLink") : t("signUpLink")}
-                </a>
-              </>
-            )}
+            {signup ? t("haveAccount") : t("noAccount")}{" "}
+            <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); setStep(1); }}>
+              {signup ? t("signInLink") : t("signUpLink")}
+            </a>
             <div style={{ marginTop: 8 }}>
               <Link href="/" style={{ color: "var(--ink-500)", fontWeight: 600, fontSize: 12 }}>
                 <span className="back-arrow" aria-hidden="true">← </span>{t("backHome")}

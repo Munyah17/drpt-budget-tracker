@@ -6,13 +6,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { NAV_ITEMS, ADMIN_NAV_ITEMS, CORPORATE_NAV_ITEMS, EMPLOYEE_NAV_ITEMS } from "@/lib/data";
 import { useAppData } from "@/lib/AppDataContext";
+import { useFreeTier, FREE_TIER_ROUTES } from "@/lib/native";
 import { textDirection } from "@/lib/i18n/config";
 import Icon from "./Icon";
+
+const FREE_IDS = new Set(FREE_TIER_ROUTES.map((r) => r.slice(1)));
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen, logout, user } = useAppData();
+  const freeTier = useFreeTier();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const rtl = textDirection(useLocale()) === "rtl";
   const navNs =
@@ -95,6 +99,9 @@ export default function Sidebar() {
                   <Icon name={n.icon} />
                   {labelFor(n.id, n.label)}
                 </div>
+                {freeTier && !hasSub && !FREE_IDS.has(n.id) && (
+                  <Icon name="lock" size={13} style={{ opacity: 0.45 }} />
+                )}
                 {hasSub && (
                   <Icon 
                     name={isExpanded ? "chevron-down" : rtl ? "chevron-left" : "chevron-right"} 

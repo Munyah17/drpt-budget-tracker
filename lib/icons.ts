@@ -67,6 +67,7 @@ export const ICON_SVGS: Record<string, string> = {
   'check-circle':'<circle cx="12" cy="12" r="9"/><polyline points="8 12 11 15 16 9"/>',
   'calculator':'<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
   'tag':'<path d="M12 2H2v10l9.2 9.2a2 2 0 0 0 2.8 0L22 13a2 2 0 0 0 0-2.8Z"/><circle cx="7" cy="7" r="1"/>',
+  'lock':'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
   'help-circle':'<circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
   'activity':'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
   'book':'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',

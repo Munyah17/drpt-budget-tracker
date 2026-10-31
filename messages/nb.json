@@ -166,7 +166,8 @@
     "profession": "Yrke",
     "professionPh": "f.eks. Lærer, Sykepleier, Ingeniør",
     "referralCode": "Henvisningskode (valgfritt)",
-    "referralCodePh": "Hvis du har en"
+    "referralCodePh": "Hvis du har en",
+    "createdFree": "Konto opprettet — velkommen til WellSpend!"
   },
   "Landing": {
     "demoToast": "Velkommen til demoen — utforsk fritt, ingenting lagres.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} fjernet",
       "toastCopied": "Invitasjon kopiert — lim inn og send til kontaktpersonen deres",
       "toastError": "Kunne ikke opprette bedriftskunden"
+    },
+    "components": {
+      "lockTitle": "Denne funksjonen er ikke tilgjengelig i planen din",
+      "lockBody": "Dashbord, profil og innstillinger er åpne. Alt annet låses opp når planen din er aktiv."
     }
   }
 }

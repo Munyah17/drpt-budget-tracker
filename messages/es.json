@@ -166,7 +166,8 @@
     "profession": "Profesión",
     "professionPh": "ej.: Profesor, Enfermera, Ingeniero",
     "referralCode": "Código de Referido (opcional)",
-    "referralCodePh": "Si tienes uno"
+    "referralCodePh": "Si tienes uno",
+    "createdFree": "Cuenta creada — ¡bienvenido a WellSpend!"
   },
   "Landing": {
     "demoToast": "Bienvenido a la demo — explora libremente, nada se guarda.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} eliminado",
       "toastCopied": "Invitación copiada — pégala y envíala a su contacto",
       "toastError": "No se pudo crear el cliente corporativo"
+    },
+    "components": {
+      "lockTitle": "Esta función no está disponible en tu plan",
+      "lockBody": "El panel, el perfil y los ajustes están abiertos. Todo lo demás se desbloquea cuando tu plan está activo."
     }
   }
 }

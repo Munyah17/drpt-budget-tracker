@@ -166,7 +166,8 @@
     "profession": "Beroep",
     "professionPh": "bijv. Docent, Verpleegkundige, Ingenieur",
     "referralCode": "Verwijzingscode (optioneel)",
-    "referralCodePh": "Als je er een hebt"
+    "referralCodePh": "Als je er een hebt",
+    "createdFree": "Account aangemaakt — welkom bij WellSpend!"
   },
   "Landing": {
     "demoToast": "Welkom bij de demo — kijk gerust rond, er wordt niets opgeslagen.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} verwijderd",
       "toastCopied": "Uitnodiging gekopieerd — plak ''m en stuur naar hun contactpersoon",
       "toastError": "Zakelijke klant kon niet worden aangemaakt"
+    },
+    "components": {
+      "lockTitle": "Deze functie is niet beschikbaar in jouw plan",
+      "lockBody": "Dashboard, profiel en instellingen zijn open. Alles wordt ontgrendeld zodra je plan actief is."
     }
   }
 }

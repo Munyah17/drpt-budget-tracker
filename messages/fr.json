@@ -166,7 +166,8 @@
     "profession": "Profession",
     "professionPh": "ex. : Enseignant, Infirmière, Ingénieur",
     "referralCode": "Code de Parrainage (facultatif)",
-    "referralCodePh": "Si tu en as un"
+    "referralCodePh": "Si tu en as un",
+    "createdFree": "Compte créé — bienvenue dans WellSpend !"
   },
   "Landing": {
     "demoToast": "Bienvenue dans la démo — explore librement, rien n''est enregistré.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} supprimé",
       "toastCopied": "Invitation copiée — colle-la et envoie-la à leur contact",
       "toastError": "Impossible de créer le client entreprise"
+    },
+    "components": {
+      "lockTitle": "Cette fonctionnalité n''est pas disponible sur ton plan",
+      "lockBody": "Le tableau de bord, le profil et les réglages sont ouverts. Tout le reste se débloque quand ton plan est actif."
     }
   }
 }

@@ -166,7 +166,8 @@
     "profession": "Yrke",
     "professionPh": "t.ex. Lärare, Sjuksköterska, Ingenjör",
     "referralCode": "Värvningskod (valfritt)",
-    "referralCodePh": "Om du har en"
+    "referralCodePh": "Om du har en",
+    "createdFree": "Konto skapat — välkommen till WellSpend!"
   },
   "Landing": {
     "demoToast": "Välkommen till demon — utforska fritt, inget sparas.",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} borttagen",
       "toastCopied": "Inbjudan kopierad — klistra in och skicka till deras kontaktperson",
       "toastError": "Kunde inte skapa företagskunden"
+    },
+    "components": {
+      "lockTitle": "Den här funktionen är inte tillgänglig i din plan",
+      "lockBody": "Översikt, profil och inställningar är öppna. Allt annat låses upp när din plan är aktiv."
     }
   }
 }

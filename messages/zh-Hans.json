@@ -166,7 +166,8 @@
     "profession": "职业",
     "professionPh": "例如 教师、护士、工程师",
     "referralCode": "推荐码(可选)",
-    "referralCodePh": "如果有的话"
+    "referralCodePh": "如果有的话",
+    "createdFree": "账户已创建 — 欢迎使用WellSpend!"
   },
   "Landing": {
     "demoToast": "欢迎来到演示模式 — 随意探索,内容不会被保存。",
@@ -710,6 +711,10 @@
       "toastRemoved": "{name} 已移除",
       "toastCopied": "邀请已复制 — 粘贴后发送给他们的联系人",
       "toastError": "无法创建企业客户"
+    },
+    "components": {
+      "lockTitle": "你的当前方案不含此功能",
+      "lockBody": "仪表盘,个人资料和设置已开放.其余功能在方案激活后解锁."
     }
   }
 }

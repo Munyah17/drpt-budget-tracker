@@ -214,7 +214,8 @@
     "continue": "Continue",
     "back": "Back",
     "step1Sub": "Your sign-in details",
-    "step2Sub": "A little about you"
+    "step2Sub": "A little about you",
+    "createdFree": "Account created — welcome to WellSpend!"
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",
@@ -1803,7 +1804,9 @@
       "crud_created": "{label} created",
       "crud_updated": "{label} updated",
       "crud_deleted": "{label} deleted",
-      "signInFailed": "Sign-in failed. Please try again."
+      "signInFailed": "Sign-in failed. Please try again.",
+      "lockTitle": "This feature isn't available on your plan",
+      "lockBody": "Dashboard, profile and settings are open. Everything else unlocks once your plan is active."
     },
     "corp_announcements": {
       "title": "Announcements",
