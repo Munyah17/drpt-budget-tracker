@@ -178,7 +178,7 @@
   "Login": {
     "visualTitle": "Financial clarity, every single day.",
     "visualText": "Track income, expenses and savings goals in one calm, beautiful place.",
-    "signupTitle": "Create your account — $1 unlocks everything, forever",
+    "signupTitle": "Create your account — $1/year unlocks everything",
     "signinTitle": "Welcome back! Sign in to continue to your account",
     "fullName": "Full Name",
     "namePh": "Enter your name",
@@ -195,7 +195,7 @@
     "haveAccount": "Already have an account?",
     "noAccount": "Don''t have an account?",
     "signInLink": "Sign in",
-    "signUpLink": "Sign up — $1 once",
+    "signUpLink": "Sign up — $1/year",
     "backHome": "Back to home",
     "invalid": "Invalid email or password",
     "confirmPassword": "Confirm password",
@@ -234,13 +234,13 @@
       "startShort": "Start — $1"
     },
     "hero": {
-      "badge": "Just $1 — once, forever",
+      "badge": "Just $1 a year",
       "titleLine1": "Your money,",
       "titleEm": "finally clear.",
       "lead": "WellSpend Budget Tracker is a calm, beautiful budget tracker for real life. Income, expenses, bills, goals and insights — everything in one place, for less than a bottle of water.",
       "getStarted": "Get Started — $1",
       "seeDemo": "See Demo",
-      "note": "One-time $1 payment · Every feature unlocked forever · Paynow, card, Ecocash or bank.",
+      "note": "$1 a year · Every feature unlocked · Paynow, card, Ecocash or bank.",
       "balance": "Total balance",
       "income": "Income this month",
       "budgetUsed": "Budget used"
@@ -293,8 +293,8 @@
         "text": "Sign up with your name and email — it takes thirty seconds."
       },
       "pay": {
-        "title": "Pay $1 once",
-        "text": "One dollar. Once. Paynow, card, Ecocash or bank transfer — your pick."
+        "title": "Pay $1 a year",
+        "text": "One dollar a year. Paynow, card, Ecocash or bank transfer — your pick."
       },
       "currency": {
         "title": "Pick your currency",
@@ -318,7 +318,7 @@
       },
       "own": {
         "title": "Own your money",
-        "text": "Full access forever. Every feature, every update, no subscriptions."
+        "text": "Full access, all year. Every feature, every update, one dollar."
       }
     },
     "business": {
@@ -348,14 +348,18 @@
       "fileText": "Download one file for your bank or EcoCash for Business and the whole team is paid. That''s payday, finished.",
       "walkthrough": "Book a free walkthrough",
       "signIn": "Corporate sign in",
-      "note": "Any size, any industry — tell us about your business and we''ll have your team up and running within a day."
+      "note": "Any size, any industry — tell us about your business and we''ll have your team up and running within a day.",
+      "claimsTitle": "Claims without the paper trail",
+      "claimsText": "Staff snap receipts and claim expenses or advances in-app — you approve in one tap and payroll sorts the rest.",
+      "hireTitle": "Hire from one screen",
+      "hireText": "Post a vacancy, share the link, and applications score themselves. Contracts and onboarding live in the same place."
     },
     "pricing": {
       "heading": "One dollar. That''s it.",
-      "sub": "No subscriptions, no tiers, no upsells. Pay once, keep it forever.",
-      "lifetime": "Lifetime access",
-      "forever": "/ forever",
-      "features": "Every feature unlocked, forever",
+      "sub": "No tiers, no upsells. One dollar a year keeps everything.",
+      "lifetime": "Yearly access",
+      "forever": "/ year",
+      "features": "Every feature, all year",
       "tracking": "Income, expense & budget tracking",
       "goals": "Savings goals, bills & calendar",
       "reports": "Reports, analytics & AI assistant",
@@ -2945,8 +2949,8 @@
       "paymentFailedToast": "Payment failed to start",
       "heroTitle": "Activate your account",
       "fromPrice": "from {price}",
-      "onceNotMonthly": "once, not monthly",
-      "tagline": "One payment unlocks everything — forever.",
+      "onceNotMonthly": "a year, not monthly",
+      "tagline": "One payment unlocks everything for a year.",
       "cancelledNotice": "Payment was cancelled — pick a method to try again.",
       "chooseHowToPay": "Choose how to pay",
       "paynowSub": "Ecocash, Omari, InnBucks — {price} instant",

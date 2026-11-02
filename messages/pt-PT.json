@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Clareza financeira, todos os dias.",
     "visualText": "Acompanha rendimentos, despesas e objetivos de poupança num só lugar, calmo e bonito.",
-    "signupTitle": "Cria a tua conta — $1 desbloqueia tudo, para sempre",
+    "signupTitle": "Crie sua conta – US$ 1/ano desbloqueia tudo",
     "signinTitle": "Bem-vindo de volta! Inicia sessão para continuar para a tua conta",
     "fullName": "Nome Completo",
     "namePh": "Introduz o teu nome",
@@ -152,7 +152,7 @@
     "haveAccount": "Já tens uma conta?",
     "noAccount": "Ainda não tens uma conta?",
     "signInLink": "Iniciar sessão",
-    "signUpLink": "Regista-te — $1 uma vez",
+    "signUpLink": "Inscreva-se – $ 1/ano",
     "backHome": "Voltar à página inicial",
     "invalid": "Email ou palavra-passe inválidos",
     "confirmPassword": "Confirmar palavra-passe",
@@ -186,13 +186,13 @@
       "startShort": "Começar — $1"
     },
     "hero": {
-      "badge": "Só $1 — uma vez, para sempre",
+      "badge": "Apenas $ 1 por ano",
       "titleLine1": "O teu dinheiro,",
       "titleEm": "finalmente claro.",
       "lead": "O WellSpend Budget Tracker é um gestor de orçamento calmo e bonito para a vida real. Rendimentos, despesas, contas, objetivos e insights — tudo num só lugar, por menos do que uma garrafa de água.",
       "getStarted": "Começar — $1",
       "seeDemo": "Ver Demo",
-      "note": "Pagamento único de $1 · Todas as funcionalidades desbloqueadas para sempre · Paynow, cartão, Ecocash ou banco.",
+      "note": "US$ 1 por ano · Todos os recursos desbloqueados · Paynow, cartão, Ecocash ou banco.",
       "balance": "Saldo total",
       "income": "Rendimentos deste mês",
       "budgetUsed": "Orçamento usado"
@@ -245,8 +245,8 @@
         "text": "Regista-te com o teu nome e email — demora trinta segundos."
       },
       "pay": {
-        "title": "Paga $1 uma vez",
-        "text": "Um dólar. Uma vez. Paynow, cartão, Ecocash ou transferência bancária — à tua escolha."
+        "title": "Pague $ 1 por ano",
+        "text": "Um dólar por ano. Paynow, cartão, Ecocash ou transferência bancária – você escolhe."
       },
       "currency": {
         "title": "Escolhe a tua moeda",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Sê dono do teu dinheiro",
-        "text": "Acesso total para sempre. Todas as funcionalidades, todas as atualizações, sem subscrições."
+        "text": "Acesso total, o ano todo. Cada recurso, cada atualização, um dólar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Descarrega um ficheiro para o teu banco ou EcoCash for Business e toda a equipa fica paga. É o dia de pagamento, terminado.",
       "walkthrough": "Marca uma demonstração gratuita",
       "signIn": "Iniciar sessão empresarial",
-      "note": "Qualquer dimensão, qualquer setor — fala-nos do teu negócio e teremos a tua equipa a funcionar num dia."
+      "note": "Qualquer dimensão, qualquer setor — fala-nos do teu negócio e teremos a tua equipa a funcionar num dia.",
+      "claimsTitle": "Reivindicações sem rastro de papel",
+      "claimsText": "A equipe tira recibos e reivindica despesas ou adiantamentos no aplicativo – você aprova com um toque e a folha de pagamento classifica o resto.",
+      "hireTitle": "Contrate em uma tela",
+      "hireText": "Publique uma vaga, compartilhe o link e as inscrições serão avaliadas. Contratos e integração ficam no mesmo lugar."
     },
     "pricing": {
       "heading": "Um dólar. É só isso.",
-      "sub": "Sem subscrições, sem níveis, sem vendas extra. Paga uma vez, fica para sempre.",
-      "lifetime": "Acesso vitalício",
-      "forever": "/ para sempre",
-      "features": "Todas as funcionalidades desbloqueadas, para sempre",
+      "sub": "Sem níveis, sem upsell. Um dólar por ano mantém tudo.",
+      "lifetime": "Acesso anual",
+      "forever": "/ ano",
+      "features": "Cada recurso, o ano todo",
       "tracking": "Acompanhamento de rendimentos, despesas e orçamento",
       "goals": "Objetivos de poupança, contas e calendário",
       "reports": "Relatórios, análises e assistente de IA",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Digitalizar"
+    },
+    "payment": {
+      "onceNotMonthly": "um ano, não mensalmente",
+      "tagline": "Um pagamento desbloqueia tudo por um ano."
     }
   }
 }

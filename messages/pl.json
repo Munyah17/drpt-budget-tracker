@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Jasność w finansach, każdego dnia.",
     "visualText": "Śledź przychody, wydatki i cele oszczędnościowe w jednym spokojnym, pięknym miejscu.",
-    "signupTitle": "Utwórz konto — $1 odblokowuje wszystko, na zawsze",
+    "signupTitle": "Utwórz konto — 1 USD rocznie odblokowuje wszystko",
     "signinTitle": "Witaj z powrotem! Zaloguj się, aby kontynuować",
     "fullName": "Imię i nazwisko",
     "namePh": "Wpisz swoje imię",
@@ -152,7 +152,7 @@
     "haveAccount": "Masz już konto?",
     "noAccount": "Nie masz konta?",
     "signInLink": "Zaloguj się",
-    "signUpLink": "Zarejestruj się — $1 raz",
+    "signUpLink": "Zarejestruj się — 1 USD rocznie",
     "backHome": "Wróć na stronę główną",
     "invalid": "Nieprawidłowy e-mail lub hasło",
     "confirmPassword": "Potwierdź hasło",
@@ -186,13 +186,13 @@
       "startShort": "Start — $1"
     },
     "hero": {
-      "badge": "Tylko $1 — raz, na zawsze",
+      "badge": "Tylko 1 dolar rocznie",
       "titleLine1": "Twoje pieniądze,",
       "titleEm": "wreszcie jasne.",
       "lead": "WellSpend Budget Tracker to spokojny, piękny planista budżetu do prawdziwego życia. Przychody, wydatki, rachunki, cele i wnioski — wszystko w jednym miejscu, za mniej niż butelka wody.",
       "getStarted": "Zacznij — $1",
       "seeDemo": "Zobacz demo",
-      "note": "Jednorazowa płatność $1 · Każda funkcja odblokowana na zawsze · Paynow, karta, Ecocash lub bank.",
+      "note": "1 $ rocznie · Każda funkcja odblokowana · Paynow, karta, Ecocash lub bank.",
       "balance": "Saldo całkowite",
       "income": "Przychody w tym miesiącu",
       "budgetUsed": "Wykorzystany budżet"
@@ -245,8 +245,8 @@
         "text": "Zarejestruj się imieniem i e-mailem — to zajmuje trzydzieści sekund."
       },
       "pay": {
-        "title": "Zapłać $1 raz",
-        "text": "Jeden dolar. Raz. Paynow, karta, Ecocash lub przelew bankowy — Twój wybór."
+        "title": "Zapłać 1 dolara rocznie",
+        "text": "Jeden dolar rocznie. Paynow, karta, Ecocash lub przelew bankowy — Twój wybór."
       },
       "currency": {
         "title": "Wybierz walutę",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Pełna kontrola nad pieniędzmi",
-        "text": "Pełny dostęp na zawsze. Każda funkcja, każda aktualizacja, bez subskrypcji."
+        "text": "Pełny dostęp przez cały rok. Każda funkcja, każda aktualizacja, jeden dolar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Pobierz jeden plik dla banku lub EcoCash for Business i cały zespół ma wypłatę. To dzień wypłaty, zamknięte.",
       "walkthrough": "Umów się na bezpłatną prezentację",
       "signIn": "Logowanie dla firm",
-      "note": "Dowolny rozmiar, dowolna branża — opowiedz nam o swojej firmie, a Twój zespół będzie działał w ciągu jednego dnia."
+      "note": "Dowolny rozmiar, dowolna branża — opowiedz nam o swojej firmie, a Twój zespół będzie działał w ciągu jednego dnia.",
+      "claimsTitle": "Roszczenia bez śladu papierowego",
+      "claimsText": "Pracownicy mogą wyświetlać rachunki i zgłaszać wydatki lub zaliczki w aplikacji — zatwierdzasz jednym dotknięciem, a lista płac zajmuje się resztą.",
+      "hireTitle": "Wynajmij z jednego ekranu",
+      "hireText": "Opublikuj ogłoszenie o pracę, udostępnij link, a aplikacje same się ocenią. Umowy i onboarding żyją w tym samym miejscu."
     },
     "pricing": {
       "heading": "Jeden dolar. To wszystko.",
-      "sub": "Bez subskrypcji, bez planów, bez dosprzedaży. Zapłać raz, zachowaj na zawsze.",
-      "lifetime": "Dożywotni dostęp",
-      "forever": "/ na zawsze",
-      "features": "Każda funkcja odblokowana, na zawsze",
+      "sub": "Żadnych poziomów, żadnej dodatkowej sprzedaży. Jeden dolar rocznie utrzymuje wszystko.",
+      "lifetime": "Dostęp roczny",
+      "forever": "/ rok",
+      "features": "Każda funkcja, przez cały rok",
       "tracking": "Śledzenie przychodów, wydatków i budżetu",
       "goals": "Cele oszczędnościowe, rachunki i kalendarz",
       "reports": "Raporty, analityka i asystent AI",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Skanuj"
+    },
+    "payment": {
+      "onceNotMonthly": "rok, a nie miesiąc",
+      "tagline": "Jedna płatność odblokowuje wszystko na rok."
     }
   }
 }

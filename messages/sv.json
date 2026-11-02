@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Ekonomisk klarhet, varje dag.",
     "visualText": "Håll koll på inkomster, utgifter och sparmål på ett lugnt, vackert ställe.",
-    "signupTitle": "Skapa ditt konto — $1 låser upp allt, för alltid",
+    "signupTitle": "Skapa ditt konto – $1/år låser upp allt",
     "signinTitle": "Välkommen tillbaka! Logga in för att fortsätta till ditt konto",
     "fullName": "Fullständigt namn",
     "namePh": "Ange ditt namn",
@@ -152,7 +152,7 @@
     "haveAccount": "Har du redan ett konto?",
     "noAccount": "Har du inget konto?",
     "signInLink": "Logga in",
-    "signUpLink": "Registrera dig — $1 en gång",
+    "signUpLink": "Registrera dig - $1/år",
     "backHome": "Tillbaka till startsidan",
     "invalid": "Ogiltig e-post eller lösenord",
     "confirmPassword": "Bekräfta lösenord",
@@ -186,13 +186,13 @@
       "startShort": "Start — $1"
     },
     "hero": {
-      "badge": "Bara $1 — en gång, för alltid",
+      "badge": "Bara 1 dollar om året",
       "titleLine1": "Dina pengar,",
       "titleEm": "äntligen tydliga.",
       "lead": "WellSpend Budget Tracker är en lugn, vacker budgetapp för livet på riktigt. Inkomster, utgifter, räkningar, mål och insikter — allt på ett ställe, för mindre än en flaska vatten.",
       "getStarted": "Kom igång — $1",
       "seeDemo": "Se demo",
-      "note": "Engångsbetalning på $1 · Alla funktioner upplåsta för alltid · Paynow, kort, Ecocash eller bank.",
+      "note": "$1 per år · Varje funktion är upplåst · Paynow, kort, Ecocash eller bank.",
       "balance": "Totalt saldo",
       "income": "Inkomster denna månad",
       "budgetUsed": "Förbrukad budget"
@@ -245,8 +245,8 @@
         "text": "Registrera dig med namn och e-post — det tar trettio sekunder."
       },
       "pay": {
-        "title": "Betala $1 en gång",
-        "text": "En dollar. En gång. Paynow, kort, Ecocash eller banköverföring — du väljer."
+        "title": "Betala $1 per år",
+        "text": "En dollar om året. Paynow, kort, Ecocash eller banköverföring - ditt val."
       },
       "currency": {
         "title": "Välj din valuta",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Äg dina pengar",
-        "text": "Full tillgång för alltid. Varje funktion, varje uppdatering, inga prenumerationer."
+        "text": "Full tillgång, hela året. Varje funktion, varje uppdatering, en dollar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Ladda ner en fil till din bank eller EcoCash for Business så är hela teamet betalt. Det var lönedagen, färdig.",
       "walkthrough": "Boka en gratis genomgång",
       "signIn": "Företagsinloggning",
-      "note": "Alla storlekar, alla branscher — berätta om ditt företag så har vi ditt team igång inom en dag."
+      "note": "Alla storlekar, alla branscher — berätta om ditt företag så har vi ditt team igång inom en dag.",
+      "claimsTitle": "Anspråk utan pappersspåret",
+      "claimsText": "Personal snappar kvitton och gör anspråk på utgifter eller förskott i appen – du godkänner med ett tryck och lönelistan sorterar resten.",
+      "hireTitle": "Hyr från en skärm",
+      "hireText": "Lägg upp en ledig tjänst, dela länken och ansökningarna ger sig själva. Kontrakt och onboarding bor på samma plats."
     },
     "pricing": {
       "heading": "En dollar. Det är allt.",
-      "sub": "Inga prenumerationer, inga nivåer, inga merförsäljningar. Betala en gång, behåll för alltid.",
-      "lifetime": "Livstidsåtkomst",
-      "forever": "/ för alltid",
-      "features": "Alla funktioner upplåsta, för alltid",
+      "sub": "Inga nivåer, inga merförsäljningar. En dollar om året håller allt.",
+      "lifetime": "Årlig tillgång",
+      "forever": "/ år",
+      "features": "Varje funktion, hela året",
       "tracking": "Spårning av inkomster, utgifter & budget",
       "goals": "Sparmål, räkningar & kalender",
       "reports": "Rapporter, analyser & AI-assistent",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Skanna"
+    },
+    "payment": {
+      "onceNotMonthly": "ett år, inte varje månad",
+      "tagline": "En betalning låser upp allt i ett år."
     }
   }
 }

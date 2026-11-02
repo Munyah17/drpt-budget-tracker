@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Ukucaca kwezimali, usuku ngalunye.",
     "visualText": "Landela imali engenayo, izindleko nezinjongo zokonga endaweni eyodwa ezolileyo, enhle.",
-    "signupTitle": "Yenza i-akhawunti yakho — $1 ivula konke, kuze kube naphakade",
+    "signupTitle": "Dala i-akhawunti yakho — $1/ngonyaka ivula yonke into",
     "signinTitle": "Siyakwamukela futhi! Ngena ukuze uqhubekele ku-akhawunti yakho",
     "fullName": "Igama Eliphelele",
     "namePh": "Faka igama lakho",
@@ -152,7 +152,7 @@
     "haveAccount": "Usuvele une-akhawunti?",
     "noAccount": "Awunayo i-akhawunti?",
     "signInLink": "Ngena",
-    "signUpLink": "Bhalisa — $1 kanye kuphela",
+    "signUpLink": "Bhalisa - $1/ngonyaka",
     "backHome": "Buyela ekhaya",
     "invalid": "I-imeyili noma iphasiwedi engalungile",
     "confirmPassword": "Qinisekisa iphasiwedi",
@@ -186,13 +186,13 @@
       "startShort": "Qala — $1"
     },
     "hero": {
-      "badge": "I-$1 kuphela — kanye, naphakade",
+      "badge": "U-$1 kuphela ngonyaka",
       "titleLine1": "Imali yakho,",
       "titleEm": "ekugcineni icacile.",
       "lead": "I-WellSpend Budget Tracker isiceli sebhajethi esizolile nesihle sempilo yangempela. Imali engenayo, izindleko, izibhili, izinjongo nolwazi — konke endaweni eyodwa, ngaphansi kwenani lebhodlela lamanzi.",
       "getStarted": "Qala — $1",
       "seeDemo": "Buka Idemo",
-      "note": "Ukukhokhelwa kanye kuka-$1 · Zonke izici zivulwa naphakade · I-Paynow, ikhadi, i-EcoCash noma ibhange.",
+      "note": "$1 ngonyaka · Zonke izici zivuliwe · I-Paynow, ikhadi, i-Ecocash noma ibhange.",
       "balance": "Isamba esiphelele",
       "income": "Imali engenayo yenyanga lena",
       "budgetUsed": "Ibhajethi esetshenzisiwe"
@@ -245,8 +245,8 @@
         "text": "Bhalisa ngegama lakho ne-imeyili — kuthatha imizuzwana engamashumi amathathu."
       },
       "pay": {
-        "title": "Khokha $1 kube kanye",
-        "text": "Idola elilodwa. Kanye. I-Paynow, ikhadi, i-EcoCash noma ukudluliselwa kwebhange — okukhethayo."
+        "title": "Khokha u-$1 ngonyaka",
+        "text": "Idola elilodwa ngonyaka. I-Paynow, ikhadi, i-Ecocash noma i-bank transfer — ukukhetha kwakho."
       },
       "currency": {
         "title": "Khetha uhlobo lwemali yakho",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Yiba ngumnini wemali yakho",
-        "text": "Ukufinyelela okugcwele naphakade. Zonke izici, zonke izibuyekezo, azikho izibhaliso."
+        "text": "Ukufinyelela okugcwele, unyaka wonke. Sonke isici, sonke isibuyekezo, idola elilodwa."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Landa ifayela elilodwa lebhange lakho noma i-EcoCash for Business futhi iqembu lonke selikhokhelwe. Yilona usuku lomholo, seluqediwe.",
       "walkthrough": "Bhukha isibonisi samahhala",
       "signIn": "Ngena kwenkampani",
-      "note": "Noma ibukhulu, noma yisiphi isimboni — sitshele ngebhizinisi lakho futhi sizobe siqale iqembu lakho ngaphakathi kosuku."
+      "note": "Noma ibukhulu, noma yisiphi isimboni — sitshele ngebhizinisi lakho futhi sizobe siqale iqembu lakho ngaphakathi kosuku.",
+      "claimsTitle": "Izimangalo ngaphandle komkhondo wephepha",
+      "claimsText": "Amarisidi asheshayo ezisebenzi kanye nezindleko zesimangalo noma i-advanced-in-app — ugunyaza ngokuthepha okukodwa bese i-payroll ihlunga okunye.",
+      "hireTitle": "Qasha esikrinini esisodwa",
+      "hireText": "Thumela isikhala, yabelana ngesixhumanisi, bese izinhlelo zokusebenza zizizuzele ngokwazo. Izinkontileka nokugibela kuhlala endaweni efanayo."
     },
     "pricing": {
       "heading": "Idola elilodwa. Yilokho.",
-      "sub": "Azikho izibhaliso, azikho amazinga, akukho ukuthengiswa okwengeziwe. Khokha kanye, gcine kuze kube naphakade.",
-      "lifetime": "Ukufinyelela impilo yonke",
-      "forever": "/ naphakade",
-      "features": "Zonke izici zivuliwe, naphakade",
+      "sub": "Awekho ama-tiers, awekho ama-upsell. Idola elilodwa ngonyaka ligcina yonke into.",
+      "lifetime": "Ukufinyelela kwaminyaka yonke",
+      "forever": "/ ngonyaka",
+      "features": "Zonke izici, unyaka wonke",
       "tracking": "Ukulandela imali engenayo, izindleko nebhajethi",
       "goals": "Izinjongo zokonga, izibhili nekhalenda",
       "reports": "Imibiko, ukuhlaziya nomsizi we-AI",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Skena"
+    },
+    "payment": {
+      "onceNotMonthly": "ngonyaka, hhayi ngenyanga",
+      "tagline": "Inkokhelo eyodwa ivula yonke into unyaka."
     }
   }
 }

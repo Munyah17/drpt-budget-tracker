@@ -29,7 +29,6 @@ const FEATURES = [
   { icon: "shield", key: "safe" },
   { icon: "refresh-cw", key: "rollover" },
   { icon: "banknote", key: "currency" },
-  { icon: "bell", key: "reminders" },
 ] as const;
 
 const CORP_FEATURES = [
@@ -37,6 +36,8 @@ const CORP_FEATURES = [
   { icon: "users", key: "staff" },
   { icon: "calendar", key: "away" },
   { icon: "receipt", key: "loans" },
+  { icon: "clipboard-check", key: "claims" },
+  { icon: "user-plus", key: "hire" },
   { icon: "user-circle", key: "access" },
   { icon: "banknote", key: "file" },
 ] as const;
@@ -131,23 +132,49 @@ export default function LandingPage() {
           {t("hero.note")}
         </div>
 
-        {/* App preview mock */}
-        <div className="hero-mock fade-up">
-          <div className="hero-mock-bar"><span /><span /><span /></div>
-          <div className="hero-mock-body">
-            <div className="hero-mock-card">
-              <div className="k">{t("hero.balance")}</div>
-              <div className="v">$8,426.50</div>
-            </div>
-            <div className="hero-mock-card">
-              <div className="k">{t("hero.income")}</div>
-              <div className="v green">+$5,650.00</div>
-            </div>
-            <div className="hero-mock-card">
-              <div className="k">{t("hero.budgetUsed")}</div>
-              <div className="v rose">68%</div>
+        {/* MacBook preview: budget app open on screen */}
+        <div className="laptop fade-up" aria-hidden="true">
+          <div className="laptop-screen">
+            <span className="laptop-cam" />
+            <div className="mockapp">
+              <div className="mockapp-side">
+                <span className="ms-logo" />
+                <span className="ms-item on" />
+                <span className="ms-item" />
+                <span className="ms-item" />
+                <span className="ms-item" />
+                <span className="ms-item" />
+              </div>
+              <div className="mockapp-main">
+                <span className="mm-title" />
+                <div className="mm-kpis">
+                  <div className="mm-kpi">
+                    <div className="k">{t("hero.balance")}</div>
+                    <div className="v">$8,426.50</div>
+                  </div>
+                  <div className="mm-kpi">
+                    <div className="k">{t("hero.income")}</div>
+                    <div className="v" style={{ color: "var(--green)" }}>+$5,650.00</div>
+                  </div>
+                  <div className="mm-kpi">
+                    <div className="k">{t("hero.budgetUsed")}</div>
+                    <div className="v" style={{ color: "var(--rose-600)" }}>68%</div>
+                  </div>
+                </div>
+                <div className="mm-chart">
+                  {[42, 65, 50, 78, 58, 88, 70, 95, 62, 84, 72, 100].map((h, i) => (
+                    <i key={i} style={{ height: `${h}%` }} />
+                  ))}
+                </div>
+                <div className="mm-rows">
+                  <div className="mm-row"><b /><i /></div>
+                  <div className="mm-row"><b style={{ width: "42%" }} /><i /></div>
+                  <div className="mm-row"><b style={{ width: "28%" }} /><i /></div>
+                </div>
+              </div>
             </div>
           </div>
+          <div className="laptop-base" />
         </div>
       </header>
 
@@ -188,7 +215,7 @@ export default function LandingPage() {
         <div className="hero-badge" style={{ margin: "0 auto 14px" }}>
           <Icon name="briefcase" size={13} /> {t("business.badge")}
         </div>
-        <h2 style={{ fontSize: "clamp(30px, 4.5vw, 46px)", fontWeight: 800, letterSpacing: "-1.2px", lineHeight: 1.05 }}>
+        <h2 style={{ fontSize: "clamp(30px, 4.5vw, 46px)", fontWeight: 800, letterSpacing: "-1.2px", lineHeight: 1.05, textAlign: "center" }}>
           {t("business.heading")}
         </h2>
         <p style={{ fontSize: 16, fontWeight: 700, color: "var(--rose-600)", margin: "6px auto 10px", letterSpacing: 0.4, textAlign: "center" }}>

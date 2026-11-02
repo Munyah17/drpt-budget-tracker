@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "usd",
     "line_items[0][price_data][unit_amount]": String(priceCents("stripe")),
-    "line_items[0][price_data][product_data][name]": "WellSpend — Lifetime Access",
+    "line_items[0][price_data][product_data][name]": "WellSpend — Yearly Access",
     client_reference_id: userId ?? "",
     "payment_method_types[0]": "card",
   });

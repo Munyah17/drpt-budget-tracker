@@ -186,7 +186,9 @@ export const EMPLOYEE_NAV_ITEMS = [
   { id: "leave", label: "Leave", icon: "calendar", href: "/employee/leave" },
   { id: "borrowing-emp", label: "Early Pay", icon: "zap", href: "/employee/borrowing" },
   { id: "benefits", label: "Benefits", icon: "heart-pulse", href: "/employee/benefits" },
-  ...NAV_ITEMS.filter((n) => n.id !== "borrowing"),
+  // Shared money-app pages live at the root (/expenses, /income …), not under
+  // /employee — explicit hrefs keep the Sidebar's role prefix off them.
+  ...NAV_ITEMS.filter((n) => n.id !== "borrowing").map((n) => ({ ...n, href: `/${n.id}` })),
 ];
 
 export const INCOME_CATEGORIES = ["Salary", "Private Practice", "Locum", "Investments", "Bonus", "Gift"];

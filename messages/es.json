@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Claridad financiera, todos los días.",
     "visualText": "Controla ingresos, gastos y metas de ahorro en un solo lugar, tranquilo y bonito.",
-    "signupTitle": "Crea tu cuenta — $1 lo desbloquea todo, para siempre",
+    "signupTitle": "Crea tu cuenta: $1/año lo desbloquea todo",
     "signinTitle": "¡Bienvenido de nuevo! Inicia sesión para continuar a tu cuenta",
     "fullName": "Nombre Completo",
     "namePh": "Introduce tu nombre",
@@ -152,7 +152,7 @@
     "haveAccount": "¿Ya tienes una cuenta?",
     "noAccount": "¿No tienes una cuenta?",
     "signInLink": "Inicia sesión",
-    "signUpLink": "Regístrate — $1 una vez",
+    "signUpLink": "Regístrate: $1/año",
     "backHome": "Volver al inicio",
     "invalid": "Correo o contraseña no válidos",
     "confirmPassword": "Confirmar contraseña",
@@ -186,13 +186,13 @@
       "startShort": "Empezar — $1"
     },
     "hero": {
-      "badge": "Solo $1 — una vez, para siempre",
+      "badge": "Sólo $1 al año",
       "titleLine1": "Tu dinero,",
       "titleEm": "por fin claro.",
       "lead": "WellSpend Budget Tracker es un gestor de presupuesto tranquilo y bonito para la vida real. Ingresos, gastos, facturas, metas y análisis — todo en un solo lugar, por menos que una botella de agua.",
       "getStarted": "Empezar — $1",
       "seeDemo": "Ver Demo",
-      "note": "Pago único de $1 · Todas las funciones desbloqueadas para siempre · Paynow, tarjeta, Ecocash o banco.",
+      "note": "$1 al año · Todas las funciones desbloqueadas · Paynow, tarjeta, Ecocash o banco.",
       "balance": "Saldo total",
       "income": "Ingresos de este mes",
       "budgetUsed": "Presupuesto usado"
@@ -245,8 +245,8 @@
         "text": "Regístrate con tu nombre y correo — toma treinta segundos."
       },
       "pay": {
-        "title": "Paga $1 una vez",
-        "text": "Un dólar. Una vez. Paynow, tarjeta, Ecocash o transferencia bancaria — tú eliges."
+        "title": "Paga $1 al año",
+        "text": "Un dólar al año. Paynow, tarjeta, Ecocash o transferencia bancaria: tú eliges."
       },
       "currency": {
         "title": "Elige tu moneda",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Sé dueño de tu dinero",
-        "text": "Acceso total para siempre. Todas las funciones, todas las actualizaciones, sin suscripciones."
+        "text": "Acceso completo, todo el año. Cada característica, cada actualización, un dólar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Descarga un archivo para tu banco o EcoCash for Business y todo el equipo queda pagado. Eso es el día de pago, terminado.",
       "walkthrough": "Reserva una demo gratuita",
       "signIn": "Acceso corporativo",
-      "note": "Cualquier tamaño, cualquier sector — cuéntanos sobre tu negocio y tendremos a tu equipo funcionando en un día."
+      "note": "Cualquier tamaño, cualquier sector — cuéntanos sobre tu negocio y tendremos a tu equipo funcionando en un día.",
+      "claimsTitle": "Reclamaciones sin rastro documental",
+      "claimsText": "El personal toma recibos y reclama gastos o anticipos en la aplicación: usted los aprueba con un solo toque y la nómina ordena el resto.",
+      "hireTitle": "Contrata desde una pantalla",
+      "hireText": "Publique una vacante, comparta el enlace y las solicitudes se calificarán solas. Los contratos y el onboarding conviven en el mismo lugar."
     },
     "pricing": {
       "heading": "Un dólar. Eso es todo.",
-      "sub": "Sin suscripciones, sin niveles, sin ventas extra. Paga una vez, quédatelo para siempre.",
-      "lifetime": "Acceso de por vida",
-      "forever": "/ para siempre",
-      "features": "Todas las funciones desbloqueadas, para siempre",
+      "sub": "Sin niveles, sin ventas adicionales. Un dólar al año lo mantiene todo.",
+      "lifetime": "Acceso anual",
+      "forever": "/ año",
+      "features": "Cada característica, todo el año",
       "tracking": "Seguimiento de ingresos, gastos y presupuesto",
       "goals": "Metas de ahorro, facturas y calendario",
       "reports": "Informes, analíticas y asistente de IA",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Escanear"
+    },
+    "payment": {
+      "onceNotMonthly": "un año, no mensual",
+      "tagline": "Un pago desbloquea todo durante un año."
     }
   }
 }

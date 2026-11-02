@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Jasno ve financích, každý jediný den.",
     "visualText": "Sleduj příjmy, výdaje a spořicí cíle na jednom klidném, krásném místě.",
-    "signupTitle": "Vytvoř si účet — $1 odemkne vše, navždy",
+    "signupTitle": "Vytvořte si účet – 1 $/rok odemkne vše",
     "signinTitle": "Vítej zpět! Přihlas se a pokračuj do svého účtu",
     "fullName": "Celé jméno",
     "namePh": "Zadej své jméno",
@@ -152,7 +152,7 @@
     "haveAccount": "Už máš účet?",
     "noAccount": "Ještě nemáš účet?",
     "signInLink": "Přihlásit se",
-    "signUpLink": "Registrovat — $1 jednou",
+    "signUpLink": "Zaregistrujte se - $ 1/rok",
     "backHome": "Zpět domů",
     "invalid": "Neplatný e-mail nebo heslo",
     "confirmPassword": "Potvrď heslo",
@@ -186,13 +186,13 @@
       "startShort": "Start — $1"
     },
     "hero": {
-      "badge": "Jen $1 — jednou, navždy",
+      "badge": "Jen 1 $ ročně",
       "titleLine1": "Tvé peníze,",
       "titleEm": "konečně jasné.",
       "lead": "WellSpend Budget Tracker je klidný, krásný tracker rozpočtu pro skutečný život. Příjmy, výdaje, účty, cíle a postřehy — všechno na jednom místě, za méně než láhev vody.",
       "getStarted": "Začít — $1",
       "seeDemo": "Zobrazit demo",
-      "note": "Jednorázová platba $1 · Každá funkce odemčena navždy · Paynow, karta, Ecocash nebo banka.",
+      "note": "1 $ ročně · Všechny funkce odemčené · Výplata, karta, Ecocash nebo banka.",
       "balance": "Celkový zůstatek",
       "income": "Příjmy tento měsíc",
       "budgetUsed": "Využitý rozpočet"
@@ -245,8 +245,8 @@
         "text": "Zaregistruj se jménem a e-mailem — trvá to třicet sekund."
       },
       "pay": {
-        "title": "Zaplať $1 jednou",
-        "text": "Jeden dolar. Jednou. Paynow, karta, Ecocash nebo bankovní převod — jak chceš."
+        "title": "Zaplaťte 1 $ ročně",
+        "text": "Jeden dolar ročně. Paynow, karta, Ecocash nebo bankovní převod – vaše volba."
       },
       "currency": {
         "title": "Vyber si měnu",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Vlastni své peníze",
-        "text": "Plný přístup navždy. Každá funkce, každá aktualizace, žádná předplatná."
+        "text": "Plný přístup po celý rok. Každá funkce, každá aktualizace, jeden dolar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Stáhni jeden soubor pro banku nebo EcoCash for Business a celý tým je vyplacený. To je výplatní den, hotový.",
       "walkthrough": "Zarezervuj bezplatnou ukázku",
       "signIn": "Firemní přihlášení",
-      "note": "Jakákoli velikost, jakékoli odvětví — řekni nám o své firmě a tvůj tým pojede do jednoho dne."
+      "note": "Jakákoli velikost, jakékoli odvětví — řekni nám o své firmě a tvůj tým pojede do jednoho dne.",
+      "claimsTitle": "Nároky bez papírové stopy",
+      "claimsText": "Zaměstnanci vyřizují stvrzenky a nárokují výdaje nebo zálohy v aplikaci – vy schválíte jedním klepnutím a výplatní páska roztřídí zbytek.",
+      "hireTitle": "Pronájem z jedné obrazovky",
+      "hireText": "Zveřejněte volné místo, sdílejte odkaz a přihlášky se samy bodují. Smlouvy a onboarding žijí na stejném místě."
     },
     "pricing": {
       "heading": "Jeden dolar. To je vše.",
-      "sub": "Žádná předplatná, žádné tarify, žádné upselly. Zaplať jednou, vlastni navždy.",
-      "lifetime": "Doživotní přístup",
-      "forever": "/ navždy",
-      "features": "Každá funkce odemčena, navždy",
+      "sub": "Žádné úrovně, žádné upsells. Jeden dolar ročně udrží vše.",
+      "lifetime": "Roční přístup",
+      "forever": "/ rok",
+      "features": "Každá funkce, po celý rok",
       "tracking": "Sledování příjmů, výdajů a rozpočtu",
       "goals": "Spořicí cíle, účty a kalendář",
       "reports": "Reporty, analytika a AI asistent",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Skenovat"
+    },
+    "payment": {
+      "onceNotMonthly": "rok, ne měsíčně",
+      "tagline": "Jedna platba odemkne vše na rok."
     }
   }
 }

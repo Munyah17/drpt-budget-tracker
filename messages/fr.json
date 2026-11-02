@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Clarté financière, chaque jour.",
     "visualText": "Suis tes revenus, tes dépenses et tes objectifs d''épargne dans un seul endroit, calme et beau.",
-    "signupTitle": "Crée ton compte — $1 débloque tout, pour toujours",
+    "signupTitle": "Créez votre compte – 1 $/an débloque tout",
     "signinTitle": "Bon retour ! Connecte-toi pour continuer vers ton compte",
     "fullName": "Nom complet",
     "namePh": "Entre ton nom",
@@ -152,7 +152,7 @@
     "haveAccount": "Tu as déjà un compte ?",
     "noAccount": "Pas encore de compte ?",
     "signInLink": "Se connecter",
-    "signUpLink": "Inscris-toi — $1 une fois",
+    "signUpLink": "Inscrivez-vous – 1 $/an",
     "backHome": "Retour à l''accueil",
     "invalid": "E-mail ou mot de passe invalide",
     "confirmPassword": "Confirmer le mot de passe",
@@ -186,13 +186,13 @@
       "startShort": "Démarrer — $1"
     },
     "hero": {
-      "badge": "Juste $1 — une fois, pour toujours",
+      "badge": "Seulement 1 $ par an",
       "titleLine1": "Ton argent,",
       "titleEm": "enfin clair.",
       "lead": "WellSpend Budget Tracker est un gestionnaire de budget calme et beau pour la vraie vie. Revenus, dépenses, factures, objectifs et analyses — tout au même endroit, pour moins qu''une bouteille d''eau.",
       "getStarted": "Commencer — $1",
       "seeDemo": "Voir la démo",
-      "note": "Paiement unique de $1 · Toutes les fonctionnalités débloquées pour toujours · Paynow, carte, Ecocash ou banque.",
+      "note": "1 $ par an · Chaque fonctionnalité débloquée · Paynow, carte, Ecocash ou banque.",
       "balance": "Solde total",
       "income": "Revenus du mois",
       "budgetUsed": "Budget utilisé"
@@ -245,8 +245,8 @@
         "text": "Inscris-toi avec ton nom et ton e-mail — ça prend trente secondes."
       },
       "pay": {
-        "title": "Paie $1 une fois",
-        "text": "Un dollar. Une fois. Paynow, carte, Ecocash ou virement bancaire — au choix."
+        "title": "Payer 1 $ par an",
+        "text": "Un dollar par an. Paynow, carte, Ecocash ou virement bancaire – votre choix."
       },
       "currency": {
         "title": "Choisis ta devise",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Sois maître de ton argent",
-        "text": "Accès complet pour toujours. Chaque fonctionnalité, chaque mise à jour, sans abonnement."
+        "text": "Accès complet, toute l'année. Chaque fonctionnalité, chaque mise à jour, un dollar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Télécharge un fichier pour ta banque ou EcoCash for Business et toute l''équipe est payée. C''est le jour de paie, terminé.",
       "walkthrough": "Réserve une démo gratuite",
       "signIn": "Connexion entreprise",
-      "note": "Toutes tailles, tous secteurs — parle-nous de ton entreprise et ton équipe sera opérationnelle en un jour."
+      "note": "Toutes tailles, tous secteurs — parle-nous de ton entreprise et ton équipe sera opérationnelle en un jour.",
+      "claimsTitle": "Réclamations sans trace écrite",
+      "claimsText": "Le personnel envoie des reçus et réclame des dépenses ou des avances dans l'application : vous approuvez en un seul clic et la paie trie le reste.",
+      "hireTitle": "Embauchez à partir d’un seul écran",
+      "hireText": "Publiez un poste vacant, partagez le lien et les candidatures se notent elles-mêmes. Les contrats et l’intégration vivent au même endroit."
     },
     "pricing": {
       "heading": "Un dollar. C''est tout.",
-      "sub": "Pas d''abonnement, pas de paliers, pas de ventes en plus. Paie une fois, garde pour toujours.",
-      "lifetime": "Accès à vie",
-      "forever": "/ pour toujours",
-      "features": "Toutes les fonctionnalités débloquées, pour toujours",
+      "sub": "Pas de niveaux, pas de ventes incitatives. Un dollar par an permet de tout conserver.",
+      "lifetime": "Accès annuel",
+      "forever": "/ année",
+      "features": "Chaque fonctionnalité, toute l'année",
       "tracking": "Suivi des revenus, dépenses et budget",
       "goals": "Objectifs d''épargne, factures et calendrier",
       "reports": "Rapports, analyses et assistant IA",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Scanner"
+    },
+    "payment": {
+      "onceNotMonthly": "par an, pas mensuellement",
+      "tagline": "Un seul paiement débloque tout pendant un an."
     }
   }
 }

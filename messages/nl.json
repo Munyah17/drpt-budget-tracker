@@ -135,7 +135,7 @@
   "Login": {
     "visualTitle": "Financiële duidelijkheid, elke dag weer.",
     "visualText": "Houd inkomsten, uitgaven en spaardoelen bij op één rustige, mooie plek.",
-    "signupTitle": "Maak je account aan — $1 ontgrendelt alles, voor altijd",
+    "signupTitle": "Maak uw account aan - $ 1/jaar ontgrendelt alles",
     "signinTitle": "Welkom terug! Log in om verder te gaan naar je account",
     "fullName": "Volledige naam",
     "namePh": "Vul je naam in",
@@ -152,7 +152,7 @@
     "haveAccount": "Heb je al een account?",
     "noAccount": "Nog geen account?",
     "signInLink": "Inloggen",
-    "signUpLink": "Registreren — eenmalig $1",
+    "signUpLink": "Aanmelden — $ 1/jaar",
     "backHome": "Terug naar home",
     "invalid": "Ongeldig e-mailadres of wachtwoord",
     "confirmPassword": "Bevestig wachtwoord",
@@ -186,13 +186,13 @@
       "startShort": "Start — $1"
     },
     "hero": {
-      "badge": "Slechts $1 — eenmalig, voor altijd",
+      "badge": "Slechts $ 1 per jaar",
       "titleLine1": "Je geld,",
       "titleEm": "eindelijk helder.",
       "lead": "WellSpend Budget Tracker is een rustige, mooie budgettracker voor het echte leven. Inkomsten, uitgaven, rekeningen, doelen en inzichten — alles op één plek, voor minder dan een flesje water.",
       "getStarted": "Aan de slag — $1",
       "seeDemo": "Bekijk demo",
-      "note": "Eenmalige betaling van $1 · Elke functie voor altijd ontgrendeld · Paynow, kaart, Ecocash of bank.",
+      "note": "$1 per jaar · Elke functie ontgrendeld · Betaal nu, kaart, Ecocash of bank.",
       "balance": "Totaalsaldo",
       "income": "Inkomsten deze maand",
       "budgetUsed": "Budget gebruikt"
@@ -245,8 +245,8 @@
         "text": "Registreer met je naam en e-mail — het duurt dertig seconden."
       },
       "pay": {
-        "title": "Betaal eenmalig $1",
-        "text": "Eén dollar. Eenmalig. Paynow, kaart, Ecocash of bankoverschrijving — de keuze is aan jou."
+        "title": "Betaal $ 1 per jaar",
+        "text": "Eén dollar per jaar. Betaal nu, kaart, Ecocash of bankoverschrijving: jouw keuze."
       },
       "currency": {
         "title": "Kies je valuta",
@@ -270,7 +270,7 @@
       },
       "own": {
         "title": "Jouw geld is van jou",
-        "text": "Volledige toegang voor altijd. Elke functie, elke update, geen abonnementen."
+        "text": "Volledige toegang, het hele jaar door. Elke functie, elke update, één dollar."
       }
     },
     "business": {
@@ -300,14 +300,18 @@
       "fileText": "Download één bestand voor je bank of EcoCash for Business en het hele team is betaald. Dat was de betaaldag — geregeld.",
       "walkthrough": "Boek een gratis rondleiding",
       "signIn": "Zakelijk inloggen",
-      "note": "Elke omvang, elke branche — vertel ons over je bedrijf en wij hebben je team binnen een dag draaiende."
+      "note": "Elke omvang, elke branche — vertel ons over je bedrijf en wij hebben je team binnen een dag draaiende.",
+      "claimsTitle": "Claims zonder papieren spoor",
+      "claimsText": "Het personeel ontvangt de ontvangstbewijzen en declareert onkosten of voorschotten in de app. U keurt het met één tik goed en de salarisadministratie regelt de rest.",
+      "hireTitle": "Huur vanaf één scherm",
+      "hireText": "Plaats een vacature, deel de link en sollicitaties scoren zichzelf. Contracten en onboarding bevinden zich op dezelfde plek."
     },
     "pricing": {
       "heading": "Eén dollar. Meer niet.",
-      "sub": "Geen abonnementen, geen pakketten, geen upsell. Eenmalig betalen, voor altijd van jou.",
-      "lifetime": "Levenslange toegang",
-      "forever": "/ voor altijd",
-      "features": "Elke functie ontgrendeld, voor altijd",
+      "sub": "Geen niveaus, geen upsells. Eén dollar per jaar bewaart alles.",
+      "lifetime": "Jaarlijkse toegang",
+      "forever": "/ jaar",
+      "features": "Elke functie, het hele jaar door",
       "tracking": "Inkomsten-, uitgaven- en budgettracking",
       "goals": "Spaardoelen, rekeningen & kalender",
       "reports": "Rapporten, analyses & AI-assistent",
@@ -790,6 +794,10 @@
     },
     "expenses": {
       "scanBtn": "Scannen"
+    },
+    "payment": {
+      "onceNotMonthly": "per jaar, niet maandelijks",
+      "tagline": "Eén betaling ontgrendelt alles voor een jaar."
     }
   }
 }
