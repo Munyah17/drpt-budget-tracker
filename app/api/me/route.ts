@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/server/jwt";
+import { paidActive } from "@/lib/paid";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role,name,currency`,
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role,name,currency,paid_until`,
       {
         headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
         cache: "no-store",
@@ -37,11 +38,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ paid: false, found: false });
     }
     return NextResponse.json({
-      paid: row.is_paid === true,
+      paid: paidActive(row),
       found: true,
       role: row.role ?? "user",
       name: row.name ?? "",
       currency: row.currency ?? "USD",
+      paidUntil: row.paid_until ?? null,
     });
   } catch {
     return NextResponse.json({ error: "Lookup failed" }, { status: 500 });

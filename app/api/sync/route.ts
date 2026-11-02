@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/server/jwt";
+import { paidActive } from "@/lib/paid";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -15,7 +16,7 @@ function dbHeaders(serviceKey: string) {
 /** Fetch the caller's profile row (service role). */
 async function getProfile(uid: string, serviceKey: string) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,paid_until`,
     { headers: dbHeaders(serviceKey), cache: "no-store" }
   );
   if (!res.ok) return null;
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
   try {
     // Free accounts get no persistence — payment gate lives here too
     const profile = await getProfile(uid, serviceKey);
-    if (!profile || profile.is_paid !== true) {
+    if (!profile || !paidActive(profile)) {
       return NextResponse.json({ error: "Payment required" }, { status: 402 });
     }
 

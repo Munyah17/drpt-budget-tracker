@@ -4,6 +4,7 @@
  */
 import { NextResponse } from "next/server";
 import { sbGet } from "./supabaseAdmin";
+import { paidActive } from "@/lib/paid";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -20,7 +21,7 @@ export async function requireFeatureAccess(uid: string): Promise<AccessCheck> {
   if (!serviceKey) return { error: "Not configured", status: 500 };
 
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role,paid_until`,
     {
       headers: {
         apikey: serviceKey,
@@ -36,7 +37,7 @@ export async function requireFeatureAccess(uid: string): Promise<AccessCheck> {
   if (!profile) return { error: "Unauthorized", status: 401 };
   // Allowlist only: paid accounts or roles provisioned by an organisation.
   // (role !== "user" would wrongly admit null/unexpected role values.)
-  if (profile.is_paid === true || ["employee", "corporate", "admin"].includes(profile.role)) {
+  if (paidActive(profile) || ["employee", "corporate", "admin"].includes(profile.role)) {
     return { ok: true };
   }
   return { error: "Payment required", status: 402 };

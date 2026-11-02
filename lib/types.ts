@@ -71,6 +71,8 @@ export interface UserProfile {
   role: UserRole;
   currency: Currency;
   isPaid: boolean;
+  /** ISO timestamp — when the yearly subscription expires (null = exempt) */
+  paidUntil?: string | null;
   /** Set for corporate-issued employee accounts — ties the account to an organisation */
   organisation?: string;
 }

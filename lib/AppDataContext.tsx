@@ -23,6 +23,7 @@ import {
 import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, UserProfile, UserRole, Currency } from "./types";
 import { supabase } from "./supabase";
 import { DEFAULT_CURRENCY, formatCurrency, setActiveCurrency } from "./format";
+import { paidActive } from "./paid";
 
 export interface ToastItem {
   id: number;
@@ -218,7 +219,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
               name: profile.name || 'User',
               role: profile.role || 'user',
               currency: profile.currency || DEFAULT_CURRENCY,
-              isPaid: profile.is_paid || false,
+              isPaid: paidActive(profile),
+              paidUntil: profile.paid_until ?? null,
             });
             setIsAuthenticated(true);
           }
@@ -249,13 +251,14 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         });
       })
       .then((r) => (r ? r.json() : null))
-      .then((d: { paid?: boolean; role?: UserRole; name?: string; currency?: string; error?: string } | null) => {
+      .then((d: { paid?: boolean; paidUntil?: string | null; role?: UserRole; name?: string; currency?: string; error?: string } | null) => {
         if (!d || d.error) return; // server unreachable — keep stored values
         setUser((prev) => {
           if (!prev || prev.id !== uid) return prev;
           const next: UserProfile = {
             ...prev,
             isPaid: d.paid === true,
+            paidUntil: d.paidUntil ?? prev.paidUntil,
             role: d.role ?? prev.role,
             name: d.name || prev.name,
             currency: (d.currency as UserProfile["currency"]) || prev.currency,
@@ -617,7 +620,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           name: profile?.name || 'User',
           role: userRole,
           currency: profile?.currency || DEFAULT_CURRENCY,
-          isPaid: profile?.is_paid || false,
+          isPaid: paidActive(profile),
+          paidUntil: profile?.paid_until ?? null,
         };
         setUser(userProfile);
         setIsAuthenticated(true);
