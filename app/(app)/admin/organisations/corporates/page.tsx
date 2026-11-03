@@ -35,7 +35,7 @@ const PLANS = ["Starter", "Growth", "Enterprise"] as const;
 const EMPTY_FORM = { name: "", industry: "", contactName: "", contactEmail: "", plan: "Growth", seats: "25" };
 
 const badgeClass = (s: string) =>
-  s === "Active" ? "badge-green" : s === "Suspended" ? "badge-rose" : "badge-amber";
+  s === "Active" ? "badge-green" : s === "Suspended" ? "badge-red" : "badge-amber";
 
 export default function AdminCorporatesPage() {
   const t = useTranslations("Pages.adm_orgs_corporates");
@@ -289,11 +289,11 @@ export default function AdminCorporatesPage() {
       {view && (
         <Modal title={view.name} onClose={() => setView(null)}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 18px", fontSize: 13.5, marginBottom: 18 }}>
-            <div><span className="stat-label">{t("thIndustry")}</span><div style={{ fontWeight: 600 }}>{view.industry || "—"}</div></div>
-            <div><span className="stat-label">{t("thContact")}</span><div style={{ fontWeight: 600 }}>{view.contact_name || "—"}<br />{view.contact_email}</div></div>
-            <div><span className="stat-label">{t("thPlan")}</span><div style={{ fontWeight: 600 }}>{view.plan} · {view.seats} {t("seatsShort")}</div></div>
-            <div><span className="stat-label">{t("thStatus")}</span><div><span className={`badge ${badgeClass(view.status)}`}>{view.status}</span></div></div>
-            <div><span className="stat-label">{t("since")}</span><div style={{ fontWeight: 600 }}>{ukDate(view.created_at.slice(0, 10))}</div></div>
+            <div><span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 600 }}>{t("thIndustry")}</span><div style={{ fontWeight: 600 }}>{view.industry || "—"}</div></div>
+            <div><span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 600 }}>{t("thContact")}</span><div style={{ fontWeight: 600 }}>{view.contact_name || "—"}<br />{view.contact_email}</div></div>
+            <div><span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 600 }}>{t("thPlan")}</span><div style={{ fontWeight: 600 }}>{view.plan} · {view.seats} {t("seatsShort")}</div></div>
+            <div><span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 600 }}>{t("thStatus")}</span><div><span className={`badge ${badgeClass(view.status)}`}>{view.status}</span></div></div>
+            <div><span style={{ fontSize: 12, color: "var(--ink-500)", fontWeight: 600 }}>{t("since")}</span><div style={{ fontWeight: 600 }}>{ukDate(view.created_at.slice(0, 10))}</div></div>
           </div>
 
           <div className="card-head" style={{ marginBottom: 10 }}>
@@ -302,7 +302,6 @@ export default function AdminCorporatesPage() {
           </div>
           <input
             type="search"
-            className="field-input"
             placeholder={t("empSearchPh")}
             value={empSearch}
             onChange={(e) => setEmpSearch(e.target.value)}
