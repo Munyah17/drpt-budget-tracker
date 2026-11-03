@@ -24,7 +24,7 @@ export default function AttendancePage() {
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(ATTENDANCE_DATA, t("entityLabel"));
+  const crud = useCrud(ATTENDANCE_DATA, t("entityLabel"), ["employee", "date", "clockIn", "clockOut", "hours", "status"]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((r) =>

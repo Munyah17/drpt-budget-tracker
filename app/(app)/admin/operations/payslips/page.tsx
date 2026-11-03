@@ -21,7 +21,7 @@ export default function AdminPayslipsPage() {
   const t = useTranslations("Pages.adm_ops_payslips");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(PAYSLIPS_DATA, "Payslip");
+  const crud = useCrud(PAYSLIPS_DATA, "Payslip", ["employee", "organisation", "period", "status", "delivered"]);
 
   const { toast } = useAppData();
   const filteredData = useMemo(() => {

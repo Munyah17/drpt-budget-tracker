@@ -21,7 +21,7 @@ export default function AdminPayrollProvidersPage() {
   const t = useTranslations("Pages.adm_int_payroll");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(PAYROLL_DATA, "Integration");
+  const crud = useCrud(PAYROLL_DATA, "Integration", ["name", "type", "clients", "status", "integration"]);
 
   const { toast } = useAppData();
   const filteredData = useMemo(() => {

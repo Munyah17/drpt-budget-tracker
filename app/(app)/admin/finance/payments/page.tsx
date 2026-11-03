@@ -22,7 +22,7 @@ export default function AdminPaymentsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const crud = useCrud(PAYMENTS_DATA, "Payment");
+  const crud = useCrud(PAYMENTS_DATA, "Payment", ["paymentId", "organisation", "amount", "method", "date", "status"]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((payment) =>

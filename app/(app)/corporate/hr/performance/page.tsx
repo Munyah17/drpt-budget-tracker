@@ -32,8 +32,8 @@ export default function PerformancePage() {
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const reviews = useCrud(REVIEWS_DATA, t("entityReview"));
-  const goals = useCrud(GOALS_DATA, t("entityGoal"));
+  const reviews = useCrud(REVIEWS_DATA, t("entityReview"), ["employee", "reviewer", "period", "rating", "status"]);
+  const goals = useCrud(GOALS_DATA, t("entityGoal"), ["employee", "goal", "due", "progress", "status"]);
 
   const filteredReviews = useMemo(() => {
     return reviews.items.filter((r) =>

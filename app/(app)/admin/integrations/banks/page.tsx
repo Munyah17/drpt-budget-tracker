@@ -21,7 +21,7 @@ export default function AdminBanksPage() {
   const t = useTranslations("Pages.adm_int_banks");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(BANKS_DATA, "Bank Connection");
+  const crud = useCrud(BANKS_DATA, "Bank Connection", ["name", "provider", "accounts", "status", "lastSync"]);
 
   const { toast } = useAppData();
   const filteredData = useMemo(() => {

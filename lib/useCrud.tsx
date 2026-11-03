@@ -13,11 +13,31 @@ interface CrudModal {
   index: number;
 }
 
+export interface UseCrudOptions<T> {
+  /** Create-only inputs appended after createFields (e.g. "password").
+   *  Not part of T — stripped from the saved row. */
+  extraFields?: string[];
+  /**
+   * Runs before a created row is saved — e.g. provisioning a real login
+   * account. Throw to abort: the message is toasted, the row is not added
+   * and the modal stays open. Return a partial to merge into the new row
+   * (e.g. a server-generated id).
+   */
+  onCreate?: (values: RowRecord) => Promise<Partial<T> | void>;
+}
+
 /**
  * Generic list-CRUD hook for table pages with static seed data.
  * T must be an object with string fields (the typical admin table shape).
+ * `createFields` lists the keys rendered in the create form — required because
+ * seed arrays are usually empty, so fields cannot be inferred from a record.
  */
-export function useCrud<T extends object>(initial: T[], label: string) {
+export function useCrud<T extends object>(
+  initial: T[],
+  label: string,
+  createFields: readonly Extract<keyof T, string>[],
+  options: UseCrudOptions<T> = {},
+) {
   const t = useTranslations("Pages.components");
   const { toast } = useAppData();
   const [items, setItems] = useState<T[]>(initial);
@@ -26,14 +46,28 @@ export function useCrud<T extends object>(initial: T[], label: string) {
   const openModal = (mode: ModalMode, item?: T, index?: number) => {
     const record: RowRecord = item
       ? ({ ...item } as unknown as RowRecord)
-      : Object.fromEntries(Object.keys(initial[0] ?? {}).map((k) => [k, ""]));
+      : Object.fromEntries(
+          [
+            ...(createFields.length ? createFields : Object.keys(initial[0] ?? {})),
+            ...(options.extraFields ?? []),
+          ].map((k) => [k, ""]),
+        );
     setModal({ mode, record, index: index ?? -1 });
   };
 
-  const handleSave = (values: RowRecord) => {
+  const handleSave = async (values: RowRecord) => {
     if (!modal) return;
     if (modal.mode === "create") {
-      setItems((prev) => [...prev, values as unknown as T]);
+      let merged: Partial<T> | void;
+      try {
+        merged = await options.onCreate?.(values);
+      } catch (err) {
+        toast(err instanceof Error && err.message ? err.message : t("crud_create_failed"), "x");
+        return; // keep the modal open so the admin's input isn't lost
+      }
+      const extras = new Set(options.extraFields ?? []);
+      const row = Object.fromEntries(Object.entries(values).filter(([k]) => !extras.has(k)));
+      setItems((prev) => [...prev, { ...row, ...(merged ?? {}) } as unknown as T]);
       toast(t("crud_created", { label }));
     } else {
       setItems((prev) => prev.map((e, i) => (i === modal.index ? ({ ...e, ...values } as T) : e)));

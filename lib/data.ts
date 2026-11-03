@@ -81,8 +81,17 @@ export const ADMIN_NAV_ITEMS = [
     icon: "users",
     subItems: [
       { id: "individuals", label: "Individual Clients" },
-      { id: "employees", label: "Corporate Employees" },
-      { id: "staff", label: "Internal Staff" }
+      { id: "employees", label: "Corporate Employees" }
+    ]
+  },
+  {
+    id: "staff",
+    label: "Staff Management",
+    icon: "user-circle",
+    subItems: [
+      { id: "team", label: "Team" },
+      { id: "internal", label: "Internal Staff" },
+      { id: "payroll", label: "Internal Payroll" }
     ]
   },
   { 
@@ -90,7 +99,6 @@ export const ADMIN_NAV_ITEMS = [
     label: "Operations", 
     icon: "activity",
     subItems: [
-      { id: "payroll", label: "Payroll Batches" },
       { id: "payslips", label: "Payslip Delivery" },
       { id: "exceptions", label: "Exceptions & Incidents" }
     ]
@@ -110,6 +118,7 @@ export const ADMIN_NAV_ITEMS = [
     label: "Integrations", 
     icon: "link",
     subItems: [
+      { id: "api", label: "API Access" },
       { id: "banks", label: "Bank Connections" },
       { id: "payroll", label: "Payroll Providers" },
       { id: "accounting", label: "Accounting" }

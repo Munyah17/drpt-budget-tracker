@@ -17,7 +17,7 @@ const ACCESS_DATA: AccessRole[] = [];
 export default function AdminAccessPage() {
   const t = useTranslations("Pages.adm_risk_access");
   const [search, setSearch] = useState("");
-  const crud = useCrud(ACCESS_DATA, t("entityName"));
+  const crud = useCrud(ACCESS_DATA, t("entityName"), ["role", "permissions", "users"]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((role) =>

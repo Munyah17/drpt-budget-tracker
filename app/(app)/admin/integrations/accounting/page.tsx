@@ -21,7 +21,7 @@ export default function AdminAccountingPage() {
   const t = useTranslations("Pages.adm_int_accounting");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(ACCOUNTING_DATA, "Integration");
+  const crud = useCrud(ACCOUNTING_DATA, "Integration", ["name", "category", "organisations", "status", "syncFrequency"]);
 
   const { toast } = useAppData();
   const filteredData = useMemo(() => {

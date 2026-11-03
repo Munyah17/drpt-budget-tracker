@@ -123,7 +123,7 @@ export default function SettingsPage() {
           </div>
           <Switch checked={theme === "dark"} onChange={toggleTheme} />
         </div>
-        <button className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => toast(t("saved"), "check-circle")}>
+        <button className="btn btn-primary btn-block" style={{ marginTop: 20 }} onClick={() => toast(t("saved"), "check-circle")}>
           {t("save")}
         </button>
       </div>
@@ -213,7 +213,7 @@ export default function SettingsPage() {
               </button>
             </>
           )}
-          <button className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => toast(t("toastNotifSaved"), "check-circle")}>
+          <button className="btn btn-primary btn-block" style={{ marginTop: 20 }} onClick={() => toast(t("toastNotifSaved"), "check-circle")}>
             {t("save")}
           </button>
         </div>
@@ -231,14 +231,14 @@ export default function SettingsPage() {
               <label>{t("newPw")}</label>
               <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} />
             </div>
-            <button className="btn btn-primary" onClick={changePassword}>{t("updatePassword")}</button>
+            <button className="btn btn-primary btn-block" onClick={changePassword}>{t("updatePassword")}</button>
           </div>
           <div className="settings-row" style={{ marginTop: 16 }}>
             <div>
               <div className="label">{t("signOutEverywhere")}</div>
               <div className="sub">{t("signOutEverywhereSub")}</div>
             </div>
-            <button className="btn btn-ghost" onClick={() => { logout(); location.href = "/"; }}>
+            <button className="btn btn-ghost btn-block" onClick={() => { logout(); location.href = "/"; }}>
               <Icon name="log-out" size={14} style={{ marginRight: 6 }} />{t("signOut")}
             </button>
           </div>
@@ -268,7 +268,7 @@ export default function SettingsPage() {
               <div className="label">{t("exportNow")}</div>
               <div className="sub">{t("exportNowSub")}</div>
             </div>
-            <button className="btn btn-primary" onClick={exportBackup}>
+            <button className="btn btn-primary btn-block" onClick={exportBackup}>
               <Icon name="download" size={14} style={{ marginRight: 6 }} />{t("downloadBackup")}
             </button>
           </div>
@@ -277,7 +277,7 @@ export default function SettingsPage() {
               <div className="label">{t("txCsv")}</div>
               <div className="sub">{t("txCsvSub")}</div>
             </div>
-            <button className="btn btn-ghost" onClick={exportCsv}>
+            <button className="btn btn-ghost btn-block" onClick={exportCsv}>
               <Icon name="file-down" size={14} style={{ marginRight: 6 }} />{t("exportCsvBtn")}
             </button>
           </div>

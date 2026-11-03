@@ -25,7 +25,7 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 20, borderBottom: "1px solid var(--card-border)" }}>
+      <div className="tab-strip">
         <button
           className={`btn btn-ghost ${activeTab === "general" ? "active" : ""}`}
           onClick={() => setActiveTab("general")}
@@ -63,7 +63,7 @@ export default function AdminSettingsPage() {
               <div className="label">{t("platformName")}</div>
               <div className="sub">{t("platformNameSub")}</div>
             </div>
-            <input type="text" defaultValue="WellSpend Budget Tracker" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 200 }} />
+            <input type="text" defaultValue="WellSpend Budget Tracker" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 200, maxWidth: "100%" }} />
           </div>
           <div className="settings-row">
             <div>
@@ -235,7 +235,7 @@ export default function AdminSettingsPage() {
               <div className="label">{t("individualPlanPrice")}</div>
               <div className="sub">{t("individualPlanPriceSub")}</div>
             </div>
-            <input type="text" defaultValue="$1" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 100 }} />
+            <input type="text" defaultValue="$1" style={{ padding: "10px 14px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", width: 100, maxWidth: "100%" }} />
           </div>
           <div className="settings-row">
             <div>
@@ -334,7 +334,7 @@ export default function AdminSettingsPage() {
       )}
 
       <div style={{ marginTop: 20 }}>
-        <button className="btn btn-primary" onClick={handleSaveSettings}>{t("saveSettings")}</button>
+        <button className="btn btn-primary btn-block" onClick={handleSaveSettings}>{t("saveSettings")}</button>
       </div>
     </>
   );

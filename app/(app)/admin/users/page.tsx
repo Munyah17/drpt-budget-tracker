@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useCrud } from "@/lib/useCrud";
+import { createAdminAccount } from "@/lib/adminClient";
 import Icon from "@/components/Icon";
 
 interface User {
@@ -20,10 +21,22 @@ const USERS_DATA: User[] = [];
 
 export default function UserManagementPage() {
   const t = useTranslations("Pages.adm_users");
-  const { toast } = useAppData();
+  const { toast, user } = useAppData();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "suspended">("all");
-  const crud = useCrud(USERS_DATA, t("entityName"));
+  const crud = useCrud(USERS_DATA, t("entityName"), ["name", "email", "status", "plan", "joined", "lastActive"], {
+    extraFields: ["password"],
+    onCreate: async (v) => {
+      const account = await createAdminAccount(user?.email, {
+        email: v.email,
+        password: v.password,
+        name: v.name,
+        role: "user",
+        isPaid: v.plan === "paid",
+      });
+      return { id: account.id };
+    },
+  });
 
   const filteredUsers = crud.items.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 

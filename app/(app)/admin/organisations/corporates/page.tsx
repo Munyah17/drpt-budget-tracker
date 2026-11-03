@@ -6,7 +6,7 @@ import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
 import { useAppData } from "@/lib/AppDataContext";
-import { adminHeaders } from "@/lib/adminClient";
+import { adminHeaders, impersonateUser, roleHome } from "@/lib/adminClient";
 import { ukDate } from "@/lib/format";
 
 interface Corporate {
@@ -32,14 +32,16 @@ interface Employee {
 }
 
 const PLANS = ["Starter", "Growth", "Enterprise"] as const;
-const EMPTY_FORM = { name: "", industry: "", contactName: "", contactEmail: "", plan: "Growth", seats: "25" };
+const EMPTY_FORM = { name: "", industry: "", contactName: "", contactEmail: "", password: "", plan: "Growth", seats: "25" };
 
 const badgeClass = (s: string) =>
   s === "Active" ? "badge-green" : s === "Suspended" ? "badge-red" : "badge-amber";
 
 export default function AdminCorporatesPage() {
-  const t = useTranslations("Pages.adm_orgs_corporates");
+  const t = useTranslations("Pages.adm_corporates");
+  const tc = useTranslations("Pages.components");
   const { toast, user } = useAppData();
+  const [entering, setEntering] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [orgs, setOrgs] = useState<Corporate[] | null>(null);
@@ -102,6 +104,7 @@ export default function AdminCorporatesPage() {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
+    const editing = formOpen !== null && formOpen !== "create" ? formOpen : null;
     const payload = {
       name: f.name.trim(),
       industry: f.industry.trim(),
@@ -109,8 +112,9 @@ export default function AdminCorporatesPage() {
       contact_email: f.contactEmail.trim(),
       plan: f.plan,
       seats: Number(f.seats) || 25,
+      // Only sent on create — provisions the client's admin login
+      ...(editing ? {} : { password: f.password }),
     };
-    const editing = formOpen !== null && formOpen !== "create" ? formOpen : null;
     const res = await fetch("/api/admin/corporates", {
       method: editing ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
@@ -122,7 +126,12 @@ export default function AdminCorporatesPage() {
       if (editing) {
         toast(t("toastSaved"), "check-circle");
       } else {
-        toast(t("toastCreated", { name: row.name }), "check-circle");
+        toast(
+          row.accountError
+            ? `${t("toastCreated", { name: row.name })} — ${row.accountError}`
+            : t("toastCreated", { name: row.name }),
+          row.accountError ? "alert-triangle" : "check-circle"
+        );
         setCreated(row);
       }
       setFormOpen(null);
@@ -150,6 +159,19 @@ export default function AdminCorporatesPage() {
     await fetch(`/api/admin/corporates?id=${o.id}`, { method: "DELETE", headers: await adminHeaders(user?.email) });
     toast(t("toastRemoved", { name: o.name }), "trash-2");
     refresh();
+  }
+
+  /** Enter the client admin's session as an engineer preview. */
+  async function viewAs(o: Corporate) {
+    if (entering || !o.contact_email) return;
+    setEntering(o.id);
+    try {
+      const info = await impersonateUser(o.contact_email, user?.email);
+      window.location.href = roleHome(info.role);
+    } catch (err) {
+      toast(tc("toastViewAsFail", { msg: err instanceof Error ? err.message : "" }), "x");
+      setEntering("");
+    }
   }
 
   function copyInvite(o: Corporate) {
@@ -226,10 +248,21 @@ export default function AdminCorporatesPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{o.seats}</td>
                 <td style={{ padding: "12px 8px" }}><span className={`badge ${badgeClass(o.status)}`}>{o.status}</span></td>
                 <td style={{ padding: "12px 8px", whiteSpace: "nowrap" }}>
+                  {o.contact_email && (
+                    <button
+                      className="btn btn-ghost"
+                      style={{ padding: "4px 8px", fontSize: 12, color: "var(--rose-600)" }}
+                      onClick={() => viewAs(o)}
+                      disabled={entering === o.id}
+                      title={tc("viewAs")}
+                    >
+                      <Icon name="user-circle" size={14} />
+                    </button>
+                  )}
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => openView(o)} title={t("view")}>
                     <Icon name="eye" size={14} />
                   </button>
-                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => { setF({ name: o.name, industry: o.industry, contactName: o.contact_name, contactEmail: o.contact_email, plan: o.plan, seats: String(o.seats) }); setFormOpen(o); }} title={t("edit")}>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => { setF({ name: o.name, industry: o.industry, contactName: o.contact_name, contactEmail: o.contact_email, password: "", plan: o.plan, seats: String(o.seats) }); setFormOpen(o); }} title={t("edit")}>
                     <Icon name="pencil" size={14} />
                   </button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => copyInvite(o)} title={t("invite")}>
@@ -267,8 +300,9 @@ export default function AdminCorporatesPage() {
             {field("industry", t("fIndustry"), { ph: t("fIndustryPh") })}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {field("contactName", t("fContact"), { required: true, ph: t("fContactPh") })}
-              {field("contactEmail", t("fEmail"), { type: "email", ph: "hr@company.com" })}
+              {field("contactEmail", t("fEmail"), { type: "email", required: formOpen === "create", ph: "hr@company.com" })}
             </div>
+            {formOpen === "create" && field("password", t("fPassword"), { type: "password", required: true, ph: t("fPasswordPh") })}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <div className="field">
                 <label>{t("fPlan")}</label>

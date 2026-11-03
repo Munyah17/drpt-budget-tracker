@@ -30,7 +30,7 @@ export default function OffboardingPage() {
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(LEAVERS_DATA, t("entityLabel"));
+  const crud = useCrud(LEAVERS_DATA, t("entityLabel"), ["employee", "department", "lastDay", "reason", "status"]);
   const [steps, setSteps] = useState<Record<string, boolean>>({ contract: true, assets: true });
 
   const filteredData = useMemo(() => {

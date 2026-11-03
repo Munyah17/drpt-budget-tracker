@@ -22,7 +22,7 @@ export default function AdminAuditPage() {
   const t = useTranslations("Pages.adm_risk_audit");
   const { toast } = useAppData();
   const [search, setSearch] = useState("");
-  const crud = useCrud(AUDIT_DATA, t("entityName"));
+  const crud = useCrud(AUDIT_DATA, t("entityName"), ["timestamp", "user", "action", "resource", "ipAddress"]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((log) =>

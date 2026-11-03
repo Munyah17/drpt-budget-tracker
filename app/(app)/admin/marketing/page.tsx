@@ -16,7 +16,7 @@ const CAMPAIGNS_DATA: Campaign[] = [];
 
 export default function MarketingPage() {
   const t = useTranslations("Pages.adm_marketing");
-  const crud = useCrud(CAMPAIGNS_DATA, t("entityName"));
+  const crud = useCrud(CAMPAIGNS_DATA, t("entityName"), ["name", "platform", "reach", "conversions", "status"]);
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>

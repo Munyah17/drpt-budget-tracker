@@ -6,6 +6,8 @@ import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
 import { useCrud } from "@/lib/useCrud";
+import { useAppData } from "@/lib/AppDataContext";
+import { createAdminAccount } from "@/lib/adminClient";
 interface Employee {
   name: string;
   email: string;
@@ -20,7 +22,19 @@ export default function AdminEmployeesPage() {
   const t = useTranslations("Pages.adm_people_employees");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(EMPLOYEES_DATA, t("entityName"));
+  const { user } = useAppData();
+  const crud = useCrud(EMPLOYEES_DATA, t("entityName"), ["name", "email", "organisation", "department", "status"], {
+    extraFields: ["password"],
+    onCreate: async (v) => {
+      await createAdminAccount(user?.email, {
+        email: v.email,
+        password: v.password,
+        name: v.name,
+        role: "employee",
+        organisation: v.organisation,
+      });
+    },
+  });
 
   const filteredData = useMemo(() => {
     return crud.items.filter((employee) =>

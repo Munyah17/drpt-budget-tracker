@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
 import { useCrud } from "@/lib/useCrud";
+import { useAppData } from "@/lib/AppDataContext";
+import { createAdminAccount, adminHeaders, impersonateUser, roleHome } from "@/lib/adminClient";
 interface Person {
   name: string;
   email: string;
@@ -14,13 +16,64 @@ interface Person {
   status: string;
 }
 
-const INDIVIDUALS_DATA: Person[] = [];
+interface ProfileRow {
+  name: string;
+  email: string;
+  is_paid: boolean;
+  paid_until: string | null;
+}
 
 export default function AdminIndividualsPage() {
   const t = useTranslations("Pages.adm_people_individuals");
+  const tc = useTranslations("Pages.components");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(INDIVIDUALS_DATA, t("entityName"));
+  const { user, toast } = useAppData();
+  const [entering, setEntering] = useState("");
+  const crud = useCrud<Person>([], t("entityName"), ["name", "email", "plan", "expiry", "status"], {
+    extraFields: ["password"],
+    onCreate: async (v) => {
+      await createAdminAccount(user?.email, {
+        email: v.email,
+        password: v.password,
+        name: v.name,
+        role: "user",
+        isPaid: v.plan.toLowerCase() === "paid",
+      });
+    },
+  });
+
+  const { setItems } = crud;
+  const refresh = useCallback(async () => {
+    const res = await fetch("/api/admin/users?role=user", { headers: await adminHeaders(user?.email) });
+    const data = await res.json().catch(() => null);
+    const rows: ProfileRow[] = Array.isArray(data) ? data : data?.users ?? [];
+    setItems(
+      rows.map((p) => ({
+        name: p.name || p.email,
+        email: p.email,
+        plan: p.is_paid ? "Paid" : "Free",
+        expiry: p.paid_until ? new Date(p.paid_until).toLocaleDateString("en-GB") : "—",
+        status: p.is_paid ? "Active" : "Expired",
+      }))
+    );
+  }, [user?.email, setItems]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  async function viewAs(person: Person) {
+    if (entering) return;
+    setEntering(person.email);
+    try {
+      const info = await impersonateUser(person.email, user?.email);
+      window.location.href = roleHome(info.role);
+    } catch (err) {
+      toast(tc("toastViewAsFail", { msg: err instanceof Error ? err.message : "" }), "x");
+      setEntering("");
+    }
+  }
 
   const filteredData = useMemo(() => {
     return crud.items.filter((person) =>
@@ -75,7 +128,16 @@ export default function AdminIndividualsPage() {
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{person.plan}</td>
                 <td style={{ padding: "12px 8px", fontSize: 13 }}>{person.expiry}</td>
                 <td style={{ padding: "12px 8px" }}><span className={`badge ${person.status === "Active" ? "badge-green" : "badge-red"}`}>{person.status}</span></td>
-                <td style={{ padding: "12px 8px" }}>
+                <td style={{ padding: "12px 8px", whiteSpace: "nowrap" }}>
+                  <button
+                    className="btn btn-ghost"
+                    style={{ padding: "4px 8px", fontSize: 12, color: "var(--rose-600)" }}
+                    onClick={() => viewAs(person)}
+                    disabled={entering === person.email}
+                    title={tc("viewAs")}
+                  >
+                    <Icon name="user-circle" size={14} style={{ marginRight: 4 }} />{tc("viewAs")}
+                  </button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", person, crud.items.indexOf(person))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", person, crud.items.indexOf(person))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>

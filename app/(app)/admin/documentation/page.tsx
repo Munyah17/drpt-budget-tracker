@@ -14,7 +14,7 @@ const ARTICLES_DATA: Article[] = [];
 
 export default function DocumentationPage() {
   const t = useTranslations("Pages.adm_documentation");
-  const crud = useCrud(ARTICLES_DATA, t("articleLabel"));
+  const crud = useCrud(ARTICLES_DATA, t("articleLabel"), ["title", "desc", "updated"]);
   const faqs = [
     { q: t("faq1Q"), a: t("faq1A") },
     { q: t("faq2Q"), a: t("faq2A") },

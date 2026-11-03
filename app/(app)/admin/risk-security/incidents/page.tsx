@@ -21,7 +21,7 @@ export default function AdminIncidentsPage() {
   const [search, setSearch] = useState("");
   const [severityFilter, setSeverityFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(INCIDENTS_DATA, t("entityName"));
+  const crud = useCrud(INCIDENTS_DATA, t("entityName"), ["incidentId", "type", "severity", "status", "assigned"]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((incident) =>

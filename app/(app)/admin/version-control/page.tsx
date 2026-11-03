@@ -16,7 +16,7 @@ const VERSIONS_DATA: Version[] = [];
 
 export default function VersionControlPage() {
   const t = useTranslations("Pages.adm_version_control");
-  const crud = useCrud(VERSIONS_DATA, t("entityName"));
+  const crud = useCrud(VERSIONS_DATA, t("entityName"), ["version", "released", "changes", "status"]);
   const { toast } = useAppData();
 
   const deploy = () => {

@@ -15,7 +15,7 @@ interface RecordModalProps {
   /** Keys rendered read-only even in edit/create mode */
   readonlyKeys?: string[];
   onClose: () => void;
-  onSave?: (values: RowRecord) => void;
+  onSave?: (values: RowRecord) => void | Promise<void>;
   onDelete?: () => void;
 }
 
@@ -24,6 +24,14 @@ const humanize = (key: string) =>
     .replace(/[_-]/g, " ")
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/\b\w/g, (c) => c.toUpperCase());
+
+/** Infer the input type from the field name — passwords stay masked. */
+const inputType = (key: string) => {
+  const k = key.toLowerCase();
+  if (k.includes("password")) return "password";
+  if (k.includes("email")) return "email";
+  return "text";
+};
 
 export default function RecordModal(props: RecordModalProps) {
   // Remount the stateful body whenever a different record/mode opens so
@@ -64,6 +72,7 @@ function RecordModalInner({
                 <div style={{ padding: "8px 0", fontWeight: 500 }}>{record[key] || "—"}</div>
               ) : (
                 <input
+                  type={inputType(key)}
                   value={draft[key] ?? ""}
                   onChange={(e) => setDraft((d) => ({ ...d, [key]: e.target.value }))}
                 />

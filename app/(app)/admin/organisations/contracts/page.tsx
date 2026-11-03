@@ -21,7 +21,7 @@ export default function AdminContractsPage() {
   const t = useTranslations("Pages.adm_orgs_contracts");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(CONTRACTS_DATA, t("entityName"));
+  const crud = useCrud(CONTRACTS_DATA, t("entityName"), ["organisation", "plan", "monthlyFee", "startDate", "renewal", "status"]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((contract) =>

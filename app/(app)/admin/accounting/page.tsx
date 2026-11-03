@@ -15,7 +15,7 @@ const ENTRIES_DATA: Entry[] = [];
 
 export default function AccountingPage() {
   const t = useTranslations("Pages.adm_accounting");
-  const crud = useCrud(ENTRIES_DATA, t("entryLabel"));
+  const crud = useCrud(ENTRIES_DATA, t("entryLabel"), ["date", "description", "type", "amount"]);
   return (
     <>
       <div className="card-head" style={{ marginBottom: 20 }}>

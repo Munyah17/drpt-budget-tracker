@@ -32,8 +32,8 @@ const SCOPES = ["employees:read", "employees:write", "payroll:read", "payroll:wr
 export default function DeveloperPage() {
   const t = useTranslations("Pages.corp_developer");
   const { toast } = useAppData();
-  const keys = useCrud(KEYS_DATA, t("entityApiKey"));
-  const webhooks = useCrud(WEBHOOKS_DATA, t("entityWebhook"));
+  const keys = useCrud(KEYS_DATA, t("entityApiKey"), ["id", "label", "prefix", "scopes", "created", "lastUsed", "status"]);
+  const webhooks = useCrud(WEBHOOKS_DATA, t("entityWebhook"), ["url", "events", "status"]);
   const [createOpen, setCreateOpen] = useState(false);
   const [newKey, setNewKey] = useState<string | null>(null);
   const [label, setLabel] = useState("");

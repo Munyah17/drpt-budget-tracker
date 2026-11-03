@@ -21,7 +21,7 @@ export default function AdminSubscriptionsPage() {
   const t = useTranslations("Pages.adm_finance_subscriptions");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const crud = useCrud(SUBSCRIPTIONS_DATA, "Subscription");
+  const crud = useCrud(SUBSCRIPTIONS_DATA, "Subscription", ["user", "plan", "startDate", "expiry", "status"]);
 
   const { toast } = useAppData();
   const filteredData = useMemo(() => {

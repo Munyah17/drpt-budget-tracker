@@ -19,7 +19,7 @@ const ONBOARDING_DATA: Onboarding[] = [];
 export default function AdminOnboardingPage() {
   const t = useTranslations("Pages.adm_orgs_onboarding");
   const [search, setSearch] = useState("");
-  const crud = useCrud(ONBOARDING_DATA, t("entityName"));
+  const crud = useCrud(ONBOARDING_DATA, t("entityName"), ["organisation", "contact", "stage", "progress", "assigned"]);
 
   const [stageFilter, setStageFilter] = useState("");
 

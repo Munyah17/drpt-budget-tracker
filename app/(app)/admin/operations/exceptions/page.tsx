@@ -20,7 +20,7 @@ const EXCEPTIONS_DATA: Exception[] = [];
 export default function AdminExceptionsPage() {
   const t = useTranslations("Pages.adm_ops_exceptions");
   const [search, setSearch] = useState("");
-  const crud = useCrud(EXCEPTIONS_DATA, "Exception");
+  const crud = useCrud(EXCEPTIONS_DATA, "Exception", ["type", "description", "priority", "assigned", "status"]);
   const { toast } = useAppData();
   const [priorityFilter, setPriorityFilter] = useState("");
 
