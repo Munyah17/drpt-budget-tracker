@@ -13,12 +13,26 @@ async function denied(req: NextRequest) {
   return null;
 }
 
-/** GET /api/admin/corporates — all corporate client organisations, newest first */
+/** GET /api/admin/corporates — all corporate client organisations, newest first.
+ *  GET /api/admin/corporates?id=<uuid> — one corporate + its employees. */
 export async function GET(req: NextRequest) {
   const deny = await denied(req);
   if (deny) return deny;
-  const rows = await sbGet("corporates", "order=created_at.desc");
-  return NextResponse.json(rows);
+
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) {
+    const rows = await sbGet("corporates", "order=created_at.desc");
+    return NextResponse.json(rows);
+  }
+
+  const corps = await sbGet("corporates", `id=eq.${encodeURIComponent(id)}&limit=1`);
+  const corporate = corps[0];
+  if (!corporate) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const employees = await sbGet(
+    "profiles",
+    `corporate_id=eq.${encodeURIComponent(id)}&select=id,name,email,phone,profession,role,is_paid,created_at&order=created_at.asc`
+  );
+  return NextResponse.json({ corporate, employees });
 }
 
 export async function POST(req: NextRequest) {
