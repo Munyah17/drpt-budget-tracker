@@ -3357,7 +3357,9 @@
       "errConnect_finalize": "Connected, but finishing failed — try syncing",
       "paywallLine": "Connecting {bank} costs {price} — a one-off unlock",
       "toastUnlocked": "Unlocked — finish connecting your bank",
-      "errCheckout": "Couldn't start the checkout — try again"
+      "errCheckout": "Couldn't start the checkout — try again",
+      "lockedNote": "Your bank is connected — unlock this feed to see and import your transactions. One payment, this bank only.",
+      "unlockBtn": "Unlock this bank"
     }
   },
   "Native": {

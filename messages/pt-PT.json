@@ -790,7 +790,9 @@
       "errConnect_finalize": "Ligado, mas a finalização falhou — tenta sincronizar",
       "paywallLine": "Ligar {bank} custa {price} — desbloqueio único",
       "toastUnlocked": "Desbloqueado — termina de ligar o teu banco",
-      "errCheckout": "Não foi possível iniciar o pagamento — tenta de novo"
+      "errCheckout": "Não foi possível iniciar o pagamento — tenta de novo",
+      "lockedNote": "Seu banco está conectado – desbloqueie este feed para ver e importar suas transações. Um pagamento, apenas este banco.",
+      "unlockBtn": "Desbloquear este banco"
     },
     "expenses": {
       "scanBtn": "Digitalizar"

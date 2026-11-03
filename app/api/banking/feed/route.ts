@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/server/jwt";
-import { requireBankingAccess, accessError } from "@/lib/server/gate";
+import { requireFeatureAccess, accessError } from "@/lib/server/gate";
 import { sbGet } from "@/lib/server/supabaseAdmin";
 
 /**
  * GET /api/banking/feed?uid=<uuid>
  * Connection status + unimported bank transactions for the feed UI.
- * Matching against expenses happens client-side (expenses live in the
- * user's synced blob, not in tables).
+ * Free-tier users only see transactions when the connection's institution
+ * has a banking_unlock row — otherwise the response is {locked: true} so
+ * the page can show the paywall card. Matching against expenses happens
+ * client-side (expenses live in the user's synced blob, not in tables).
  */
 export async function GET(req: NextRequest) {
   const uid = req.nextUrl.searchParams.get("uid") ?? "";
@@ -15,17 +17,33 @@ export async function GET(req: NextRequest) {
   if ("error" in session) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
-  const access = await requireBankingAccess(uid);
-  if (!("ok" in access)) return accessError(access);
 
   const conns = await sbGet<{
-    id: number; status: string; institution_name: string | null;
-    consent_expires_at: string | null;
-  }>("bank_connections", `user_key=eq.${encodeURIComponent(uid)}&select=id,status,institution_name,consent_expires_at`);
+    id: number; status: string; institution_id: string | null;
+    institution_name: string | null; consent_expires_at: string | null;
+  }>("bank_connections", `user_key=eq.${encodeURIComponent(uid)}&select=id,status,institution_id,institution_name,consent_expires_at`);
   const conn = conns[0] ?? null;
 
   if (!conn || conn.status !== "active") {
     return NextResponse.json({ connection: conn, accounts: [], transactions: [] });
+  }
+
+  // Access: paid plans & corporate roles see everything; free users need a
+  // per-institution unlock matching the CONNECTED bank.
+  const access = await requireFeatureAccess(uid);
+  let unlocked = "ok" in access;
+  if (!("ok" in access) && access.status === 402) {
+    const rows = await sbGet<{ id: number }>(
+      "banking_unlocks",
+      `user_key=eq.${encodeURIComponent(uid)}&institution_id=eq.${encodeURIComponent(conn.institution_id ?? "")}&select=id&limit=1`
+    );
+    unlocked = rows.length > 0;
+  } else if (!unlocked) {
+    return accessError(access);
+  }
+
+  if (!unlocked) {
+    return NextResponse.json({ connection: conn, accounts: [], transactions: [], locked: true });
   }
 
   const accounts = await sbGet<{

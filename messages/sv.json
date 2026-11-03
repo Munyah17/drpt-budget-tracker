@@ -790,7 +790,9 @@
       "errConnect_finalize": "Kopplad, men slutförandet misslyckades — prova att synka",
       "paywallLine": "Att koppla {bank} kostar {price} — engångsupplåsning",
       "toastUnlocked": "Upplåst — slutför bankkopplingen",
-      "errCheckout": "Kunde inte starta betalningen — försök igen"
+      "errCheckout": "Kunde inte starta betalningen — försök igen",
+      "lockedNote": "Din bank är ansluten – lås upp det här flödet för att se och importera dina transaktioner. En betalning, endast denna bank.",
+      "unlockBtn": "Lås upp den här banken"
     },
     "expenses": {
       "scanBtn": "Skanna"

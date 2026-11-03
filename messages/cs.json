@@ -790,7 +790,9 @@
       "errConnect_finalize": "Propojeno, ale dokončení selhalo — zkuste synchronizaci",
       "paywallLine": "Propojení {bank} stojí {price} — jednorázové odemčení",
       "toastUnlocked": "Odemčeno — dokončete propojení banky",
-      "errCheckout": "Nepodařilo se spustit platbu — zkuste znovu"
+      "errCheckout": "Nepodařilo se spustit platbu — zkuste znovu",
+      "lockedNote": "Vaše banka je připojena – odemkněte tento zdroj, abyste viděli a importovali své transakce. Jedna platba, pouze tato banka.",
+      "unlockBtn": "Odemkněte tuto banku"
     },
     "expenses": {
       "scanBtn": "Skenovat"

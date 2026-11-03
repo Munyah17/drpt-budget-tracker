@@ -17,8 +17,9 @@ const REQUIRED = [
   ["STRIPE_SECRET_KEY", "Stripe secret — activation + banking unlock checkout"],
   ["STRIPE_WEBHOOK_SECRET", "Stripe webhook secret — payments won't apply without it"],
   ["GEMINI_API_KEY", "Google AI Studio key — receipt/document extraction"],
-  ["GC_SECRET_ID", "GoCardless secret id — open banking"],
-  ["GC_SECRET_KEY", "GoCardless secret key — open banking"],
+  ["PLAID_CLIENT_ID", "Plaid client id — open banking"],
+  ["PLAID_SECRET", "Plaid secret — open banking (use the key for PLAID_ENV)"],
+  ["PLAID_ENV", "Plaid environment: sandbox | development | production"],
   ["GROQ_API_KEY", "Groq key — spreadsheet column mapping + text parsing"],
   ["CRON_SECRET", "Cron bearer — protects /api/reminders/run + /api/banking/run"],
 ];

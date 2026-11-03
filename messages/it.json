@@ -790,7 +790,9 @@
       "errConnect_finalize": "Collegata, ma il completamento è fallito — prova a sincronizzare",
       "paywallLine": "Collegare {bank} costa {price} — sblocco una tantum",
       "toastUnlocked": "Sbloccato — completa il collegamento della banca",
-      "errCheckout": "Impossibile avviare il pagamento — riprova"
+      "errCheckout": "Impossibile avviare il pagamento — riprova",
+      "lockedNote": "La tua banca è connessa: sblocca questo feed per vedere e importare le tue transazioni. Un pagamento, solo questa banca.",
+      "unlockBtn": "Sblocca questa banca"
     },
     "expenses": {
       "scanBtn": "Scansiona"

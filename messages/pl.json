@@ -790,7 +790,9 @@
       "errConnect_finalize": "Połączono, ale finalizacja nie powiodła się — spróbuj synchronizacji",
       "paywallLine": "Połączenie {bank} kosztuje {price} — jednorazowe odblokowanie",
       "toastUnlocked": "Odblokowano — dokończ łączenie banku",
-      "errCheckout": "Nie udało się uruchomić płatności — spróbuj ponownie"
+      "errCheckout": "Nie udało się uruchomić płatności — spróbuj ponownie",
+      "lockedNote": "Twój bank jest połączony — odblokuj ten kanał, aby zobaczyć i zaimportować swoje transakcje. Jedna płatność, tylko ten bank.",
+      "unlockBtn": "Odblokuj ten bank"
     },
     "expenses": {
       "scanBtn": "Skanuj"

@@ -4,8 +4,9 @@
 --
 -- Required env vars (set in .env.local AND Vercel):
 --   GEMINI_API_KEY        — Google AI Studio key for receipt/statement vision
---   GC_SECRET_ID          — GoCardless Bank Account Data (free for UK/EU)
---   GC_SECRET_KEY         — same
+--   PLAID_CLIENT_ID       — Plaid API credentials (see PLAID_ENV)
+--   PLAID_SECRET          — same
+--   PLAID_ENV             — sandbox | development | production
 --   SUPABASE_JWT_SECRET   — already used by requireSession; needed locally too
 --
 -- Also create a PRIVATE storage bucket named "receipts" in the dashboard.
@@ -42,7 +43,7 @@ create index if not exists extracted_items_doc_idx
 create table if not exists public.bank_connections (
   id              bigint generated always as identity primary key,
   user_key        text        not null unique,   -- one live connection per user (MVP)
-  provider        text        not null default 'gocardless',
+  provider        text        not null default 'plaid',
   requisition_id  text,                          -- provider requisition id
   institution_id  text,
   institution_name text,

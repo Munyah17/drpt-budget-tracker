@@ -40,9 +40,9 @@ export function priceCents(method: PaymentChannel): number {
 
 /**
  * Provider-side cost per bank connection by ISO country (USD one-off
- * equivalent). GoCardless Bank Account Data is free for UK/EU, so this map
- * stays empty until a paid provider/region is added (e.g. Plaid for US/CA) —
- * then the fee is passed through on top of our $1 margin.
+ * equivalent). Plaid's Development tier is free at current volumes, so this
+ * map stays empty until a provider/region charges per connection — then the
+ * fee is passed through on top of our $1 margin.
  */
 export const OPEN_BANKING_FEE_USD: Record<string, number> = {};
 

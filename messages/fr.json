@@ -790,7 +790,9 @@
       "errConnect_finalize": "Connecté, mais la finalisation a échoué — essayez de synchroniser",
       "paywallLine": "Connecter {bank} coûte {price} — déblocage unique",
       "toastUnlocked": "Débloqué — terminez la connexion de votre banque",
-      "errCheckout": "Impossible de lancer le paiement — réessayez"
+      "errCheckout": "Impossible de lancer le paiement — réessayez",
+      "lockedNote": "Votre banque est connectée : déverrouillez ce flux pour voir et importer vos transactions. Un seul paiement, cette banque uniquement.",
+      "unlockBtn": "Débloquez cette banque"
     },
     "expenses": {
       "scanBtn": "Scanner"

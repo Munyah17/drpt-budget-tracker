@@ -790,7 +790,9 @@
       "errConnect_finalize": "Tilkoblet, men fullføring feilet — prøv å synke",
       "paywallLine": "Å koble {bank} koster {price} — engangsopplåsing",
       "toastUnlocked": "Låst opp — fullfør tilkoblingen av banken",
-      "errCheckout": "Kunne ikke starte betalingen — prøv igjen"
+      "errCheckout": "Kunne ikke starte betalingen — prøv igjen",
+      "lockedNote": "Banken din er tilkoblet – lås opp denne feeden for å se og importere transaksjonene dine. Én betaling, kun denne banken.",
+      "unlockBtn": "Lås opp denne banken"
     },
     "expenses": {
       "scanBtn": "Skann"

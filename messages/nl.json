@@ -790,7 +790,9 @@
       "errConnect_finalize": "Verbonden, maar afronden mislukt — probeer te syncen",
       "paywallLine": "{bank} verbinden kost {price} — eenmalige ontgrendeling",
       "toastUnlocked": "Ontgrendeld — rond het verbinden van je bank af",
-      "errCheckout": "Kon de checkout niet starten — probeer opnieuw"
+      "errCheckout": "Kon de checkout niet starten — probeer opnieuw",
+      "lockedNote": "Uw bank is verbonden. Ontgrendel deze feed om uw transacties te bekijken en te importeren. Eén betaling, alleen deze bank.",
+      "unlockBtn": "Ontgrendel deze bank"
     },
     "expenses": {
       "scanBtn": "Scannen"

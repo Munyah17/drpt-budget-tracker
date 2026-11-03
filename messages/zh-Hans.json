@@ -790,7 +790,9 @@
       "errConnect_finalize": "已连接，但完成失败 - 尝试同步",
       "paywallLine": "连接 {bank} 需要花费 {price} — 一次性解锁",
       "toastUnlocked": "解锁 — 完成连接您的银行",
-      "errCheckout": "无法开始结帐 - 请重试"
+      "errCheckout": "无法开始结帐 - 请重试",
+      "lockedNote": "您的银行已连接 - 解锁此源以查看并导入您的交易。一次付款，仅限这家银行。",
+      "unlockBtn": "解锁该银行"
     },
     "expenses": {
       "scanBtn": "扫描"

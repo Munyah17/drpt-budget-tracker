@@ -790,7 +790,9 @@
       "errConnect_finalize": "Luxhumiwe kodwa ukuqedwa kwehlulekile — zama ukuvumelanisa",
       "paywallLine": "Ukuxhuma i-{bank} kubiza {price} — uvulwa kanye kuphela",
       "toastUnlocked": "Kuvulwe — qedela ukuxhuma ibhange",
-      "errCheckout": "Asikwazanga ukuqala inkokhelo — zama futhi"
+      "errCheckout": "Asikwazanga ukuqala inkokhelo — zama futhi",
+      "lockedNote": "Ibhange lakho lixhunyiwe — vula lesi siphakeli ukuze ubone futhi ungenise ukuthenga kwakho. Inkokhelo eyodwa, leli bhange kuphela.",
+      "unlockBtn": "Vula leli bhange"
     },
     "expenses": {
       "scanBtn": "Skena"
