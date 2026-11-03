@@ -212,7 +212,7 @@ export default function LandingPage() {
 
       {/* Corporate partnership */}
       <section className="landing-section" id="business">
-        <div className="hero-badge" style={{ margin: "0 auto 14px" }}>
+        <div className="hero-badge" style={{ display: "flex", width: "fit-content", margin: "0 auto 14px" }}>
           <Icon name="briefcase" size={13} /> {t("business.badge")}
         </div>
         <h2 style={{ fontSize: "clamp(30px, 4.5vw, 46px)", fontWeight: 800, letterSpacing: "-1.2px", lineHeight: 1.05, textAlign: "center" }}>
