@@ -1,32 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
+import { isAdminRequest } from "@/lib/server/admin";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
-
-// Same hardcoded admin identity the client login uses — that account has no
-// Supabase session, so it proves itself with this header instead of a JWT.
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
-
-const b64url = (s: string) =>
-  Buffer.from(s.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
-
-function verifySupabaseJwt(token: string, secret: string): Record<string, unknown> | null {
-  const parts = token.split(".");
-  if (parts.length !== 3) return null;
-  const [h, p, sig] = parts;
-  const expect = crypto.createHmac("sha256", secret).update(`${h}.${p}`).digest();
-  const got = Buffer.from(sig.replace(/-/g, "+").replace(/_/g, "/"), "base64");
-  if (expect.length !== got.length || !crypto.timingSafeEqual(expect, got)) return null;
-  try {
-    const payload = JSON.parse(b64url(p)) as Record<string, unknown>;
-    const exp = typeof payload.exp === "number" ? payload.exp : 0;
-    if (exp && exp * 1000 < Date.now()) return null;
-    return payload;
-  } catch {
-    return null;
-  }
-}
 
 interface ActivityRow {
   event: string;
@@ -35,29 +11,6 @@ interface ActivityRow {
   user_id: string | null;
   user_email: string | null;
   created_at: string;
-}
-
-async function isAdmin(req: NextRequest, serviceKey: string): Promise<boolean> {
-  // Path 1: hardcoded local admin account
-  const headerEmail = (req.headers.get("x-admin-email") ?? "").toLowerCase();
-  if (headerEmail && headerEmail === ADMIN_EMAIL) return true;
-
-  // Path 2: real Supabase user whose profile role is 'admin'
-  const jwtSecret = process.env.SUPABASE_JWT_SECRET;
-  const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
-  if (!token || !jwtSecret) return false;
-  const claims = verifySupabaseJwt(token, jwtSecret);
-  if (!claims || claims.aud !== "authenticated" || typeof claims.sub !== "string") return false;
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(claims.sub)}&select=role`,
-      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` }, cache: "no-store" }
-    );
-    const rows = await res.json();
-    return Array.isArray(rows) && rows[0]?.role === "admin";
-  } catch {
-    return false;
-  }
 }
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -72,7 +25,7 @@ export async function GET(req: NextRequest) {
   if (!serviceKey) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
-  if (!(await isAdmin(req, serviceKey))) {
+  if (!(await isAdminRequest(req, serviceKey))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

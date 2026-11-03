@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
 import { useAppData } from "@/lib/AppDataContext";
+import { adminHeaders } from "@/lib/adminClient";
 
 interface Corporate {
   id: string;
@@ -23,7 +24,7 @@ const PLANS = ["Starter", "Growth", "Enterprise"] as const;
 
 export default function AdminCorporatesPage() {
   const t = useTranslations("Pages.adm_orgs_corporates");
-  const { toast } = useAppData();
+  const { toast, user } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [orgs, setOrgs] = useState<Corporate[] | null>(null);
@@ -32,11 +33,14 @@ export default function AdminCorporatesPage() {
   const [created, setCreated] = useState<Corporate | null>(null);
   const [f, setF] = useState({ name: "", industry: "", contactName: "", contactEmail: "", plan: "Growth", seats: "25" });
 
-  const refresh = () => {
-    fetch("/api/admin/corporates")
-      .then((r) => r.json())
-      .then((rows) => setOrgs(Array.isArray(rows) ? rows : []))
-      .catch(() => setOrgs([]));
+  const refresh = async () => {
+    try {
+      const res = await fetch("/api/admin/corporates", { headers: await adminHeaders(user?.email) });
+      const rows = await res.json();
+      setOrgs(Array.isArray(rows) ? rows : []);
+    } catch {
+      setOrgs([]);
+    }
   };
   if (orgs === null) {
     Promise.resolve().then(refresh);
@@ -69,7 +73,7 @@ export default function AdminCorporatesPage() {
     setSaving(true);
     const res = await fetch("/api/admin/corporates", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
       body: JSON.stringify({
         name: f.name.trim(),
         industry: f.industry.trim(),
@@ -95,7 +99,7 @@ export default function AdminCorporatesPage() {
   async function activate(o: Corporate) {
     await fetch("/api/admin/corporates", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
       body: JSON.stringify({ id: o.id, status: "Active" }),
     });
     toast(t("toastActive", { name: o.name }), "check-circle");
@@ -103,7 +107,7 @@ export default function AdminCorporatesPage() {
   }
 
   async function remove(o: Corporate) {
-    await fetch(`/api/admin/corporates?id=${o.id}`, { method: "DELETE" });
+    await fetch(`/api/admin/corporates?id=${o.id}`, { method: "DELETE", headers: await adminHeaders(user?.email) });
     toast(t("toastRemoved", { name: o.name }), "trash-2");
     refresh();
   }
