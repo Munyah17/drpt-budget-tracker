@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Økonomisk klarhet, hver eneste dag.",
     "visualText": "Hold oversikt over inntekter, utgifter og sparemål på ett rolig, vakkert sted.",
-    "signupTitle": "Opprett kontoen din – $1 per år låser opp alt",
+    "signupTitle": "Opprett kontoen din",
     "signinTitle": "Velkommen tilbake! Logg inn for å fortsette til kontoen din",
     "fullName": "Fullt navn",
     "namePh": "Skriv inn navnet ditt",
@@ -151,12 +151,12 @@
     "forgot": "Glemt passord?",
     "creating": "Oppretter konto…",
     "signingIn": "Logger inn…",
-    "createPay": "Opprett konto & betal $1",
+    "createPay": "Opprett konto & betal",
     "signIn": "Logg inn",
     "haveAccount": "Har du allerede en konto?",
     "noAccount": "Har du ikke konto?",
     "signInLink": "Logg inn",
-    "signUpLink": "Registrer deg - $1/år",
+    "signUpLink": "Registrer deg",
     "backHome": "Tilbake til forsiden",
     "invalid": "Ugyldig e-post eller passord",
     "confirmPassword": "Bekreft passord",
@@ -176,7 +176,9 @@
     "createdFree": "Konto opprettet — velkommen til WellSpend!",
     "signUpLinkFree": "Registrer deg",
     "signupTitleFree": "Lag gratiskontoen din",
-    "createFree": "Opprett konto"
+    "createFree": "Opprett konto",
+    "country": "Land",
+    "countryPh": "Velg land"
   },
   "Landing": {
     "demoToast": "Velkommen til demoen — utforsk fritt, ingenting lagres.",
@@ -186,8 +188,8 @@
       "business": "For bedrifter",
       "pricing": "Priser",
       "signIn": "Logg inn",
-      "getStarted": "Kom i gang — $1",
-      "startShort": "Start — $1"
+      "getStarted": "Kom i gang",
+      "startShort": "Start"
     },
     "hero": {
       "badge": "Bare $1 i året",
@@ -249,8 +251,8 @@
         "text": "Registrer deg med navn og e-post — det tar tretti sekunder."
       },
       "pay": {
-        "title": "Betal $1 i året",
-        "text": "En dollar i året. Paynow, kort, Ecocash eller bankoverføring – ditt valg."
+        "title": "Betal i året",
+        "text": "Paynow, kort, Ecocash eller bankoverføring – ditt valg."
       },
       "currency": {
         "title": "Velg valutaen din",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Pengene dine er dine",
-        "text": "Full tilgang, hele året. Hver funksjon, hver oppdatering, én dollar."
+        "text": "Full tilgang, hele året. Hver funksjon, hver oppdatering."
       }
     },
     "business": {
@@ -323,20 +325,22 @@
       "pay": "Betal via Paynow, kort, Ecocash eller bankoverføring",
       "create": "Opprett konto & betal $1",
       "businessChip": "WellSpend for Business",
-      "hrLine1": "Samlet",
-      "hrLine2": "HR",
+      "hrLine1": "Samlet HR",
+      "hrLine2": "HR-løsninger",
       "payroll": "Lønnskjøringer & godkjenninger i flere trinn",
       "portal": "Selvbetjeningsportal for ansatte",
       "leave": "Permisjonskalender, utlegg & personallån",
       "payout": "Utbetalingsfiler for bank & EcoCash",
       "free": "Hver ansatt får WellSpend gratis",
       "setup": "Oppsett & gjennomgang for hele teamet",
-      "arrange": "Avtal en demo eller en prat"
+      "arrange": "Avtal en demo eller en prat",
+      "priceNote": "Prisene kan variere etter region og operasjonelle regulatoriske krav.",
+      "tncApply": "Vilkår og betingelser gjelder"
     },
     "cta": {
       "heading": "Klar til å se hvor pengene dine tar veien?",
-      "text": "Registreringen fullføres med en engangsbetaling på $1 — så er hele appen din.",
-      "button": "Kom i gang — $1"
+      "text": "Registreringen fullføres med et årsabonnement — så er hele appen din.",
+      "button": "Kom i gang"
     },
     "footer": {
       "features": "Funksjoner",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "et år, ikke månedlig",
-      "tagline": "Én betaling låser opp alt i et år."
+      "tagline": "Én betaling låser opp alt i et år.",
+      "breakdownTitle": "Prisfordeling",
+      "linePrincipal": "Hovedbeløp — årsabonnement",
+      "lineTotal": "Totalt",
+      "processing_paynow": "Paynow-behandlingsgebyr",
+      "processing_stripe": "Kortbehandlingsgebyr",
+      "processing_ecocash": "Mobilpenger-gebyr",
+      "processing_bank": "Bankoverføringsgebyr",
+      "fee_vat": "MVA",
+      "fee_withholding": "Kildeskatt",
+      "fee_digitalTax": "Avgift på digitale tjenester",
+      "fee_dataProtection": "Databeskyttelsesgebyr",
+      "fee_regulatory": "Regulatorisk compliance-avgift",
+      "fee_salesTax": "Salgsavgift",
+      "fee_telecom": "Telekom-reguleringsgebyr"
     },
     "support": {
       "title": "Brukerstøtte",
@@ -864,6 +882,10 @@
       "statusClosed": "Lukket",
       "toastSaved": "Status oppdatert.",
       "toastError": "Oppdatering mislyktes — prøv igjen."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Betalt",
+      "eventPaid": "Betalt"
     }
   }
 }

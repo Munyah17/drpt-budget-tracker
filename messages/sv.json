@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Ekonomisk klarhet, varje dag.",
     "visualText": "Håll koll på inkomster, utgifter och sparmål på ett lugnt, vackert ställe.",
-    "signupTitle": "Skapa ditt konto – $1/år låser upp allt",
+    "signupTitle": "Skapa ditt konto",
     "signinTitle": "Välkommen tillbaka! Logga in för att fortsätta till ditt konto",
     "fullName": "Fullständigt namn",
     "namePh": "Ange ditt namn",
@@ -151,12 +151,12 @@
     "forgot": "Glömt lösenord?",
     "creating": "Skapar konto…",
     "signingIn": "Loggar in…",
-    "createPay": "Skapa konto & betala $1",
+    "createPay": "Skapa konto & betala",
     "signIn": "Logga in",
     "haveAccount": "Har du redan ett konto?",
     "noAccount": "Har du inget konto?",
     "signInLink": "Logga in",
-    "signUpLink": "Registrera dig - $1/år",
+    "signUpLink": "Registrera dig",
     "backHome": "Tillbaka till startsidan",
     "invalid": "Ogiltig e-post eller lösenord",
     "confirmPassword": "Bekräfta lösenord",
@@ -176,7 +176,9 @@
     "createdFree": "Konto skapat — välkommen till WellSpend!",
     "signUpLinkFree": "Registrera dig",
     "signupTitleFree": "Skapa ditt gratiskonto",
-    "createFree": "Skapa konto"
+    "createFree": "Skapa konto",
+    "country": "Land",
+    "countryPh": "Välj land"
   },
   "Landing": {
     "demoToast": "Välkommen till demon — utforska fritt, inget sparas.",
@@ -186,8 +188,8 @@
       "business": "För företag",
       "pricing": "Priser",
       "signIn": "Logga in",
-      "getStarted": "Kom igång — $1",
-      "startShort": "Start — $1"
+      "getStarted": "Kom igång",
+      "startShort": "Start"
     },
     "hero": {
       "badge": "Bara 1 dollar om året",
@@ -249,8 +251,8 @@
         "text": "Registrera dig med namn och e-post — det tar trettio sekunder."
       },
       "pay": {
-        "title": "Betala $1 per år",
-        "text": "En dollar om året. Paynow, kort, Ecocash eller banköverföring - ditt val."
+        "title": "Betala årligen",
+        "text": "Paynow, kort, Ecocash eller banköverföring - ditt val."
       },
       "currency": {
         "title": "Välj din valuta",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Äg dina pengar",
-        "text": "Full tillgång, hela året. Varje funktion, varje uppdatering, en dollar."
+        "text": "Full tillgång, hela året. Varje funktion, varje uppdatering."
       }
     },
     "business": {
@@ -323,20 +325,22 @@
       "pay": "Betala via Paynow, kort, Ecocash eller banköverföring",
       "create": "Skapa konto & betala $1",
       "businessChip": "WellSpend for Business",
-      "hrLine1": "Samlad",
-      "hrLine2": "HR",
+      "hrLine1": "Samlad HR",
+      "hrLine2": "Lösningar",
       "payroll": "Lönekörningar & godkännanden i flera steg",
       "portal": "Självserviceportal för anställda",
       "leave": "Ledighetskalender, utlägg & personallån",
       "payout": "Utbetalningsfiler för bank & EcoCash",
       "free": "Varje anställd får WellSpend gratis",
       "setup": "Uppsättning & genomgång för hela teamet",
-      "arrange": "Boka en demo eller ett samtal"
+      "arrange": "Boka en demo eller ett samtal",
+      "priceNote": "Priser kan skilja sig åt beroende på region och operativa regulatoriska krav.",
+      "tncApply": "Allmänna villkor gäller"
     },
     "cta": {
       "heading": "Redo att se vart dina pengar tar vägen?",
-      "text": "Registreringen slutförs med en engångsbetalning på $1 — sen är hela appen din.",
-      "button": "Kom igång — $1"
+      "text": "Registreringen slutförs med en årsprenumeration — sen är hela appen din.",
+      "button": "Kom igång"
     },
     "footer": {
       "features": "Funktioner",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "ett år, inte varje månad",
-      "tagline": "En betalning låser upp allt i ett år."
+      "tagline": "En betalning låser upp allt i ett år.",
+      "breakdownTitle": "Prisuppdelning",
+      "linePrincipal": "Grundbelopp — årsprenumeration",
+      "lineTotal": "Totalt",
+      "processing_paynow": "Paynow-avgift",
+      "processing_stripe": "Kortavgift",
+      "processing_ecocash": "Mobilpengar-avgift",
+      "processing_bank": "Banköverföringsavgift",
+      "fee_vat": "Moms",
+      "fee_withholding": "Källskatt",
+      "fee_digitalTax": "Digitala tjänsters skatt",
+      "fee_dataProtection": "Dataskyddsavgift",
+      "fee_regulatory": "Regleringsenlighetsavgift",
+      "fee_salesTax": "Försäljningsskatt",
+      "fee_telecom": "Telekomregleringsavgift"
     },
     "support": {
       "title": "Support",
@@ -864,6 +882,10 @@
       "statusClosed": "Stängd",
       "toastSaved": "Status uppdaterad.",
       "toastError": "Kunde inte uppdatera — försök igen."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Betald",
+      "eventPaid": "Betald"
     }
   }
 }

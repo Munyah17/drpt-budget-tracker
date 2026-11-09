@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "每一天,财务都清晰可见。",
     "visualText": "在一处安静美观的地方记录收入、支出和储蓄目标。",
-    "signupTitle": "创建您的帐户 — 1 美元/年即可解锁一切",
+    "signupTitle": "创建您的账户",
     "signinTitle": "欢迎回来!登录以继续使用您的账户",
     "fullName": "姓名",
     "namePh": "请输入您的姓名",
@@ -151,12 +151,12 @@
     "forgot": "忘记密码?",
     "creating": "正在创建账户…",
     "signingIn": "正在登录…",
-    "createPay": "创建账户并支付 $1",
+    "createPay": "创建账户并支付",
     "signIn": "登录",
     "haveAccount": "已有账户?",
     "noAccount": "还没有账户?",
     "signInLink": "登录",
-    "signUpLink": "注册 — $1/年",
+    "signUpLink": "注册",
     "backHome": "返回首页",
     "invalid": "邮箱或密码无效",
     "confirmPassword": "确认密码",
@@ -176,7 +176,9 @@
     "createdFree": "账户已创建 — 欢迎使用WellSpend!",
     "signUpLinkFree": "注册",
     "signupTitleFree": "创建您的免费帐户",
-    "createFree": "创建账户"
+    "createFree": "创建账户",
+    "country": "国家",
+    "countryPh": "选择国家"
   },
   "Landing": {
     "demoToast": "欢迎来到演示模式 — 随意探索,内容不会被保存。",
@@ -186,8 +188,8 @@
       "business": "企业版",
       "pricing": "价格",
       "signIn": "登录",
-      "getStarted": "立即开始 — $1",
-      "startShort": "开始 — $1"
+      "getStarted": "立即开始",
+      "startShort": "开始"
     },
     "hero": {
       "badge": "一年仅需 1 美元",
@@ -249,8 +251,8 @@
         "text": "用姓名和邮箱注册 — 只需三十秒。"
       },
       "pay": {
-        "title": "每年支付 1 美元",
-        "text": "一年一美元。 Paynow、银行卡、Ecocash 或银行转账 — 您可以选择。"
+        "title": "每年付费",
+        "text": "Paynow、银行卡、Ecocash 或银行转账——由您选择。"
       },
       "currency": {
         "title": "选择您的货币",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "掌控您的钱",
-        "text": "全年完全访问。每个功能，每个更新，一美元。"
+        "text": "全年完整访问。每项功能,每次更新。"
       }
     },
     "business": {
@@ -323,20 +325,22 @@
       "pay": "通过 Paynow、银行卡、EcoCash 或银行转账支付",
       "create": "创建账户并支付 $1",
       "businessChip": "WellSpend for Business",
-      "hrLine1": "一体化",
-      "hrLine2": "人力资源",
+      "hrLine1": "一体化人力资源",
+      "hrLine2": "解决方案",
       "payroll": "发薪批次与多级审批",
       "portal": "员工自助门户",
       "leave": "请假日历、报销与员工贷款",
       "payout": "银行与 EcoCash 付款文件",
       "free": "每位员工免费使用 WellSpend",
       "setup": "为整个团队提供部署与演示",
-      "arrange": "预约演示或洽谈"
+      "arrange": "预约演示或洽谈",
+      "priceNote": "价格可能因地区和运营监管要求而异。",
+      "tncApply": "适用条款和条件"
     },
     "cta": {
       "heading": "想知道您的钱都花到哪了吗?",
-      "text": "注册时只需一次性支付 $1 — 之后整个应用都属于您。",
-      "button": "立即开始 — $1"
+      "text": "注册后即为年度订阅——之后整个应用都属于您。",
+      "button": "立即开始"
     },
     "footer": {
       "features": "功能",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "一年，而不是每月",
-      "tagline": "一次付款即可解锁一年内的所有内容。"
+      "tagline": "一次付款即可解锁一年内的所有内容。",
+      "breakdownTitle": "价格明细",
+      "linePrincipal": "本金——年度访问",
+      "lineTotal": "合计",
+      "processing_paynow": "Paynow 处理费",
+      "processing_stripe": "银行卡处理费",
+      "processing_ecocash": "移动支付手续费",
+      "processing_bank": "银行转账手续费",
+      "fee_vat": "增值税",
+      "fee_withholding": "预提税",
+      "fee_digitalTax": "数字服务税",
+      "fee_dataProtection": "数据保护征费",
+      "fee_regulatory": "监管合规费",
+      "fee_salesTax": "销售税",
+      "fee_telecom": "电信监管征费"
     },
     "support": {
       "title": "支持",
@@ -864,6 +882,10 @@
       "statusClosed": "已关闭",
       "toastSaved": "状态已更新。",
       "toastError": "更新失败——请重试。"
+    },
+    "adm_analytics": {
+      "funnelPaid": "已付费",
+      "eventPaid": "已付费"
     }
   }
 }

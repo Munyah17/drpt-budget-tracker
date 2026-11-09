@@ -73,6 +73,8 @@ export interface UserProfile {
   isPaid: boolean;
   /** ISO timestamp — when the yearly subscription expires (null = exempt) */
   paidUntil?: string | null;
+  /** ISO 3166-1 alpha-2 country code collected at signup (drives regional pricing) */
+  country?: string;
   /** Set for corporate-issued employee accounts — ties the account to an organisation */
   organisation?: string;
 }

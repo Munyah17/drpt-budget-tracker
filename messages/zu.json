@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Ukucaca kwezimali, usuku ngalunye.",
     "visualText": "Landela imali engenayo, izindleko nezinjongo zokonga endaweni eyodwa ezolileyo, enhle.",
-    "signupTitle": "Dala i-akhawunti yakho — $1/ngonyaka ivula yonke into",
+    "signupTitle": "Dala i-akhawunti yakho",
     "signinTitle": "Siyakwamukela futhi! Ngena ukuze uqhubekele ku-akhawunti yakho",
     "fullName": "Igama Eliphelele",
     "namePh": "Faka igama lakho",
@@ -151,12 +151,12 @@
     "forgot": "Ukhohlwe iphasiwedi?",
     "creating": "Kuyakhiwa i-akhawunti…",
     "signingIn": "Kungenwa…",
-    "createPay": "Yenza I-Akhawunti & Khokhela $1",
+    "createPay": "Yenza i-akhawunti & khokhela",
     "signIn": "Ngena",
     "haveAccount": "Usuvele une-akhawunti?",
     "noAccount": "Awunayo i-akhawunti?",
     "signInLink": "Ngena",
-    "signUpLink": "Bhalisa - $1/ngonyaka",
+    "signUpLink": "Bhalisa",
     "backHome": "Buyela ekhaya",
     "invalid": "I-imeyili noma iphasiwedi engalungile",
     "confirmPassword": "Qinisekisa iphasiwedi",
@@ -176,7 +176,9 @@
     "createdFree": "I-akhawunti yenziwe — wamukelekile ku-WellSpend!",
     "signUpLinkFree": "Bhalisa",
     "signupTitleFree": "Yenza i-akhawunti yakho yamahhala",
-    "createFree": "Yenza i-akhawunti"
+    "createFree": "Yenza i-akhawunti",
+    "country": "Izwe",
+    "countryPh": "Khetha izwe"
   },
   "Landing": {
     "demoToast": "Wamukelekile kwidemo — hlola nganoma, akukho lutho olugciniwe.",
@@ -186,8 +188,8 @@
       "business": "Kwebhizinisi",
       "pricing": "Izintengo",
       "signIn": "Ngena",
-      "getStarted": "Qala — $1",
-      "startShort": "Qala — $1"
+      "getStarted": "Qala",
+      "startShort": "Qala"
     },
     "hero": {
       "badge": "U-$1 kuphela ngonyaka",
@@ -249,8 +251,8 @@
         "text": "Bhalisa ngegama lakho ne-imeyili — kuthatha imizuzwana engamashumi amathathu."
       },
       "pay": {
-        "title": "Khokha u-$1 ngonyaka",
-        "text": "Idola elilodwa ngonyaka. I-Paynow, ikhadi, i-Ecocash noma i-bank transfer — ukukhetha kwakho."
+        "title": "Khokha ngonyaka",
+        "text": "I-Paynow, ikhadi, i-Ecocash noma inkokhelo yebhange — khetha inketho yakho."
       },
       "currency": {
         "title": "Khetha uhlobo lwemali yakho",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Yiba ngumnini wemali yakho",
-        "text": "Ukufinyelela okugcwele, unyaka wonke. Sonke isici, sonke isibuyekezo, idola elilodwa."
+        "text": "Ukufinyelela okuphelele unyaka lonke. Yonke isici, yonke isibuyekezo."
       }
     },
     "business": {
@@ -324,19 +326,21 @@
       "create": "Yenza i-akhawunti & khokhela $1",
       "businessChip": "WellSpend for Business",
       "hrLine1": "I-HR",
-      "hrLine2": "Ehlanganisiwe",
+      "hrLine2": "IziSolutions Ezihlanganisiwe",
       "payroll": "Ukuqhutshwa kwemiholo nezimvume ezinezinyathelo eziningi",
       "portal": "Isango lezisizakalo zabasebenzi",
       "leave": "Ikhalenda lelivi, izimangalo nezikweletu zabasebenzi",
       "payout": "Amafayela okukhokha ebhange ne-EcoCash",
       "free": "Umsebenzi ngamunye uthola i-WellSpend mahhala",
       "setup": "Ukulungiswa nesibonisi seqembu lakho lonke",
-      "arrange": "Hlela idemo noma inkulumo"
+      "arrange": "Hlela idemo noma inkulumo",
+      "priceNote": "Izindleko zingahlukaissorodwe nemiphakathi nemibandela yomthetho wokusebenza.",
+      "tncApply": "Imigomo Nemibandela iyasebenza"
     },
     "cta": {
       "heading": "Usulungile ukubona ukuthi imali yakho iya kuphi?",
-      "text": "Ukubhalisa kuphothulwa nge-$1 eyodwa — bese uhlelo lonke luba nge lakho.",
-      "button": "Qala — $1"
+      "text": "Ukubhalisa kuphothulwa=isivumelwano senyanga — bese i-app ephelele iba ngeyakho.",
+      "button": "Qala"
     },
     "footer": {
       "features": "Izici",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "ngonyaka, hhayi ngenyanga",
-      "tagline": "Inkokhelo eyodwa ivula yonke into unyaka."
+      "tagline": "Inkokhelo eyodwa ivula yonke into unyaka.",
+      "breakdownTitle": "Ilichazingen zenani",
+      "linePrincipal": "Inani elinguquku — ukungena onyaka",
+      "lineTotal": "Konke",
+      "processing_paynow": "Intela yePaynow",
+      "processing_stripe": "Intela yekhadi",
+      "processing_ecocash": "Intela yemali yeselula",
+      "processing_bank": "Intela yombiko webhange",
+      "fee_vat": "I-VAT",
+      "fee_withholding": "Intela yokukhishwa",
+      "fee_digitalTax": "Intela yemfundo yedijithali",
+      "fee_dataProtection": "Intela lokuvikelwa kolwazi",
+      "fee_regulatory": "Intela lokuhambisana nemithetho",
+      "fee_salesTax": "Intela onthengiso",
+      "fee_telecom": "Intela yomlawuli wethubane"
     },
     "support": {
       "title": "Usizo",
@@ -864,6 +882,10 @@
       "statusClosed": "Ivaliwe",
       "toastSaved": "Isimo sibuyekeziwe.",
       "toastError": "Ukubuyekeza kwehlulekile — sicela uzame futhi."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Kukhokhliwe",
+      "eventPaid": "Kukhokhliwe"
     }
   }
 }

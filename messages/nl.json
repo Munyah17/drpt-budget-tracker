@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Financiële duidelijkheid, elke dag weer.",
     "visualText": "Houd inkomsten, uitgaven en spaardoelen bij op één rustige, mooie plek.",
-    "signupTitle": "Maak uw account aan - $ 1/jaar ontgrendelt alles",
+    "signupTitle": "Maak je account aan",
     "signinTitle": "Welkom terug! Log in om verder te gaan naar je account",
     "fullName": "Volledige naam",
     "namePh": "Vul je naam in",
@@ -151,12 +151,12 @@
     "forgot": "Wachtwoord vergeten?",
     "creating": "Account aanmaken…",
     "signingIn": "Inloggen…",
-    "createPay": "Account aanmaken & $1 betalen",
+    "createPay": "Account aanmaken & betalen",
     "signIn": "Inloggen",
     "haveAccount": "Heb je al een account?",
     "noAccount": "Nog geen account?",
     "signInLink": "Inloggen",
-    "signUpLink": "Aanmelden — $ 1/jaar",
+    "signUpLink": "Registreer je",
     "backHome": "Terug naar home",
     "invalid": "Ongeldig e-mailadres of wachtwoord",
     "confirmPassword": "Bevestig wachtwoord",
@@ -176,7 +176,9 @@
     "createdFree": "Account aangemaakt — welkom bij WellSpend!",
     "signUpLinkFree": "Aanmelden",
     "signupTitleFree": "Maak je gratis account aan",
-    "createFree": "Account aanmaken"
+    "createFree": "Account aanmaken",
+    "country": "Land",
+    "countryPh": "Selecteer land"
   },
   "Landing": {
     "demoToast": "Welkom bij de demo — kijk gerust rond, er wordt niets opgeslagen.",
@@ -186,8 +188,8 @@
       "business": "Voor bedrijven",
       "pricing": "Prijzen",
       "signIn": "Inloggen",
-      "getStarted": "Aan de slag — $1",
-      "startShort": "Start — $1"
+      "getStarted": "Aan de slag",
+      "startShort": "Start"
     },
     "hero": {
       "badge": "Slechts $ 1 per jaar",
@@ -249,8 +251,8 @@
         "text": "Registreer met je naam en e-mail — het duurt dertig seconden."
       },
       "pay": {
-        "title": "Betaal $ 1 per jaar",
-        "text": "Eén dollar per jaar. Betaal nu, kaart, Ecocash of bankoverschrijving: jouw keuze."
+        "title": "Betaal jaarlijks",
+        "text": "Betaal nu, kaart, Ecocash of bankoverschrijving: jouw keuze."
       },
       "currency": {
         "title": "Kies je valuta",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Jouw geld is van jou",
-        "text": "Volledige toegang, het hele jaar door. Elke functie, elke update, één dollar."
+        "text": "Volledige toegang, het hele jaar door. Elke functie, elke update."
       }
     },
     "business": {
@@ -323,20 +325,22 @@
       "pay": "Betaal via Paynow, kaart, Ecocash of bankoverschrijving",
       "create": "Account aanmaken & $1 betalen",
       "businessChip": "WellSpend for Business",
-      "hrLine1": "Geïntegreerde",
-      "hrLine2": "HR",
+      "hrLine1": "Geïntegreerde HR",
+      "hrLine2": "Oplossingen",
       "payroll": "Salarisruns & goedkeuringen in meerdere stappen",
       "portal": "Zelfserviceportaal voor medewerkers",
       "leave": "Verlofkalender, declaraties & personeelsleningen",
       "payout": "Uitbetalingsbestanden voor bank & EcoCash",
       "free": "Elke medewerker krijgt WellSpend gratis",
       "setup": "Inrichting & rondleiding voor je hele team",
-      "arrange": "Plan een demo of gesprek"
+      "arrange": "Plan een demo of gesprek",
+      "priceNote": "Prijzen kunnen variëren afhankelijk van regio's en operationele regelgevingsvereisten.",
+      "tncApply": "Algemene voorwaarden zijn van toepassing"
     },
     "cta": {
       "heading": "Klaar om te zien waar je geld blijft?",
-      "text": "Je registratie wordt afgerond met een eenmalige betaling van $1 — daarna is de hele app van jou.",
-      "button": "Aan de slag — $1"
+      "text": "Je registratie wordt afgerond met een jaarabonnement — daarna is de hele app van jou.",
+      "button": "Aan de slag"
     },
     "footer": {
       "features": "Functies",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "per jaar, niet maandelijks",
-      "tagline": "Eén betaling ontgrendelt alles voor een jaar."
+      "tagline": "Eén betaling ontgrendelt alles voor een jaar.",
+      "breakdownTitle": "Prijspecificatie",
+      "linePrincipal": "Hoofdprijs — jaarabonnement",
+      "lineTotal": "Totaal",
+      "processing_paynow": "Paynow-verwerkingskosten",
+      "processing_stripe": "Kaartverwerkingskosten",
+      "processing_ecocash": "Kosten voor mobiel geld",
+      "processing_bank": "Bankoverschrijvingskosten",
+      "fee_vat": "Btw",
+      "fee_withholding": "Bronbelasting",
+      "fee_digitalTax": "Belasting op digitale diensten",
+      "fee_dataProtection": "Bijdrage gegevensbescherming",
+      "fee_regulatory": "Regelgevingsnalevingskosten",
+      "fee_salesTax": "Verkoopbelasting",
+      "fee_telecom": "Telecomregelgevingsheffing"
     },
     "support": {
       "title": "Support",
@@ -864,6 +882,10 @@
       "statusClosed": "Gesloten",
       "toastSaved": "Status bijgewerkt.",
       "toastError": "Bijwerken mislukt — probeer opnieuw."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Betaald",
+      "eventPaid": "Betaald"
     }
   }
 }

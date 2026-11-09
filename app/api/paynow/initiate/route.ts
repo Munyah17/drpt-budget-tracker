@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { priceUsd } from "@/lib/pricing";
+import { priceUsdFor } from "@/lib/pricing";
+import { sbGet } from "@/lib/server/supabaseAdmin";
 
 const INITIATE_URL = "https://www.paynow.co.zw/interface/initiatetransaction";
 
@@ -20,16 +21,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Paynow is not configured" }, { status: 500 });
   }
 
-  const { userId, email } = await req.json().catch(() => ({}));
+  const { userId, email, country } = await req.json().catch(() => ({}));
   const origin = req.nextUrl.origin;
   const reference = `WSPD-${Date.now()}`;
+
+  // Signup country drives regional pricing — profile wins over the client hint.
+  let region = String(country ?? "");
+  if (userId) {
+    const rows = await sbGet<{ country: string | null }>(
+      "profiles",
+      `id=eq.${encodeURIComponent(String(userId))}&select=country&limit=1`
+    );
+    if (rows[0]?.country) region = rows[0].country;
+  }
 
   // Field order matters for the hash
   const fields: [string, string][] = [
     ["id", id],
     ["reference", reference],
-    ["amount", priceUsd("paynow").toFixed(2)],
-    ["additionalinfo", `WellSpend lifetime access${userId ? ` (${userId})` : ""}`],
+    ["amount", priceUsdFor("paynow", region).toFixed(2)],
+    ["additionalinfo", `WellSpend yearly access${userId ? ` (${userId})` : ""}`],
     ["returnurl", `${origin}/payment/success?provider=paynow&uid=${encodeURIComponent(userId ?? "")}`],
     ["resulturl", `${origin}/api/paynow/result`],
     ["authemail", email ?? ""],

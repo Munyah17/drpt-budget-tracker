@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Jasno ve financích, každý jediný den.",
     "visualText": "Sleduj příjmy, výdaje a spořicí cíle na jednom klidném, krásném místě.",
-    "signupTitle": "Vytvořte si účet – 1 $/rok odemkne vše",
+    "signupTitle": "Vytvořte si účet",
     "signinTitle": "Vítej zpět! Přihlas se a pokračuj do svého účtu",
     "fullName": "Celé jméno",
     "namePh": "Zadej své jméno",
@@ -151,12 +151,12 @@
     "forgot": "Zapomenuté heslo?",
     "creating": "Vytváření účtu…",
     "signingIn": "Přihlašování…",
-    "createPay": "Vytvořit účet a zaplatit $1",
+    "createPay": "Vytvořit účet a zaplatit",
     "signIn": "Přihlásit se",
     "haveAccount": "Už máš účet?",
     "noAccount": "Ještě nemáš účet?",
     "signInLink": "Přihlásit se",
-    "signUpLink": "Zaregistrujte se - $ 1/rok",
+    "signUpLink": "Zaregistrujte se",
     "backHome": "Zpět domů",
     "invalid": "Neplatný e-mail nebo heslo",
     "confirmPassword": "Potvrď heslo",
@@ -176,7 +176,9 @@
     "createdFree": "Účet vytvořen — vítej v WellSpend!",
     "signUpLinkFree": "Zaregistrovat se",
     "signupTitleFree": "Vytvoř si bezplatný účet",
-    "createFree": "Vytvořit účet"
+    "createFree": "Vytvořit účet",
+    "country": "Země",
+    "countryPh": "Vyberte zemi"
   },
   "Landing": {
     "demoToast": "Vítej v demu — zkoumej volně, nic se neukládá.",
@@ -186,8 +188,8 @@
       "business": "Pro firmy",
       "pricing": "Ceny",
       "signIn": "Přihlásit se",
-      "getStarted": "Začít — $1",
-      "startShort": "Start — $1"
+      "getStarted": "Začít",
+      "startShort": "Start"
     },
     "hero": {
       "badge": "Jen 1 $ ročně",
@@ -249,8 +251,8 @@
         "text": "Zaregistruj se jménem a e-mailem — trvá to třicet sekund."
       },
       "pay": {
-        "title": "Zaplaťte 1 $ ročně",
-        "text": "Jeden dolar ročně. Paynow, karta, Ecocash nebo bankovní převod – vaše volba."
+        "title": "Roční platba",
+        "text": "Paynow, karta, Ecocash nebo bankovní převod – vaše volba."
       },
       "currency": {
         "title": "Vyber si měnu",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Vlastni své peníze",
-        "text": "Plný přístup po celý rok. Každá funkce, každá aktualizace, jeden dolar."
+        "text": "Plný přístup po celý rok. Každá funkce, každá aktualizace."
       }
     },
     "business": {
@@ -323,20 +325,22 @@
       "pay": "Zaplať přes Paynow, kartu, Ecocash nebo bankovní převod",
       "create": "Vytvořit účet a zaplatit $1",
       "businessChip": "WellSpend for Business",
-      "hrLine1": "Sjednocený",
-      "hrLine2": "HR",
+      "hrLine1": "Sjednocený HR",
+      "hrLine2": "HR řešení",
       "payroll": "Mzdové cykly a vícekrokové schvalování",
       "portal": "Portál samoobsluhy zaměstnanců",
       "leave": "Kalendář dovolené, nároky a zaměstnanecké půjčky",
       "payout": "Výplatní soubory pro banku a EcoCash",
       "free": "Každý zaměstnanec má WellSpend zdarma",
       "setup": "Zavedení a ukázka pro celý tým",
-      "arrange": "Domluv si demo nebo hovor"
+      "arrange": "Domluv si demo nebo hovor",
+      "priceNote": "Ceny se mohou lišit podle regionu a provozních regulačních požadavků.",
+      "tncApply": "Platí obchodní podmínky"
     },
     "cta": {
       "heading": "Chceš vidět, kam tvé peníze mizí?",
-      "text": "Registrace končí jednorázovou platbou $1 — pak je celá aplikace tvoje.",
-      "button": "Začít — $1"
+      "text": "Registrace končí ročním předplatným — pak je celá aplikace tvoje.",
+      "button": "Začít"
     },
     "footer": {
       "features": "Funkce",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "rok, ne měsíčně",
-      "tagline": "Jedna platba odemkne vše na rok."
+      "tagline": "Jedna platba odemkne vše na rok.",
+      "breakdownTitle": "Rozpis ceny",
+      "linePrincipal": "Hlavní částka — roční přístup",
+      "lineTotal": "Celkem",
+      "processing_paynow": "Poplatek za zpracování Paynow",
+      "processing_stripe": "Poplatek za zpracování karty",
+      "processing_ecocash": "Poplatek za mobilní peníze",
+      "processing_bank": "Poplatek za bankovní převod",
+      "fee_vat": "DPH",
+      "fee_withholding": "Srážková daň",
+      "fee_digitalTax": "Daň z digitálních služeb",
+      "fee_dataProtection": "Poplatek za ochranu údajů",
+      "fee_regulatory": "Poplatek za regulatorní soulad",
+      "fee_salesTax": "Daň z prodeje",
+      "fee_telecom": "Telekomunikační regulatorní poplatek"
     },
     "support": {
       "title": "Podpora",
@@ -864,6 +882,10 @@
       "statusClosed": "Uzavřeno",
       "toastSaved": "Stav aktualizován.",
       "toastError": "Aktualizace se nezdařila — zkuste to znovu."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Zaplaceno",
+      "eventPaid": "Zaplaceno"
     }
   }
 }

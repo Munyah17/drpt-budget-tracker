@@ -185,7 +185,7 @@
   "Login": {
     "visualTitle": "Financial clarity, every single day.",
     "visualText": "Track income, expenses and savings goals in one calm, beautiful place.",
-    "signupTitle": "Create your account — $1/year unlocks everything",
+    "signupTitle": "Create your account",
     "signinTitle": "Welcome back! Sign in to continue to your account",
     "fullName": "Full Name",
     "namePh": "Enter your name",
@@ -197,12 +197,12 @@
     "forgot": "Forgot password?",
     "creating": "Creating account…",
     "signingIn": "Signing in…",
-    "createPay": "Create Account & Pay $1",
+    "createPay": "Create Account & Pay",
     "signIn": "Sign In",
     "haveAccount": "Already have an account?",
     "noAccount": "Don''t have an account?",
     "signInLink": "Sign in",
-    "signUpLink": "Sign up — $1/year",
+    "signUpLink": "Sign up",
     "backHome": "Back to home",
     "invalid": "Invalid email or password",
     "confirmPassword": "Confirm password",
@@ -227,7 +227,9 @@
     "createdFree": "Account created — welcome to WellSpend!",
     "signUpLinkFree": "Sign up",
     "signupTitleFree": "Create your free account",
-    "createFree": "Create Account"
+    "createFree": "Create Account",
+    "country": "Country",
+    "countryPh": "Select country"
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",
@@ -238,8 +240,8 @@
       "business": "For Business",
       "pricing": "Pricing",
       "signIn": "Sign in",
-      "getStarted": "Get Started — $1",
-      "startShort": "Start — $1"
+      "getStarted": "Get Started",
+      "startShort": "Start"
     },
     "hero": {
       "badge": "Just $1 a year",
@@ -301,8 +303,8 @@
         "text": "Sign up with your name and email — it takes thirty seconds."
       },
       "pay": {
-        "title": "Pay $1 a year",
-        "text": "One dollar a year. Paynow, card, Ecocash or bank transfer — your pick."
+        "title": "Pay yearly",
+        "text": "Paynow, card, Ecocash or bank transfer — your pick."
       },
       "currency": {
         "title": "Pick your currency",
@@ -326,7 +328,7 @@
       },
       "own": {
         "title": "Own your money",
-        "text": "Full access, all year. Every feature, every update, one dollar."
+        "text": "Full access, all year. Every feature, every update."
       }
     },
     "business": {
@@ -375,20 +377,22 @@
       "pay": "Pay via Paynow, card, Ecocash or bank transfer",
       "create": "Create account & pay $1",
       "businessChip": "WellSpend for Business",
-      "hrLine1": "Unified",
-      "hrLine2": "HR",
+      "hrLine1": "Unified HR",
+      "hrLine2": "Solutions",
       "payroll": "Payroll runs & multi-step approvals",
       "portal": "Employee self-service portal",
       "leave": "Leave calendar, claims & staff loans",
       "payout": "Bank & EcoCash payout files",
       "free": "Every employee gets WellSpend free",
       "setup": "Setup & walkthrough for your whole team",
-      "arrange": "Arrange a demo or talk"
+      "arrange": "Arrange a demo or talk",
+      "priceNote": "Prices may differ according to regions and operational regulatory requirements.",
+      "tncApply": "Terms & Conditions Apply"
     },
     "cta": {
       "heading": "Ready to see where your money goes?",
-      "text": "Registration completes with a one-time $1 payment — then the whole app is yours.",
-      "button": "Get Started — $1"
+      "text": "Registration completes with a yearly subscription — then the whole app is yours.",
+      "button": "Get Started"
     },
     "footer": {
       "features": "Features",
@@ -452,7 +456,7 @@
       "conversionFunnel": "Conversion Funnel",
       "funnelUniqueVisitors": "Unique visitors",
       "funnelSignedUp": "Signed up",
-      "funnelPaid": "Paid $1",
+      "funnelPaid": "Paid",
       "topPages": "Top Pages",
       "noPageViews": "No page views recorded yet.",
       "viewsCount": "{count} views",
@@ -466,7 +470,7 @@
       "eventSignedUp": "Signed up",
       "eventSignupFailed": "Signup failed",
       "eventLoggedIn": "Logged in",
-      "eventPaid": "Paid $1",
+      "eventPaid": "Paid",
       "eventPaymentFailed": "Payment failed",
       "justNow": "just now",
       "minutesAgo": "{mins}m ago",
@@ -3120,7 +3124,21 @@
       "payAmount": "Pay {price}",
       "popSentNote": "PoP sent? We''ll verify and unlock your account shortly. You can close this page.",
       "cancel": "Cancel",
-      "secureCheckout": "Secure checkout — your card details never touch our servers"
+      "secureCheckout": "Secure checkout — your card details never touch our servers",
+      "breakdownTitle": "Price breakdown",
+      "linePrincipal": "Principal — yearly access",
+      "lineTotal": "Total",
+      "processing_paynow": "Paynow processing fee",
+      "processing_stripe": "Card processing fee",
+      "processing_ecocash": "Mobile money fee",
+      "processing_bank": "Bank transfer fee",
+      "fee_vat": "VAT",
+      "fee_withholding": "Withholding tax",
+      "fee_digitalTax": "Digital services tax",
+      "fee_dataProtection": "Data protection levy",
+      "fee_regulatory": "Regulatory compliance fee",
+      "fee_salesTax": "Sales tax",
+      "fee_telecom": "Telecoms regulatory levy"
     },
     "payment_success": {
       "confirmedToast": "Payment confirmed — welcome aboard!",

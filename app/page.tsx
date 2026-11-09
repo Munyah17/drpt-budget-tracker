@@ -269,6 +269,10 @@ export default function LandingPage() {
           <div className="pricing-card glass-card" style={{ border: "2px solid var(--rose-400)" }}>
             <span className="chip"><Icon name="zap" size={12} /> {t("pricing.lifetime")}</span>
             <div className="price">$1<small> {t("pricing.forever")}</small></div>
+            <p style={{ fontSize: 11.5, fontStyle: "italic", color: "var(--ink-500)", margin: "2px 0 12px", lineHeight: 1.45 }}>
+              {t("pricing.priceNote")}{" "}
+              <Link href="/terms" style={{ color: "inherit" }}>{t("pricing.tncApply")}</Link>
+            </p>
             <ul>
               {PRICE_ITEMS.map((item) => (
                 <li key={item}>
@@ -292,7 +296,7 @@ export default function LandingPage() {
               ))}
             </ul>
             <a
-              href="https://wa.me/263718560128?text=Hi%20—%20we%27d%20like%20a%20demo%20of%20WellSpend%20for%20Business%20(Unified%20HR)."
+              href="https://wa.me/263718560128?text=Hi%20—%20we%27d%20like%20a%20demo%20of%20WellSpend%20for%20Business%20(Unified%20HR%20Solutions)."
               target="_blank"
               rel="noreferrer"
               className="btn btn-primary"

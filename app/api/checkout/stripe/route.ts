@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { priceCents } from "@/lib/pricing";
+import { priceCentsFor } from "@/lib/pricing";
+import { sbGet } from "@/lib/server/supabaseAdmin";
+
+/** Signup country drives regional pricing — read it from the profile, not the client. */
+async function countryFor(userId: string, fallback: string): Promise<string> {
+  if (userId) {
+    const rows = await sbGet<{ country: string | null }>(
+      "profiles",
+      `id=eq.${encodeURIComponent(userId)}&select=country&limit=1`
+    );
+    if (rows[0]?.country) return rows[0].country;
+  }
+  return fallback;
+}
 
 /**
- * Creates a Stripe Checkout Session for the lifetime unlock and returns the
+ * Creates a Stripe Checkout Session for the yearly subscription and returns the
  * hosted checkout URL. Price is grossed up for Stripe's fee so we net $1.
  * No stripe SDK needed — plain REST.
  */
@@ -12,8 +25,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Stripe is not configured" }, { status: 500 });
   }
 
-  const { userId, email } = await req.json().catch(() => ({}));
+  const { userId, email, country } = await req.json().catch(() => ({}));
   const origin = req.nextUrl.origin;
+  const region = await countryFor(String(userId ?? ""), String(country ?? ""));
 
   const body = new URLSearchParams({
     mode: "payment",
@@ -21,7 +35,7 @@ export async function POST(req: NextRequest) {
     cancel_url: `${origin}/payment?cancelled=1`,
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "usd",
-    "line_items[0][price_data][unit_amount]": String(priceCents("stripe")),
+    "line_items[0][price_data][unit_amount]": String(priceCentsFor("stripe", region)),
     "line_items[0][price_data][product_data][name]": "WellSpend — Yearly Access",
     client_reference_id: userId ?? "",
     "payment_method_types[0]": "card",

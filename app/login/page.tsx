@@ -1,14 +1,15 @@
 "use client";
 
-import { FormEvent, Suspense, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import LanguageSelect from "@/components/LanguageSelect";
 import { notifyEvent } from "@/lib/notifyClient";
 import { trackEvent } from "@/lib/analytics";
 import { minPriceLabel } from "@/lib/pricing";
+import { COUNTRIES } from "@/lib/countries";
 import { UserRole } from "@/lib/types";
 import { useIsNative } from "@/lib/native";
 
@@ -43,7 +44,19 @@ function LoginForm() {
   const [gender, setGender] = useState("");
   const [phone, setPhone] = useState("");
   const [profession, setProfession] = useState("");
+  const [country, setCountry] = useState("");
   const [referralCode, setReferralCode] = useState("");
+  const locale = useLocale();
+
+  // Localized display names for the picker; the ISO alpha-2 code is what
+  // gets stored on the profile (drives regional pricing at checkout).
+  const countryOptions = useMemo(() => {
+    const localized = new Intl.DisplayNames([locale], { type: "region" });
+    return COUNTRIES.map((code) => ({
+      code,
+      label: localized.of(code) ?? code,
+    })).sort((a, b) => a.label.localeCompare(b.label));
+  }, [locale]);
 
   // Where the user was headed before the auth guard sent them here
   const nextParam = searchParams.get("next");
@@ -79,6 +92,7 @@ function LoginForm() {
         phone,
         gender,
         profession,
+        country,
         referral_code: referralCode || null,
       };
       // Create account — registration completes only after the $1 payment
@@ -134,7 +148,7 @@ function LoginForm() {
         // Carry identity to the payment page even without a live session
         sessionStorage.setItem(
           "drpt-pending-pay",
-          JSON.stringify({ userId: data.user.id, email, name: displayName })
+          JSON.stringify({ userId: data.user.id, email, name: displayName, country })
         );
 
         // Best-effort sign-in in the background — either way, the next stop
@@ -247,6 +261,22 @@ function LoginForm() {
                       required
                     />
                   </div>
+                </div>
+                <div className="field">
+                  <label htmlFor="country">{t("country")}</label>
+                  <select
+                    id="country"
+                    className="settings-select"
+                    style={{ width: "100%" }}
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>{t("countryPh")}</option>
+                    {countryOptions.map((c) => (
+                      <option key={c.code} value={c.code}>{c.label}</option>
+                    ))}
+                  </select>
                 </div>
               </>
             )}

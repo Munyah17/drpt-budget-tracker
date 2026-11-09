@@ -43,7 +43,7 @@ export default function PrivacyPage() {
         <S title="How we use it">
           <p>To provide the service: syncing your budget across devices, sending the reminders you configure, extracting transactions from documents you upload, and importing transactions from a bank you connect.</p>
           <p>Extracted items from scanned documents are always shown to you for review before anything is saved — no AI output is committed to your ledger automatically.</p>
-          <p>To process payments: one-off activation and per-bank-connection unlocks are handled by Stripe and Paynow. We do not store card numbers.</p>
+          <p>To process payments: the yearly subscription and per-bank-connection unlocks are handled by Stripe and Paynow. We do not store card numbers.</p>
           <p>To run anonymous product analytics that tell us which features are used, so we know what to improve. Analytics are not sold and are not shared with advertisers.</p>
         </S>
 

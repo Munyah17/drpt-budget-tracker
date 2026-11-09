@@ -221,6 +221,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
               currency: profile.currency || DEFAULT_CURRENCY,
               isPaid: paidActive(profile),
               paidUntil: profile.paid_until ?? null,
+              country: profile.country ?? undefined,
             });
             setIsAuthenticated(true);
           }
@@ -622,6 +623,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           currency: profile?.currency || DEFAULT_CURRENCY,
           isPaid: paidActive(profile),
           paidUntil: profile?.paid_until ?? null,
+          country: profile?.country ?? undefined,
         };
         setUser(userProfile);
         setIsAuthenticated(true);

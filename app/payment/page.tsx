@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
-import { priceUsd, priceLabel, minPriceUsd, minPriceLabel } from "@/lib/pricing";
+import { priceUsdFor, priceLabelFor, minPriceUsdFor, minPriceLabelFor, priceBreakdown } from "@/lib/pricing";
 import Icon from "@/components/Icon";
 import { useTranslations } from "next-intl";
 import { useIsNative } from "@/lib/native";
@@ -26,7 +26,7 @@ function PaymentInner() {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
   const [popSent, setPopSent] = useState(false);
-  const [pending, setPending] = useState<{ userId: string; email: string; name: string } | null>(null);
+  const [pending, setPending] = useState<{ userId: string; email: string; name: string; country?: string } | null>(null);
   const cancelled = searchParams.get("cancelled") === "1";
 
   // Signup redirects straight here — the user may not be signed in yet, so
@@ -44,9 +44,10 @@ function PaymentInner() {
   const payerId = user?.id ?? pending?.userId;
   const payerEmail = user?.email ?? pending?.email;
   const payerName = user?.name ?? pending?.name;
+  const country = user?.country ?? pending?.country ?? "";
 
   const isDirect = selectedMethod === "ecocash" || selectedMethod === "bank";
-  const total = selectedMethod ? priceUsd(selectedMethod) : minPriceUsd();
+  const total = selectedMethod ? priceUsdFor(selectedMethod, country) : minPriceUsdFor(country);
 
   const methodLabels: Record<PaymentMethod, string> = {
     paynow: t("methodPaynow"),
@@ -82,7 +83,7 @@ function PaymentInner() {
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: payerId, email: payerEmail, name: payerName }),
+          body: JSON.stringify({ userId: payerId, email: payerEmail, name: payerName, country }),
         });
         const data = await res.json();
         if (!res.ok || !data.url) {
@@ -206,7 +207,7 @@ function PaymentInner() {
           </div>
           <h2 style={{ marginBottom: 6, color: "#fff" }}>{t("heroTitle")}</h2>
           <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
-            {t("fromPrice", { price: minPriceLabel() })}
+            {t("fromPrice", { price: minPriceLabelFor(country) })}
           </div>
           <div style={{ display: "inline-flex", alignItems: "baseline", gap: 6, margin: "6px 0 8px" }}>
             <span style={{ fontSize: 15, opacity: .85 }}>{t("onceNotMonthly")}</span>
@@ -227,11 +228,34 @@ function PaymentInner() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-          {methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: priceLabel("paynow") }))}
-          {methodBtn("stripe", "credit-card", t("methodCardTitle"), t("stripeSub", { price: priceLabel("stripe") }))}
-          {methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: priceLabel("ecocash") }))}
-          {methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: priceLabel("bank") }))}
+          {methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: priceLabelFor("paynow", country) }))}
+          {methodBtn("stripe", "credit-card", t("methodCardTitle"), t("stripeSub", { price: priceLabelFor("stripe", country) }))}
+          {methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: priceLabelFor("ecocash", country) }))}
+          {methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: priceLabelFor("bank", country) }))}
         </div>
+
+        {/* Itemised total — $1 principal plus regional levies and processing */}
+        {selectedMethod && (
+          <div style={{ marginBottom: 20, padding: "14px 16px", border: "1px solid var(--card-border)", borderRadius: "var(--radius-sm)" }}>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 8 }}>
+              {t("breakdownTitle")}
+            </div>
+            {priceBreakdown(selectedMethod, country).map((line) =>
+              detailRow(
+                line.key === "principal"
+                  ? t("linePrincipal")
+                  : line.key === "processing"
+                    ? t(`processing_${selectedMethod}`)
+                    : t(`fee_${line.key}`),
+                `$${(line.cents / 100).toFixed(2)}`
+              )
+            )}
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0 2px", borderTop: "1px solid var(--card-border)", marginTop: 6 }}>
+              <strong>{t("lineTotal")}</strong>
+              <strong style={{ color: "var(--rose-600)" }}>{priceLabelFor(selectedMethod, country)}</strong>
+            </div>
+          </div>
+        )}
 
         {/* Direct transfer details */}
         {selectedMethod === "ecocash" && (
@@ -289,7 +313,7 @@ function PaymentInner() {
               ? popSent
                 ? t("waitingForPop")
                 : t("sentAmount", { amount: total.toFixed(2) })
-              : t("payAmount", { price: priceLabel(selectedMethod ?? "paynow") })}
+              : t("payAmount", { price: priceLabelFor(selectedMethod ?? "paynow", country) })}
         </button>
 
         {popSent && (

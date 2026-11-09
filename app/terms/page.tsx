@@ -37,8 +37,9 @@ export default function TermsPage() {
         </S>
 
         <S title="Pricing">
-          <p><b>Lifetime activation</b> — a one-off $1 payment (grossed up for payment-channel fees at checkout) unlocks the full web application for your account.</p>
+          <p><b>Yearly subscription</b> — a $1 per year payment (grossed up for payment-channel fees at checkout) unlocks the full web application for your account.</p>
           <p><b>Bank connection unlocks</b> — free-tier users may unlock each bank connection for a one-off fee covering the provider cost plus $1. Paid accounts connect banks at no extra charge. Prices are shown before you pay; payments are processed by Stripe or Paynow and are non-refundable once access is granted.</p>
+          <p><b>Regional pricing</b> — prices may differ according to regions and operational regulatory requirements.</p>
           <p><b>Corporate plans</b> — employer-organisation features are licensed under a separate business agreement. Corporate users receive full customer access paid for by their employer.</p>
         </S>
 

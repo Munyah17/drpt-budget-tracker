@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
 
-  const { userId, email, name, phone, gender, profession, referral_code } = await req
+  const { userId, email, name, phone, gender, profession, country, referral_code } = await req
     .json()
     .catch(() => ({}));
   if (!email && !userId) {
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
       // then fall back to the guaranteed payload. The same data also lives
       // in auth user_metadata from signUp, so nothing is lost either way.
       const kyc = Object.fromEntries(
-        Object.entries({ phone, gender, profession, referral_code }).filter(
+        Object.entries({ phone, gender, profession, country, referral_code }).filter(
           ([, v]) => typeof v === "string" && v
         )
       );

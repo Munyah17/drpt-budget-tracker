@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Clarté financière, chaque jour.",
     "visualText": "Suis tes revenus, tes dépenses et tes objectifs d''épargne dans un seul endroit, calme et beau.",
-    "signupTitle": "Créez votre compte – 1 $/an débloque tout",
+    "signupTitle": "Créez votre compte",
     "signinTitle": "Bon retour ! Connecte-toi pour continuer vers ton compte",
     "fullName": "Nom complet",
     "namePh": "Entre ton nom",
@@ -151,12 +151,12 @@
     "forgot": "Mot de passe oublié ?",
     "creating": "Création du compte…",
     "signingIn": "Connexion en cours…",
-    "createPay": "Créer un compte et payer $1",
+    "createPay": "Créer un compte et payer",
     "signIn": "Se connecter",
     "haveAccount": "Tu as déjà un compte ?",
     "noAccount": "Pas encore de compte ?",
     "signInLink": "Se connecter",
-    "signUpLink": "Inscrivez-vous – 1 $/an",
+    "signUpLink": "Inscrivez-vous",
     "backHome": "Retour à l''accueil",
     "invalid": "E-mail ou mot de passe invalide",
     "confirmPassword": "Confirmer le mot de passe",
@@ -176,7 +176,9 @@
     "createdFree": "Compte créé — bienvenue dans WellSpend !",
     "signUpLinkFree": "S''inscrire",
     "signupTitleFree": "Crée ton compte gratuit",
-    "createFree": "Créer un compte"
+    "createFree": "Créer un compte",
+    "country": "Pays",
+    "countryPh": "Sélectionnez le pays"
   },
   "Landing": {
     "demoToast": "Bienvenue dans la démo — explore librement, rien n''est enregistré.",
@@ -186,8 +188,8 @@
       "business": "Pour les entreprises",
       "pricing": "Tarifs",
       "signIn": "Se connecter",
-      "getStarted": "Commencer — $1",
-      "startShort": "Démarrer — $1"
+      "getStarted": "Commencer",
+      "startShort": "Démarrer"
     },
     "hero": {
       "badge": "Seulement 1 $ par an",
@@ -249,8 +251,8 @@
         "text": "Inscris-toi avec ton nom et ton e-mail — ça prend trente secondes."
       },
       "pay": {
-        "title": "Payer 1 $ par an",
-        "text": "Un dollar par an. Paynow, carte, Ecocash ou virement bancaire – votre choix."
+        "title": "Paiement annuel",
+        "text": "Paynow, carte, Ecocash ou virement bancaire – votre choix."
       },
       "currency": {
         "title": "Choisis ta devise",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Sois maître de ton argent",
-        "text": "Accès complet, toute l'année. Chaque fonctionnalité, chaque mise à jour, un dollar."
+        "text": "Accès complet, toute l'année. Chaque fonctionnalité, chaque mise à jour."
       }
     },
     "business": {
@@ -324,19 +326,21 @@
       "create": "Créer un compte et payer $1",
       "businessChip": "WellSpend for Business",
       "hrLine1": "RH",
-      "hrLine2": "unifiées",
+      "hrLine2": "Solutions unifiées",
       "payroll": "Cycles de paie et validations à plusieurs étapes",
       "portal": "Portail en libre-service pour les employés",
       "leave": "Calendrier des congés, notes de frais et prêts au personnel",
       "payout": "Fichiers de paiement banque et EcoCash",
       "free": "Chaque employé reçoit WellSpend gratuitement",
       "setup": "Installation et démo pour toute ton équipe",
-      "arrange": "Planifie une démo ou une discussion"
+      "arrange": "Planifie une démo ou une discussion",
+      "priceNote": "Les prix peuvent varier selon les régions et les exigences réglementaires opérationnelles.",
+      "tncApply": "Conditions générales applicables"
     },
     "cta": {
       "heading": "Prêt à voir où va ton argent ?",
-      "text": "L''inscription se termine par un paiement unique de $1 — ensuite l''app est à toi.",
-      "button": "Commencer — $1"
+      "text": "L''inscription se termine par un abonnement annuel — ensuite l''app est à toi.",
+      "button": "Commencer"
     },
     "footer": {
       "features": "Fonctionnalités",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "par an, pas mensuellement",
-      "tagline": "Un seul paiement débloque tout pendant un an."
+      "tagline": "Un seul paiement débloque tout pendant un an.",
+      "breakdownTitle": "Détail du prix",
+      "linePrincipal": "Principal — accès annuel",
+      "lineTotal": "Total",
+      "processing_paynow": "Frais de traitement Paynow",
+      "processing_stripe": "Frais de traitement de carte",
+      "processing_ecocash": "Frais de monnaie mobile",
+      "processing_bank": "Frais de virement bancaire",
+      "fee_vat": "TVA",
+      "fee_withholding": "Retenue à la source",
+      "fee_digitalTax": "Taxe sur les services numériques",
+      "fee_dataProtection": "Taxe protection des données",
+      "fee_regulatory": "Frais de conformité réglementaire",
+      "fee_salesTax": "Taxe de vente",
+      "fee_telecom": "Taxe réglementaire des télécoms"
     },
     "support": {
       "title": "Assistance",
@@ -864,6 +882,10 @@
       "statusClosed": "Fermé",
       "toastSaved": "Statut mis à jour.",
       "toastError": "Échec de la mise à jour — réessayez."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Payé",
+      "eventPaid": "Payé"
     }
   }
 }

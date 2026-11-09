@@ -139,7 +139,7 @@
   "Login": {
     "visualTitle": "Chiarezza finanziaria, ogni singolo giorno.",
     "visualText": "Tieni traccia di entrate, spese e obiettivi di risparmio in un unico posto, calmo e bello.",
-    "signupTitle": "Crea il tuo account: $ 1/anno sblocca tutto",
+    "signupTitle": "Crea il tuo account",
     "signinTitle": "Bentornato! Accedi per continuare al tuo account",
     "fullName": "Nome completo",
     "namePh": "Inserisci il tuo nome",
@@ -151,12 +151,12 @@
     "forgot": "Password dimenticata?",
     "creating": "Creazione account…",
     "signingIn": "Accesso in corso…",
-    "createPay": "Crea account e paga $1",
+    "createPay": "Crea account e paga",
     "signIn": "Accedi",
     "haveAccount": "Hai già un account?",
     "noAccount": "Non hai un account?",
     "signInLink": "Accedi",
-    "signUpLink": "Iscriviti: $ 1 / anno",
+    "signUpLink": "Registrati",
     "backHome": "Torna alla home",
     "invalid": "Email o password non validi",
     "confirmPassword": "Conferma password",
@@ -176,7 +176,9 @@
     "createdFree": "Account creato — benvenuto in WellSpend!",
     "signUpLinkFree": "Registrati",
     "signupTitleFree": "Crea il tuo account gratuito",
-    "createFree": "Crea account"
+    "createFree": "Crea account",
+    "country": "Paese",
+    "countryPh": "Seleziona il paese"
   },
   "Landing": {
     "demoToast": "Benvenuto nella demo — esplora liberamente, niente viene salvato.",
@@ -186,8 +188,8 @@
       "business": "Per le aziende",
       "pricing": "Prezzi",
       "signIn": "Accedi",
-      "getStarted": "Inizia ora — $1",
-      "startShort": "Inizia — $1"
+      "getStarted": "Inizia ora",
+      "startShort": "Inizia"
     },
     "hero": {
       "badge": "Solo $ 1 all'anno",
@@ -249,8 +251,8 @@
         "text": "Registrati con nome ed email — ci vogliono trenta secondi."
       },
       "pay": {
-        "title": "Paga $ 1 all'anno",
-        "text": "Un dollaro all'anno. Paynow, carta, Ecocash o bonifico bancario: a te la scelta."
+        "title": "Pagamento annuale",
+        "text": "Paynow, carta, Ecocash o bonifico bancario: a te la scelta."
       },
       "currency": {
         "title": "Scegli la tua valuta",
@@ -274,7 +276,7 @@
       },
       "own": {
         "title": "Sii padrone dei tuoi soldi",
-        "text": "Accesso completo, tutto l'anno. Ogni funzionalità, ogni aggiornamento, un dollaro."
+        "text": "Accesso completo, tutto l'anno. Ogni funzionalità, ogni aggiornamento."
       }
     },
     "business": {
@@ -324,19 +326,21 @@
       "create": "Crea account e paga $1",
       "businessChip": "WellSpend for Business",
       "hrLine1": "HR",
-      "hrLine2": "unificate",
+      "hrLine2": "soluzioni unite",
       "payroll": "Elaborazioni paghe e approvazioni a più livelli",
       "portal": "Portale self-service per i dipendenti",
       "leave": "Calendario delle assenze, note spese e prestiti al personale",
       "payout": "File di pagamento per banca ed EcoCash",
       "free": "Ogni dipendente riceve WellSpend gratis",
       "setup": "Configurazione e demo per tutto il tuo team",
-      "arrange": "Organizza una demo o una chiacchierata"
+      "arrange": "Organizza una demo o una chiacchierata",
+      "priceNote": "I prezzi possono variare in base alle regioni e ai requisiti normativi operativi.",
+      "tncApply": "Si applicano i termini e le condizioni"
     },
     "cta": {
       "heading": "Pronto a vedere dove vanno i tuoi soldi?",
-      "text": "La registrazione si completa con un pagamento unico di $1 — poi l''app è tutta tua.",
-      "button": "Inizia ora — $1"
+      "text": "La registrazione si completa con un abbonamento annuale — poi l''app è tutta tua.",
+      "button": "Inizia ora"
     },
     "footer": {
       "features": "Funzionalità",
@@ -823,7 +827,21 @@
     },
     "payment": {
       "onceNotMonthly": "un anno, non mensilmente",
-      "tagline": "Un pagamento sblocca tutto per un anno."
+      "tagline": "Un pagamento sblocca tutto per un anno.",
+      "breakdownTitle": "Dettaglio prezzo",
+      "linePrincipal": "Importo principale — accesso annuale",
+      "lineTotal": "Totale",
+      "processing_paynow": "Commissione di elaborazione Paynow",
+      "processing_stripe": "Commissione di elaborazione carta",
+      "processing_ecocash": "Commissione per denaro mobile",
+      "processing_bank": "Commissione per bonifico bancario",
+      "fee_vat": "IVA",
+      "fee_withholding": "Ritenuta alla fonte",
+      "fee_digitalTax": "Imposta sui servizi digitali",
+      "fee_dataProtection": "Tassa per la protezione dei dati",
+      "fee_regulatory": "Tassa di conformità normativa",
+      "fee_salesTax": "Imposta sulle vendite",
+      "fee_telecom": "Tassa regolamentare delle telecomunicazioni"
     },
     "support": {
       "title": "Assistenza",
@@ -864,6 +882,10 @@
       "statusClosed": "Chiuso",
       "toastSaved": "Stato aggiornato.",
       "toastError": "Aggiornamento non riuscito — riprova."
+    },
+    "adm_analytics": {
+      "funnelPaid": "Pagato",
+      "eventPaid": "Pagato"
     }
   }
 }
