@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useCrud } from "@/lib/useCrud";
+import { useAppData } from "@/lib/AppDataContext";
+import { adminHeaders } from "@/lib/adminClient";
 import Icon from "@/components/Icon";
 import FilterBar from "@/components/FilterBar";
 
@@ -15,14 +17,50 @@ interface Payment {
   status: string;
 }
 
+interface PaymentRow {
+  id: number;
+  user_email: string | null;
+  provider: string;
+  method: string | null;
+  amount: number | null;
+  currency: string;
+  reference: string | null;
+  status: string;
+  paid_at: string;
+}
+
 const PAYMENTS_DATA: Payment[] = [];
 
 export default function AdminPaymentsPage() {
   const t = useTranslations("Pages.adm_finance_payments");
+  const { user } = useAppData();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
   const crud = useCrud(PAYMENTS_DATA, "Payment", ["paymentId", "organisation", "amount", "method", "date", "status"]);
+
+  const { setItems } = crud;
+  const refresh = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/payments", { headers: await adminHeaders(user?.email) });
+      const data = await res.json().catch(() => null);
+      const rows: PaymentRow[] = data?.payments ?? [];
+      setItems(rows.map((p) => ({
+        paymentId: p.reference || `PAY-${p.id}`,
+        organisation: p.user_email || "—",
+        amount: p.amount != null ? `${p.currency.toUpperCase()} ${p.amount.toFixed(2)}` : "—",
+        method: p.method ? `${p.provider} (${p.method})` : p.provider,
+        date: new Date(p.paid_at).toLocaleDateString("en-GB"),
+        status: p.status === "paid" ? "Completed" : "Pending",
+      })));
+    } catch {
+      /* keep empty state */
+    }
+  }, [user?.email, setItems]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   const filteredData = useMemo(() => {
     return crud.items.filter((payment) =>

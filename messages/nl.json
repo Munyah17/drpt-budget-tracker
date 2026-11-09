@@ -26,7 +26,8 @@
       "settings": "Instellingen",
       "profile": "Profiel",
       "wallet": "Wallet",
-      "banking": "Bankfeed"
+      "banking": "Bankfeed",
+      "support": "Support"
     },
     "admin": {
       "overview": "Overzicht",
@@ -56,7 +57,8 @@
       "risk-security_audit": "Auditlogs",
       "risk-security_access": "Toegangsbeheer",
       "risk-security_incidents": "Incidenten",
-      "settings": "Instellingen"
+      "settings": "Instellingen",
+      "support": "Support"
     },
     "corporate": {
       "overview": "Dashboard",
@@ -84,7 +86,8 @@
       "reports": "Rapporten",
       "integrations": "Integraties",
       "developer": "Developer & API",
-      "settings": "Instellingen"
+      "settings": "Instellingen",
+      "support": "Support"
     },
     "employee": {
       "employment": "Dienstverband",
@@ -94,7 +97,8 @@
       "borrowing-emp": "Vervroegd loon",
       "benefits": "Voordelen",
       "wallet": "Wallet",
-      "banking": "Bankfeed"
+      "banking": "Bankfeed",
+      "support": "Support"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "Sollicitatie ontvangen",
       "doneText": "Bedankt — je sollicitatie is verstuurd en het wervingsteam bekijkt hem."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Zakelijke klanten",
       "subtitle": "Beheer zakelijke klantorganisaties",
       "addCorporate": "Zakelijke klant toevoegen",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "per jaar, niet maandelijks",
       "tagline": "Eén betaling ontgrendelt alles voor een jaar."
+    },
+    "support": {
+      "title": "Support",
+      "subtitle": "Stuur ons een bericht — we antwoorden per e-mail.",
+      "fName": "Je naam",
+      "fEmail": "Je e-mailadres",
+      "fSubject": "Onderwerp",
+      "subjects": {
+        "account": "Account",
+        "payment": "Betaling en facturatie",
+        "bank": "Bankkoppeling",
+        "bug": "Bugrapport",
+        "feature": "Functieverzoek",
+        "other": "Iets anders"
+      },
+      "fMessage": "Bericht",
+      "fMessagePh": "Beschrijf je vraag of probleem…",
+      "sending": "Verzenden…",
+      "send": "Bericht versturen",
+      "replyNote": "We antwoorden op het e-mailadres hierboven — meestal binnen één werkdag.",
+      "sentTitle": "Bericht verzonden",
+      "sentBody": "Bedankt — we hebben je bericht ontvangen en antwoorden binnenkort per e-mail.",
+      "backHome": "Terug naar dashboard",
+      "toastSent": "Bericht verzonden — we antwoorden per e-mail.",
+      "toastError": "Verzenden mislukt — probeer het opnieuw."
+    },
+    "adm_support": {
+      "emptyState": "Nog geen supportberichten.",
+      "filterAll": "Alle statussen",
+      "refresh": "Vernieuwen",
+      "detailFrom": "Van",
+      "detailReceived": "Ontvangen",
+      "replyByEmail": "Beantwoord per e-mail",
+      "update": "Bijwerken",
+      "statusOpen": "Open",
+      "statusInProgress": "In behandeling",
+      "statusResolved": "Opgelost",
+      "statusClosed": "Gesloten",
+      "toastSaved": "Status bijgewerkt.",
+      "toastError": "Bijwerken mislukt — probeer opnieuw."
     }
   }
 }

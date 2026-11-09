@@ -14,6 +14,19 @@ interface Person {
   plan: string;
   expiry: string;
   status: string;
+  paymentMethod: string;
+  paidOn: string;
+  amount: string;
+  reference: string;
+}
+
+interface PaymentRow {
+  provider: string;
+  method: string | null;
+  amount: number | null;
+  currency: string;
+  reference: string | null;
+  paid_at: string;
 }
 
 interface ProfileRow {
@@ -21,6 +34,7 @@ interface ProfileRow {
   email: string;
   is_paid: boolean;
   paid_until: string | null;
+  payment: PaymentRow | null;
 }
 
 export default function AdminIndividualsPage() {
@@ -32,6 +46,7 @@ export default function AdminIndividualsPage() {
   const [entering, setEntering] = useState("");
   const crud = useCrud<Person>([], t("entityName"), ["name", "email", "plan", "expiry", "status"], {
     extraFields: ["password"],
+    readonlyFields: ["paymentMethod", "paidOn", "amount", "reference"],
     onCreate: async (v) => {
       await createAdminAccount(user?.email, {
         email: v.email,
@@ -49,13 +64,20 @@ export default function AdminIndividualsPage() {
     const data = await res.json().catch(() => null);
     const rows: ProfileRow[] = Array.isArray(data) ? data : data?.users ?? [];
     setItems(
-      rows.map((p) => ({
-        name: p.name || p.email,
-        email: p.email,
-        plan: p.is_paid ? "Paid" : "Free",
-        expiry: p.paid_until ? new Date(p.paid_until).toLocaleDateString("en-GB") : "—",
-        status: p.is_paid ? "Active" : "Expired",
-      }))
+      rows.map((p) => {
+        const pay = p.payment;
+        return {
+          name: p.name || p.email,
+          email: p.email,
+          plan: p.is_paid ? "Paid" : "Free",
+          expiry: p.paid_until ? new Date(p.paid_until).toLocaleDateString("en-GB") : "—",
+          status: p.is_paid ? "Active" : "Expired",
+          paymentMethod: pay ? (pay.method ? `${pay.provider} (${pay.method})` : pay.provider) : "—",
+          paidOn: pay ? new Date(pay.paid_at).toLocaleDateString("en-GB") : "—",
+          amount: pay?.amount != null ? `${pay.currency.toUpperCase()} ${pay.amount.toFixed(2)}` : "—",
+          reference: pay?.reference || "—",
+        };
+      })
     );
   }, [user?.email, setItems]);
 

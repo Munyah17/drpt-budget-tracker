@@ -26,7 +26,8 @@
       "settings": "Izilungiselelo",
       "profile": "Iphrofayela",
       "wallet": "Iwalethi",
-      "banking": "OkweBhange"
+      "banking": "OkweBhange",
+      "support": "Usizo"
     },
     "admin": {
       "overview": "Isishwankathelo",
@@ -56,7 +57,8 @@
       "risk-security_audit": "Izibhalo Zokucwaninga",
       "risk-security_access": "Ukulawula Ukungena",
       "risk-security_incidents": "Izigameko",
-      "settings": "Izilungiselelo"
+      "settings": "Izilungiselelo",
+      "support": "Usizo"
     },
     "corporate": {
       "overview": "Ideshibhodi",
@@ -84,7 +86,8 @@
       "reports": "Imibiko",
       "integrations": "Ukuhlanganiswa",
       "developer": "Abathuthukisi Ne-API",
-      "settings": "Izilungiselelo"
+      "settings": "Izilungiselelo",
+      "support": "Usizo"
     },
     "employee": {
       "employment": "Ukuqashwa",
@@ -94,7 +97,8 @@
       "borrowing-emp": "Umholo Wangaphambili",
       "benefits": "Izinzuzo",
       "wallet": "Iwalethi",
-      "banking": "OkweBhange"
+      "banking": "OkweBhange",
+      "support": "Usizo"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "Isicelo sitholiwe",
       "doneText": "Siyabonga — isicelo sakho sithunyelwe futhi iqembu eliqashayo lizosibuyekeza."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Amakhasimende Ezinkampani",
       "subtitle": "Phatha izinhlangano zamakhasimende ezinkampani",
       "addCorporate": "Engeza ikhasimende lenkampani",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "ngonyaka, hhayi ngenyanga",
       "tagline": "Inkokhelo eyodwa ivula yonke into unyaka."
+    },
+    "support": {
+      "title": "Usizo",
+      "subtitle": "Sithumele umyalezo — siyaphendula nge-imeyili.",
+      "fName": "Igama lakho",
+      "fEmail": "I-imeyili yakho",
+      "fSubject": "Isihloko",
+      "subjects": {
+        "account": "I-akhawunti",
+        "payment": "Inkokhelo nokukhokha",
+        "bank": "Uxhunyeko lwensimba",
+        "bug": "Ukubika iphutha",
+        "feature": "Isicelo sesici",
+        "other": "Okunye"
+      },
+      "fMessage": "Umyalezo",
+      "fMessagePh": "Chaza umbuzo noma inkinga yakho…",
+      "sending": "Ithumela…",
+      "send": "Thumela umyalezo",
+      "replyNote": "Siphendula kwi-imeyili engezansi — imvamisa kungakapheli usuku olulodwa lomsebenzi.",
+      "sentTitle": "Umyalezo uthunyelwe",
+      "sentBody": "Siyabonga — siye wavuma umyalezo wakho futhi sizopendula maduzane nge-imeyili.",
+      "backHome": "Buyela kwidashibhodi",
+      "toastSent": "Umyalezo uthunyelwe — sizopendula nge-imeyili.",
+      "toastError": "Ayikwazanga ukuthumela — sicela uzame futhi."
+    },
+    "adm_support": {
+      "emptyState": "Alukho umyalezo wesizo okwamanje.",
+      "filterAll": "Konke izimo",
+      "refresh": "Vuselela",
+      "detailFrom": "Kumuntu",
+      "detailReceived": "Kuthunyelwe",
+      "replyByEmail": "Phendula nge-imeyili",
+      "update": "Buyekeza",
+      "statusOpen": "Evuliwe",
+      "statusInProgress": "Iyaqhubeka",
+      "statusResolved": "Ixazululiwe",
+      "statusClosed": "Ivaliwe",
+      "toastSaved": "Isimo sibuyekeziwe.",
+      "toastError": "Ukubuyekeza kwehlulekile — sicela uzame futhi."
     }
   }
 }

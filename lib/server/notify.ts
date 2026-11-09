@@ -18,7 +18,8 @@ export type NotifyEvent =
   | "signup_failed"
   | "payment_success"
   | "payment_failed"
-  | "transfer_intent";
+  | "transfer_intent"
+  | "support_message";
 
 const EVENT_META: Record<NotifyEvent, { emoji: string; label: string }> = {
   signup_success:  { emoji: "🆕", label: "New signup" },
@@ -26,6 +27,7 @@ const EVENT_META: Record<NotifyEvent, { emoji: string; label: string }> = {
   payment_success: { emoji: "✅", label: "Payment received" },
   payment_failed:  { emoji: "❌", label: "Payment failed" },
   transfer_intent: { emoji: "🏦", label: "Direct transfer started" },
+  support_message: { emoji: "💬", label: "Support message" },
 };
 
 /** Shared SMTP transport — null when SMTP_* env is not configured. */

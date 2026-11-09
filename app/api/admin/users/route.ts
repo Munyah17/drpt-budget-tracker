@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbInsert } from "@/lib/server/supabaseAdmin";
 import { isAdminRequest } from "@/lib/server/admin";
 import { dispatchWebhook } from "@/lib/server/api";
+import { recordPayment } from "@/lib/server/payments";
 
 export const runtime = "nodejs";
 
@@ -26,8 +27,25 @@ export async function GET(req: NextRequest) {
   const corporateId = req.nextUrl.searchParams.get("corporate_id");
   if (corporateId) q.unshift(`corporate_id=eq.${encodeURIComponent(corporateId)}`);
 
-  const rows = await sbGet("profiles", q.join("&"));
-  return NextResponse.json({ users: rows });
+  const rows = await sbGet<{ id: string }>("profiles", q.join("&"));
+
+  // Latest payment per user for traceability (method, amount, reference).
+  // Empty when the `payments` table hasn't been created yet — sbGet returns [].
+  const ids = rows.map((r) => r.id).filter(Boolean);
+  const payments = ids.length
+    ? await sbGet<{ user_id: string; provider: string; method: string | null; amount: number | null; currency: string; reference: string | null; paid_at: string }>(
+        "payments",
+        `user_id=in.(${ids.join(",")})&order=paid_at.desc&select=user_id,provider,method,amount,currency,reference,paid_at`
+      )
+    : [];
+  const latestByUser = new Map<string, (typeof payments)[number]>();
+  for (const pay of payments) {
+    if (pay.user_id && !latestByUser.has(pay.user_id)) latestByUser.set(pay.user_id, pay);
+  }
+
+  return NextResponse.json({
+    users: rows.map((r) => ({ ...r, payment: latestByUser.get(r.id) ?? null })),
+  });
 }
 
 const SUPABASE_URL =

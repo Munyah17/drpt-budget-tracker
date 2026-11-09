@@ -26,7 +26,8 @@
       "settings": "الإعدادات",
       "profile": "الملف الشخصي",
       "wallet": "المحفظة",
-      "banking": "الموجز البنكي"
+      "banking": "الموجز البنكي",
+      "support": "الدعم"
     },
     "admin": {
       "overview": "نظرة عامة",
@@ -56,7 +57,8 @@
       "risk-security_audit": "سجلات التدقيق",
       "risk-security_access": "التحكم في الوصول",
       "risk-security_incidents": "الحوادث",
-      "settings": "الإعدادات"
+      "settings": "الإعدادات",
+      "support": "الدعم"
     },
     "corporate": {
       "overview": "لوحة التحكم",
@@ -84,7 +86,8 @@
       "reports": "التقارير",
       "integrations": "التكاملات",
       "developer": "المطوّرون وواجهة API",
-      "settings": "الإعدادات"
+      "settings": "الإعدادات",
+      "support": "الدعم"
     },
     "employee": {
       "employment": "التوظيف",
@@ -94,7 +97,8 @@
       "borrowing-emp": "الراتب المبكر",
       "benefits": "المزايا",
       "wallet": "المحفظة",
-      "banking": "الموجز البنكي"
+      "banking": "الموجز البنكي",
+      "support": "الدعم"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "تم استلام طلبك",
       "doneText": "شكرًا لك — تم إرسال طلبك وسيراجعه فريق التوظيف."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "العملاء من الشركات",
       "subtitle": "أدِر مؤسسات العملاء من الشركات",
       "addCorporate": "إضافة عميل شركة",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "سنة وليس شهرية",
       "tagline": "دفعة واحدة تفتح كل شيء لمدة عام."
+    },
+    "support": {
+      "title": "الدعم",
+      "subtitle": "أرسل لنا رسالة — نرد عبر البريد الإلكتروني.",
+      "fName": "اسمك",
+      "fEmail": "بريدك الإلكتروني",
+      "fSubject": "الموضوع",
+      "subjects": {
+        "account": "الحساب",
+        "payment": "الدفع والفوترة",
+        "bank": "ربط البنك",
+        "bug": "الإبلاغ عن خطأ",
+        "feature": "طلب ميزة",
+        "other": "أمر آخر"
+      },
+      "fMessage": "الرسالة",
+      "fMessagePh": "صف سؤالك أو مشكلتك…",
+      "sending": "جارٍ الإرسال…",
+      "send": "إرسال الرسالة",
+      "replyNote": "نرد على عنوان البريد الإلكتروني أعلاه — عادة خلال يوم عمل واحد.",
+      "sentTitle": "تم إرسال الرسالة",
+      "sentBody": "شكرًا — استلمنا رسالتك وسنرد قريبًا عبر البريد الإلكتروني.",
+      "backHome": "العودة إلى لوحة التحكم",
+      "toastSent": "تم إرسال الرسالة — سنرد عبر البريد الإلكتروني.",
+      "toastError": "تعذر الإرسال — حاول مرة أخرى."
+    },
+    "adm_support": {
+      "emptyState": "لا توجد رسائل دعم بعد.",
+      "filterAll": "كل الحالات",
+      "refresh": "تحديث",
+      "detailFrom": "من",
+      "detailReceived": "تم الاستلام",
+      "replyByEmail": "الرد عبر البريد",
+      "update": "تحديث",
+      "statusOpen": "مفتوحة",
+      "statusInProgress": "قيد المعالجة",
+      "statusResolved": "تم الحل",
+      "statusClosed": "مغلقة",
+      "toastSaved": "تم تحديث الحالة.",
+      "toastError": "فشل التحديث — حاول مرة أخرى."
     }
   }
 }

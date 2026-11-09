@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { markProfilePaid } from "@/lib/server/payments";
+import { markProfilePaid, recordPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
 
 /**
@@ -26,7 +26,20 @@ export async function GET(req: NextRequest) {
       });
       const session = await res.json();
       const paid = res.ok && session.payment_status === "paid";
-      if (paid) await markProfilePaid(uid || session.client_reference_id || "");
+      const userId = uid || session.client_reference_id || "";
+      if (paid) {
+        await markProfilePaid(userId);
+        const customer = session.customer_details as Record<string, string> | undefined;
+        await recordPayment({
+          userId,
+          userEmail: customer?.email ?? (session.customer_email as string) ?? "",
+          provider: "stripe",
+          method: "card",
+          amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
+          currency: (session.currency as string) ?? "usd",
+          reference: sessionId,
+        });
+      }
       return NextResponse.json({ paid });
     }
 
@@ -41,6 +54,15 @@ export async function GET(req: NextRequest) {
       const paid = status === "paid" || status === "awaiting delivery" || status === "delivered";
       if (paid) {
         await markProfilePaid(uid);
+        await recordPayment({
+          userId: uid,
+          provider: "paynow",
+          method: "paynow",
+          amount: data.get("amount") ? Number(data.get("amount")) : null,
+          currency: "usd",
+          reference: data.get("reference") ?? undefined,
+          meta: { paynowreference: data.get("paynowreference") ?? "", status },
+        });
         await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${uid}` });
       } else if (status === "cancelled" || status === "failed" || status === "disputed") {
         await notifyAdmin("payment_failed", { method: "paynow", detail: `status "${status}", uid ${uid}` });

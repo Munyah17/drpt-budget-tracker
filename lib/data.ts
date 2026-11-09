@@ -58,6 +58,7 @@ export const NAV_ITEMS = [
   { id: "analytics", label: "Analytics", icon: "bar-chart-3" },
   { id: "ai", label: "AI Assistant", icon: "sparkles" },
   { id: "calendar", label: "Calendar", icon: "calendar" },
+  { id: "support", label: "Support", icon: "help-circle" },
   { id: "settings", label: "Settings", icon: "settings" },
   { id: "profile", label: "Profile", icon: "user-circle" },
 ];
@@ -125,7 +126,8 @@ export const ADMIN_NAV_ITEMS = [
     ]
   },
   { id: "reports", label: "Reports", icon: "file-text" },
-  { 
+  { id: "support", label: "Support", icon: "help-circle" },
+  {
     id: "risk-security", 
     label: "Risk & Security", 
     icon: "shield",
@@ -183,6 +185,8 @@ export const CORPORATE_NAV_ITEMS = [
   { id: "reports", label: "Reports", icon: "file-text" },
   { id: "integrations", label: "Integrations", icon: "plug" },
   { id: "developer", label: "Developer & API", icon: "key" },
+  // Shared user-facing support page lives at /support, not under /corporate.
+  { id: "support", label: "Support", icon: "help-circle", href: "/support" },
   { id: "settings", label: "Settings", icon: "settings" },
 ];
 

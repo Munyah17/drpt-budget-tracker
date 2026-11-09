@@ -26,7 +26,8 @@
       "settings": "Nastavení",
       "profile": "Profil",
       "wallet": "Peněženka",
-      "banking": "Bankovní kanál"
+      "banking": "Bankovní kanál",
+      "support": "Podpora"
     },
     "admin": {
       "overview": "Přehled",
@@ -56,7 +57,8 @@
       "risk-security_audit": "Auditní záznamy",
       "risk-security_access": "Řízení přístupu",
       "risk-security_incidents": "Incidenty",
-      "settings": "Nastavení"
+      "settings": "Nastavení",
+      "support": "Podpora"
     },
     "corporate": {
       "overview": "Přehled",
@@ -84,7 +86,8 @@
       "reports": "Reporty",
       "integrations": "Integrace",
       "developer": "Vývoj a API",
-      "settings": "Nastavení"
+      "settings": "Nastavení",
+      "support": "Podpora"
     },
     "employee": {
       "employment": "Zaměstnání",
@@ -94,7 +97,8 @@
       "borrowing-emp": "Předčasná výplata",
       "benefits": "Benefity",
       "wallet": "Peněženka",
-      "banking": "Bankovní kanál"
+      "banking": "Bankovní kanál",
+      "support": "Podpora"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "Přihláška přijata",
       "doneText": "Děkujeme — tvoje přihláška byla odeslána a náborový tým si ji projde."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Firemní klienti",
       "subtitle": "Správa organizací firemních klientů",
       "addCorporate": "Přidat firemního klienta",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "rok, ne měsíčně",
       "tagline": "Jedna platba odemkne vše na rok."
+    },
+    "support": {
+      "title": "Podpora",
+      "subtitle": "Napište nám zprávu — odpovídáme e-mailem.",
+      "fName": "Vaše jméno",
+      "fEmail": "Váš e-mail",
+      "fSubject": "Předmět",
+      "subjects": {
+        "account": "Účet",
+        "payment": "Platba a fakturace",
+        "bank": "Bankovní propojení",
+        "bug": "Nahlášení chyby",
+        "feature": "Žádost o funkci",
+        "other": "Něco jiného"
+      },
+      "fMessage": "Zpráva",
+      "fMessagePh": "Popište svůj dotaz nebo problém…",
+      "sending": "Odesílání…",
+      "send": "Odeslat zprávu",
+      "replyNote": "Odpovídáme na e-mail uvedený výše — obvykle do jednoho pracovního dne.",
+      "sentTitle": "Zpráva odeslána",
+      "sentBody": "Děkujeme — vaši zprávu jsme obdrželi a brzy odpovíme e-mailem.",
+      "backHome": "Zpět na přehled",
+      "toastSent": "Zpráva odeslána — odpovíme e-mailem.",
+      "toastError": "Odeslání se nezdařilo — zkuste to znovu."
+    },
+    "adm_support": {
+      "emptyState": "Zatím žádné zprávy podpory.",
+      "filterAll": "Všechny stavy",
+      "refresh": "Obnovit",
+      "detailFrom": "Od",
+      "detailReceived": "Přijato",
+      "replyByEmail": "Odpovědět e-mailem",
+      "update": "Aktualizovat",
+      "statusOpen": "Otevřeno",
+      "statusInProgress": "Probíhá",
+      "statusResolved": "Vyřešeno",
+      "statusClosed": "Uzavřeno",
+      "toastSaved": "Stav aktualizován.",
+      "toastError": "Aktualizace se nezdařila — zkuste to znovu."
     }
   }
 }

@@ -78,14 +78,14 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="landing">
+    <div className="landing" id="top">
       {/* Nav */}
       <nav className="landing-nav">
         <div className="landing-logo">
           WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
         </div>
         <div className="landing-nav-links">
-          <a href="#features" className="nav-link">{t("nav.features")}</a>
+          <a href="#top" className="nav-link nav-link-home">{t("nav.home")}</a>
           <a href="#how" className="nav-link">{t("nav.how")}</a>
           <a href="#business" className="nav-link">{t("nav.business")}</a>
           <a href="#pricing" className="nav-link">{t("nav.pricing")}</a>

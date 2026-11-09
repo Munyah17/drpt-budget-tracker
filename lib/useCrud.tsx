@@ -24,6 +24,9 @@ export interface UseCrudOptions<T> {
    * (e.g. a server-generated id).
    */
   onCreate?: (values: RowRecord) => Promise<Partial<T> | void>;
+  /** Record keys that are display-only — shown read-only even in edit mode
+   *  (e.g. fetched payment details that aren't editable). */
+  readonlyFields?: string[];
 }
 
 /**
@@ -94,6 +97,7 @@ export function useCrud<T extends object>(
             : t("crud_details", { label })
       }
       record={modal.record}
+      readonlyKeys={options.readonlyFields}
       onClose={() => setModal(null)}
       onSave={handleSave}
       onDelete={modal.mode === "view" ? handleDelete : undefined}

@@ -26,7 +26,8 @@
       "settings": "Settings",
       "profile": "Profile",
       "wallet": "Wallet",
-      "banking": "Bank Feed"
+      "banking": "Bank Feed",
+      "support": "Support"
     },
     "admin": {
       "overview": "Overview",
@@ -59,7 +60,8 @@
       "risk-security_audit": "Audit Logs",
       "risk-security_access": "Access Control",
       "risk-security_incidents": "Incidents",
-      "settings": "Settings"
+      "settings": "Settings",
+      "support": "Support"
     },
     "corporate": {
       "overview": "Dashboard",
@@ -87,7 +89,8 @@
       "reports": "Reports",
       "integrations": "Integrations",
       "developer": "Developer & API",
-      "settings": "Settings"
+      "settings": "Settings",
+      "support": "Support"
     },
     "employee": {
       "employment": "Employment",
@@ -97,7 +100,8 @@
       "borrowing-emp": "Early Pay",
       "benefits": "Benefits",
       "wallet": "Wallet",
-      "banking": "Bank Feed"
+      "banking": "Bank Feed",
+      "support": "Support"
     }
   },
   "Shell": {
@@ -228,6 +232,7 @@
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",
     "nav": {
+      "home": "Home",
       "features": "Features",
       "how": "How it works",
       "business": "For Business",
@@ -985,7 +990,7 @@
       "thStatus": "Status",
       "emptyState": "No contracts match your search."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Corporate Clients",
       "subtitle": "Manage corporate client organisations",
       "addCorporate": "Add Corporate",
@@ -1368,7 +1373,20 @@
       "colStatus": "Status",
       "colPriority": "Priority",
       "colCreated": "Created",
-      "colActions": "Actions"
+      "colActions": "Actions",
+      "emptyState": "No support messages yet.",
+      "filterAll": "All statuses",
+      "refresh": "Refresh",
+      "detailFrom": "From",
+      "detailReceived": "Received",
+      "replyByEmail": "Reply by email",
+      "update": "Update",
+      "statusOpen": "Open",
+      "statusInProgress": "In progress",
+      "statusResolved": "Resolved",
+      "statusClosed": "Closed",
+      "toastSaved": "Status updated.",
+      "toastError": "Update failed — try again."
     },
     "adm_system_health": {
       "title": "System Health",
@@ -3488,6 +3506,31 @@
       "errCheckout": "Couldn't start the checkout — try again",
       "lockedNote": "Your bank is connected — unlock this feed to see and import your transactions. One payment, this bank only.",
       "unlockBtn": "Unlock this bank"
+    },
+    "support": {
+      "title": "Support",
+      "subtitle": "Send us a message — we reply by email.",
+      "fName": "Your name",
+      "fEmail": "Your email",
+      "fSubject": "Subject",
+      "subjects": {
+        "account": "Account",
+        "payment": "Payment & billing",
+        "bank": "Bank connection",
+        "bug": "Bug report",
+        "feature": "Feature request",
+        "other": "Something else"
+      },
+      "fMessage": "Message",
+      "fMessagePh": "Describe your question or issue…",
+      "sending": "Sending…",
+      "send": "Send message",
+      "replyNote": "We reply to the email address above — usually within one business day.",
+      "sentTitle": "Message sent",
+      "sentBody": "Thanks — we have received your message and will reply by email shortly.",
+      "backHome": "Back to dashboard",
+      "toastSent": "Message sent — we will reply by email.",
+      "toastError": "Could not send — please try again."
     }
   },
   "Native": {

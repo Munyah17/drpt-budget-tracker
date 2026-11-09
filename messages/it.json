@@ -26,7 +26,8 @@
       "settings": "Impostazioni",
       "profile": "Profilo",
       "wallet": "Portafoglio",
-      "banking": "Flusso bancario"
+      "banking": "Flusso bancario",
+      "support": "Assistenza"
     },
     "admin": {
       "overview": "Panoramica",
@@ -56,7 +57,8 @@
       "risk-security_audit": "Log di audit",
       "risk-security_access": "Controllo accessi",
       "risk-security_incidents": "Incidenti",
-      "settings": "Impostazioni"
+      "settings": "Impostazioni",
+      "support": "Assistenza"
     },
     "corporate": {
       "overview": "Dashboard",
@@ -84,7 +86,8 @@
       "reports": "Report",
       "integrations": "Integrazioni",
       "developer": "Sviluppatore e API",
-      "settings": "Impostazioni"
+      "settings": "Impostazioni",
+      "support": "Assistenza"
     },
     "employee": {
       "employment": "Impiego",
@@ -94,7 +97,8 @@
       "borrowing-emp": "Paga Anticipata",
       "benefits": "Benefit",
       "wallet": "Portafoglio",
-      "banking": "Flusso bancario"
+      "banking": "Flusso bancario",
+      "support": "Assistenza"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "Candidatura ricevuta",
       "doneText": "Grazie — la tua candidatura è stata inviata e il team di selezione la esaminerà."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Clienti aziendali",
       "subtitle": "Gestisci le organizzazioni dei clienti aziendali",
       "addCorporate": "Aggiungi cliente aziendale",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "un anno, non mensilmente",
       "tagline": "Un pagamento sblocca tutto per un anno."
+    },
+    "support": {
+      "title": "Assistenza",
+      "subtitle": "Inviaci un messaggio — rispondiamo via e-mail.",
+      "fName": "Il tuo nome",
+      "fEmail": "La tua e-mail",
+      "fSubject": "Oggetto",
+      "subjects": {
+        "account": "Account",
+        "payment": "Pagamento e fatturazione",
+        "bank": "Connessione bancaria",
+        "bug": "Segnalazione bug",
+        "feature": "Richiesta di funzionalità",
+        "other": "Altro"
+      },
+      "fMessage": "Messaggio",
+      "fMessagePh": "Descrivi la tua domanda o il tuo problema…",
+      "sending": "Invio…",
+      "send": "Invia messaggio",
+      "replyNote": "Rispondiamo all''indirizzo e-mail indicato sopra — di solito entro un giorno lavorativo.",
+      "sentTitle": "Messaggio inviato",
+      "sentBody": "Grazie — abbiamo ricevuto il tuo messaggio e ti risponderemo presto via e-mail.",
+      "backHome": "Torna alla dashboard",
+      "toastSent": "Messaggio inviato — ti risponderemo via e-mail.",
+      "toastError": "Invio non riuscito — riprova."
+    },
+    "adm_support": {
+      "emptyState": "Nessun messaggio di supporto per ora.",
+      "filterAll": "Tutti gli stati",
+      "refresh": "Aggiorna",
+      "detailFrom": "Da",
+      "detailReceived": "Ricevuto",
+      "replyByEmail": "Rispondi via e-mail",
+      "update": "Aggiorna",
+      "statusOpen": "Aperto",
+      "statusInProgress": "In corso",
+      "statusResolved": "Risolto",
+      "statusClosed": "Chiuso",
+      "toastSaved": "Stato aggiornato.",
+      "toastError": "Aggiornamento non riuscito — riprova."
     }
   }
 }

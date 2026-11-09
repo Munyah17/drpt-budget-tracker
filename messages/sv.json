@@ -26,7 +26,8 @@
       "settings": "Inställningar",
       "profile": "Profil",
       "wallet": "Plånbok",
-      "banking": "Bankflöde"
+      "banking": "Bankflöde",
+      "support": "Support"
     },
     "admin": {
       "overview": "Översikt",
@@ -56,7 +57,8 @@
       "risk-security_audit": "Revisionsloggar",
       "risk-security_access": "Åtkomstkontroll",
       "risk-security_incidents": "Incidenter",
-      "settings": "Inställningar"
+      "settings": "Inställningar",
+      "support": "Support"
     },
     "corporate": {
       "overview": "Översikt",
@@ -84,7 +86,8 @@
       "reports": "Rapporter",
       "integrations": "Integrationer",
       "developer": "Utvecklare & API",
-      "settings": "Inställningar"
+      "settings": "Inställningar",
+      "support": "Support"
     },
     "employee": {
       "employment": "Anställning",
@@ -94,7 +97,8 @@
       "borrowing-emp": "Lön i förtid",
       "benefits": "Förmåner",
       "wallet": "Plånbok",
-      "banking": "Bankflöde"
+      "banking": "Bankflöde",
+      "support": "Support"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "Ansökan mottagen",
       "doneText": "Tack — din ansökan har skickats och rekryteringsteamet kommer att granska den."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Företagskunder",
       "subtitle": "Hantera företagskunders organisationer",
       "addCorporate": "Lägg till företagskund",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "ett år, inte varje månad",
       "tagline": "En betalning låser upp allt i ett år."
+    },
+    "support": {
+      "title": "Support",
+      "subtitle": "Skicka ett meddelande — vi svarar via e-post.",
+      "fName": "Ditt namn",
+      "fEmail": "Din e-post",
+      "fSubject": "Ämne",
+      "subjects": {
+        "account": "Konto",
+        "payment": "Betalning och fakturering",
+        "bank": "Bankanslutning",
+        "bug": "Felrapport",
+        "feature": "Funktionsförfrågan",
+        "other": "Något annat"
+      },
+      "fMessage": "Meddelande",
+      "fMessagePh": "Beskriv din fråga eller ditt problem…",
+      "sending": "Skickar…",
+      "send": "Skicka meddelande",
+      "replyNote": "Vi svarar till e-postadressen ovan — vanligtvis inom en arbetsdag.",
+      "sentTitle": "Meddelande skickat",
+      "sentBody": "Tack — vi har tagit emot ditt meddelande och svarar snart via e-post.",
+      "backHome": "Tillbaka till översikten",
+      "toastSent": "Meddelande skickat — vi svarar via e-post.",
+      "toastError": "Kunde inte skicka — försök igen."
+    },
+    "adm_support": {
+      "emptyState": "Inga supportmeddelanden ännu.",
+      "filterAll": "Alla statusar",
+      "refresh": "Uppdatera",
+      "detailFrom": "Från",
+      "detailReceived": "Mottaget",
+      "replyByEmail": "Svara via e-post",
+      "update": "Uppdatera",
+      "statusOpen": "Öppen",
+      "statusInProgress": "Pågår",
+      "statusResolved": "Löst",
+      "statusClosed": "Stängd",
+      "toastSaved": "Status uppdaterad.",
+      "toastError": "Kunde inte uppdatera — försök igen."
     }
   }
 }

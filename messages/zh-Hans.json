@@ -26,7 +26,8 @@
       "settings": "设置",
       "profile": "个人资料",
       "wallet": "钱包",
-      "banking": "银行存款"
+      "banking": "银行存款",
+      "support": "支持"
     },
     "admin": {
       "overview": "概览",
@@ -56,7 +57,8 @@
       "risk-security_audit": "审计日志",
       "risk-security_access": "访问控制",
       "risk-security_incidents": "事件",
-      "settings": "设置"
+      "settings": "设置",
+      "support": "支持"
     },
     "corporate": {
       "overview": "仪表盘",
@@ -84,7 +86,8 @@
       "reports": "报表",
       "integrations": "集成",
       "developer": "开发者与 API",
-      "settings": "设置"
+      "settings": "设置",
+      "support": "支持"
     },
     "employee": {
       "employment": "雇佣信息",
@@ -94,7 +97,8 @@
       "borrowing-emp": "提前支薪",
       "benefits": "福利",
       "wallet": "钱包",
-      "banking": "银行存款"
+      "banking": "银行存款",
+      "support": "支持"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "申请已收到",
       "doneText": "感谢您 — 您的申请已提交,招聘团队将进行审核。"
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "企业客户",
       "subtitle": "管理企业客户的机构",
       "addCorporate": "添加企业客户",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "一年，而不是每月",
       "tagline": "一次付款即可解锁一年内的所有内容。"
+    },
+    "support": {
+      "title": "支持",
+      "subtitle": "给我们发消息——我们会通过电子邮件回复。",
+      "fName": "您的姓名",
+      "fEmail": "您的邮箱",
+      "fSubject": "主题",
+      "subjects": {
+        "account": "账户",
+        "payment": "付款与账单",
+        "bank": "银行连接",
+        "bug": "错误报告",
+        "feature": "功能请求",
+        "other": "其他问题"
+      },
+      "fMessage": "留言",
+      "fMessagePh": "请描述您的问题或疑问……",
+      "sending": "发送中……",
+      "send": "发送消息",
+      "replyNote": "我们会回复到上方填写的邮箱——通常在一个工作日内。",
+      "sentTitle": "消息已发送",
+      "sentBody": "谢谢——我们已收到您的消息，将尽快通过电子邮件回复您。",
+      "backHome": "返回仪表板",
+      "toastSent": "消息已发送——我们会通过电子邮件回复。",
+      "toastError": "发送失败——请重试。"
+    },
+    "adm_support": {
+      "emptyState": "暂无支持消息。",
+      "filterAll": "所有状态",
+      "refresh": "刷新",
+      "detailFrom": "发件人",
+      "detailReceived": "接收时间",
+      "replyByEmail": "通过邮件回复",
+      "update": "更新",
+      "statusOpen": "待处理",
+      "statusInProgress": "处理中",
+      "statusResolved": "已解决",
+      "statusClosed": "已关闭",
+      "toastSaved": "状态已更新。",
+      "toastError": "更新失败——请重试。"
     }
   }
 }

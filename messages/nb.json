@@ -26,7 +26,8 @@
       "settings": "Innstillinger",
       "profile": "Profil",
       "wallet": "Lommebok",
-      "banking": "Bankflyt"
+      "banking": "Bankflyt",
+      "support": "Brukerstøtte"
     },
     "admin": {
       "overview": "Oversikt",
@@ -56,7 +57,8 @@
       "risk-security_audit": "Revisjonslogger",
       "risk-security_access": "Tilgangskontroll",
       "risk-security_incidents": "Hendelser",
-      "settings": "Innstillinger"
+      "settings": "Innstillinger",
+      "support": "Brukerstøtte"
     },
     "corporate": {
       "overview": "Oversikt",
@@ -84,7 +86,8 @@
       "reports": "Rapporter",
       "integrations": "Integrasjoner",
       "developer": "Utvikler & API",
-      "settings": "Innstillinger"
+      "settings": "Innstillinger",
+      "support": "Brukerstøtte"
     },
     "employee": {
       "employment": "Ansettelse",
@@ -94,7 +97,8 @@
       "borrowing-emp": "Tidig lønn",
       "benefits": "Fordeler",
       "wallet": "Lommebok",
-      "banking": "Bankflyt"
+      "banking": "Bankflyt",
+      "support": "Brukerstøtte"
     }
   },
   "Shell": {
@@ -684,7 +688,7 @@
       "doneTitle": "Søknad mottatt",
       "doneText": "Takk — søknaden din er sendt inn, og rekrutteringsteamet vil se gjennom den."
     },
-    "adm_orgs_corporates": {
+    "adm_corporates": {
       "title": "Bedriftskunder",
       "subtitle": "Administrer organisasjoner for bedriftskunder",
       "addCorporate": "Legg til bedriftskunde",
@@ -820,6 +824,46 @@
     "payment": {
       "onceNotMonthly": "et år, ikke månedlig",
       "tagline": "Én betaling låser opp alt i et år."
+    },
+    "support": {
+      "title": "Brukerstøtte",
+      "subtitle": "Send oss en melding — vi svarer på e-post.",
+      "fName": "Navnet ditt",
+      "fEmail": "E-posten din",
+      "fSubject": "Emne",
+      "subjects": {
+        "account": "Konto",
+        "payment": "Betaling og fakturering",
+        "bank": "Bankkobling",
+        "bug": "Feilrapport",
+        "feature": "Funksjonsforespørsel",
+        "other": "Noe annet"
+      },
+      "fMessage": "Melding",
+      "fMessagePh": "Beskriv spørsmålet eller problemet ditt…",
+      "sending": "Sender…",
+      "send": "Send melding",
+      "replyNote": "Vi svarer til e-postadressen ovenfor — vanligvis innen én virkedag.",
+      "sentTitle": "Melding sendt",
+      "sentBody": "Takk — vi har mottatt meldingen din og svarer snart på e-post.",
+      "backHome": "Tilbake til dashbordet",
+      "toastSent": "Melding sendt — vi svarer på e-post.",
+      "toastError": "Kunne ikke sende — prøv igjen."
+    },
+    "adm_support": {
+      "emptyState": "Ingen brukerstøttemeldinger ennå.",
+      "filterAll": "Alle statuser",
+      "refresh": "Oppdater",
+      "detailFrom": "Fra",
+      "detailReceived": "Mottatt",
+      "replyByEmail": "Svar på e-post",
+      "update": "Oppdater",
+      "statusOpen": "Åpen",
+      "statusInProgress": "Under arbeid",
+      "statusResolved": "Løst",
+      "statusClosed": "Lukket",
+      "toastSaved": "Status oppdatert.",
+      "toastError": "Oppdatering mislyktes — prøv igjen."
     }
   }
 }

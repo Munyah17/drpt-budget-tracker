@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { markProfilePaid } from "@/lib/server/payments";
+import { markProfilePaid, recordPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
 import { sbUpsert } from "@/lib/server/supabaseAdmin";
 
@@ -97,6 +97,15 @@ export async function POST(req: NextRequest) {
     if (uid && paid) {
       await markProfilePaid(uid);
       const customer = session.customer_details as Record<string, string> | undefined;
+      await recordPayment({
+        userId: uid,
+        userEmail: customer?.email ?? (session.customer_email as string) ?? "",
+        provider: "stripe",
+        method: "card",
+        amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
+        currency: (session.currency as string) ?? "usd",
+        reference: String(session.id ?? ""),
+      });
       await notifyAdmin("payment_success", {
         email: customer?.email ?? (session.customer_email as string) ?? "",
         name: customer?.name ?? "",
