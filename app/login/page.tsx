@@ -34,7 +34,6 @@ function LoginForm() {
   const [remember, setRemember] = useState(false);
   const native = useIsNative();
   const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
-  const [step, setStep] = useState(1);
   // Signup is allowed everywhere. On the web it continues to the $1
   // activation; in the iPhone app it lands on the free tier instead —
   // registration isn't a purchase, so no IAP is required.
@@ -70,15 +69,6 @@ function LoginForm() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
-    if (signup && step === 1) {
-      if (password !== confirmPassword) {
-        toast(t("pwMismatch"), "x");
-        return;
-      }
-      setStep(2);
-      return;
-    }
-
     setSubmitting(true);
 
     if (signup) {
@@ -95,46 +85,34 @@ function LoginForm() {
         country,
         referral_code: referralCode || null,
       };
-      // Create account — registration completes only after the $1 payment
-      const { data, error } = await (await import("@/lib/supabase")).supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : 'https://drpt-budget-tracker.vercel.app',
-          data: kyc,
-        },
-      });
+      // Create account server-side via the admin API — Supabase's built-in
+      // confirmation email is rate-limited and was failing signups, and the
+      // route confirms the email + writes the profile itself anyway.
+      const displayName = name || email.split('@')[0];
+      const signupRes = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, ...kyc, name: displayName }),
+      }).catch(() => null);
+      const signupData = signupRes ? await signupRes.json().catch(() => ({})) : {};
 
-      if (error) {
+      if (!signupRes?.ok || !signupData.userId) {
         setSubmitting(false);
-        toast(error.message, "x");
-        notifyEvent("signup_failed", { email, name, detail: error.message });
-        trackEvent("signup_failed", { detail: error.message }, { email });
+        const msg = signupData?.error || "Signup failed";
+        toast(msg, "x");
+        notifyEvent("signup_failed", { email, name, detail: msg });
+        trackEvent("signup_failed", { detail: msg }, { email });
         return;
       }
 
-      if (data.user) {
-        // Confirm email + create the profile server-side (service role) —
-        // works even when Supabase email confirmation is on, so the account
-        // is immediately sign-in-able and the profile row exists.
-        const displayName = name || email.split('@')[0];
-        const confirmRes = await fetch("/api/auth/confirm", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: data.user.id, email, ...kyc, name: displayName }),
-        }).catch(() => null);
-
-        if (confirmRes?.ok) {
-          notifyEvent("signup_success", { email, name });
-          trackEvent("signup", {}, { email });
-        } else {
-          notifyEvent("signup_failed", { email, name, detail: "account confirm failed" });
-          trackEvent("signup_failed", { detail: "account confirm failed" }, { email });
-        }
+      const newUserId = signupData.userId as string;
+      {
+        // Admin notification is sent server-side by /api/auth/signup.
+        trackEvent("signup", {}, { email });
 
         if (native) {
           // Free tier: sign them in and go to the dashboard. The welcome
-          // email (sent by the confirm route) carries activation details —
+          // email (sent by the signup route) carries activation details —
           // the app itself never mentions payment.
           await login(email, password, true);
           setFadingOut(true);
@@ -148,7 +126,7 @@ function LoginForm() {
         // Carry identity to the payment page even without a live session
         sessionStorage.setItem(
           "drpt-pending-pay",
-          JSON.stringify({ userId: data.user.id, email, name: displayName, country })
+          JSON.stringify({ userId: newUserId, email, name: displayName, country })
         );
 
         // Best-effort sign-in in the background — either way, the next stop
@@ -202,14 +180,8 @@ function LoginForm() {
             <LanguageSelect compact />
           </div>
           <h2>{signup ? (native ? t("signupTitleFree") : t("signupTitle")) : t("signinTitle")}</h2>
-          {signup && (
-            <div className="signup-steps" aria-label={t("stepLabel", { step })}>
-              <div className="signup-bar"><span style={{ width: step === 1 ? "50%" : "100%" }} /></div>
-              <p>{t("stepLabel", { step })} · {step === 1 ? t("step1Sub") : t("step2Sub")}</p>
-            </div>
-          )}
           <form onSubmit={handleSubmit}>
-            {signup && step === 2 && (
+            {signup && (
               <>
                 <div className="field">
                   <label htmlFor="name">{t("fullName")}</label>
@@ -278,9 +250,18 @@ function LoginForm() {
                     ))}
                   </select>
                 </div>
+                <div className="field">
+                  <label htmlFor="referral-code">{t("referralCode")}</label>
+                  <input
+                    id="referral-code"
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    placeholder={t("referralCodePh")}
+                  />
+                </div>
               </>
             )}
-            {(!signup || step === 1) && (<>
             <div className="field">
               <label htmlFor="email">{t("email")}</label>
               <input
@@ -303,35 +284,18 @@ function LoginForm() {
                 required
               />
             </div>
-            </>)}
-            {signup && step === 1 && (
-              <>
-                <div className="field">
-                  <label htmlFor="confirm-password">{t("confirmPassword")}</label>
-                  <input
-                    id="confirm-password"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder={t("confirmPasswordPh")}
-                    required
-                  />
-                </div>
-              </>
-            )}
-            {signup && step === 2 && (
-              <>
-                <div className="field">
-                  <label htmlFor="referral-code">{t("referralCode")}</label>
-                  <input
-                    id="referral-code"
-                    type="text"
-                    value={referralCode}
-                    onChange={(e) => setReferralCode(e.target.value)}
-                    placeholder={t("referralCodePh")}
-                  />
-                </div>
-              </>
+            {signup && (
+              <div className="field">
+                <label htmlFor="confirm-password">{t("confirmPassword")}</label>
+                <input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder={t("confirmPasswordPh")}
+                  required
+                />
+              </div>
             )}
             {!signup && (
               <div className="field-row">
@@ -342,18 +306,13 @@ function LoginForm() {
               </div>
             )}
             <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>
-              {signup && step === 1 ? t("continue") : submitting ? (signup ? t("creating") : t("signingIn")) : (signup ? (native ? t("createFree") : t("createPay")) : t("signIn"))}
+              {submitting ? (signup ? t("creating") : t("signingIn")) : (signup ? (native ? t("createFree") : t("createPay")) : t("signIn"))}
             </button>
-            {signup && step === 2 && (
-              <button type="button" className="btn btn-ghost" style={{ width: "100%", marginTop: 8 }} onClick={() => setStep(1)}>
-                {t("back")}
-              </button>
-            )}
           </form>
 
           <div className="login-footer">
             {signup ? t("haveAccount") : t("noAccount")}{" "}
-            <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); setStep(1); }}>
+            <a href="#" onClick={(e) => { e.preventDefault(); setIsSignup(!isSignup); }}>
               {signup ? t("signInLink") : native ? t("signUpLinkFree") : t("signUpLink")}
             </a>
             <div style={{ marginTop: 8 }}>
