@@ -49,7 +49,9 @@ function PaymentInner() {
   const payerId = user?.id ?? pending?.userId;
   const payerEmail = user?.email ?? pending?.email;
   const payerName = user?.name ?? pending?.name;
-  const region = (user?.country ?? pending?.country ?? regionChoice).toLowerCase();
+  // The checkout country picker is always editable — the chosen value is
+  // sent with the payment and wins over the signup/profile default.
+  const region = (regionChoice || user?.country || pending?.country || "").toLowerCase();
   // Paynow / EcoCash / bank transfer only settle in Zimbabwe — everywhere
   // else it's card-only via Stripe.
   const isZimbabwe = region === "zw";
@@ -242,22 +244,37 @@ function PaymentInner() {
         </div>
 
         <div style={{ padding: "24px 26px 26px" }}>
-        {!region ? (
-          <div style={{ textAlign: "center", padding: "18px 8px 8px" }}>
-            <p style={{ fontSize: 13.5, color: "var(--ink-500)", marginBottom: 14 }}>{t("regionPrompt")}</p>
-            <select
-              className="settings-select"
-              style={{ width: "100%", padding: "12px 14px", fontSize: 14 }}
-              value={regionChoice}
-              onChange={(e) => setRegionChoice(e.target.value)}
-            >
-              <option value="" disabled>{t("countryPh")}</option>
-              {countryOptions.map((c) => (
-                <option key={c.code} value={c.code}>{c.label}</option>
-              ))}
-            </select>
+        {/* Region picker — always editable; drives both the displayed price
+            and the amount actually charged at checkout. */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 8 }}>
+            {t("countryLabel")}
           </div>
-        ) : (
+          <select
+            className="settings-select"
+            style={{ width: "100%", padding: "12px 14px", fontSize: 14 }}
+            value={region ? region.toUpperCase() : regionChoice}
+            onChange={(e) => {
+              const code = e.target.value;
+              setRegionChoice(code);
+              // Switching away from Zimbabwe hides the local rails — fall
+              // back to Stripe so a stale selection can't be charged.
+              if (code && code.toLowerCase() !== "zw" && selectedMethod && selectedMethod !== "stripe") {
+                setSelectedMethod("stripe");
+              }
+            }}
+          >
+            <option value="" disabled>{t("countryPh")}</option>
+            {countryOptions.map((c) => (
+              <option key={c.code} value={c.code}>{c.label}</option>
+            ))}
+          </select>
+          {!region && (
+            <p style={{ fontSize: 12.5, color: "var(--ink-500)", marginTop: 8, marginBottom: 0 }}>{t("regionPrompt")}</p>
+          )}
+        </div>
+
+        {region && (
         <>
         <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 12 }}>
           {t("chooseHowToPay")} · {regionName}

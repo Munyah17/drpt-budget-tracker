@@ -335,7 +335,9 @@
       "setup": "Inrichting & rondleiding voor je hele team",
       "arrange": "Plan een demo of gesprek",
       "priceNote": "Prijzen kunnen variëren afhankelijk van regio's en operationele regelgevingsvereisten.",
-      "tncApply": "Algemene voorwaarden zijn van toepassing"
+      "tncApply": "Algemene voorwaarden zijn van toepassing",
+      "regionPh": "Selecteer je land",
+      "createFrom": "Account aanmaken en {price} betalen"
     },
     "cta": {
       "heading": "Klaar om te zien waar je geld blijft?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Selecteer je land om prijzen en betaalmethoden te zien",
       "countryPh": "Selecteer land",
       "methodStripeAlt": "Betaal veilig met Stripe — Visa, Mastercard, Amex en meer",
-      "fee_municipal": "Gemeentelijke en staatsheffingen"
+      "fee_municipal": "Gemeentelijke en staatsheffingen",
+      "countryLabel": "Land"
     },
     "support": {
       "title": "Support",

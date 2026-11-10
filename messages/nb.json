@@ -335,7 +335,9 @@
       "setup": "Oppsett & gjennomgang for hele teamet",
       "arrange": "Avtal en demo eller en prat",
       "priceNote": "Prisene kan variere etter region og operasjonelle regulatoriske krav.",
-      "tncApply": "Vilkår og betingelser gjelder"
+      "tncApply": "Vilkår og betingelser gjelder",
+      "regionPh": "Velg landet ditt",
+      "createFrom": "Opprett konto og betal {price}"
     },
     "cta": {
       "heading": "Klar til å se hvor pengene dine tar veien?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Velg landet ditt for å se priser og betalingsmetoder",
       "countryPh": "Velg land",
       "methodStripeAlt": "Betal sikkert med Stripe — Visa, Mastercard, Amex med flere",
-      "fee_municipal": "Kommunale og statlige avgifter"
+      "fee_municipal": "Kommunale og statlige avgifter",
+      "countryLabel": "Land"
     },
     "support": {
       "title": "Brukerstøtte",

@@ -335,7 +335,9 @@
       "setup": "Uppsättning & genomgång för hela teamet",
       "arrange": "Boka en demo eller ett samtal",
       "priceNote": "Priser kan skilja sig åt beroende på region och operativa regulatoriska krav.",
-      "tncApply": "Allmänna villkor gäller"
+      "tncApply": "Allmänna villkor gäller",
+      "regionPh": "Välj ditt land",
+      "createFrom": "Skapa konto och betala {price}"
     },
     "cta": {
       "heading": "Redo att se vart dina pengar tar vägen?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Välj ditt land för att se priser och betalningsmetoder",
       "countryPh": "Välj land",
       "methodStripeAlt": "Betala säkert med Stripe — Visa, Mastercard, Amex med flera",
-      "fee_municipal": "Kommunala och statliga avgifter"
+      "fee_municipal": "Kommunala och statliga avgifter",
+      "countryLabel": "Land"
     },
     "support": {
       "title": "Support",

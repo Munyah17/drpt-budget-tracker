@@ -335,7 +335,9 @@
       "setup": "Zavedení a ukázka pro celý tým",
       "arrange": "Domluv si demo nebo hovor",
       "priceNote": "Ceny se mohou lišit podle regionu a provozních regulačních požadavků.",
-      "tncApply": "Platí obchodní podmínky"
+      "tncApply": "Platí obchodní podmínky",
+      "regionPh": "Vyberte zemi",
+      "createFrom": "Vytvořit účet a zaplatit {price}"
     },
     "cta": {
       "heading": "Chceš vidět, kam tvé peníze mizí?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Vyberte zemi pro zobrazení cen a platebních metod",
       "countryPh": "Vyberte zemi",
       "methodStripeAlt": "Plaťte bezpečně přes Stripe — Visa, Mastercard, Amex a další",
-      "fee_municipal": "Obecní a státní poplatky"
+      "fee_municipal": "Obecní a státní poplatky",
+      "countryLabel": "Země"
     },
     "support": {
       "title": "Podpora",

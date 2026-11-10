@@ -335,7 +335,9 @@
       "setup": "Configurazione e demo per tutto il tuo team",
       "arrange": "Organizza una demo o una chiacchierata",
       "priceNote": "I prezzi possono variare in base alle regioni e ai requisiti normativi operativi.",
-      "tncApply": "Si applicano i termini e le condizioni"
+      "tncApply": "Si applicano i termini e le condizioni",
+      "regionPh": "Seleziona il tuo paese",
+      "createFrom": "Crea account e paga {price}"
     },
     "cta": {
       "heading": "Pronto a vedere dove vanno i tuoi soldi?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Seleziona il tuo paese per vedere prezzi e metodi di pagamento",
       "countryPh": "Seleziona il paese",
       "methodStripeAlt": "Paga in sicurezza con Stripe — Visa, Mastercard, Amex e altre",
-      "fee_municipal": "Tasse comunali e statali"
+      "fee_municipal": "Tasse comunali e statali",
+      "countryLabel": "Paese"
     },
     "support": {
       "title": "Assistenza",

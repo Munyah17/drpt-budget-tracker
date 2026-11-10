@@ -25,15 +25,16 @@ export async function POST(req: NextRequest) {
   const origin = req.nextUrl.origin;
   const reference = `WSPD-${Date.now()}`;
 
-  // Signup country drives regional pricing — profile wins over the client hint.
-  let region = String(country ?? "");
-  if (userId) {
+  // Checkout country: the picker's choice wins; profile country is the fallback.
+  let region = String(country ?? "").trim();
+  if (!region && userId) {
     const rows = await sbGet<{ country: string | null }>(
       "profiles",
       `id=eq.${encodeURIComponent(String(userId))}&select=country&limit=1`
     );
     if (rows[0]?.country) region = rows[0].country;
   }
+  region = region.toLowerCase();
 
   // Paynow only settles in Zimbabwe — every other region is card-only (Stripe).
   if (region && region !== "zw") {

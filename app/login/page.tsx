@@ -128,6 +128,7 @@ function LoginForm() {
           "drpt-pending-pay",
           JSON.stringify({ userId: newUserId, email, name: displayName, country })
         );
+        try { localStorage.setItem("drpt-region", country); } catch { /* ignore */ }
 
         // Best-effort sign-in in the background — either way, the next stop
         // is payment. No options, no freebies.

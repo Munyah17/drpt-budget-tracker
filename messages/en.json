@@ -387,7 +387,9 @@
       "setup": "Setup & walkthrough for your whole team",
       "arrange": "Arrange a demo or talk",
       "priceNote": "Prices may differ according to regions and operational regulatory requirements.",
-      "tncApply": "Terms & Conditions Apply"
+      "tncApply": "Terms & Conditions Apply",
+      "regionPh": "Select your country",
+      "createFrom": "Create account & pay {price}"
     },
     "cta": {
       "heading": "Ready to see where your money goes?",
@@ -3142,7 +3144,8 @@
       "regionPrompt": "Select your country to see prices and payment methods",
       "countryPh": "Select country",
       "methodStripeAlt": "Pay securely with Stripe — Visa, Mastercard, Amex and more",
-      "fee_municipal": "Municipal & state levies"
+      "fee_municipal": "Municipal & state levies",
+      "countryLabel": "Country"
     },
     "payment_success": {
       "confirmedToast": "Payment confirmed — welcome aboard!",

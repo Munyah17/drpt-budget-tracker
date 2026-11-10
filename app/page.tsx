@@ -1,24 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import LanguageSelect from "@/components/LanguageSelect";
 import { trackEvent } from "@/lib/analytics";
-import { UserRole } from "@/lib/types";
 import Icon from "@/components/Icon";
 import { useIsNative } from "@/lib/native";
-
-const rolePath = (role?: UserRole) =>
-  role === "admin"
-    ? "/admin"
-    : role === "corporate"
-      ? "/corporate/overview"
-      : role === "employee"
-        ? "/employee"
-        : "/dashboard";
+import { COUNTRIES } from "@/lib/countries";
+import { marketFor, MARKET_PRICE_USD } from "@/lib/pricing";
 
 const FEATURES = [
   { icon: "pie-chart", key: "budget" },
@@ -54,11 +46,28 @@ export default function LandingPage() {
   const t = useTranslations("Landing");
   const { loginDemo, toast, isAuthenticated, authReady, user } = useAppData();
   const native = useIsNative();
+  const locale = useLocale();
 
-  // Signed-in visitors go straight to their portal
+  // Region-aware pricing: profile country wins for signed-in users, then an
+  // explicit pick on this page, then the guest's saved choice.
+  const [pickedRegion, setPickedRegion] = useState("");
+  const [storedRegion, setStoredRegion] = useState("");
   useEffect(() => {
-    if (authReady && isAuthenticated) router.replace(rolePath(user?.role));
-  }, [authReady, isAuthenticated, user, router]);
+    try { setStoredRegion(localStorage.getItem("drpt-region") ?? ""); } catch { /* private mode */ }
+  }, []);
+  const region = (pickedRegion || user?.country || storedRegion || "").toLowerCase();
+  const market = marketFor(region);
+  const priceLabel = market ? `$${MARKET_PRICE_USD[market].toFixed(2)}` : "$1";
+
+  const countryOptions = useMemo(() => {
+    const names = new Intl.DisplayNames([locale], { type: "region" });
+    return COUNTRIES.map((code) => ({ code, label: names.of(code) ?? code }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [locale]);
+
+  // `/` is always the landing page — even for signed-in visitors. The app
+  // portals are reached through the nav/CTAs, never by hijacking the
+  // homepage.
 
   // The iPhone app has no marketing page: it opens straight on sign-in.
   useEffect(() => {
@@ -268,7 +277,23 @@ export default function LandingPage() {
         <div className="pricing-wrap">
           <div className="pricing-card glass-card" style={{ border: "2px solid var(--rose-400)" }}>
             <span className="chip"><Icon name="zap" size={12} /> {t("pricing.lifetime")}</span>
-            <div className="price">$1<small> {t("pricing.forever")}</small></div>
+            <select
+              className="settings-select"
+              style={{ width: "100%", marginBottom: 10, fontSize: 13, padding: "9px 12px" }}
+              value={region ? region.toUpperCase() : pickedRegion}
+              onChange={(e) => {
+                const code = e.target.value;
+                setPickedRegion(code);
+                try { localStorage.setItem("drpt-region", code); } catch { /* ignore */ }
+              }}
+              aria-label={t("pricing.regionPh")}
+            >
+              <option value="" disabled>{t("pricing.regionPh")}</option>
+              {countryOptions.map((c) => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+            <div className="price">{priceLabel}<small> {t("pricing.forever")}</small></div>
             <p style={{ fontSize: 11.5, fontStyle: "italic", color: "var(--ink-500)", margin: "2px 0 12px", lineHeight: 1.45 }}>
               {t("pricing.priceNote")}{" "}
               <Link href="/terms" style={{ color: "inherit" }}>{t("pricing.tncApply")}</Link>
@@ -281,7 +306,7 @@ export default function LandingPage() {
               ))}
             </ul>
             <Link href="/login?signup=1" className="btn btn-primary" style={{ width: "100%" }}>
-              {t("pricing.create")}
+              {t("pricing.createFrom", { price: priceLabel })}
             </Link>
           </div>
 

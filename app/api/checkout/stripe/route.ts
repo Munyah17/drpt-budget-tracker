@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { priceCentsFor } from "@/lib/pricing";
 import { sbGet } from "@/lib/server/supabaseAdmin";
 
-/** Signup country drives regional pricing — read it from the profile, not the client. */
-async function countryFor(userId: string, fallback: string): Promise<string> {
+/** Checkout country: the picker's choice wins; profile country is the fallback. */
+async function countryFor(userId: string, preferred: string): Promise<string> {
+  if (preferred) return preferred;
   if (userId) {
     const rows = await sbGet<{ country: string | null }>(
       "profiles",
@@ -11,7 +12,7 @@ async function countryFor(userId: string, fallback: string): Promise<string> {
     );
     if (rows[0]?.country) return rows[0].country;
   }
-  return fallback;
+  return "";
 }
 
 /**

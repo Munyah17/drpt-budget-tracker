@@ -335,7 +335,9 @@
       "setup": "Wdrożenie i prezentacja dla całego zespołu",
       "arrange": "Umów demo lub rozmowę",
       "priceNote": "Ceny mogą się różnić w zależności od regionu i wymogów regulacyjnych.",
-      "tncApply": "Obowiązują warunki i postanowienia"
+      "tncApply": "Obowiązują warunki i postanowienia",
+      "regionPh": "Wybierz swój kraj",
+      "createFrom": "Utwórz konto i zapłać {price}"
     },
     "cta": {
       "heading": "Gotowy, by zobaczyć, dokąd idą Twoje pieniądze?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Wybierz kraj, aby zobaczyć ceny i metody płatności",
       "countryPh": "Wybierz kraj",
       "methodStripeAlt": "Płać bezpiecznie przez Stripe — Visa, Mastercard, Amex i inne",
-      "fee_municipal": "Opłaty gminne i stanowe"
+      "fee_municipal": "Opłaty gminne i stanowe",
+      "countryLabel": "Kraj"
     },
     "support": {
       "title": "Wsparcie",

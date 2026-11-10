@@ -335,7 +335,9 @@
       "setup": "为整个团队提供部署与演示",
       "arrange": "预约演示或洽谈",
       "priceNote": "价格可能因地区和运营监管要求而异。",
-      "tncApply": "适用条款和条件"
+      "tncApply": "适用条款和条件",
+      "regionPh": "选择您的国家/地区",
+      "createFrom": "创建账户并支付 {price}"
     },
     "cta": {
       "heading": "想知道您的钱都花到哪了吗?",
@@ -845,7 +847,8 @@
       "regionPrompt": "请选择您的国家/地区以查看价格和支付方式",
       "countryPh": "选择国家/地区",
       "methodStripeAlt": "通过 Stripe 安全支付——支持 Visa、Mastercard、Amex 等",
-      "fee_municipal": "市政及州级征费"
+      "fee_municipal": "市政及州级征费",
+      "countryLabel": "国家/地区"
     },
     "support": {
       "title": "支持",

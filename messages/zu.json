@@ -335,7 +335,9 @@
       "setup": "Ukulungiswa nesibonisi seqembu lakho lonke",
       "arrange": "Hlela idemo noma inkulumo",
       "priceNote": "Izindleko zingahlukaissorodwe nemiphakathi nemibandela yomthetho wokusebenza.",
-      "tncApply": "Imigomo Nemibandela iyasebenza"
+      "tncApply": "Imigomo Nemibandela iyasebenza",
+      "regionPh": "Khetha izwe lakho",
+      "createFrom": "Yenza i-akhawunti uphose {price}"
     },
     "cta": {
       "heading": "Usulungile ukubona ukuthi imali yakho iya kuphi?",
@@ -845,7 +847,8 @@
       "regionPrompt": "Khetha izwe lakho ukuze ubone izindleko nezindlela zokukhokha",
       "countryPh": "Khetha izwe",
       "methodStripeAlt": "Khokha ngendlela ephephile nge-Stripe — i-Visa, i-Mastercard, i-Amex nezinye",
-      "fee_municipal": "Imali yebanhlokweni nezifundazwe"
+      "fee_municipal": "Imali yebanhlokweni nezifundazwe",
+      "countryLabel": "Izwe"
     },
     "support": {
       "title": "Usizo",
