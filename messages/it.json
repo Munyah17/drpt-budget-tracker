@@ -841,7 +841,11 @@
       "fee_dataProtection": "Tassa per la protezione dei dati",
       "fee_regulatory": "Tassa di conformità normativa",
       "fee_salesTax": "Imposta sulle vendite",
-      "fee_telecom": "Tassa regolamentare delle telecomunicazioni"
+      "fee_telecom": "Tassa regolamentare delle telecomunicazioni",
+      "regionPrompt": "Seleziona il tuo paese per vedere prezzi e metodi di pagamento",
+      "countryPh": "Seleziona il paese",
+      "methodStripeAlt": "Paga in sicurezza con Stripe — Visa, Mastercard, Amex e altre",
+      "fee_municipal": "Tasse comunali e statali"
     },
     "support": {
       "title": "Assistenza",

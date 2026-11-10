@@ -841,7 +841,11 @@
       "fee_dataProtection": "Bijdrage gegevensbescherming",
       "fee_regulatory": "Regelgevingsnalevingskosten",
       "fee_salesTax": "Verkoopbelasting",
-      "fee_telecom": "Telecomregelgevingsheffing"
+      "fee_telecom": "Telecomregelgevingsheffing",
+      "regionPrompt": "Selecteer je land om prijzen en betaalmethoden te zien",
+      "countryPh": "Selecteer land",
+      "methodStripeAlt": "Betaal veilig met Stripe — Visa, Mastercard, Amex en meer",
+      "fee_municipal": "Gemeentelijke en staatsheffingen"
     },
     "support": {
       "title": "Support",

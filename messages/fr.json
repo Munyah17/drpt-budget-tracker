@@ -841,7 +841,11 @@
       "fee_dataProtection": "Taxe protection des données",
       "fee_regulatory": "Frais de conformité réglementaire",
       "fee_salesTax": "Taxe de vente",
-      "fee_telecom": "Taxe réglementaire des télécoms"
+      "fee_telecom": "Taxe réglementaire des télécoms",
+      "regionPrompt": "Sélectionnez votre pays pour voir les prix et moyens de paiement",
+      "countryPh": "Sélectionnez le pays",
+      "methodStripeAlt": "Payez en toute sécurité avec Stripe — Visa, Mastercard, Amex et plus",
+      "fee_municipal": "Taxes municipales et étatiques"
     },
     "support": {
       "title": "Assistance",

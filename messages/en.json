@@ -3138,7 +3138,11 @@
       "fee_dataProtection": "Data protection levy",
       "fee_regulatory": "Regulatory compliance fee",
       "fee_salesTax": "Sales tax",
-      "fee_telecom": "Telecoms regulatory levy"
+      "fee_telecom": "Telecoms regulatory levy",
+      "regionPrompt": "Select your country to see prices and payment methods",
+      "countryPh": "Select country",
+      "methodStripeAlt": "Pay securely with Stripe — Visa, Mastercard, Amex and more",
+      "fee_municipal": "Municipal & state levies"
     },
     "payment_success": {
       "confirmedToast": "Payment confirmed — welcome aboard!",

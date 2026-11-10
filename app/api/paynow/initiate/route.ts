@@ -35,6 +35,14 @@ export async function POST(req: NextRequest) {
     if (rows[0]?.country) region = rows[0].country;
   }
 
+  // Paynow only settles in Zimbabwe — every other region is card-only (Stripe).
+  if (region && region !== "zw") {
+    return NextResponse.json(
+      { error: "Paynow is only available in Zimbabwe — please pay by card" },
+      { status: 400 }
+    );
+  }
+
   // Field order matters for the hash
   const fields: [string, string][] = [
     ["id", id],

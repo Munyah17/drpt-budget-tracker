@@ -841,7 +841,11 @@
       "fee_dataProtection": "Сбор за защиту данных",
       "fee_regulatory": "Сбор за регуляторное соответствие",
       "fee_salesTax": "Налог с продаж",
-      "fee_telecom": "Телекоммуникационный сбор"
+      "fee_telecom": "Телекоммуникационный сбор",
+      "regionPrompt": "Выберите страну, чтобы увидеть цены и способы оплаты",
+      "countryPh": "Выберите страну",
+      "methodStripeAlt": "Безопасная оплата через Stripe — Visa, Mastercard, Amex и другие",
+      "fee_municipal": "Муниципальные и государственные сборы"
     },
     "support": {
       "title": "Поддержка",

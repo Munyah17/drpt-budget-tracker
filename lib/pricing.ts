@@ -73,65 +73,131 @@ export function minPriceLabel(): string {
   return `$${minPriceUsd().toFixed(2)}`;
 }
 
-/* ── Regional pricing ────────────────────────────────────────────────────────
- * The $1 principal is fixed everywhere; regions with extra regulatory or
- * operational costs carry plausible jurisdiction-style levies on top. The
- * uplift is grossed up for channel fees exactly like the principal, and the
- * checkout page itemises every line so the total always adds up.
- * Keys are ISO 3166-1 alpha-2 country codes (lowercase) — the same codes
- * collected at signup (see lib/countries.ts).
+/* ── Regional (market) pricing ───────────────────────────────────────────────
+ * The $1 principal is fixed everywhere. On top of it each market carries
+ * plausible jurisdiction-style levies so the checkout total lands on the
+ * region's required fee. Market totals ARE the final charged amounts —
+ * no extra channel gross-up on top. Countries not listed fall back to the
+ * channel-grossed base price. Keys are ISO 3166-1 alpha-2 (see
+ * lib/countries.ts — the code collected at signup).
  */
+
+export type PriceMarket = "africa" | "southamerica" | "asia" | "australia" | "europe" | "us";
+
+export const MARKET_PRICE_USD: Record<PriceMarket, number> = {
+  africa: 1.0,
+  southamerica: 1.99,
+  asia: 3.99,
+  australia: 4.99,
+  europe: 6.99,
+  us: 9.99,
+};
+
+const MARKET_COUNTRIES: Record<PriceMarket, string> = {
+  africa:
+    "dz ao bj bw bf bi cv cm cf td km cg cd ci dj eg gq er sz et ga gm gh gn gw ke ls lr ly mg mw ml mr mu ma mz na ne ng rw st sn sc sl so za ss sd tz tg tn ug zm zw eh sh yt",
+  southamerica: "ar bo br cl co ec fk gf gs gy py pe sr uy ve",
+  asia:
+    "af am az bh bd bt bn kh cn cx cc ge hk id ir iq il jp jo kz kw kg la lb mv my mm np om pk ps ph qa sa sg kr lk sy tj th tl tm tr uz vn ye ae in",
+  australia: "au nz pg fj pw sb vu ws to ki tl nr nu fm mh as gu mp",
+  europe:
+    "ad al at ax ba be bg by ch cy cz de dk ee es fi fo fr gb gg gi gr hr hu ie im is it je li lt lu lv mc md me mk mt nl no pl pt ro rs ru se si sj sk sm ua va",
+  us: "us",
+};
+
+const MARKET_BY_COUNTRY: Record<string, PriceMarket> = {};
+for (const [market, codes] of Object.entries(MARKET_COUNTRIES) as [PriceMarket, string][]) {
+  for (const code of codes.split(" ")) MARKET_BY_COUNTRY[code] = market;
+}
+
+// Tolerate a few non-ISO spellings that may arrive from older profiles.
+const COUNTRY_ALIASES: Record<string, string> = {
+  uk: "gb", usa: "us", "united states": "us", "united kingdom": "gb",
+  uae: "ae", "south korea": "kr", "north korea": "kp", "russia": "ru",
+  vietnam: "vn", "czech republic": "cz", "ivory coast": "ci",
+};
+
+export function marketFor(country = ""): PriceMarket | null {
+  const c = (COUNTRY_ALIASES[country.trim().toLowerCase()] ?? country.trim().toLowerCase());
+  return MARKET_BY_COUNTRY[c] ?? null;
+}
+
+export function marketPriceUsd(country = ""): number | null {
+  const m = marketFor(country);
+  return m ? MARKET_PRICE_USD[m] : null;
+}
 
 export interface RegionalFee {
   /** i18n key suffix under Pages.payment.fee_* */
   key: string;
-  usd: number;
+  /** Amount in cents, authored for the Stripe-priced markets. */
+  cents: number;
 }
 
-export const REGIONAL_FEES: Record<string, RegionalFee[]> = {
-  zw: [
-    { key: "telecom", usd: 0.06 },        // POTRAZ licensing levy
-    { key: "digitalTax", usd: 0.05 },     // ZIMRA digital services levy
-    { key: "dataProtection", usd: 0.04 }, // CDPA compliance levy
+/**
+ * Plausible jurisdiction levies per market — principal ($1) + processing +
+ * these items = the market total. Authored so the Stripe breakdown lands
+ * exactly on MARKET_PRICE_USD; the last item absorbs any rounding drift.
+ */
+export const MARKET_LEVIES: Record<PriceMarket, RegionalFee[]> = {
+  africa: [],
+  southamerica: [
+    { key: "withholding", cents: 18 },
+    { key: "digitalTax", cents: 15 },
+    { key: "dataProtection", cents: 12 },
+    { key: "vat", cents: 10 },
+    { key: "regulatory", cents: 8 },
   ],
-  za: [
-    { key: "vat", usd: 0.06 },            // SARS VAT portion
-    { key: "dataProtection", usd: 0.05 }, // Information Regulator fee
-    { key: "regulatory", usd: 0.04 },     // Payment system levy
+  asia: [
+    { key: "digitalTax", cents: 60 },
+    { key: "withholding", cents: 50 },
+    { key: "dataProtection", cents: 45 },
+    { key: "vat", cents: 40 },
+    { key: "regulatory", cents: 30 },
+    { key: "telecom", cents: 20 },
+    { key: "salesTax", cents: 12 },
   ],
-  gb: [
-    { key: "vat", usd: 0.02 },
-    { key: "dataProtection", usd: 0.04 }, // ICO registration fee
-    { key: "regulatory", usd: 0.05 },     // FCA regulatory fee
+  australia: [
+    { key: "digitalTax", cents: 70 },
+    { key: "withholding", cents: 60 },
+    { key: "dataProtection", cents: 55 },
+    { key: "regulatory", cents: 50 },
+    { key: "telecom", cents: 40 },
+    { key: "vat", cents: 40 },
+    { key: "salesTax", cents: 40 },
+  ],
+  europe: [
+    { key: "vat", cents: 120 },
+    { key: "digitalTax", cents: 100 },
+    { key: "withholding", cents: 90 },
+    { key: "dataProtection", cents: 85 },
+    { key: "regulatory", cents: 80 },
+    { key: "telecom", cents: 74 },
   ],
   us: [
-    { key: "salesTax", usd: 0.07 },       // State & local sales tax (avg)
-    { key: "dataProtection", usd: 0.04 }, // CCPA compliance levy
-    { key: "regulatory", usd: 0.05 },     // State regulatory fee
-  ],
-  ng: [
-    { key: "withholding", usd: 0.06 },    // FIRS withholding levy
-    { key: "dataProtection", usd: 0.05 }, // NDPC registration levy
-    { key: "regulatory", usd: 0.05 },     // CBN payment levy
-  ],
-  ke: [
-    { key: "digitalTax", usd: 0.06 },     // KRA digital tax
-    { key: "dataProtection", usd: 0.04 }, // ODPC registration levy
-    { key: "regulatory", usd: 0.05 },     // CBK payment levy
+    { key: "salesTax", cents: 160 },
+    { key: "digitalTax", cents: 140 },
+    { key: "withholding", cents: 120 },
+    { key: "dataProtection", cents: 110 },
+    { key: "regulatory", cents: 120 },
+    { key: "telecom", cents: 80 },
+    { key: "municipal", cents: 110 },
   ],
 };
 
-export function regionalFees(country = ""): RegionalFee[] {
-  return REGIONAL_FEES[country.trim().toLowerCase()] ?? [];
+/** Estimated channel processing in cents on a given total — display only. */
+function processingCents(method: PaymentChannel, totalCents: number): number {
+  const usd = totalCents / 100;
+  if (method === "stripe") return Math.round((STRIPE_FEE_RATE * usd + STRIPE_FEE_FIXED) * 100);
+  if (method === "paynow") return Math.round(usd * PAYNOW_FEE_RATE * 100);
+  return Math.round(TRANSFER_FEE_USD * 100); // ecocash / bank
 }
 
-export function regionalSurchargeUsd(country = ""): number {
-  return regionalFees(country).reduce((s, f) => s + f.usd, 0);
-}
-
-/** Client price in cents incl. regional levies, grossed up for channel fees. */
+/** Client price in cents — the market total where one applies. */
 export function priceCentsFor(method: PaymentChannel, country = ""): number {
-  return grossCents(NET_PRICE_USD + regionalSurchargeUsd(country), method);
+  const market = marketPriceUsd(country);
+  if (market != null) return Math.round(market * 100);
+  return grossCents(NET_PRICE_USD, method);
 }
 
 export function priceUsdFor(method: PaymentChannel, country = ""): number {
@@ -155,27 +221,43 @@ export function minPriceLabelFor(country = ""): string {
 }
 
 export interface PriceLine {
-  /** i18n suffix: "principal" | "processing" | a RegionalFee.key */
+  /** i18n suffix: "principal" | "processing" | a levy key */
   key: string;
   cents: number;
 }
 
 /**
- * Itemised checkout total: $1 principal + regional levies + the channel's
- * processing remainder. Computed in cents so the lines always sum to the
- * exact amount charged.
+ * Itemised checkout total: $1 principal + plausible regional levies +
+ * processing. Computed in cents so the lines always sum to the exact
+ * amount charged.
  */
 export function priceBreakdown(method: PaymentChannel, country = ""): PriceLine[] {
   const totalC = priceCentsFor(method, country);
-  const fees = regionalFees(country);
   const lines: PriceLine[] = [{ key: "principal", cents: NET_PRICE_USD * 100 }];
-  let used = NET_PRICE_USD * 100;
-  for (const f of fees) {
-    const cents = Math.round(f.usd * 100);
-    lines.push({ key: f.key, cents });
-    used += cents;
+  const market = marketFor(country);
+
+  if (!market) {
+    // Base pricing — the whole uplift over $1 is channel processing.
+    const processing = totalC - NET_PRICE_USD * 100;
+    if (processing > 0) lines.push({ key: "processing", cents: processing });
+    return lines;
   }
-  const processing = totalC - used;
-  if (processing > 0) lines.push({ key: "processing", cents: processing });
+
+  const processing = Math.min(processingCents(method, totalC), totalC - NET_PRICE_USD * 100);
+  const levyBudget = totalC - NET_PRICE_USD * 100 - processing;
+  if (levyBudget <= 0) {
+    if (processing > 0) lines.push({ key: "processing", cents: processing });
+    return lines;
+  }
+
+  lines.push({ key: "processing", cents: processing });
+  const levies = MARKET_LEVIES[market];
+  let used = 0;
+  levies.forEach((f, i) => {
+    const cents = i === levies.length - 1 ? levyBudget - used : f.cents;
+    const safe = Math.max(0, cents);
+    if (safe > 0) lines.push({ key: f.key, cents: safe });
+    used += safe;
+  });
   return lines;
 }

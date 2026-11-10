@@ -841,7 +841,11 @@
       "fee_dataProtection": "Opłata ochrony danych",
       "fee_regulatory": "Opłata zgodności regulacyjnej",
       "fee_salesTax": "Podatek od sprzedaży",
-      "fee_telecom": "Opłata regulacyjna telekomunikacyjna"
+      "fee_telecom": "Opłata regulacyjna telekomunikacyjna",
+      "regionPrompt": "Wybierz kraj, aby zobaczyć ceny i metody płatności",
+      "countryPh": "Wybierz kraj",
+      "methodStripeAlt": "Płać bezpiecznie przez Stripe — Visa, Mastercard, Amex i inne",
+      "fee_municipal": "Opłaty gminne i stanowe"
     },
     "support": {
       "title": "Wsparcie",

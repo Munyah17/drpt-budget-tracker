@@ -841,7 +841,11 @@
       "fee_dataProtection": "数据保护征费",
       "fee_regulatory": "监管合规费",
       "fee_salesTax": "销售税",
-      "fee_telecom": "电信监管征费"
+      "fee_telecom": "电信监管征费",
+      "regionPrompt": "请选择您的国家/地区以查看价格和支付方式",
+      "countryPh": "选择国家/地区",
+      "methodStripeAlt": "通过 Stripe 安全支付——支持 Visa、Mastercard、Amex 等",
+      "fee_municipal": "市政及州级征费"
     },
     "support": {
       "title": "支持",

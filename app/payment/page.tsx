@@ -1,12 +1,13 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
 import { priceUsdFor, priceLabelFor, minPriceUsdFor, minPriceLabelFor, priceBreakdown } from "@/lib/pricing";
+import { COUNTRIES } from "@/lib/countries";
 import Icon from "@/components/Icon";
-import { useTranslations } from "next-intl";
 import { useIsNative } from "@/lib/native";
 
 type PaymentMethod = "paynow" | "stripe" | "ecocash" | "bank";
@@ -27,6 +28,10 @@ function PaymentInner() {
   const [processing, setProcessing] = useState(false);
   const [popSent, setPopSent] = useState(false);
   const [pending, setPending] = useState<{ userId: string; email: string; name: string; country?: string } | null>(null);
+  // Fallback region picker for accounts that predate the mandatory country
+  // field — the charged price is still resolved server-side from the profile.
+  const [regionChoice, setRegionChoice] = useState("");
+  const locale = useLocale();
   const cancelled = searchParams.get("cancelled") === "1";
 
   // Signup redirects straight here — the user may not be signed in yet, so
@@ -44,10 +49,24 @@ function PaymentInner() {
   const payerId = user?.id ?? pending?.userId;
   const payerEmail = user?.email ?? pending?.email;
   const payerName = user?.name ?? pending?.name;
-  const country = user?.country ?? pending?.country ?? "";
+  const region = (user?.country ?? pending?.country ?? regionChoice).toLowerCase();
+  // Paynow / EcoCash / bank transfer only settle in Zimbabwe — everywhere
+  // else it's card-only via Stripe.
+  const isZimbabwe = region === "zw";
+
+  const countryOptions = useMemo(() => {
+    const names = new Intl.DisplayNames([locale], { type: "region" });
+    return COUNTRIES.map((code) => ({ code, label: names.of(code) ?? code }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [locale]);
+  const regionName = useMemo(() => {
+    if (!region) return "";
+    const names = new Intl.DisplayNames([locale], { type: "region" });
+    return names.of(region.toUpperCase()) ?? region.toUpperCase();
+  }, [region, locale]);
 
   const isDirect = selectedMethod === "ecocash" || selectedMethod === "bank";
-  const total = selectedMethod ? priceUsdFor(selectedMethod, country) : minPriceUsdFor(country);
+  const total = selectedMethod ? priceUsdFor(selectedMethod, region) : minPriceUsdFor(region);
 
   const methodLabels: Record<PaymentMethod, string> = {
     paynow: t("methodPaynow"),
@@ -83,7 +102,7 @@ function PaymentInner() {
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: payerId, email: payerEmail, name: payerName, country }),
+          body: JSON.stringify({ userId: payerId, email: payerEmail, name: payerName, country: region }),
         });
         const data = await res.json();
         if (!res.ok || !data.url) {
@@ -207,10 +226,10 @@ function PaymentInner() {
           </div>
           <h2 style={{ marginBottom: 6, color: "#fff" }}>{t("heroTitle")}</h2>
           <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
-            {t("fromPrice", { price: minPriceLabelFor(country) })}
+            {region ? t("fromPrice", { price: minPriceLabelFor(region) }) : "—"}
           </div>
           <div style={{ display: "inline-flex", alignItems: "baseline", gap: 6, margin: "6px 0 8px" }}>
-            <span style={{ fontSize: 15, opacity: .85 }}>{t("onceNotMonthly")}</span>
+            <span style={{ fontSize: 15, opacity: .85 }}>{region ? t("onceNotMonthly") : t("regionPrompt")}</span>
           </div>
           <p style={{ fontSize: 13.5, opacity: .9, marginTop: 8, marginBottom: 0 }}>
             {t("tagline")}
@@ -223,15 +242,53 @@ function PaymentInner() {
         </div>
 
         <div style={{ padding: "24px 26px 26px" }}>
+        {!region ? (
+          <div style={{ textAlign: "center", padding: "18px 8px 8px" }}>
+            <p style={{ fontSize: 13.5, color: "var(--ink-500)", marginBottom: 14 }}>{t("regionPrompt")}</p>
+            <select
+              className="settings-select"
+              style={{ width: "100%", padding: "12px 14px", fontSize: 14 }}
+              value={regionChoice}
+              onChange={(e) => setRegionChoice(e.target.value)}
+            >
+              <option value="" disabled>{t("countryPh")}</option>
+              {countryOptions.map((c) => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+        ) : (
+        <>
         <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 12 }}>
-          {t("chooseHowToPay")}
+          {t("chooseHowToPay")} · {regionName}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-          {methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: priceLabelFor("paynow", country) }))}
-          {methodBtn("stripe", "credit-card", t("methodCardTitle"), t("stripeSub", { price: priceLabelFor("stripe", country) }))}
-          {methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: priceLabelFor("ecocash", country) }))}
-          {methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: priceLabelFor("bank", country) }))}
+          {isZimbabwe && methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: priceLabelFor("paynow", region) }))}
+          {isZimbabwe && methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: priceLabelFor("ecocash", region) }))}
+          {isZimbabwe && methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: priceLabelFor("bank", region) }))}
+          <button
+            className={`payment-method ${selectedMethod === "stripe" ? "selected" : ""}`}
+            onClick={() => setSelectedMethod("stripe")}
+            style={{
+              display: "block",
+              padding: selectedMethod === "stripe" ? 3 : 0,
+              border: `1.5px solid ${selectedMethod === "stripe" ? "var(--rose-500)" : "var(--card-border)"}`,
+              borderRadius: 14,
+              background: "var(--card-solid)",
+              cursor: "pointer",
+              width: "100%",
+              transition: "border-color .15s",
+              fontFamily: "inherit",
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/stripe-banner.png"
+              alt={t("methodStripeAlt")}
+              style={{ display: "block", width: "100%", borderRadius: 10 }}
+            />
+          </button>
         </div>
 
         {/* Itemised total — $1 principal plus regional levies and processing */}
@@ -240,7 +297,7 @@ function PaymentInner() {
             <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 8 }}>
               {t("breakdownTitle")}
             </div>
-            {priceBreakdown(selectedMethod, country).map((line) =>
+            {priceBreakdown(selectedMethod, region).map((line) =>
               detailRow(
                 line.key === "principal"
                   ? t("linePrincipal")
@@ -252,7 +309,7 @@ function PaymentInner() {
             )}
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0 2px", borderTop: "1px solid var(--card-border)", marginTop: 6 }}>
               <strong>{t("lineTotal")}</strong>
-              <strong style={{ color: "var(--rose-600)" }}>{priceLabelFor(selectedMethod, country)}</strong>
+              <strong style={{ color: "var(--rose-600)" }}>{priceLabelFor(selectedMethod, region)}</strong>
             </div>
           </div>
         )}
@@ -313,7 +370,7 @@ function PaymentInner() {
               ? popSent
                 ? t("waitingForPop")
                 : t("sentAmount", { amount: total.toFixed(2) })
-              : t("payAmount", { price: priceLabelFor(selectedMethod ?? "paynow", country) })}
+              : t("payAmount", { price: priceLabelFor(selectedMethod ?? "paynow", region) })}
         </button>
 
         {popSent && (
@@ -333,6 +390,8 @@ function PaymentInner() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 16, fontSize: 11.5, color: "var(--ink-500)" }}>
           <Icon name="shield" size={12} /> {t("secureCheckout")}
         </div>
+        </>
+        )}
         </div>
       </div>
     </div>

@@ -841,7 +841,11 @@
       "fee_dataProtection": "Dataskyddsavgift",
       "fee_regulatory": "Regleringsenlighetsavgift",
       "fee_salesTax": "Försäljningsskatt",
-      "fee_telecom": "Telekomregleringsavgift"
+      "fee_telecom": "Telekomregleringsavgift",
+      "regionPrompt": "Välj ditt land för att se priser och betalningsmetoder",
+      "countryPh": "Välj land",
+      "methodStripeAlt": "Betala säkert med Stripe — Visa, Mastercard, Amex med flera",
+      "fee_municipal": "Kommunala och statliga avgifter"
     },
     "support": {
       "title": "Support",

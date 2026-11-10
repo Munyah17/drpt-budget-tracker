@@ -841,7 +841,11 @@
       "fee_dataProtection": "Poplatek za ochranu údajů",
       "fee_regulatory": "Poplatek za regulatorní soulad",
       "fee_salesTax": "Daň z prodeje",
-      "fee_telecom": "Telekomunikační regulatorní poplatek"
+      "fee_telecom": "Telekomunikační regulatorní poplatek",
+      "regionPrompt": "Vyberte zemi pro zobrazení cen a platebních metod",
+      "countryPh": "Vyberte zemi",
+      "methodStripeAlt": "Plaťte bezpečně přes Stripe — Visa, Mastercard, Amex a další",
+      "fee_municipal": "Obecní a státní poplatky"
     },
     "support": {
       "title": "Podpora",

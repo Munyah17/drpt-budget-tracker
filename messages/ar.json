@@ -841,7 +841,11 @@
       "fee_dataProtection": "رسم حماية البيانات",
       "fee_regulatory": "رسم الامتثال التنظيمي",
       "fee_salesTax": "ضريبة المبيعات",
-      "fee_telecom": "رسم تنظيمي للاتصالات"
+      "fee_telecom": "رسم تنظيمي للاتصالات",
+      "regionPrompt": "اختر بلدك لعرض الأسعار وطرق الدفع",
+      "countryPh": "اختر الدولة",
+      "methodStripeAlt": "ادفع بأمان عبر Stripe — Visa وMastercard وAmex وغيرها",
+      "fee_municipal": "رسوم بلدية وولائية"
     },
     "support": {
       "title": "الدعم",

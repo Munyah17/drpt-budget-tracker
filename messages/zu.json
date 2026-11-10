@@ -841,7 +841,11 @@
       "fee_dataProtection": "Intela lokuvikelwa kolwazi",
       "fee_regulatory": "Intela lokuhambisana nemithetho",
       "fee_salesTax": "Intela onthengiso",
-      "fee_telecom": "Intela yomlawuli wethubane"
+      "fee_telecom": "Intela yomlawuli wethubane",
+      "regionPrompt": "Khetha izwe lakho ukuze ubone izindleko nezindlela zokukhokha",
+      "countryPh": "Khetha izwe",
+      "methodStripeAlt": "Khokha ngendlela ephephile nge-Stripe — i-Visa, i-Mastercard, i-Amex nezinye",
+      "fee_municipal": "Imali yebanhlokweni nezifundazwe"
     },
     "support": {
       "title": "Usizo",
