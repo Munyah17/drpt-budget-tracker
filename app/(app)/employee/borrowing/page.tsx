@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
@@ -80,10 +81,16 @@ function RequestModal({
 }
 
 export default function EmployeeBorrowingPage() {
-  const { user, toast } = useAppData();
+  const { user, authReady, toast } = useAppData();
   const t = useTranslations("Pages.emp_borrowing");
   const store = useCorpStore();
   const wallet = useWallet();
+  const router = useRouter();
+
+  // Early Pay is for corporate employees only — anyone else goes home.
+  useEffect(() => {
+    if (authReady && user?.role !== "employee") router.replace("/dashboard");
+  }, [authReady, user?.role, router]);
   const [requestOpen, setRequestOpen] = useState(false);
   const [editingSalary, setEditingSalary] = useState(false);
   const [salaryInput, setSalaryInput] = useState("");
@@ -99,6 +106,11 @@ export default function EmployeeBorrowingPage() {
   const now = new Date();
   const payday = nextPayday(now);
   const { ewa } = store;
+  // Two approvals required: the employer switches Early Pay on AND the
+  // WellSpend team has cleared this employer (platformApproved).
+  const employerOn = ewa.enabled;
+  const platformPending = employerOn && !ewa.platformApproved;
+  const cleared = employerOn && ewa.platformApproved;
 
   const myAdvances = useMemo(
     () => store.advances.filter((a) => a.employee === user?.name),
@@ -164,13 +176,18 @@ export default function EmployeeBorrowingPage() {
         </div>
       </div>
 
-      {!ewa.enabled && (
+      {!employerOn && (
         <div className="glass-card card-pad" style={{ marginBottom: 20, borderLeft: "3px solid var(--amber)" }}>
           <p style={{ margin: 0, fontSize: 13.5, color: "var(--ink-700)" }}>{t("disabledNote")}</p>
         </div>
       )}
+      {platformPending && (
+        <div className="glass-card card-pad" style={{ marginBottom: 20, borderLeft: "3px solid var(--amber)" }}>
+          <p style={{ margin: 0, fontSize: 13.5, color: "var(--ink-700)" }}>{t("notClearedNote")}</p>
+        </div>
+      )}
 
-      {!netPay && ewa.enabled && (
+      {!netPay && cleared && (
         <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
           <p style={{ margin: "0 0 10px", fontSize: 13.5, color: "var(--ink-700)" }}>{t("setSalaryCta")}</p>
           <form onSubmit={saveSalary} style={{ display: "flex", gap: 10, maxWidth: 380 }}>
@@ -202,7 +219,7 @@ export default function EmployeeBorrowingPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
             <button
               className="btn btn-primary"
-              disabled={!ewa.enabled || available < 1 || limitReached}
+              disabled={!cleared || available < 1 || limitReached}
               onClick={() => setRequestOpen(true)}
             >
               <Icon name="zap" size={16} style={{ marginRight: 8 }} />{t("accessNow")}

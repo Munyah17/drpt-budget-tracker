@@ -136,7 +136,7 @@ function BankingPageInner() {
     setBusy(true);
     try {
       const res = await authedFetch(user.id, "/api/banking/connect", { method: "POST" });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.linkToken) {
         toast(data.error ?? t("errConnect_generic"), "alert-triangle");
         return;
@@ -154,6 +154,8 @@ function BankingPageInner() {
       } else {
         setLinkToken(data.linkToken); // PlaidLauncher opens Link
       }
+    } catch {
+      toast(t("errConnect_generic"), "alert-triangle");
     } finally {
       setBusy(false);
     }
@@ -183,7 +185,7 @@ function BankingPageInner() {
         method: "POST",
         body: JSON.stringify({ publicToken }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.connected) {
         toast(data.error ?? t("errConnect_generic"), "alert-triangle");
         await loadFeed();
@@ -226,13 +228,13 @@ function BankingPageInner() {
     setBusy(true);
     try {
       const res = await authedFetch(user.id, "/api/banking/unlock", { method: "POST" });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (data.unlocked) {
         await loadFeed();
         return;
       }
       if (!data.checkoutUrl) {
-        toast(t("errCheckout"), "alert-triangle");
+        toast(data.error ?? t("errCheckout"), "alert-triangle");
         return;
       }
       if (native) {
@@ -241,6 +243,8 @@ function BankingPageInner() {
       } else {
         window.location.href = data.checkoutUrl;
       }
+    } catch {
+      toast(t("errCheckout"), "alert-triangle");
     } finally {
       setBusy(false);
     }
@@ -251,10 +255,12 @@ function BankingPageInner() {
     setBusy(true);
     try {
       const res = await authedFetch(user.id, "/api/banking/sync", { method: "POST" });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       toast(t("toastSynced", { count: data.synced ?? 0 }), "refresh-cw");
       trackEvent("bank_sync", { count: data.synced ?? 0 });
       await loadFeed();
+    } catch {
+      toast(t("errConnect_generic"), "alert-triangle");
     } finally {
       setBusy(false);
     }

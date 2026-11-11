@@ -62,12 +62,35 @@ const empty = (): WalletStore => ({
 let cache: WalletStore | null = null;
 const listeners = new Set<() => void>();
 
+const isWalletCard = (c: unknown): c is WalletCard =>
+  !!c && typeof c === "object" &&
+  typeof (c as WalletCard).id === "string" &&
+  typeof (c as WalletCard).network === "string" &&
+  typeof (c as WalletCard).last4 === "string" &&
+  typeof (c as WalletCard).holder === "string";
+
+const isWalletTxn = (x: unknown): x is WalletTxn =>
+  !!x && typeof x === "object" &&
+  typeof (x as WalletTxn).id === "string" &&
+  typeof (x as WalletTxn).amount === "number";
+
 function load(): WalletStore {
   if (cache) return cache;
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      cache = { ...empty(), ...(JSON.parse(raw) as Partial<WalletStore>) };
+      const parsed = JSON.parse(raw) as Partial<WalletStore>;
+      // Sanitize: older/corrupted entries must never crash the page.
+      cache = {
+        ...empty(),
+        ...parsed,
+        opened: parsed.opened === true,
+        balance: typeof parsed.balance === "number" && isFinite(parsed.balance) ? parsed.balance : 0,
+        accountNo: typeof parsed.accountNo === "string" ? parsed.accountNo : "",
+        openedAt: typeof parsed.openedAt === "string" ? parsed.openedAt : null,
+        cards: Array.isArray(parsed.cards) ? parsed.cards.filter(isWalletCard) : [],
+        txns: Array.isArray(parsed.txns) ? parsed.txns.filter(isWalletTxn) : [],
+      };
       return cache;
     }
   } catch { /* fresh */ }

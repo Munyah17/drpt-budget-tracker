@@ -1055,7 +1055,11 @@
       "thJoined": "Joined",
       "toastSaved": "Changes saved",
       "toastSuspended": "{name} suspended",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "ewaApprovalTitle": "Early Pay — WellSpend approval",
+      "ewaApprovalSub": "Approve the connected corporate workspace to offer salary advances to its employees.",
+      "ewaApproved": "Approved",
+      "ewaPending": "Pending"
     },
     "adm_orgs_onboarding": {
       "entityName": "Onboarding Item",
@@ -2772,6 +2776,9 @@
       "cfgAuto": "Auto-approve below $",
       "cfgMaxMonth": "Max advances / month",
       "cfgHint": "Employees can only access salary they have already earned this month. Approved advances are deducted automatically on the next payroll run.",
+      "cfgPlatformApproved": "WellSpend approved",
+      "cfgPlatformPending": "Awaiting WellSpend approval",
+      "cfgPlatformPendingHint": "Early Pay requires approval from the WellSpend team before your employees can use it. Contact your account manager to get cleared.",
       "advSearchPh": "Search employee or ref…",
       "advThRef": "Ref",
       "advThAmount": "Amount",
@@ -2875,6 +2882,7 @@
       "monthlyNetLabel": "Monthly take-home ({sym})",
       "setSalarySave": "Save",
       "disabledNote": "Early Pay is currently disabled by your organisation.",
+      "notClearedNote": "Early Pay is awaiting WellSpend approval for your organisation. Your employer has switched it on — we'll let you know as soon as it's cleared.",
       "howItWorks": "How it works",
       "how1": "Access up to {pct}% of the salary you''ve already earned this month.",
       "how2": "One flat {fee}% access fee — what you see is what you repay. No interest, no hidden charges.",

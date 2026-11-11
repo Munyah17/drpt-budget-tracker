@@ -126,6 +126,9 @@ export interface SalaryAdvance {
 /** Employer-level Early Pay policy. */
 export interface EwaConfig {
   enabled: boolean;
+  /** WellSpend team approval — Early Pay only runs when the platform has
+   *  cleared this employer AND the employer has switched it on. */
+  platformApproved: boolean;
   /** Access fee as % of the advance (e.g. 10 → get $90, repay $100) */
   feePct: number;
   /** Max share of already-earned wages an employee may access, % */
@@ -179,7 +182,8 @@ const empty = (): CorpStore => ({
   loans: [],
   advances: [],
   ewa: {
-    enabled: true,
+    enabled: false,
+    platformApproved: false,
     feePct: 10,
     maxAccruedPct: 50,
     autoApproveBelow: 0,

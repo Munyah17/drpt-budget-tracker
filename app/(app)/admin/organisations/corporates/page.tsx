@@ -7,6 +7,7 @@ import FilterBar from "@/components/FilterBar";
 import Modal from "@/components/Modal";
 import { useAppData } from "@/lib/AppDataContext";
 import { adminHeaders, impersonateUser, roleHome } from "@/lib/adminClient";
+import { useCorpStore, updateCorp } from "@/lib/corpStore";
 import { ukDate } from "@/lib/format";
 
 interface Corporate {
@@ -41,6 +42,7 @@ export default function AdminCorporatesPage() {
   const t = useTranslations("Pages.adm_corporates");
   const tc = useTranslations("Pages.components");
   const { toast, user } = useAppData();
+  const corpStore = useCorpStore();
   const [entering, setEntering] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -204,6 +206,27 @@ export default function AdminCorporatesPage() {
           <Icon name="plus" size={16} style={{ marginRight: 8 }} />
           {t("addCorporate")}
         </button>
+      </div>
+
+      {/* WellSpend-side approval for the connected corporate workspace's Early Pay. */}
+      <div className="glass-card card-pad" style={{ marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ minWidth: 220 }}>
+          <div style={{ fontWeight: 600, fontSize: 14 }}>{t("ewaApprovalTitle")}</div>
+          <div style={{ fontSize: 12.5, color: "var(--ink-500)", marginTop: 2 }}>{t("ewaApprovalSub")}</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span className={"badge " + (corpStore.ewa.platformApproved ? "badge-green" : "badge-amber")}>
+            {corpStore.ewa.platformApproved ? t("ewaApproved") : t("ewaPending")}
+          </span>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={corpStore.ewa.platformApproved}
+              onChange={(e) => updateCorp((s) => ({ ...s, ewa: { ...s.ewa, platformApproved: e.target.checked } }))}
+            />
+            <span className="track"><span className="knob" /></span>
+          </label>
+        </div>
       </div>
 
       <div className="glass-card card-pad">

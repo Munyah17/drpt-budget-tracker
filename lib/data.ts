@@ -50,7 +50,6 @@ export const NAV_ITEMS = [
   { id: "wallet", label: "Wallet", icon: "landmark" },
   { id: "budget", label: "Budget Planner", icon: "pie-chart" },
   { id: "savings", label: "Savings Goals", icon: "target" },
-  { id: "borrowing", label: "Borrowing", icon: "credit-card" },
   { id: "net-worth", label: "Net Worth", icon: "target" },
   { id: "subscriptions", label: "Subscriptions", icon: "repeat" },
   { id: "bills", label: "Bills", icon: "receipt" },

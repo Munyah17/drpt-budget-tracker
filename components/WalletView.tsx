@@ -24,7 +24,7 @@ const NETWORK_STYLE: Record<CardNetwork, { bg: string; badge: string }> = {
 
 function CardFace({ card, onToggle }: { card: WalletCard; onToggle: () => void }) {
   const t = useTranslations("Pages.wallet");
-  const style = NETWORK_STYLE[card.network];
+  const style = NETWORK_STYLE[card.network] ?? NETWORK_STYLE.Visa;
   return (
     <div style={{ minWidth: 250, flex: "0 0 auto" }}>
       <div style={{

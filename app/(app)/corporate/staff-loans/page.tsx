@@ -132,13 +132,26 @@ function EarlyPayTab() {
       </div>
 
       <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <h3 style={{ fontWeight: 600, fontSize: 15, margin: 0 }}>{t("cfgTitle")}</h3>
-          <label className="switch">
-            <input type="checkbox" checked={ewa.enabled} onChange={(e) => setEwa({ enabled: e.target.checked })} />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <h3 style={{ fontWeight: 600, fontSize: 15, margin: 0 }}>{t("cfgTitle")}</h3>
+            <span className={"badge " + (ewa.platformApproved ? "badge-green" : "badge-amber")}>
+              {ewa.platformApproved ? t("cfgPlatformApproved") : t("cfgPlatformPending")}
+            </span>
+          </div>
+          <label className="switch" title={ewa.platformApproved ? undefined : t("cfgPlatformPendingHint")}>
+            <input
+              type="checkbox"
+              checked={ewa.enabled}
+              disabled={!ewa.platformApproved}
+              onChange={(e) => setEwa({ enabled: e.target.checked })}
+            />
             <span className="track"><span className="knob" /></span>
           </label>
         </div>
+        {!ewa.platformApproved && (
+          <p style={{ fontSize: 12.5, color: "var(--amber)", margin: "0 0 10px" }}>{t("cfgPlatformPendingHint")}</p>
+        )}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 14 }}>
           <div className="field" style={{ marginBottom: 0 }}>
             <label>{t("cfgFee")}</label>

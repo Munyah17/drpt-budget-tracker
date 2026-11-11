@@ -22,7 +22,7 @@ const rolePath = (role?: UserRole) =>
         ? "/employee"
         : "/dashboard";
 
-function LoginForm() {
+export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, toast, isAuthenticated, authReady, user } = useAppData();
@@ -33,7 +33,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const native = useIsNative();
-  const [isSignup, setIsSignup] = useState(searchParams.get("signup") === "1");
+  const [isSignup, setIsSignup] = useState(forceSignup || searchParams.get("signup") === "1");
   // Signup is allowed everywhere. On the web it continues to the $1
   // activation; in the iPhone app it lands on the free tier instead —
   // registration isn't a purchase, so no IAP is required.

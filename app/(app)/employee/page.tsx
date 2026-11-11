@@ -111,7 +111,7 @@ export default function EmployeeHomePage() {
         </div>
       </div>
 
-      {store.ewa.enabled && (
+      {store.ewa.enabled && store.ewa.platformApproved && (
         <div className="glass-card card-pad" style={{ marginBottom: 20, display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <div className="merchant-ic" style={{ width: 46, height: 46, borderRadius: 14 }}>
