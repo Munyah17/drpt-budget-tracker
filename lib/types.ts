@@ -59,7 +59,7 @@ export interface Transaction {
   account: string;
 }
 
-export type UserRole = "admin" | "user" | "corporate" | "employee";
+export type UserRole = "super_admin" | "admin" | "user" | "corporate" | "employee";
 
 /** ISO 4217 currency code — all world currencies supported */
 export type Currency = string;

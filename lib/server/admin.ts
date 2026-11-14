@@ -10,7 +10,7 @@ const SUPABASE_URL =
 
 // Same hardcoded admin identity the client login uses — that account has no
 // Supabase session, so it proves itself with this header instead of a JWT.
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
+export const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
 
 const b64url = (s: string) =>
   Buffer.from(s.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
@@ -48,11 +48,39 @@ export async function isAdminRequest(req: NextRequest, serviceKey: string): Prom
   if (!claims || claims.aud !== "authenticated" || typeof claims.sub !== "string") return false;
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(claims.sub)}&select=role`,
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(claims.sub)}&select=role,email`,
       { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` }, cache: "no-store" }
     );
     const rows = await res.json();
-    return Array.isArray(rows) && rows[0]?.role === "admin";
+    const role = rows?.[0]?.role;
+    const email = typeof rows?.[0]?.email === "string" ? rows[0].email.toLowerCase() : "";
+    return role === "admin" || role === "super_admin" || email === ADMIN_EMAIL;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Super-admin gate for /api/super-admin/* routes. True only for the founder:
+ * profile role 'super_admin' or the hardcoded ADMIN_EMAIL identity.
+ */
+export async function isSuperAdminRequest(req: NextRequest, serviceKey: string): Promise<boolean> {
+  // No x-admin-email shortcut here — that header is client-supplied and
+  // spoofable. Super admin requires a verified Supabase JWT.
+  const jwtSecret = process.env.SUPABASE_JWT_SECRET;
+  const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+  if (!token || !jwtSecret) return false;
+  const claims = verifySupabaseJwt(token, jwtSecret);
+  if (!claims || claims.aud !== "authenticated" || typeof claims.sub !== "string") return false;
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(claims.sub)}&select=role,email`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` }, cache: "no-store" }
+    );
+    const rows = await res.json();
+    const role = rows?.[0]?.role;
+    const email = typeof rows?.[0]?.email === "string" ? rows[0].email.toLowerCase() : "";
+    return role === "super_admin" || email === ADMIN_EMAIL;
   } catch {
     return false;
   }

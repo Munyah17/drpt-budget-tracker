@@ -11,6 +11,7 @@ import TabBar from "@/components/TabBar";
 import WelcomeTour from "@/components/WelcomeTour";
 import LockedScreen from "@/components/LockedScreen";
 import ImpersonationBanner from "@/components/ImpersonationBanner";
+import ShiftBanner from "@/components/ShiftBanner";
 import { useIsNative, FREE_TIER_ROUTES } from "@/lib/native";
 
 export default function AppShellLayout({ children }: { children: React.ReactNode }) {
@@ -57,6 +58,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
         aria-hidden="true"
       />
       <div className="main-col">
+        <ShiftBanner />
         <ImpersonationBanner />
         <Topbar />
         <div className="page-container">

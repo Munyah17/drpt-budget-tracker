@@ -13,7 +13,9 @@ import { UserRole } from "@/lib/types";
 import { useIsNative } from "@/lib/native";
 
 const rolePath = (role?: UserRole) =>
-  role === "admin"
+  role === "super_admin"
+    ? "/super-admin"
+    : role === "admin"
     ? "/admin"
     : role === "corporate"
       ? "/corporate/overview"

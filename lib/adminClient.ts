@@ -76,7 +76,9 @@ export interface ImpersonationInfo {
 
 /** Landing route per role — mirrors the post-login redirect map. */
 export function roleHome(role: string): string {
-  return role === "corporate"
+  return role === "super_admin"
+    ? "/super-admin"
+    : role === "corporate"
     ? "/corporate/overview"
     : role === "employee"
       ? "/employee"

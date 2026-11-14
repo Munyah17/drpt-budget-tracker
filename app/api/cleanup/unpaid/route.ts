@@ -29,6 +29,7 @@ function authorised(req: NextRequest): boolean {
 interface ProfileRow {
   id: string;
   email: string | null;
+  role: string | null;
   is_paid: boolean | null;
   paid_until: string | null;
   created_at: string | null;
@@ -51,11 +52,14 @@ export async function GET(req: NextRequest) {
   // applied below as the authoritative check (handles paid_until expiry).
   const rows = await sbGet<ProfileRow>(
     "profiles",
-    `created_at=lt.${encodeURIComponent(cutoff)}&select=id,email,is_paid,paid_until,created_at,platform&limit=${MAX_PER_RUN * 2}`
+    `created_at=lt.${encodeURIComponent(cutoff)}&select=id,email,role,is_paid,paid_until,created_at,platform&limit=${MAX_PER_RUN * 2}`
   );
 
-  // Skip paid/active accounts AND iOS free-tier accounts (permanent tier).
-  const stale = rows.filter((r) => !paidActive(r) && r.platform !== "ios");
+  // Skip paid/active accounts, iOS free-tier accounts (permanent tier), and
+  // the founder — a super_admin account can never be deleted.
+  const stale = rows.filter(
+    (r) => !paidActive(r) && r.platform !== "ios" && r.role !== "super_admin"
+  );
   const targets = stale.slice(0, MAX_PER_RUN);
 
   let deleted = 0;
