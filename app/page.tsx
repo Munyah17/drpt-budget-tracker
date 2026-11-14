@@ -100,16 +100,16 @@ export default function LandingPage() {
             <span className="nav-cta-short">{t("nav.startShort")}</span>
           </AuthLink>
         </div>
-        {/* Mobile header: hamburger + language + Get Started only */}
+        {/* Mobile header: hamburger far left, language + Get Started far right */}
+        <button
+          className="icon-btn hamburger landing-burger"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <Icon name={menuOpen ? "x" : "menu"} />
+        </button>
         <div className="landing-nav-mobile">
-          <button
-            className="icon-btn hamburger"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            <Icon name={menuOpen ? "x" : "menu"} />
-          </button>
           <LanguageSelect compact />
           <AuthLink mode="signup" className="btn btn-primary btn-sm">{t("nav.getStarted")}</AuthLink>
         </div>
