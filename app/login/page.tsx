@@ -87,6 +87,7 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
           profession,
           country,
           referral_code: referralCode || null,
+          platform: "ios",
         };
         const displayName = name || email.split('@')[0];
         const signupRes = await fetch("/api/auth/signup", {

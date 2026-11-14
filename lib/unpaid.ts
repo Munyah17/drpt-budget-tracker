@@ -20,8 +20,12 @@ export function isUnpaidExpired(p: {
   isPaid?: boolean;
   paidUntil?: string | null;
   createdAt?: string;
+  platform?: string;
 }): boolean {
   if (p.isPaid === true) return false;
+  // iOS free tier is a permanent tier (no in-app purchase per App Store
+  // rules) — those accounts are not temporary payment-pending accounts.
+  if (p.platform === "ios") return false;
   if (!p.createdAt) return false;
   const created = new Date(p.createdAt).getTime();
   if (!Number.isFinite(created)) return false;

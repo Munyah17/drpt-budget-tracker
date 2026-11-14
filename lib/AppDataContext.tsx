@@ -240,6 +240,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
               isPaid: paidActive(p),
               paidUntil: p.paid_until ?? null,
               createdAt: p.created_at ?? undefined,
+              platform: p.platform ?? undefined,
             };
             if (isUnpaidExpired(candidate)) {
               await deleteOwnAccount(session.user.id);
@@ -670,10 +671,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         const isPaid = paidActive(profile);
         const paidUntil = profile?.paid_until ?? null;
         const createdAt = profile?.created_at ?? undefined;
+        const platform = profile?.platform ?? undefined;
 
         // Unpaid accounts are temporary — once the grace window lapses with
         // no payment, discard the account instead of letting them in.
-        if (isUnpaidExpired({ isPaid, paidUntil, createdAt })) {
+        if (isUnpaidExpired({ isPaid, paidUntil, createdAt, platform })) {
           await deleteOwnAccount(data.user.id);
           await supabase.auth.signOut();
           clearStoredUser();

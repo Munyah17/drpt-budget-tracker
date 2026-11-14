@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
 
-  const { email, password, name, phone, gender, profession, country, referral_code } =
+  const { email, password, name, phone, gender, profession, country, referral_code, platform } =
     await req.json().catch(() => ({}));
 
   const cleanEmail = String(email ?? "").trim().toLowerCase();
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   };
 
   const kyc = Object.fromEntries(
-    Object.entries({ name, phone, gender, profession, country, referral_code }).filter(
+    Object.entries({ name, phone, gender, profession, country, referral_code, platform }).filter(
       ([, v]) => typeof v === "string" && v
     )
   );
