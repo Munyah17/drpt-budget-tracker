@@ -172,9 +172,6 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
           </div>
         </div>
         <div className="login-form">
-          <div className="login-logo">
-            WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
-          </div>
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
             <LanguageSelect compact />
           </div>
