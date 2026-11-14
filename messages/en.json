@@ -3255,6 +3255,8 @@
       "memberSinceValue": "January 2023",
       "linkedTitle": "Linked Accounts",
       "addBtn": "Add Account",
+      "planFree": "Free plan",
+      "planPaid": "Paid plan",
       "linkTitle": "Link Account",
       "acctName": "Account name",
       "phAccount": "e.g. Barclays Current",

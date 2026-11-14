@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { useFreeTier } from "@/lib/native";
 import { CATEGORY_COLORS } from "@/lib/data";
 import {  fmt, ukDate , sym, formatMonthYear } from "@/lib/format";
 import CountUp from "@/components/CountUp";
@@ -15,6 +16,7 @@ import { safeToSpend } from "@/lib/financeInsights";
 export default function DashboardPage() {
   const t = useTranslations("Pages.dashboard");
   const { totalIncome, totalExpenses, totalBalance, categorySpend, expenses, income, bills, budgets, goals } = useAppData();
+  const freeTier = useFreeTier();
   const monthLabel = formatMonthYear(new Date());
   const remaining = totalIncome - totalExpenses;
   const recent = expenses.slice(0, 3);
@@ -243,7 +245,7 @@ export default function DashboardPage() {
             {t("aiBtn")}
           </Link>
         </div>
-        <NoSpendChallenge />
+        {!freeTier && <NoSpendChallenge />}
       </div>
     </>
   );

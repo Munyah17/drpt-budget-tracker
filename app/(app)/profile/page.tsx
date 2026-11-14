@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { useFreeTier } from "@/lib/native";
 import {  fmt, initials , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
@@ -70,6 +71,7 @@ function AddAccountModal({ onClose }: { onClose: () => void }) {
 export default function ProfilePage() {
   const t = useTranslations("Pages.profile");
   const { accounts, user } = useAppData();
+  const freeTier = useFreeTier();
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const displayName = user?.name ?? t("defaultUser");
@@ -94,6 +96,20 @@ export default function ProfilePage() {
                 <Icon name="map-pin" size={12} />
                 {t("country")}
               </div>
+              <div style={{ marginTop: 6 }}>
+                <span
+                  className="chip"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "3px 10px",
+                    background: user?.isPaid ? "rgba(26,156,109,.12)" : "var(--pink-100)",
+                    color: user?.isPaid ? "var(--green)" : "var(--rose-600)",
+                  }}
+                >
+                  {user?.isPaid ? t("planPaid") : t("planFree")}
+                </span>
+              </div>
             </div>
           </div>
           <button className="btn btn-primary" onClick={() => setEditOpen(true)}>
@@ -113,9 +129,11 @@ export default function ProfilePage() {
         <div className="glass-card card-pad">
           <div className="card-head">
             <h3>{t("linkedTitle")}</h3>
-            <button className="btn btn-ghost btn-sm" onClick={() => setAddOpen(true)}>
-              <Icon name="plus" size={14} /> {t("addBtn")}
-            </button>
+            {!freeTier && (
+              <button className="btn btn-ghost btn-sm" onClick={() => setAddOpen(true)}>
+                <Icon name="plus" size={14} /> {t("addBtn")}
+              </button>
+            )}
           </div>
           {accounts.map((a) => (
             <div className="account-row" key={a.name}>
