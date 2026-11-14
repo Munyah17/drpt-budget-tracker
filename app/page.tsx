@@ -59,6 +59,12 @@ export default function LandingPage() {
     if (native && authReady && !isAuthenticated) router.replace("/login");
   }, [native, authReady, isAuthenticated, router]);
 
+  // Always land at the hero — never restore a previous scroll position.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  }, []);
+
   // Count every landing-page visit for the admin analytics funnel
   useEffect(() => {
     trackEvent("landing_view");
