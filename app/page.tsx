@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -45,6 +45,7 @@ export default function LandingPage() {
   const t = useTranslations("Landing");
   const { loginDemo, toast, isAuthenticated, authReady } = useAppData();
   const native = useIsNative();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Flat yearly price — country selection happens on the registration page.
   const priceLabel = "$1";
@@ -93,12 +94,34 @@ export default function LandingPage() {
           <a href="#business" className="nav-link">{t("nav.business")}</a>
           <a href="#pricing" className="nav-link">{t("nav.pricing")}</a>
           <LanguageSelect compact />
-          <AuthLink mode="login" className="btn btn-ghost btn-sm">{t("nav.signIn")}</AuthLink>
+          <AuthLink mode="login" className="btn btn-ghost btn-sm nav-signin">{t("nav.signIn")}</AuthLink>
           <AuthLink mode="signup" className="btn btn-primary btn-sm">
             <span className="nav-cta-full">{t("nav.getStarted")}</span>
             <span className="nav-cta-short">{t("nav.startShort")}</span>
           </AuthLink>
         </div>
+        {/* Mobile header: hamburger + language + Get Started only */}
+        <div className="landing-nav-mobile">
+          <button
+            className="icon-btn hamburger"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <Icon name={menuOpen ? "x" : "menu"} />
+          </button>
+          <LanguageSelect compact />
+          <AuthLink mode="signup" className="btn btn-primary btn-sm">{t("nav.getStarted")}</AuthLink>
+        </div>
+        {menuOpen && (
+          <div className="landing-mobile-menu">
+            <a href="#top" onClick={() => setMenuOpen(false)}>{t("nav.home")}</a>
+            <a href="#how" onClick={() => setMenuOpen(false)}>{t("nav.how")}</a>
+            <a href="#business" onClick={() => setMenuOpen(false)}>{t("nav.business")}</a>
+            <a href="#pricing" onClick={() => setMenuOpen(false)}>{t("nav.pricing")}</a>
+            <AuthLink mode="login" onClick={() => setMenuOpen(false)}>{t("nav.signIn")}</AuthLink>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}

@@ -11,13 +11,14 @@ interface AuthLinkProps {
   children: ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
 /**
  * Sign in / Sign up links: guests go to the auth page, signed-in users go
  * straight to their portal — never to checkout.
  */
-export default function AuthLink({ mode, children, className, style }: AuthLinkProps) {
+export default function AuthLink({ mode, children, className, style, onClick }: AuthLinkProps) {
   const { isAuthenticated, user } = useAppData();
   const href = isAuthenticated
     ? roleHome(user?.role ?? "user")
@@ -25,7 +26,7 @@ export default function AuthLink({ mode, children, className, style }: AuthLinkP
       ? "/register"
       : "/login";
   return (
-    <Link href={href} className={className} style={style}>
+    <Link href={href} className={className} style={style} onClick={onClick}>
       {children}
     </Link>
   );
