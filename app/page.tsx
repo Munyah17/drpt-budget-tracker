@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import LanguageSelect from "@/components/LanguageSelect";
+import AuthLink from "@/components/AuthLink";
 import { trackEvent } from "@/lib/analytics";
 import Icon from "@/components/Icon";
 import { useIsNative } from "@/lib/native";
@@ -92,11 +93,11 @@ export default function LandingPage() {
           <a href="#business" className="nav-link">{t("nav.business")}</a>
           <a href="#pricing" className="nav-link">{t("nav.pricing")}</a>
           <LanguageSelect compact />
-          <Link href="/login" className="btn btn-ghost btn-sm">{t("nav.signIn")}</Link>
-          <Link href="/register" className="btn btn-primary btn-sm">
+          <AuthLink mode="login" className="btn btn-ghost btn-sm">{t("nav.signIn")}</AuthLink>
+          <AuthLink mode="signup" className="btn btn-primary btn-sm">
             <span className="nav-cta-full">{t("nav.getStarted")}</span>
             <span className="nav-cta-short">{t("nav.startShort")}</span>
-          </Link>
+          </AuthLink>
         </div>
       </nav>
 
@@ -113,9 +114,9 @@ export default function LandingPage() {
           {t("hero.lead")}
         </p>
         <div className="hero-ctas">
-          <Link href="/register" className="btn btn-primary" style={{ padding: "14px 26px", fontSize: 15 }}>
+          <AuthLink mode="signup" className="btn btn-primary" style={{ padding: "14px 26px", fontSize: 15 }}>
             {t("hero.getStarted")} <Icon name="arrow-up-right" size={16} />
-          </Link>
+          </AuthLink>
           <button
             className="btn"
             onClick={handleDemo}
@@ -254,9 +255,9 @@ export default function LandingPage() {
           >
             <Icon name="send" size={15} style={{ marginInlineEnd: 8 }} /> {t("business.walkthrough")}
           </a>
-          <Link href="/login" className="btn" style={{ padding: "14px 28px", fontSize: 15, background: "#fff", color: "#111", border: "1px solid var(--card-border)" }}>
+          <AuthLink mode="login" className="btn" style={{ padding: "14px 28px", fontSize: 15, background: "#fff", color: "#111", border: "1px solid var(--card-border)" }}>
             {t("business.signIn")}
-          </Link>
+          </AuthLink>
         </div>
         <p style={{ textAlign: "center", fontSize: 13, color: "var(--ink-500)", marginTop: 14, maxWidth: 520, marginInline: "auto" }}>
           {t("business.note")}
@@ -278,9 +279,9 @@ export default function LandingPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/register" className="btn btn-primary" style={{ width: "100%" }}>
+            <AuthLink mode="signup" className="btn btn-primary" style={{ width: "100%" }}>
               {t("pricing.createFrom", { price: priceLabel })}
-            </Link>
+            </AuthLink>
           </div>
 
           <div className="pricing-card glass-card">
@@ -314,9 +315,9 @@ export default function LandingPage() {
           {t("cta.text")}
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/register" className="btn btn-white" style={{ padding: "13px 26px" }}>
+          <AuthLink mode="signup" className="btn btn-white" style={{ padding: "13px 26px" }}>
             {t("cta.button")}
-          </Link>
+          </AuthLink>
         </div>
       </section>
 
@@ -331,7 +332,7 @@ export default function LandingPage() {
           <a href="#pricing">{t("footer.pricing")}</a>
           <Link href="/privacy">{t("footer.privacy")}</Link>
           <Link href="/terms">{t("footer.terms")}</Link>
-          <Link href="/login">{t("footer.signIn")}</Link>
+          <AuthLink mode="login">{t("footer.signIn")}</AuthLink>
         </div>
         <div>{t("footer.rights", { year: String(new Date().getFullYear()) })}</div>
         <div>{t("footer.powered")}</div>

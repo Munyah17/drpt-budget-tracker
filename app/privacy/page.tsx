@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import AuthLink from "@/components/AuthLink";
 
 export const metadata: Metadata = { title: "Privacy Policy — WellSpend" };
 
@@ -21,7 +22,7 @@ export default function PrivacyPage() {
         </Link>
         <div className="landing-nav-links">
           <Link href="/terms" className="nav-link">Terms</Link>
-          <Link href="/login" className="btn btn-primary btn-sm">Sign in</Link>
+          <AuthLink mode="login" className="btn btn-primary btn-sm">Sign in</AuthLink>
         </div>
       </nav>
 
@@ -88,7 +89,7 @@ export default function PrivacyPage() {
         <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
-          <Link href="/login">Sign in</Link>
+          <AuthLink mode="login">Sign in</AuthLink>
         </div>
         <div>© {new Date().getFullYear()} WellSpend Budget Tracker. All rights reserved.</div>
       </footer>

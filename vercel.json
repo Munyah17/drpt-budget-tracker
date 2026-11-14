@@ -7,6 +7,10 @@
     {
       "path": "/api/banking/run",
       "schedule": "30 6 * * *"
+    },
+    {
+      "path": "/api/cleanup/unpaid",
+      "schedule": "0 7 * * *"
     }
   ]
 }

@@ -9,46 +9,135 @@ import { useTranslations } from "next-intl";
 
 type Phase = "verifying" | "paid" | "pending" | "error";
 
+interface PendingSignup {
+  email: string;
+  password: string;
+  name: string;
+  phone?: string;
+  gender?: string;
+  profession?: string;
+  country?: string;
+  referral_code?: string | null;
+}
+
 function SuccessInner() {
   const t = useTranslations("Pages.payment_success");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast, updateUser, user } = useAppData();
+  const { toast, updateUser, user, login } = useAppData();
   const [phase, setPhase] = useState<Phase>("verifying");
+  const [errorMsg, setErrorMsg] = useState("");
   const ran = useRef(false);
+
+  // Pay-first signup: the registration was stashed before checkout and the
+  // account is created ONLY now that the payment is confirmed.
+  const signup: PendingSignup | null = (() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = sessionStorage.getItem("drpt-pending-signup");
+      return raw ? (JSON.parse(raw) as PendingSignup) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  function verifyUrl(uid: string, dry: boolean): string {
+    const provider = searchParams.get("provider");
+    if (provider === "stripe") {
+      const sessionId = searchParams.get("session_id") ?? "";
+      return `/api/verify-payment?provider=stripe&session_id=${encodeURIComponent(sessionId)}&uid=${encodeURIComponent(uid)}${dry ? "&dry=1" : ""}`;
+    }
+    const pollUrl = sessionStorage.getItem("drpt-paynow-poll") ?? "";
+    return `/api/verify-payment?provider=paynow&pollurl=${encodeURIComponent(pollUrl)}&uid=${encodeURIComponent(uid)}${dry ? "&dry=1" : ""}`;
+  }
+
+  async function checkPaid(uid: string, dry: boolean): Promise<boolean> {
+    const provider = searchParams.get("provider");
+    if (!provider || (provider === "stripe" && !searchParams.get("session_id")) || (provider === "paynow" && !sessionStorage.getItem("drpt-paynow-poll"))) {
+      return false;
+    }
+    const res = await fetch(verifyUrl(uid, dry));
+    const data = await res.json();
+    return data.paid === true;
+  }
+
+  /** Create the account for a paid signup, then activate it. Returns the new uid. */
+  async function provisionSignup(): Promise<string | null> {
+    if (!signup) return null;
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: signup.email,
+        password: signup.password,
+        name: signup.name,
+        phone: signup.phone,
+        gender: signup.gender,
+        profession: signup.profession,
+        country: signup.country,
+        referral_code: signup.referral_code,
+      }),
+    }).catch(() => null);
+    const data = res ? await res.json().catch(() => ({})) : {};
+    if (!res?.ok || !data.userId) {
+      setErrorMsg(data?.error || t("signupFailed"));
+      return null;
+    }
+    return data.userId as string;
+  }
+
+  async function complete(uid: string) {
+    // Real verify — marks the profile paid and writes the ledger entry once.
+    const ok = await checkPaid(uid, false);
+    if (!ok) return false;
+    if (signup) {
+      // Sign in so the app session exists, then land on the dashboard.
+      await login(signup.email, signup.password, true);
+      trackEvent("signup", {}, { email: signup.email });
+      try { sessionStorage.removeItem("drpt-pending-signup"); } catch { /* ignore */ }
+    }
+    trackEvent("payment", { provider: searchParams.get("provider") }, user);
+    setPhase("paid");
+    toast(t("confirmedToast"), "check-circle");
+    setTimeout(() => router.push("/dashboard"), 1600);
+    return true;
+  }
 
   useEffect(() => {
     if (ran.current) return;
     ran.current = true;
 
     (async () => {
-      const provider = searchParams.get("provider");
-      const uid = searchParams.get("uid") || user?.id || "";
-
-      let url = "";
-      if (provider === "stripe") {
-        const sessionId = searchParams.get("session_id") ?? "";
-        if (!sessionId) return setPhase("error");
-        url = `/api/verify-payment?provider=stripe&session_id=${encodeURIComponent(sessionId)}&uid=${encodeURIComponent(uid)}`;
-      } else if (provider === "paynow") {
-        const pollUrl = sessionStorage.getItem("drpt-paynow-poll") ?? "";
-        if (!pollUrl) return setPhase("pending");
-        url = `/api/verify-payment?provider=paynow&pollurl=${encodeURIComponent(pollUrl)}&uid=${encodeURIComponent(uid)}`;
-      } else {
-        return setPhase("error");
-      }
-
       try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.paid) {
+        if (signup) {
+          // 1. Confirm the money arrived — dry run, no account exists yet.
+          const paid = await checkPaid("", true);
+          if (!paid) {
+            setPhase("pending"); // Paynow can lag — allow a manual recheck
+            return;
+          }
+          // 2. Payment confirmed → NOW create the account.
+          const uid = await provisionSignup();
+          if (!uid) {
+            setPhase("error");
+            return;
+          }
+          // 3. Activate the fresh account and sign in.
+          const ok = await complete(uid);
+          if (!ok) setPhase("pending");
+          return;
+        }
+
+        // Existing-user flow (renewal / activation of an already-created account).
+        const uid = searchParams.get("uid") || user?.id || "";
+        const ok = await checkPaid(uid, false);
+        if (ok) {
           updateUser({ isPaid: true });
-          trackEvent("payment", { provider }, user);
+          trackEvent("payment", { provider: searchParams.get("provider") }, user);
           setPhase("paid");
           toast(t("confirmedToast"), "check-circle");
           setTimeout(() => router.push("/dashboard"), 1600);
         } else {
-          // Paynow can lag a few seconds after redirect — allow one retry poll
           setPhase("pending");
         }
       } catch {
@@ -60,20 +149,27 @@ function SuccessInner() {
 
   async function recheck() {
     setPhase("verifying");
-    const provider = searchParams.get("provider");
-    const uid = searchParams.get("uid") || user?.id || "";
-    const pollUrl = sessionStorage.getItem("drpt-paynow-poll") ?? "";
-    const sessionId = searchParams.get("session_id") ?? "";
-    const url =
-      provider === "stripe"
-        ? `/api/verify-payment?provider=stripe&session_id=${encodeURIComponent(sessionId)}&uid=${encodeURIComponent(uid)}`
-        : `/api/verify-payment?provider=paynow&pollurl=${encodeURIComponent(pollUrl)}&uid=${encodeURIComponent(uid)}`;
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.paid) {
+      if (signup) {
+        const paid = await checkPaid("", true);
+        if (!paid) {
+          setPhase("pending");
+          return;
+        }
+        const uid = await provisionSignup();
+        if (!uid) {
+          setPhase("error");
+          return;
+        }
+        const ok = await complete(uid);
+        if (!ok) setPhase("pending");
+        return;
+      }
+      const uid = searchParams.get("uid") || user?.id || "";
+      const ok = await checkPaid(uid, false);
+      if (ok) {
         updateUser({ isPaid: true });
-        trackEvent("payment", { provider }, user);
+        trackEvent("payment", { provider: searchParams.get("provider") }, user);
         setPhase("paid");
         setTimeout(() => router.push("/dashboard"), 1600);
       } else {
@@ -88,7 +184,7 @@ function SuccessInner() {
     verifying: { title: t("verifyingTitle"), text: t("verifyingText") },
     paid: { title: t("paidTitle"), text: t("paidText") },
     pending: { title: t("pendingTitle"), text: t("pendingText") },
-    error: { title: t("errorTitle"), text: t("errorText") },
+    error: { title: t("errorTitle"), text: errorMsg || t("errorText") },
   };
 
   return (
@@ -115,7 +211,7 @@ function SuccessInner() {
           <a
             className="btn btn-ghost"
             style={{ width: "100%", marginTop: 10, textDecoration: "none" }}
-            href={`https://wa.me/263718560128?text=${encodeURIComponent(t("whatsappHelp", { email: user?.email ?? "" }))}`}
+            href={`https://wa.me/263718560128?text=${encodeURIComponent(t("whatsappHelp", { email: signup?.email ?? user?.email ?? "" }))}`}
             target="_blank"
             rel="noreferrer"
           >

@@ -229,7 +229,8 @@
     "signupTitleFree": "Create your free account",
     "createFree": "Create Account",
     "country": "Country",
-    "countryPh": "Select country"
+    "countryPh": "Select country",
+    "proceedToPayment": "Almost there — complete payment to activate your account."
   },
   "Landing": {
     "demoToast": "Welcome to the demo — explore freely, nothing is saved.",
@@ -1967,8 +1968,10 @@
       "crud_updated": "{label} updated",
       "crud_deleted": "{label} deleted",
       "signInFailed": "Sign-in failed. Please try again.",
+      "accountExpired": "This account was removed because payment wasn't completed in time. Please sign up again.",
       "lockTitle": "This feature isn't available on your plan",
       "lockBody": "Dashboard, profile and settings are open. Everything else unlocks once your plan is active.",
+      "lockUpgrade": "Unlock full access",
       "viewAs": "View as",
       "impersonating": "Engineer preview — viewing as {name} ({email})",
       "exitPreview": "Exit preview",
@@ -3108,6 +3111,8 @@
       "popInstructionsToast": "Send your proof of payment on WhatsApp to activate your account.",
       "paymentFailedToast": "Payment failed to start",
       "heroTitle": "Activate your account",
+      "heroTitleSignup": "Create your account",
+      "paidConfirmedToast": "Payment confirmed — full access unlocked!",
       "fromPrice": "from {price}",
       "onceNotMonthly": "a year, not monthly",
       "tagline": "One payment unlocks everything for a year.",
@@ -3167,7 +3172,8 @@
       "errorText": "If you were charged, send your receipt via WhatsApp and we''ll sort it out.",
       "checkAgain": "Check payment status again",
       "whatsappHelp": "Hi, my WellSpend payment needs a manual check.\nEmail: {email}\nRef: ",
-      "getHelp": "Get help on WhatsApp"
+      "getHelp": "Get help on WhatsApp",
+      "signupFailed": "We couldn't create your account after payment — please contact support with your receipt."
     },
     "print_invoice": {
       "printPdf": "Print / Save as PDF",

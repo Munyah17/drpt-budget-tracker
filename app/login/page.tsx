@@ -8,7 +8,6 @@ import { useAppData } from "@/lib/AppDataContext";
 import LanguageSelect from "@/components/LanguageSelect";
 import { notifyEvent } from "@/lib/notifyClient";
 import { trackEvent } from "@/lib/analytics";
-import { minPriceLabel } from "@/lib/pricing";
 import { COUNTRIES } from "@/lib/countries";
 import { UserRole } from "@/lib/types";
 import { useIsNative } from "@/lib/native";
@@ -77,7 +76,50 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
         toast(t("pwMismatch"), "x");
         return;
       }
-      const kyc = {
+
+      if (native) {
+        // iOS free tier: create the account immediately — no purchase path
+        // inside the app (App Store rules).
+        const kyc = {
+          name: name || email.split('@')[0],
+          phone,
+          gender,
+          profession,
+          country,
+          referral_code: referralCode || null,
+        };
+        const displayName = name || email.split('@')[0];
+        const signupRes = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, ...kyc, name: displayName }),
+        }).catch(() => null);
+        const signupData = signupRes ? await signupRes.json().catch(() => ({})) : {};
+
+        if (!signupRes?.ok || !signupData.userId) {
+          setSubmitting(false);
+          const msg = signupData?.error || "Signup failed";
+          toast(msg, "x");
+          notifyEvent("signup_failed", { email, name, detail: msg });
+          trackEvent("signup_failed", { detail: msg }, { email });
+          return;
+        }
+
+        trackEvent("signup", {}, { email });
+        await login(email, password, true);
+        setFadingOut(true);
+        toast(t("createdFree"), "check-circle");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 350);
+        return;
+      }
+
+      // Web: pay FIRST, account is created only after payment is confirmed.
+      // No profile is saved unless the user actually pays.
+      const pendingSignup = {
+        email,
+        password,
         name: name || email.split('@')[0],
         phone,
         gender,
@@ -85,61 +127,14 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
         country,
         referral_code: referralCode || null,
       };
-      // Create account server-side via the admin API — Supabase's built-in
-      // confirmation email is rate-limited and was failing signups, and the
-      // route confirms the email + writes the profile itself anyway.
-      const displayName = name || email.split('@')[0];
-      const signupRes = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, ...kyc, name: displayName }),
-      }).catch(() => null);
-      const signupData = signupRes ? await signupRes.json().catch(() => ({})) : {};
+      sessionStorage.setItem("drpt-pending-signup", JSON.stringify(pendingSignup));
+      try { localStorage.setItem("drpt-region", country); } catch { /* ignore */ }
 
-      if (!signupRes?.ok || !signupData.userId) {
-        setSubmitting(false);
-        const msg = signupData?.error || "Signup failed";
-        toast(msg, "x");
-        notifyEvent("signup_failed", { email, name, detail: msg });
-        trackEvent("signup_failed", { detail: msg }, { email });
-        return;
-      }
-
-      const newUserId = signupData.userId as string;
-      {
-        // Admin notification is sent server-side by /api/auth/signup.
-        trackEvent("signup", {}, { email });
-
-        if (native) {
-          // Free tier: sign them in and go to the dashboard. The welcome
-          // email (sent by the signup route) carries activation details —
-          // the app itself never mentions payment.
-          await login(email, password, true);
-          setFadingOut(true);
-          toast(t("createdFree"), "check-circle");
-          setTimeout(() => {
-            router.push("/dashboard");
-          }, 350);
-          return;
-        }
-
-        // Carry identity to the payment page even without a live session
-        sessionStorage.setItem(
-          "drpt-pending-pay",
-          JSON.stringify({ userId: newUserId, email, name: displayName, country })
-        );
-        try { localStorage.setItem("drpt-region", country); } catch { /* ignore */ }
-
-        // Best-effort sign-in in the background — either way, the next stop
-        // is payment. No options, no freebies.
-        void login(email, password, true);
-
-        setFadingOut(true);
-        toast(`Account created — one last step: pay from ${minPriceLabel()} to activate.`, "check-circle");
-        setTimeout(() => {
-          router.push("/payment");
-        }, 350);
-      }
+      setFadingOut(true);
+      toast(t("proceedToPayment"), "check-circle");
+      setTimeout(() => {
+        router.push("/payment?signup=1");
+      }, 350);
     } else {
       const result = await login(email, password, remember);
 

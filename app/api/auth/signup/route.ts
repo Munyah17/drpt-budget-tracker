@@ -101,16 +101,17 @@ export async function POST(req: NextRequest) {
 
     // Notifications — pure FYI emails, no confirmation links (the account is
     // already confirmed). Client gets a welcome note; admin gets the event.
+    // Web signups are provisioned AFTER payment, so the account is already
+    // activated — the email just welcomes them in.
     void sendMail({
       to: cleanEmail,
       subject: "Welcome to WellSpend",
       text:
         `Hi ${name || cleanEmail.split("@")[0]},\n\n` +
-        `Your WellSpend account (${cleanEmail}) is ready — just sign in with your email and password.\n\n` +
-        `To activate every feature (transactions, budgets, savings goals and reports), ` +
-        `a regional subscription applies. On the web, sign in at ${APP_URL} and follow ` +
-        `the activation step — it takes about a minute. Once activated, your plan unlocks ` +
-        `everywhere, including the iPhone app.\n\n` +
+        `Your WellSpend account (${cleanEmail}) is ready and fully activated — ` +
+        `just sign in with your email and password at ${APP_URL}.\n\n` +
+        `Every feature is unlocked: transactions, budgets, savings goals, reports ` +
+        `and banking. Welcome aboard!\n\n` +
         `WellSpend`,
     }).catch(() => {});
 

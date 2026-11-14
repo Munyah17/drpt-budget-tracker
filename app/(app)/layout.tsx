@@ -19,12 +19,11 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const native = useIsNative();
 
-  // Web: every registration must pay — unpaid standard users never reach app
-  // content. Native (iPhone app): unpaid users get a free tier instead —
-  // dashboard, profile and settings work; every other route renders a
-  // LockedScreen. No purchase path exists inside the app either way.
-  // Demo/admin/corporate/employee accounts carry isPaid or a non-user role,
-  // so they pass through. Fail closed: no profile = locked, not free.
+  // Guests are sent to the marketing page. Signed-in users always reach
+  // their portal — payment is never forced on sign-in/sign-up navigation.
+  // Native (iPhone app): unpaid users get a free tier — dashboard, profile
+  // and settings work; every other route renders a LockedScreen.
+  // Demo/admin/corporate/employee accounts carry isPaid or a non-user role.
   const isUnpaid = !user || (user.role === "user" && !user.isPaid);
   const freeTier = native && isUnpaid;
   const freeRoute = FREE_TIER_ROUTES.some(
@@ -36,8 +35,6 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
     if (!isAuthenticated) {
       // Guests land on the marketing page — they sign up & pay or leave.
       router.replace("/");
-    } else if (isUnpaid && !native) {
-      router.replace("/payment");
     }
   }, [authReady, isAuthenticated, isUnpaid, native, pathname, router]);
 
@@ -50,7 +47,6 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
   }, [authReady, isAuthenticated, isUnpaid, pathname, uid]);
 
   if (!authReady || !isAuthenticated) return null;
-  if (isUnpaid && !native) return null;
 
   return (
     <div id="main-app" className={user?.role === "user" ? "has-tabbar" : undefined}>

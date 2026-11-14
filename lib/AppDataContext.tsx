@@ -24,6 +24,8 @@ import { Account, Bill, Budget, ExpenseEntry, Goal, IncomeEntry, Transaction, Us
 import { supabase } from "./supabase";
 import { DEFAULT_CURRENCY, formatCurrency, setActiveCurrency } from "./format";
 import { paidActive } from "./paid";
+import { isUnpaidExpired } from "./unpaid";
+import { clearSessionStamp, sessionStale, touchSession } from "./session";
 
 export interface ToastItem {
   id: number;
@@ -112,12 +114,27 @@ const isRemembered = () =>
 
 function persistUser(p: UserProfile) {
   const v = JSON.stringify(p);
+  touchSession(); // any persisted activity renews the 3-day session window
   if (isRemembered()) {
     localStorage.setItem(USER_KEY, v);
     sessionStorage.removeItem(USER_KEY);
   } else {
     sessionStorage.setItem(USER_KEY, v);
     localStorage.removeItem(USER_KEY);
+  }
+}
+
+/** Permanently delete the caller's own account (auth user + profile row). */
+async function deleteOwnAccount(uid: string): Promise<boolean> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch(`/api/account/delete?uid=${encodeURIComponent(uid)}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session?.access_token ?? ""}` },
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
 
@@ -131,6 +148,7 @@ function clearStoredUser() {
   localStorage.removeItem(USER_KEY);
   sessionStorage.removeItem(USER_KEY);
   localStorage.removeItem(REMEMBER_KEY);
+  clearSessionStamp();
 }
 
 /** Profile used for the public "See Demo" walkthrough — regular user, paid, unsaved */
@@ -187,47 +205,81 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       clearStoredUser();
     }
 
-    // Restore persisted profile (remembered → localStorage, current-tab
-    // session → sessionStorage; nothing survives a closed browser unremembered)
-    try {
-      const raw = storedUser();
-      if (raw) {
-        const profile = JSON.parse(raw) as UserProfile;
-        setUser(profile);
-        setIsAuthenticated(true);
-      }
-    } catch {
-      clearStoredUser();
-    }
-
-    // Check for existing Supabase session — only when the user opted into
-    // "Remember me"; unremembered sessions never restore across visits.
+    // Restore the persisted profile — but only while the session is fresh
+    // (3-day sliding window) and, for real accounts, the Supabase session is
+    // still valid. Stale or revoked sessions are dropped so the user simply
+    // signs in again instead of wandering around as a ghost.
     const checkSession = async () => {
       try {
-        if (!isRemembered()) return;
+        const raw = storedUser();
+        const profile = raw ? (JSON.parse(raw) as UserProfile) : null;
+
+        // Freshness gate: sessions idle for more than 3 days are dropped.
+        // (A missing stamp predates freshness tracking — it gets stamped
+        // below once the session verifies, so nobody is logged out twice.)
+        if (profile && sessionStale()) {
+          clearStoredUser();
+          setAuthReady(true);
+          return;
+        }
+
+        // The Supabase session is the source of truth for real accounts —
+        // it also covers fresh logins and engineer impersonation, where no
+        // profile is stored yet.
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          const { data: profile } = await supabase
+          const { data: p } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
             .single();
-          if (profile) {
+          if (p) {
+            // Unpaid accounts are temporary — once the grace window lapses
+            // with no payment, discard the account instead of restoring it.
+            const candidate = {
+              isPaid: paidActive(p),
+              paidUntil: p.paid_until ?? null,
+              createdAt: p.created_at ?? undefined,
+            };
+            if (isUnpaidExpired(candidate)) {
+              await deleteOwnAccount(session.user.id);
+              await supabase.auth.signOut();
+              clearStoredUser();
+              setAuthReady(true);
+              return;
+            }
+            touchSession(); // verified open renews the 3-day window
             setUser({
               id: session.user.id,
               email: session.user.email!,
-              name: profile.name || 'User',
-              role: profile.role || 'user',
-              currency: profile.currency || DEFAULT_CURRENCY,
-              isPaid: paidActive(profile),
-              paidUntil: profile.paid_until ?? null,
-              country: profile.country ?? undefined,
+              name: p.name || 'User',
+              role: p.role || 'user',
+              currency: p.currency || DEFAULT_CURRENCY,
+              isPaid: candidate.isPaid,
+              paidUntil: candidate.paidUntil,
+              country: p.country ?? undefined,
+              createdAt: p.created_at ?? undefined,
             });
             setIsAuthenticated(true);
+            setAuthReady(true);
+            return;
           }
+        }
+
+        // No live Supabase session — only hardcoded demo/admin/corporate/
+        // employee accounts may fall back to their local profile (they have
+        // no auth session by design). Real accounts with a dead session are
+        // signed out.
+        if (profile && !UUID_RE.test(profile.id)) {
+          touchSession();
+          setUser(profile);
+          setIsAuthenticated(true);
+        } else if (profile) {
+          clearStoredUser();
         }
       } catch (err) {
         console.error('Session check failed:', err);
+        clearStoredUser();
       } finally {
         setAuthReady(true);
       }
@@ -615,15 +667,29 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
           .single();
 
         const userRole: UserRole = profile?.role || 'user';
+        const isPaid = paidActive(profile);
+        const paidUntil = profile?.paid_until ?? null;
+        const createdAt = profile?.created_at ?? undefined;
+
+        // Unpaid accounts are temporary — once the grace window lapses with
+        // no payment, discard the account instead of letting them in.
+        if (isUnpaidExpired({ isPaid, paidUntil, createdAt })) {
+          await deleteOwnAccount(data.user.id);
+          await supabase.auth.signOut();
+          clearStoredUser();
+          return { success: false, error: tAuth("accountExpired") };
+        }
+
         const userProfile: UserProfile = {
           id: data.user.id,
           email: data.user.email!,
           name: profile?.name || 'User',
           role: userRole,
           currency: profile?.currency || DEFAULT_CURRENCY,
-          isPaid: paidActive(profile),
-          paidUntil: profile?.paid_until ?? null,
+          isPaid,
+          paidUntil,
           country: profile?.country ?? undefined,
+          createdAt,
         };
         setUser(userProfile);
         setIsAuthenticated(true);

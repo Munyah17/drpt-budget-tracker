@@ -20,7 +20,9 @@ function PaymentInner() {
   const searchParams = useSearchParams();
   const { toast, user, isDemo } = useAppData();
   const native = useIsNative();
-  // No purchases inside the iPhone app.
+  // No purchases inside the iPhone app — App Store guideline 3.1.1 requires
+  // digital subscriptions to use Apple IAP, not external checkout. iOS users
+  // subscribe on the web, then log into the app for full access.
   useEffect(() => {
     if (native) router.replace("/login");
   }, [native, router]);
@@ -28,6 +30,14 @@ function PaymentInner() {
   const [processing, setProcessing] = useState(false);
   const [popSent, setPopSent] = useState(false);
   const [pending, setPending] = useState<{ userId: string; email: string; name: string; country?: string } | null>(null);
+  // Pay-first signup: registration details stashed by /register, account is
+  // created only after the payment is confirmed.
+  const signupMode = searchParams.get("signup") === "1";
+  const [pendingSignup, setPendingSignup] = useState<{
+    email: string; password: string; name: string;
+    phone?: string; gender?: string; profession?: string;
+    country?: string; referral_code?: string | null;
+  } | null>(null);
   // Fallback region picker for accounts that predate the mandatory country
   // field — the charged price is still resolved server-side from the profile.
   const [regionChoice, setRegionChoice] = useState("");
@@ -40,18 +50,23 @@ function PaymentInner() {
     if (user) return;
     queueMicrotask(() => {
       try {
-        const raw = sessionStorage.getItem("drpt-pending-pay");
-        if (raw) setPending(JSON.parse(raw));
+        if (signupMode) {
+          const raw = sessionStorage.getItem("drpt-pending-signup");
+          if (raw) setPendingSignup(JSON.parse(raw));
+        } else {
+          const raw = sessionStorage.getItem("drpt-pending-pay");
+          if (raw) setPending(JSON.parse(raw));
+        }
       } catch { /* no pending identity */ }
     });
-  }, [user]);
+  }, [user, signupMode]);
 
   const payerId = user?.id ?? pending?.userId;
-  const payerEmail = user?.email ?? pending?.email;
-  const payerName = user?.name ?? pending?.name;
+  const payerEmail = user?.email ?? pendingSignup?.email ?? pending?.email;
+  const payerName = user?.name ?? pendingSignup?.name ?? pending?.name;
   // The checkout country picker is always editable — the chosen value is
   // sent with the payment and wins over the signup/profile default.
-  const region = (regionChoice || user?.country || pending?.country || "").toLowerCase();
+  const region = (regionChoice || user?.country || pendingSignup?.country || pending?.country || "").toLowerCase();
   // Paynow / EcoCash / bank transfer only settle in Zimbabwe — everywhere
   // else it's card-only via Stripe.
   const isZimbabwe = region === "zw";
@@ -226,7 +241,7 @@ function PaymentInner() {
           <div className="login-logo" style={{ marginBottom: 10, justifyContent: "center", color: "#fff" }}>
             WellSpend <span style={{ color: "#ffd7e4" }}>❤</span>
           </div>
-          <h2 style={{ marginBottom: 6, color: "#fff" }}>{t("heroTitle")}</h2>
+          <h2 style={{ marginBottom: 6, color: "#fff" }}>{signupMode ? t("heroTitleSignup") : t("heroTitle")}</h2>
           <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
             {region ? t("fromPrice", { price: minPriceLabelFor(region) }) : "—"}
           </div>

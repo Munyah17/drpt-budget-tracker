@@ -77,4 +77,6 @@ export interface UserProfile {
   country?: string;
   /** Set for corporate-issued employee accounts — ties the account to an organisation */
   organisation?: string;
+  /** ISO timestamp — when the account was created (drives the unpaid grace period) */
+  createdAt?: string;
 }

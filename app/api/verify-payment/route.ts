@@ -13,6 +13,9 @@ export async function GET(req: NextRequest) {
   const p = req.nextUrl.searchParams;
   const provider = p.get("provider");
   const uid = p.get("uid") ?? "";
+  // dry=1: report paid status only — no profile update, no ledger write.
+  // Used by the pay-first signup flow before the account exists.
+  const dry = p.get("dry") === "1";
 
   try {
     if (provider === "stripe") {
@@ -27,7 +30,7 @@ export async function GET(req: NextRequest) {
       const session = await res.json();
       const paid = res.ok && session.payment_status === "paid";
       const userId = uid || session.client_reference_id || "";
-      if (paid) {
+      if (paid && !dry) {
         await markProfilePaid(userId);
         const customer = session.customer_details as Record<string, string> | undefined;
         await recordPayment({
@@ -52,7 +55,7 @@ export async function GET(req: NextRequest) {
       const data = new URLSearchParams(await res.text());
       const status = (data.get("status") ?? "").toLowerCase();
       const paid = status === "paid" || status === "awaiting delivery" || status === "delivered";
-      if (paid) {
+      if (paid && !dry) {
         await markProfilePaid(uid);
         await recordPayment({
           userId: uid,
@@ -64,7 +67,7 @@ export async function GET(req: NextRequest) {
           meta: { paynowreference: data.get("paynowreference") ?? "", status },
         });
         await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${uid}` });
-      } else if (status === "cancelled" || status === "failed" || status === "disputed") {
+      } else if (!paid && !dry && (status === "cancelled" || status === "failed" || status === "disputed")) {
         await notifyAdmin("payment_failed", { method: "paynow", detail: `status "${status}", uid ${uid}` });
       }
       return NextResponse.json({ paid, status });

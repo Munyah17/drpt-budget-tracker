@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "./supabase";
+import { touchSession } from "./session";
 
 /**
  * Headers for /api/admin/* calls: the hardcoded admin proves itself via
@@ -191,4 +192,5 @@ export async function exitImpersonation(): Promise<void> {
 
   sessionStorage.removeItem(STASH_KEY);
   sessionStorage.removeItem(ACTIVE_KEY);
+  touchSession(); // keep the restored admin session inside the freshness window
 }
