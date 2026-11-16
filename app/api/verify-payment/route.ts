@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { applyPayment } from "@/lib/server/payments";
-import { notifyAdmin, sendUserEmail } from "@/lib/server/notify";
+import { sendUserEmail } from "@/lib/server/notify";
 import { detailTable } from "@/lib/server/emailTemplate";
-import { sbGet } from "@/lib/server/supabaseAdmin";
+import {
+  isPaynowPollUrl,
+  paynowParam,
+  paynowPaid,
+  pollPaynow,
+  settlePaynowPayment,
+} from "@/lib/server/paynow";
 
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
@@ -79,50 +85,16 @@ export async function GET(req: NextRequest) {
 
     if (provider === "paynow") {
       const pollUrl = p.get("pollurl") ?? "";
-      if (!pollUrl.startsWith("https://www.paynow.co.zw/")) {
+      if (!isPaynowPollUrl(pollUrl)) {
         return NextResponse.json({ paid: false, error: "Invalid poll URL" }, { status: 400 });
       }
-      const res = await fetch(pollUrl, { cache: "no-store" });
-      const data = new URLSearchParams(await res.text());
-      const status = (data.get("status") ?? "").toLowerCase();
-      const paid = status === "paid" || status === "awaiting delivery" || status === "delivered";
-      if (paid && !dry) {
-        // Bind the payment to the account it was initiated for: the pending
-        // ledger row written by /api/paynow/initiate carries the owner.
-        const reference = data.get("reference") ?? "";
-        const pending = reference
-          ? await sbGet<{ id: number; user_id: string | null; user_email: string | null }>(
-              "payments",
-              `provider=eq.paynow&reference=eq.${encodeURIComponent(reference)}&select=id,user_id,user_email&limit=1`
-            )
-          : [];
-        const ownerId = pending[0]?.user_id ?? "";
-        if (ownerId && uid && uid !== ownerId) {
-          return NextResponse.json({ paid: false, error: "Account mismatch" }, { status: 403 });
-        }
-        const effectiveUid = ownerId || uid;
-        if (effectiveUid) {
-          await applyPayment({
-            userId: effectiveUid,
-            userEmail: pending[0]?.user_email ?? undefined,
-            provider: "paynow",
-            method: "paynow",
-            amount: data.get("amount") ? Number(data.get("amount")) : null,
-            currency: "usd",
-            reference: reference || undefined,
-            meta: { paynowreference: data.get("paynowreference") ?? "", status },
-          });
-        }
-        await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${effectiveUid}` });
-        const prof = await sbGet<{ email: string | null }>("profiles", `id=eq.${encodeURIComponent(effectiveUid)}&select=email&limit=1`);
-        const email = prof[0]?.email;
-        if (email) {
-          receiptEmail(email, data.get("amount") ? Number(data.get("amount")) : null, "usd", "Paynow", reference || effectiveUid);
-        }
-      } else if (!paid && !dry && (status === "cancelled" || status === "failed" || status === "disputed")) {
-        await notifyAdmin("payment_failed", { method: "paynow", detail: `status "${status}", uid ${uid}` });
+      if (dry) {
+        const polled = await pollPaynow(pollUrl);
+        const status = paynowParam(polled, "status").toLowerCase();
+        return NextResponse.json({ paid: paynowPaid(status), status });
       }
-      return NextResponse.json({ paid, status });
+      const result = await settlePaynowPayment({ pollUrl, uid });
+      return NextResponse.json({ paid: result.paid, status: result.status });
     }
 
     return NextResponse.json({ paid: false, error: "Unknown provider" }, { status: 400 });
