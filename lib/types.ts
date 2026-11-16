@@ -71,7 +71,7 @@ export interface UserProfile {
   role: UserRole;
   currency: Currency;
   isPaid: boolean;
-  /** ISO timestamp — when the yearly subscription expires (null = exempt) */
+  /** ISO timestamp — when the monthly subscription expires (null = exempt) */
   paidUntil?: string | null;
   /** ISO 3166-1 alpha-2 country code collected at signup (drives regional pricing) */
   country?: string;

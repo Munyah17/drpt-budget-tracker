@@ -280,13 +280,13 @@
       "startShort": "Start"
     },
     "hero": {
-      "badge": "Just $1 a year",
+      "badge": "From $1 a month",
       "titleLine1": "Your money,",
       "titleEm": "finally clear.",
       "lead": "WellSpend Budget Tracker is a calm, beautiful budget tracker for real life. Income, expenses, bills, goals and insights — everything in one place, for less than a bottle of water.",
       "getStarted": "Get Started — $1",
       "seeDemo": "See Demo",
-      "note": "$1 a year · Every feature unlocked · Paynow, card, Ecocash or bank.",
+      "note": "From $1 a month · Every feature unlocked · Paynow, card, Ecocash or bank.",
       "balance": "Total balance",
       "income": "Income this month",
       "budgetUsed": "Budget used"
@@ -339,7 +339,7 @@
         "text": "Sign up with your name and email — it takes thirty seconds."
       },
       "pay": {
-        "title": "Pay yearly",
+        "title": "Pay monthly",
         "text": "Paynow, card, Ecocash or bank transfer — your pick."
       },
       "currency": {
@@ -364,7 +364,7 @@
       },
       "own": {
         "title": "Own your money",
-        "text": "Full access, all year. Every feature, every update."
+        "text": "Full access, every month. Every feature, every update."
       }
     },
     "business": {
@@ -401,11 +401,11 @@
       "hireText": "Post a vacancy, share the link, and applications score themselves. Contracts and onboarding live in the same place."
     },
     "pricing": {
-      "heading": "One dollar. That''s it.",
-      "sub": "No tiers, no upsells. One dollar a year keeps everything.",
-      "lifetime": "Yearly access",
-      "forever": "/ year",
-      "features": "Every feature, all year",
+      "heading": "From $1 a month. That''s it.",
+      "sub": "No tiers, no upsells. One small monthly payment keeps everything.",
+      "lifetime": "Monthly access",
+      "forever": "/ month",
+      "features": "Every feature, every month",
       "tracking": "Income, expense & budget tracking",
       "goals": "Savings goals, bills & calendar",
       "reports": "Reports, analytics & AI assistant",
@@ -425,11 +425,11 @@
       "priceNote": "Prices may differ according to regions and operational regulatory requirements.",
       "tncApply": "Terms & Conditions Apply",
       "regionPh": "Select your country",
-      "createFrom": "Create account & pay {price}"
+      "createFrom": "Create account & pay from {price}"
     },
     "cta": {
       "heading": "Ready to see where your money goes?",
-      "text": "Registration completes with a yearly subscription — then the whole app is yours.",
+      "text": "Registration completes with a monthly subscription — then the whole app is yours.",
       "button": "Get Started"
     },
     "footer": {
@@ -3254,8 +3254,8 @@
       "heroTitleSignup": "Create your account",
       "paidConfirmedToast": "Payment confirmed — full access unlocked!",
       "fromPrice": "from {price}",
-      "onceNotMonthly": "a year, not monthly",
-      "tagline": "One payment unlocks everything for a year.",
+      "onceNotMonthly": "per month",
+      "tagline": "One payment unlocks everything for a month.",
       "cancelledNotice": "Payment was cancelled — pick a method to try again.",
       "chooseHowToPay": "Choose how to pay",
       "paynowSub": "Ecocash, Omari, InnBucks — {price} instant",
@@ -3288,7 +3288,7 @@
       "cancel": "Cancel",
       "secureCheckout": "Secure checkout — your card details never touch our servers",
       "breakdownTitle": "Price breakdown",
-      "linePrincipal": "Principal — yearly access",
+      "linePrincipal": "Monthly access",
       "lineTotal": "Total",
       "processing_paynow": "Paynow processing fee",
       "processing_stripe": "Card processing fee",
@@ -3755,6 +3755,7 @@
     "signOut": "Sign out",
     "nav": {
       "command": "Command Centre",
+      "pricing": "Pricing",
       "admin": "Admin Console",
       "clientAccess": "Client Access"
     },

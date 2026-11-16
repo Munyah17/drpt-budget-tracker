@@ -4,7 +4,8 @@ import { sbGet, sbUpsert } from "@/lib/server/supabaseAdmin";
 import { recordPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
 import { rateLimited, clientIp } from "@/lib/server/rateLimit";
-import { priceUsdFor, type PaymentChannel } from "@/lib/pricing";
+import type { PaymentChannel } from "@/lib/pricing";
+import { priceUsdForCountry } from "@/lib/server/pricing";
 
 export const runtime = "nodejs";
 
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
   const password = typeof body?.password === "string" && body.password.length >= 6
     ? body.password
     : crypto.randomBytes(9).toString("base64url"); // temp — user resets after approval if unknown
-  const amount = priceUsdFor(method as PaymentChannel, country);
+  const amount = await priceUsdForCountry(method as PaymentChannel, country);
 
   const headers = {
     apikey: serviceKey,

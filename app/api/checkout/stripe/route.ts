@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { priceCentsFor } from "@/lib/pricing";
+import { priceCentsForCountry } from "@/lib/server/pricing";
 import { sbGet } from "@/lib/server/supabaseAdmin";
 import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
@@ -17,8 +17,8 @@ async function countryFor(userId: string, preferred: string): Promise<string> {
 }
 
 /**
- * Creates a Stripe Checkout Session for the yearly subscription and returns the
- * hosted checkout URL. Price is grossed up for Stripe's fee so we net $1.
+ * Creates a Stripe Checkout Session for the monthly subscription and returns the
+ * hosted checkout URL. Price comes from the regional/custom price resolver.
  * No stripe SDK needed — plain REST.
  */
 export async function POST(req: NextRequest) {
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
   const { userId, email, country } = await req.json().catch(() => ({}));
   const origin = req.nextUrl.origin;
   const region = await countryFor(String(userId ?? ""), String(country ?? ""));
+  const amountCents = await priceCentsForCountry("stripe", region);
 
   const body = new URLSearchParams({
     mode: "payment",
@@ -41,8 +42,8 @@ export async function POST(req: NextRequest) {
     cancel_url: `${origin}/payment?cancelled=1`,
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "usd",
-    "line_items[0][price_data][unit_amount]": String(priceCentsFor("stripe", region)),
-    "line_items[0][price_data][product_data][name]": "WellSpend — Yearly Access",
+    "line_items[0][price_data][unit_amount]": String(amountCents),
+    "line_items[0][price_data][product_data][name]": "WellSpend — Monthly Access",
     client_reference_id: userId ?? "",
     "payment_method_types[0]": "card",
   });

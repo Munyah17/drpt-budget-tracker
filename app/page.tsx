@@ -47,7 +47,7 @@ export default function LandingPage() {
   const native = useIsNative();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Flat yearly price — country selection happens on the registration page.
+  // Flat monthly price — country selection happens on the registration page.
   const priceLabel = "$1";
 
   // `/` is always the landing page — even for signed-in visitors. The app

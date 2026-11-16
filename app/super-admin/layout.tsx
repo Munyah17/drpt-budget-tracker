@@ -9,6 +9,7 @@ import Icon from "@/components/Icon";
 
 const NAV = [
   { id: "command", href: "/super-admin", icon: "layout-dashboard" },
+  { id: "pricing", href: "/admin/pricing", icon: "tag" },
   { id: "admin", href: "/admin", icon: "users" },
 ] as const;
 

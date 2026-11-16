@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { priceUsdFor } from "@/lib/pricing";
+import { priceUsdForCountry } from "@/lib/server/pricing";
 import { sbGet, sbInsert } from "@/lib/server/supabaseAdmin";
 import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 import { paynowParam, validatePaynowHash } from "@/lib/server/paynow";
@@ -51,12 +51,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const amount = await priceUsdForCountry("paynow", region);
+
   // Field order matters for the hash
   const fields: [string, string][] = [
     ["id", id],
     ["reference", reference],
-    ["amount", priceUsdFor("paynow", region).toFixed(2)],
-    ["additionalinfo", `WellSpend yearly access${userId ? ` (${userId})` : ""}`],
+    ["amount", amount.toFixed(2)],
+    ["additionalinfo", `WellSpend monthly access${userId ? ` (${userId})` : ""}`],
     ["returnurl", `${origin}/payment/success?provider=paynow&uid=${encodeURIComponent(userId ?? "")}`],
     ["resulturl", `${origin}/api/paynow/result`],
     ["authemail", email ?? ""],
@@ -92,7 +94,7 @@ export async function POST(req: NextRequest) {
     user_email: email ? String(email) : null,
     provider: "paynow",
     method: "paynow",
-    amount: priceUsdFor("paynow", region),
+    amount,
     currency: "usd",
     reference,
     status: "pending",

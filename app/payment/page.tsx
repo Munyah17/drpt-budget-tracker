@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { notifyEvent } from "@/lib/notifyClient";
-import { priceUsdFor, priceLabelFor, minPriceUsdFor, minPriceLabelFor, priceBreakdown } from "@/lib/pricing";
+import { priceUsdFor, minPriceUsdFor, priceBreakdown } from "@/lib/pricing";
 import { COUNTRIES } from "@/lib/countries";
 import Icon from "@/components/Icon";
 import { useIsNative } from "@/lib/native";
@@ -44,6 +44,11 @@ function PaymentInner() {
   // Fallback region picker for accounts that predate the mandatory country
   // field — the charged price is still resolved server-side from the profile.
   const [regionChoice, setRegionChoice] = useState("");
+  const [priceInfo, setPriceInfo] = useState<{
+    prices: Partial<Record<PaymentMethod, number>>;
+    min: number;
+    custom: boolean;
+  } | null>(null);
   const locale = useLocale();
   const cancelled = searchParams.get("cancelled") === "1";
 
@@ -85,8 +90,33 @@ function PaymentInner() {
     return names.of(region.toUpperCase()) ?? region.toUpperCase();
   }, [region, locale]);
 
+  // Resolved checkout prices (defaults + Super Admin overrides) for the
+  // selected country — the server charges exactly what this returns.
+  useEffect(() => {
+    if (!region) {
+      queueMicrotask(() => setPriceInfo(null));
+      return;
+    }
+    let alive = true;
+    fetch(`/api/pricing?country=${encodeURIComponent(region)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (alive) setPriceInfo(d);
+      })
+      .catch(() => {
+        if (alive) setPriceInfo(null);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [region]);
+
   const isDirect = selectedMethod === "ecocash" || selectedMethod === "bank";
-  const total = selectedMethod ? priceUsdFor(selectedMethod, region) : minPriceUsdFor(region);
+  const priceFor = (m: PaymentMethod) => priceInfo?.prices?.[m] ?? priceUsdFor(m, region);
+  const labelFor = (m: PaymentMethod) => `$${priceFor(m).toFixed(2)}`;
+  const minPrice = priceInfo?.min ?? minPriceUsdFor(region);
+  const minLabel = `$${minPrice.toFixed(2)}`;
+  const total = selectedMethod ? priceFor(selectedMethod) : minPrice;
 
   const methodLabels: Record<PaymentMethod, string> = {
     paynow: t("methodPaynow"),
@@ -288,7 +318,7 @@ function PaymentInner() {
           </div>
           <h2 style={{ marginBottom: 6, color: "#fff" }}>{signupMode ? t("heroTitleSignup") : t("heroTitle")}</h2>
           <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>
-            {region ? t("fromPrice", { price: minPriceLabelFor(region) }) : "—"}
+            {region ? t("fromPrice", { price: minLabel }) : "—"}
           </div>
           <div style={{ display: "inline-flex", alignItems: "baseline", gap: 6, margin: "6px 0 8px" }}>
             <span style={{ fontSize: 15, opacity: .85 }}>{region ? t("onceNotMonthly") : t("regionPrompt")}</span>
@@ -341,9 +371,9 @@ function PaymentInner() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-          {isZimbabwe && methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: priceLabelFor("paynow", region) }))}
-          {isZimbabwe && methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: priceLabelFor("ecocash", region) }))}
-          {isZimbabwe && methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: priceLabelFor("bank", region) }))}
+          {isZimbabwe && methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: labelFor("paynow") }))}
+          {isZimbabwe && methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: labelFor("ecocash") }))}
+          {isZimbabwe && methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: labelFor("bank") }))}
           <button
             className={`payment-method ${selectedMethod === "stripe" ? "selected" : ""}`}
             onClick={() => setSelectedMethod("stripe")}
@@ -374,19 +404,23 @@ function PaymentInner() {
             <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-500)", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 8 }}>
               {t("breakdownTitle")}
             </div>
-            {priceBreakdown(selectedMethod, region).map((line) =>
-              detailRow(
-                line.key === "principal"
-                  ? t("linePrincipal")
-                  : line.key === "processing"
-                    ? t(`processing_${selectedMethod}`)
-                    : t(`fee_${line.key}`),
-                `$${(line.cents / 100).toFixed(2)}`
+            {priceInfo?.custom ? (
+              detailRow(t("linePrincipal"), `$${priceFor(selectedMethod).toFixed(2)}`)
+            ) : (
+              priceBreakdown(selectedMethod, region).map((line) =>
+                detailRow(
+                  line.key === "principal"
+                    ? t("linePrincipal")
+                    : line.key === "processing"
+                      ? t(`processing_${selectedMethod}`)
+                      : t(`fee_${line.key}`),
+                  `$${(line.cents / 100).toFixed(2)}`
+                )
               )
             )}
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0 2px", borderTop: "1px solid var(--card-border)", marginTop: 6 }}>
               <strong>{t("lineTotal")}</strong>
-              <strong style={{ color: "var(--rose-600)" }}>{priceLabelFor(selectedMethod, region)}</strong>
+              <strong style={{ color: "var(--rose-600)" }}>{labelFor(selectedMethod)}</strong>
             </div>
           </div>
         )}
@@ -482,7 +516,7 @@ function PaymentInner() {
               ? popSent
                 ? t("waitingForPop")
                 : t("sentAmount", { amount: total.toFixed(2) })
-              : t("payAmount", { price: priceLabelFor(selectedMethod ?? "paynow", region) })}
+              : t("payAmount", { price: labelFor(selectedMethod ?? "paynow") })}
         </button>
 
         {popSent && (
