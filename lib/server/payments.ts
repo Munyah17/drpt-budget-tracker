@@ -10,7 +10,7 @@ const SUPABASE_URL =
 
 /**
  * Mark a profile as paid via the Supabase REST API (service role bypasses RLS).
- * Sets paid_until — extends an active subscription, or starts a fresh year
+ * Sets paid_until — extends an active subscription, or starts a fresh month
  * for new/expired buyers.
  */
 export async function markProfilePaid(userId: string): Promise<boolean> {

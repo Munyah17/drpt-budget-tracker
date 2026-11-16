@@ -37,14 +37,18 @@ export async function POST(req: NextRequest) {
   const amountCents = await priceCentsForCountry("stripe", region);
 
   const body = new URLSearchParams({
-    mode: "payment",
+    mode: "subscription",
     success_url: `${origin}/payment/success?provider=stripe&session_id={CHECKOUT_SESSION_ID}&uid=${encodeURIComponent(userId ?? "")}`,
     cancel_url: `${origin}/payment?cancelled=1`,
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "usd",
     "line_items[0][price_data][unit_amount]": String(amountCents),
+    "line_items[0][price_data][recurring][interval]": "month",
     "line_items[0][price_data][product_data][name]": "WellSpend — Monthly Access",
     client_reference_id: userId ?? "",
+    "subscription_data[metadata][user_id]": userId ?? "",
+    "subscription_data[metadata][email]": email ?? "",
+    "subscription_data[metadata][country]": region,
     "payment_method_types[0]": "card",
   });
   if (email) body.set("customer_email", email);

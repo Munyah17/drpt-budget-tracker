@@ -85,12 +85,20 @@ export function minPriceLabel(): string {
 export type PriceMarket = "africa" | "southamerica" | "asia" | "australia" | "europe" | "us";
 
 export const MARKET_PRICE_USD: Record<PriceMarket, number> = {
-  africa: 1.0,
+  africa: 1.99, // rest of Africa — Zimbabwe is pinned to $1 below
   southamerica: 1.99,
-  asia: 3.99,
-  australia: 4.99,
-  europe: 6.99,
-  us: 9.99,
+  asia: 2.99,
+  australia: 3.99, // Oceania
+  europe: 4.99,
+  us: 5.99, // hard ceiling — the most expensive market
+};
+
+/**
+ * Country-level exceptions on top of the market price. Zimbabwe stays at the
+ * $1 floor while the rest of Africa sits at the $1.99 lower bound.
+ */
+export const COUNTRY_PRICE_USD: Record<string, number> = {
+  zw: 1.0,
 };
 
 const MARKET_COUNTRIES: Record<PriceMarket, string> = {
@@ -118,8 +126,16 @@ const COUNTRY_ALIASES: Record<string, string> = {
 };
 
 export function marketFor(country = ""): PriceMarket | null {
-  const c = (COUNTRY_ALIASES[country.trim().toLowerCase()] ?? country.trim().toLowerCase());
-  return MARKET_BY_COUNTRY[c] ?? null;
+  return MARKET_BY_COUNTRY[countryCode(country)] ?? null;
+}
+
+function countryCode(country = ""): string {
+  const c = country.trim().toLowerCase();
+  return COUNTRY_ALIASES[c] ?? c;
+}
+
+export function countryPriceUsd(country = ""): number | null {
+  return COUNTRY_PRICE_USD[countryCode(country)] ?? null;
 }
 
 export function marketPriceUsd(country = ""): number | null {
@@ -195,6 +211,8 @@ function processingCents(method: PaymentChannel, totalCents: number): number {
 
 /** Client price in cents — the market total where one applies. */
 export function priceCentsFor(method: PaymentChannel, country = ""): number {
+  const countryPrice = countryPriceUsd(country);
+  if (countryPrice != null) return Math.round(countryPrice * 100);
   const market = marketPriceUsd(country);
   if (market != null) return Math.round(market * 100);
   return grossCents(NET_PRICE_USD, method);
@@ -243,21 +261,30 @@ export function priceBreakdown(method: PaymentChannel, country = ""): PriceLine[
     return lines;
   }
 
-  const processing = Math.min(processingCents(method, totalC), totalC - NET_PRICE_USD * 100);
-  const levyBudget = totalC - NET_PRICE_USD * 100 - processing;
+  const levies = MARKET_LEVIES[market];
+  const hasLevies = levies.length > 0;
+  // Markets without authored levies (Africa) put the whole uplift over $1 into
+  // processing so the displayed lines still sum to the charged total.
+  const processing = hasLevies
+    ? Math.min(processingCents(method, totalC), totalC - NET_PRICE_USD * 100)
+    : totalC - NET_PRICE_USD * 100;
+  const levyBudget = hasLevies ? totalC - NET_PRICE_USD * 100 - processing : 0;
   if (levyBudget <= 0) {
     if (processing > 0) lines.push({ key: "processing", cents: processing });
     return lines;
   }
 
   lines.push({ key: "processing", cents: processing });
-  const levies = MARKET_LEVIES[market];
-  let used = 0;
-  levies.forEach((f, i) => {
-    const cents = i === levies.length - 1 ? levyBudget - used : f.cents;
+  // Cap each levy at the remaining budget — with lower market totals the
+  // authored amounts can exceed what the total can carry, so later/smaller
+  // levies absorb the shortfall instead of breaking the sum.
+  let remaining = levyBudget;
+  for (const f of levies) {
+    const cents = Math.min(f.cents, remaining);
     const safe = Math.max(0, cents);
     if (safe > 0) lines.push({ key: f.key, cents: safe });
-    used += safe;
-  });
+    remaining -= safe;
+    if (remaining <= 0) break;
+  }
   return lines;
 }

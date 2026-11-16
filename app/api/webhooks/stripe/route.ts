@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { applyPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
-import { sbUpsert } from "@/lib/server/supabaseAdmin";
+import { sbGet, sbPatch, sbUpsert } from "@/lib/server/supabaseAdmin";
 
 /**
  * POST /api/webhooks/stripe — Stripe sends checkout.session.completed here.
@@ -34,6 +34,15 @@ function verifySignature(rawBody: string, header: string, secret: string): boole
   const a = Buffer.from(expected);
   const b = Buffer.from(v1);
   return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+async function stripeGet(secret: string, path: string): Promise<Record<string, unknown> | null> {
+  const res = await fetch(`https://api.stripe.com/v1${path}`, {
+    headers: { Authorization: `Bearer ${secret}` },
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
 
 export async function POST(req: NextRequest) {
@@ -106,6 +115,7 @@ export async function POST(req: NextRequest) {
         amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
         currency: (session.currency as string) ?? "usd",
         reference: String(session.id ?? ""),
+        meta: { subscription: String(session.subscription ?? "") },
       });
       await notifyAdmin("payment_success", {
         email: customer?.email ?? (session.customer_email as string) ?? "",
@@ -125,6 +135,79 @@ export async function POST(req: NextRequest) {
       method: "stripe",
       detail: `async payment failed — session ${session.id ?? ""}`,
     });
+  }
+
+  const stripeSecret = process.env.STRIPE_SECRET_KEY;
+
+  // Subscription renewals — the first invoice is already handled by
+  // checkout.session.completed, so skip subscription_create to avoid extending
+  // paid_until twice for the same month.
+  if (event.type === "invoice.paid") {
+    const invoice = event.data?.object ?? {};
+    const billingReason = String(invoice.billing_reason ?? "");
+    if (billingReason !== "subscription_create") {
+      const parent = invoice.parent as Record<string, unknown> | undefined;
+      const subDetails = parent?.subscription_details as Record<string, unknown> | undefined;
+      const subId = String(invoice.subscription ?? subDetails?.subscription ?? "");
+      let meta: Record<string, string> = {};
+      if (subId && stripeSecret) {
+        const sub = await stripeGet(stripeSecret, `/subscriptions/${encodeURIComponent(subId)}`);
+        meta = (sub?.metadata as Record<string, string> | undefined) ?? {};
+      }
+      const uid = meta.user_id ?? "";
+      if (uid) {
+        await applyPayment({
+          userId: uid,
+          userEmail: meta.email ?? "",
+          provider: "stripe",
+          method: "card",
+          amount: typeof invoice.amount_paid === "number" ? invoice.amount_paid / 100 : null,
+          currency: String(invoice.currency ?? "usd"),
+          reference: String(invoice.id ?? ""),
+          meta: { subscription: subId, billing_reason: billingReason },
+        });
+        await notifyAdmin("payment_success", {
+          email: meta.email ?? "",
+          name: "",
+          method: "stripe",
+          detail: `renewal invoice ${invoice.id ?? ""}`,
+        });
+      }
+    }
+  }
+
+  if (event.type === "invoice.payment_failed") {
+    const invoice = event.data?.object ?? {};
+    await notifyAdmin("payment_failed", {
+      email: "",
+      name: "",
+      method: "stripe",
+      detail: `subscription invoice failed — ${invoice.id ?? ""}`,
+    });
+  }
+
+  if (event.type === "customer.subscription.deleted") {
+    const sub = event.data?.object ?? {};
+    const meta = (sub.metadata as Record<string, string> | undefined) ?? {};
+    const uid = meta.user_id ?? "";
+    if (uid) {
+      const rows = await sbGet<{ paid_until: string | null }>(
+        "profiles",
+        `id=eq.${encodeURIComponent(uid)}&select=paid_until&limit=1`
+      );
+      const until = rows[0]?.paid_until ? new Date(rows[0].paid_until).getTime() : 0;
+      // Let any prepaid time run out naturally; only clear the paid flag once
+      // the subscription has actually ended.
+      if (!(until > Date.now())) {
+        await sbPatch("profiles", `id=eq.${encodeURIComponent(uid)}`, { is_paid: false });
+      }
+      await notifyAdmin("payment_failed", {
+        email: meta.email ?? "",
+        name: "",
+        method: "stripe",
+        detail: `subscription canceled — ${sub.id ?? ""}`,
+      });
+    }
   }
 
   // Stripe expects a 2xx quickly — heavy work is already done above
