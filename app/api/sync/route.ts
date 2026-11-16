@@ -16,7 +16,7 @@ function dbHeaders(serviceKey: string) {
 /** Fetch the caller's profile row (service role). */
 async function getProfile(uid: string, serviceKey: string) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,paid_until`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,paid_until,paid_override`,
     { headers: dbHeaders(serviceKey), cache: "no-store" }
   );
   if (!res.ok) return null;

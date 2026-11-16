@@ -8,7 +8,9 @@ import FilterBar from "@/components/FilterBar";
 import { useCrud } from "@/lib/useCrud";
 import { useAppData } from "@/lib/AppDataContext";
 import { createAdminAccount, adminHeaders, impersonateUser, roleHome } from "@/lib/adminClient";
+import { paidActive } from "@/lib/paid";
 interface Person {
+  id?: string;
   name: string;
   email: string;
   plan: string;
@@ -18,6 +20,9 @@ interface Person {
   paidOn: string;
   amount: string;
   reference: string;
+  isPaid?: boolean;
+  paidOverride?: string | null;
+  pendingPaymentId?: number | null;
 }
 
 interface PaymentRow {
@@ -30,11 +35,19 @@ interface PaymentRow {
 }
 
 interface ProfileRow {
+  id: string;
   name: string;
   email: string;
   is_paid: boolean;
   paid_until: string | null;
+  paid_override: string | null;
   payment: PaymentRow | null;
+}
+
+interface ApprovalRow {
+  id: number;
+  user_id: string | null;
+  status: string;
 }
 
 export default function AdminIndividualsPage() {
@@ -60,22 +73,37 @@ export default function AdminIndividualsPage() {
 
   const { setItems } = crud;
   const refresh = useCallback(async () => {
-    const res = await fetch("/api/admin/users?role=user", { headers: await adminHeaders(user?.email) });
-    const data = await res.json().catch(() => null);
+    const headers = await adminHeaders(user?.email);
+    const [usersRes, approvalsRes] = await Promise.all([
+      fetch("/api/admin/users?role=user", { headers }),
+      fetch("/api/admin/approvals", { headers }),
+    ]);
+    const data = await usersRes.json().catch(() => null);
+    const approvalsData = await approvalsRes.json().catch(() => null);
     const rows: ProfileRow[] = Array.isArray(data) ? data : data?.users ?? [];
+    const pendingByUser = new Map<string, number>();
+    for (const a of (approvalsData?.approvals ?? []) as ApprovalRow[]) {
+      if (a.status === "pending" && a.user_id) pendingByUser.set(a.user_id, a.id);
+    }
     setItems(
       rows.map((p) => {
         const pay = p.payment;
+        const active = paidActive({ is_paid: p.is_paid, paid_until: p.paid_until, paid_override: p.paid_override });
+        const pendingPaymentId = pendingByUser.get(p.id) ?? null;
         return {
+          id: p.id,
           name: p.name || p.email,
           email: p.email,
-          plan: p.is_paid ? "Paid" : "Free",
+          plan: active ? "Paid" : "Free",
           expiry: p.paid_until ? new Date(p.paid_until).toLocaleDateString("en-GB") : "—",
-          status: p.is_paid ? "Active" : "Expired",
+          status: active ? "Active" : pendingPaymentId ? "Pending" : "Expired",
           paymentMethod: pay ? (pay.method ? `${pay.provider} (${pay.method})` : pay.provider) : "—",
           paidOn: pay ? new Date(pay.paid_at).toLocaleDateString("en-GB") : "—",
           amount: pay?.amount != null ? `${pay.currency.toUpperCase()} ${pay.amount.toFixed(2)}` : "—",
           reference: pay?.reference || "—",
+          isPaid: active,
+          paidOverride: p.paid_override,
+          pendingPaymentId,
         };
       })
     );
@@ -90,10 +118,51 @@ export default function AdminIndividualsPage() {
     setEntering(person.email);
     try {
       const info = await impersonateUser(person.email, user?.email);
-      window.location.href = roleHome(info.role);
+      window.location.assign(roleHome(info.role));
     } catch (err) {
       toast(tc("toastViewAsFail", { msg: err instanceof Error ? err.message : "" }), "x");
       setEntering("");
+    }
+  }
+
+  async function approvePending(person: Person) {
+    if (!person.pendingPaymentId) return;
+    try {
+      const res = await fetch("/api/admin/approvals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
+        body: JSON.stringify({ paymentId: person.pendingPaymentId, action: "approve" }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      toast(t("toastActivated"), "check-circle");
+      await refresh();
+    } catch (e) {
+      toast(e instanceof Error ? e.message : t("activateFailed"), "x");
+    }
+  }
+
+  async function setPaidOverride(person: Person, paid: boolean) {
+    if (!person.id) return;
+    const ok = window.confirm(paid ? t("confirmActivate", { name: person.name }) : t("confirmDeactivate", { name: person.name }));
+    if (!ok) return;
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
+        body: JSON.stringify({
+          id: person.id,
+          is_paid: paid,
+          paid_until: null,
+          paid_override: paid ? "paid" : "unpaid",
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      toast(paid ? t("toastActivated") : t("toastDeactivated"), paid ? "check-circle" : "x");
+      await refresh();
+    } catch (e) {
+      toast(e instanceof Error ? e.message : t("activateFailed"), "x");
     }
   }
 
@@ -120,11 +189,12 @@ export default function AdminIndividualsPage() {
       <div className="glass-card card-pad">
         <FilterBar
           searchPlaceholder={t("searchPlaceholder")}
-          statusOptions={[{ value: "Active", label: t("statusActive") }, { value: "Expired", label: t("statusExpired") }]}
+          statusOptions={[{ value: "Active", label: t("statusActive") }, { value: "Pending", label: t("statusPending") }, { value: "Expired", label: t("statusExpired") }]}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
         />
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 760 }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--card-border)", textAlign: "left" }}>
               <th style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{t("thName")}</th>
@@ -160,6 +230,19 @@ export default function AdminIndividualsPage() {
                   >
                     <Icon name="user-circle" size={14} style={{ marginRight: 4 }} />{tc("viewAs")}
                   </button>
+                  {person.pendingPaymentId ? (
+                    <button className="btn btn-primary" style={{ padding: "4px 10px", fontSize: 12 }} onClick={() => approvePending(person)}>
+                      <Icon name="check-circle" size={14} style={{ marginRight: 4 }} />{t("approve")}
+                    </button>
+                  ) : person.status !== "Active" ? (
+                    <button className="btn btn-primary" style={{ padding: "4px 10px", fontSize: 12 }} onClick={() => setPaidOverride(person, true)}>
+                      <Icon name="check-circle" size={14} style={{ marginRight: 4 }} />{t("activate")}
+                    </button>
+                  ) : (
+                    <button className="btn btn-ghost" style={{ padding: "4px 10px", fontSize: 12, color: "var(--red)" }} onClick={() => setPaidOverride(person, false)}>
+                      <Icon name="x" size={14} style={{ marginRight: 4 }} />{t("deactivate")}
+                    </button>
+                  )}
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("view", person, crud.items.indexOf(person))}><Icon name="eye" size={14} style={{ marginRight: 4 }} />{t("view")}</button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => crud.openModal("edit", person, crud.items.indexOf(person))}><Icon name="edit" size={14} style={{ marginRight: 4 }} />{t("edit")}</button>
                 </td>
@@ -167,6 +250,7 @@ export default function AdminIndividualsPage() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
       {crud.modalNode}
     </>

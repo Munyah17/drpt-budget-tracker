@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   }
 
   const q = [
-    "select=id,name,email,phone,profession,role,currency,corporate_id,is_paid,paid_until,created_at",
+    "select=id,name,email,phone,profession,role,currency,corporate_id,is_paid,paid_until,paid_override,created_at",
     "order=created_at.desc",
     "limit=500",
   ];
@@ -57,6 +57,7 @@ const EDITABLE_FIELDS = new Set([
   "role",
   "is_paid",
   "paid_until",
+  "paid_override",
   "currency",
   "phone",
   "profession",
@@ -203,6 +204,14 @@ export async function PATCH(req: NextRequest) {
       continue;
     }
 
+    if (key === "paid_override") {
+      if (value !== null && value !== "paid" && value !== "unpaid") {
+        return NextResponse.json({ error: "paid_override must be paid|unpaid|null" }, { status: 400 });
+      }
+      patch.paid_override = value;
+      continue;
+    }
+
     if (value === null || typeof value === "string") {
       patch[key] = value;
     } else {
@@ -212,6 +221,11 @@ export async function PATCH(req: NextRequest) {
 
   if (!Object.keys(patch).length) {
     return NextResponse.json({ error: "No editable fields supplied" }, { status: 400 });
+  }
+  // Manual is_paid edits are Super Admin overrides unless an explicit
+  // paid_override was supplied in the same request.
+  if ("paid_override" in current && "is_paid" in patch && !("paid_override" in patch)) {
+    patch.paid_override = patch.is_paid === true ? "paid" : "unpaid";
   }
   if (patch.is_paid === false && !("paid_until" in patch)) patch.paid_until = null;
 

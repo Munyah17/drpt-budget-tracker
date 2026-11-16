@@ -23,7 +23,7 @@ export async function requireFeatureAccess(uid: string, opts: { admin?: boolean 
   if (opts.admin) return { ok: true };
 
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role,paid_until`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role,paid_until,paid_override`,
     {
       headers: {
         apikey: serviceKey,

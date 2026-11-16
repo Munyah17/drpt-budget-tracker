@@ -21,7 +21,10 @@ export function isUnpaidExpired(p: {
   paidUntil?: string | null;
   createdAt?: string;
   platform?: string;
+  /** Manual admin override — never auto-sweep these accounts. */
+  paidOverride?: string | null;
 }): boolean {
+  if (p.paidOverride === "paid" || p.paidOverride === "unpaid") return false;
   if (p.isPaid === true) return false;
   // iOS free tier is a permanent tier (no in-app purchase per App Store
   // rules) — those accounts are not temporary payment-pending accounts.

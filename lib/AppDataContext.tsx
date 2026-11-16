@@ -241,6 +241,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
               paidUntil: p.paid_until ?? null,
               createdAt: p.created_at ?? undefined,
               platform: p.platform ?? undefined,
+              paidOverride: p.paid_override ?? null,
             };
             if (isUnpaidExpired(candidate)) {
               await deleteOwnAccount(session.user.id);

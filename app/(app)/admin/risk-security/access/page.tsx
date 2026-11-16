@@ -19,6 +19,7 @@ interface ProfileRow {
   currency: string | null;
   is_paid: boolean | null;
   paid_until: string | null;
+  paid_override: string | null;
   country: string | null;
   organisation: string | null;
   corporate_id: string | null;
@@ -29,6 +30,7 @@ interface OverrideForm {
   name: string;
   role: string;
   paid: "paid" | "free";
+  paidOverride: "auto" | "paid" | "unpaid";
   paidUntil: string;
   currency: string;
   phone: string;
@@ -90,8 +92,8 @@ export default function AdminAccessPage() {
     const q = search.trim().toLowerCase();
     return users.filter((p) => {
       if (roleFilter && p.role !== roleFilter) return false;
-      if (paidFilter === "paid" && !p.is_paid) return false;
-      if (paidFilter === "free" && p.is_paid) return false;
+      if (paidFilter === "paid" && !paidActive(p)) return false;
+      if (paidFilter === "free" && paidActive(p)) return false;
       if (!q) return true;
       return (
         (p.name ?? "").toLowerCase().includes(q) ||
@@ -119,6 +121,7 @@ export default function AdminAccessPage() {
       name: p.name ?? "",
       role: p.role ?? "user",
       paid: p.is_paid ? "paid" : "free",
+      paidOverride: p.paid_override === "paid" ? "paid" : p.paid_override === "unpaid" ? "unpaid" : "auto",
       paidUntil: toLocalInput(p.paid_until),
       currency: p.currency ?? "",
       phone: p.phone ?? "",
@@ -139,6 +142,7 @@ export default function AdminAccessPage() {
         role: form.role,
         is_paid: form.paid === "paid",
         paid_until: form.paid === "paid" ? fromLocalInput(form.paidUntil) : null,
+        paid_override: form.paidOverride === "auto" ? null : form.paidOverride,
       };
       const currentRow = editing as unknown as Record<string, string | null>;
       const optional: [keyof OverrideForm, string][] = [
@@ -220,7 +224,7 @@ export default function AdminAccessPage() {
               )}
               {filtered.map((p) => {
                 const active = paidActive(p);
-                const status = !p.is_paid ? t("statusFree") : active ? t("statusActive") : t("statusExpired");
+                const status = active ? t("statusActive") : p.is_paid ? t("statusExpired") : t("statusFree");
                 return (
                   <tr key={p.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
                     <td style={{ padding: "12px 8px" }}>
@@ -229,12 +233,12 @@ export default function AdminAccessPage() {
                     </td>
                     <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.email || "—"}</td>
                     <td style={{ padding: "12px 8px" }}>{roleBadge(p.role)}</td>
-                    <td style={{ padding: "12px 8px", fontSize: 13 }}>{p.is_paid ? t("planPaid") : t("planFree")}</td>
+                    <td style={{ padding: "12px 8px", fontSize: 13 }}>{active ? t("planPaid") : t("planFree")}</td>
                     <td style={{ padding: "12px 8px", fontSize: 13 }}>
                       {p.paid_until ? new Date(p.paid_until).toLocaleDateString("en-GB") : p.is_paid ? t("exempt") : "—"}
                     </td>
                     <td style={{ padding: "12px 8px" }}>
-                      <span className={`badge ${!p.is_paid ? "badge-amber" : active ? "badge-green" : "badge-red"}`}>{status}</span>
+                      <span className={`badge ${active ? "badge-green" : p.is_paid ? "badge-red" : "badge-amber"}`}>{status}</span>
                     </td>
                     <td style={{ padding: "12px 8px" }}>
                       <button className="btn btn-ghost" style={{ padding: "6px 10px", fontSize: 12 }} onClick={() => openOverride(p)}>
@@ -279,6 +283,14 @@ export default function AdminAccessPage() {
             <div className="field" style={{ marginBottom: 0 }}>
               <label>{t("fieldPaidUntil")}</label>
               <input type="datetime-local" value={form.paidUntil} onChange={(e) => setForm({ ...form, paidUntil: e.target.value })} disabled={form.paid === "free"} />
+            </div>
+            <div className="field" style={{ marginBottom: 0 }}>
+              <label>{t("fieldPaidOverride")}</label>
+              <select className="settings-select" value={form.paidOverride} onChange={(e) => setForm({ ...form, paidOverride: e.target.value as OverrideForm["paidOverride"] })}>
+                <option value="auto">{t("overrideAuto")}</option>
+                <option value="paid">{t("overridePaid")}</option>
+                <option value="unpaid">{t("overrideUnpaid")}</option>
+              </select>
             </div>
             <div className="field" style={{ marginBottom: 0 }}>
               <label>{t("fieldCurrency")}</label>

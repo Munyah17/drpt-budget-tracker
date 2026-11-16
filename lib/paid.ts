@@ -8,11 +8,16 @@ export const SUBSCRIPTION_MONTHS = 1;
 export interface PaidRow {
   is_paid?: boolean | null;
   paid_until?: string | null;
+  /** Manual Super Admin override: "paid" | "unpaid" | null/undefined = auto. */
+  paid_override?: string | null;
 }
 
-/** Active paying member: is_paid AND (no expiry recorded OR expiry in the future). */
+/** Active paying member. A manual override always wins over auto billing. */
 export function paidActive(p: PaidRow | null | undefined): boolean {
-  if (!p || p.is_paid !== true) return false;
+  if (!p) return false;
+  if (p.paid_override === "paid") return true;
+  if (p.paid_override === "unpaid") return false;
+  if (p.is_paid !== true) return false;
   if (!p.paid_until) return true;
   return new Date(p.paid_until).getTime() > Date.now();
 }
