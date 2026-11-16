@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { priceUsdFor } from "@/lib/pricing";
 import { sbGet, sbInsert } from "@/lib/server/supabaseAdmin";
 import { rateLimited, clientIp } from "@/lib/server/rateLimit";
+import { paynowParam, validatePaynowHash } from "@/lib/server/paynow";
 
 const INITIATE_URL = "https://www.paynow.co.zw/interface/initiatetransaction";
 
@@ -71,12 +72,15 @@ export async function POST(req: NextRequest) {
     body,
   });
   const text = await res.text();
-  const data = new URLSearchParams(text);
-  const status = (data.get("status") ?? "").toLowerCase();
+  const { ok: hashOk, params } = validatePaynowHash(text, key);
+  if (!hashOk) {
+    return NextResponse.json({ error: "Paynow initiate hash validation failed" }, { status: 502 });
+  }
+  const status = paynowParam(params, "status").toLowerCase();
 
   if (!res.ok || status !== "ok") {
     return NextResponse.json(
-      { error: data.get("error") ?? `Paynow initiate failed (${status || res.status})` },
+      { error: paynowParam(params, "error") || `Paynow initiate failed (${status || res.status})` },
       { status: 502 }
     );
   }
@@ -96,8 +100,8 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({
-    url: data.get("browserurl"),
-    pollUrl: data.get("pollurl"),
+    url: paynowParam(params, "browserurl"),
+    pollUrl: paynowParam(params, "pollurl"),
     reference,
   });
 }

@@ -155,6 +155,17 @@ export async function settlePaynowPayment(
         `provider=eq.paynow&reference=eq.${encodeURIComponent(reference)}&select=id,user_id,user_email&order=created_at.desc&limit=1`
       )
     : [];
+  const hasPending = pending.length > 0;
+  if (!hasPending) {
+    if (notify && opts.reference) {
+      await notifyAdmin("payment_success", {
+        method: "paynow",
+        detail: `status "${status}", ref ${reference || paynowreference}, no pending payment`,
+      });
+    }
+    return { paid: false, status, reference, userId: uid, applied: false, notified: false };
+  }
+
   const ownerId = pending[0]?.user_id ?? "";
   if (ownerId && uid && uid !== ownerId) {
     return { paid: false, status, reference, userId: uid, applied: false, notified: false };
@@ -196,10 +207,10 @@ export async function settlePaynowPayment(
     if (email) {
       receiptEmail(email, amount, "usd", "Paynow", reference || effectiveUid);
     }
-  } else if (notify && !effectiveUid) {
+  } else if (notify && !effectiveUid && opts.reference) {
     await notifyAdmin("payment_success", {
       method: "paynow",
-      detail: `status "${status}", ref ${reference || paynowreference}, no account`,
+      detail: `status "${status}", ref ${reference || paynowreference}, no account linked`,
     });
     notified = true;
   }
