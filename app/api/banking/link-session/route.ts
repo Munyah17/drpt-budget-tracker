@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireSession } from "@/lib/server/jwt";
+import { requireSessionOrAdmin } from "@/lib/server/jwt";
 import { getHostedPublicToken } from "@/lib/server/plaid";
 
 /**
@@ -10,7 +10,7 @@ import { getHostedPublicToken } from "@/lib/server/plaid";
  */
 export async function GET(req: NextRequest) {
   const uid = req.nextUrl.searchParams.get("uid") ?? "";
-  const session = requireSession(req, uid);
+  const session = requireSessionOrAdmin(req, uid);
   if ("error" in session) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }

@@ -135,7 +135,37 @@ function PaymentInner() {
         return;
       }
 
-      // Direct transfers: user pays manually, then sends PoP on WhatsApp
+      // Direct transfers: provision a temporary inactive account for admin
+      // review (Approve/Reject), then the user pays manually and sends PoP.
+      try {
+        const dtRes = await fetch("/api/payment/direct-transfer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: payerEmail,
+            password: signupMode ? pendingSignup?.password : undefined,
+            name: payerName,
+            phone: pendingSignup?.phone,
+            country: region,
+            method: selectedMethod,
+            signup: signupMode,
+          }),
+        });
+        const dtData = await dtRes.json().catch(() => null);
+        if (!dtRes.ok) {
+          notifyEvent("payment_failed", {
+            email: payerEmail, name: payerName,
+            method: methodLabels[selectedMethod],
+            detail: dtData?.error || "direct transfer registration failed",
+          });
+          throw new Error(dtData?.error || t("couldNotStartPayment"));
+        }
+      } catch (err) {
+        toast(err instanceof Error ? err.message : t("paymentFailedToast"), "x");
+        setProcessing(false);
+        return;
+      }
+
       notifyEvent("transfer_intent", {
         email: payerEmail, name: payerName,
         method: methodLabels[selectedMethod],

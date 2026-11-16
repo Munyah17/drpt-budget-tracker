@@ -76,15 +76,13 @@ export interface ImpersonationInfo {
 
 /** Landing route per role — mirrors the post-login redirect map. */
 export function roleHome(role: string): string {
-  return role === "super_admin"
-    ? "/super-admin"
+  return role === "super_admin" || role === "admin"
+    ? "/admin"
     : role === "corporate"
     ? "/corporate/overview"
     : role === "employee"
       ? "/employee"
-      : role === "admin"
-        ? "/admin"
-        : "/dashboard";
+      : "/dashboard";
 }
 
 /** The account currently being previewed, or null when not impersonating. */

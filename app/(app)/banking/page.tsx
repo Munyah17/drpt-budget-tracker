@@ -79,10 +79,24 @@ function BankingPageInner() {
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const browserListener = useRef<{ remove: () => void } | null>(null);
 
+  // Hardcoded admin/demo accounts have no Supabase session — they authenticate
+  // to the banking APIs with the same x-admin-email header the admin routes use.
+  const bankFetch = useCallback(
+    (path: string, init: RequestInit = {}) =>
+      authedFetch(user?.id ?? "", path, {
+        ...init,
+        headers: {
+          "x-admin-email": user?.email ?? "",
+          ...(init.headers as Record<string, string> | undefined),
+        },
+      }),
+    [user?.id, user?.email]
+  );
+
   const loadFeed = useCallback(async () => {
     if (!user) return;
     try {
-      const res = await authedFetch(user.id, "/api/banking/feed");
+      const res = await bankFetch("/api/banking/feed");
       const data = await res.json();
       const f: Feed = res.ok ? data : { connection: null, accounts: [], transactions: [] };
       setFeed(f);
@@ -135,7 +149,7 @@ function BankingPageInner() {
     if (!user || busy) return;
     setBusy(true);
     try {
-      const res = await authedFetch(user.id, "/api/banking/connect", { method: "POST" });
+      const res = await bankFetch("/api/banking/connect", { method: "POST" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.linkToken) {
         toast(data.error ?? t("errConnect_generic"), "alert-triangle");
@@ -166,7 +180,7 @@ function BankingPageInner() {
     if (!user) return;
     setLoading(true);
     try {
-      const res = await authedFetch(user.id, `/api/banking/link-session?linkToken=${encodeURIComponent(token)}`);
+      const res = await bankFetch(`/api/banking/link-session?linkToken=${encodeURIComponent(token)}`);
       const data = await res.json();
       if (data.publicToken) await exchange(data.publicToken);
       else await loadFeed(); // user closed early — nothing to finalise
@@ -181,7 +195,7 @@ function BankingPageInner() {
     sessionStorage.removeItem(TOKEN_KEY);
     setLoading(true);
     try {
-      const res = await authedFetch(user.id, "/api/banking/exchange", {
+      const res = await bankFetch("/api/banking/exchange", {
         method: "POST",
         body: JSON.stringify({ publicToken }),
       });
@@ -227,7 +241,7 @@ function BankingPageInner() {
     if (!user || busy) return;
     setBusy(true);
     try {
-      const res = await authedFetch(user.id, "/api/banking/unlock", { method: "POST" });
+      const res = await bankFetch("/api/banking/unlock", { method: "POST" });
       const data = await res.json().catch(() => ({}));
       if (data.unlocked) {
         await loadFeed();
@@ -254,7 +268,7 @@ function BankingPageInner() {
     if (!user || busy) return;
     setBusy(true);
     try {
-      const res = await authedFetch(user.id, "/api/banking/sync", { method: "POST" });
+      const res = await bankFetch("/api/banking/sync", { method: "POST" });
       const data = await res.json().catch(() => ({}));
       toast(t("toastSynced", { count: data.synced ?? 0 }), "refresh-cw");
       trackEvent("bank_sync", { count: data.synced ?? 0 });
@@ -268,7 +282,7 @@ function BankingPageInner() {
 
   async function disconnect() {
     if (!user) return;
-    await authedFetch(user.id, "/api/banking/disconnect", { method: "POST" }).catch(() => {});
+    await bankFetch("/api/banking/disconnect", { method: "POST" }).catch(() => {});
     setConfirmDisconnect(false);
     setFeed({ connection: null, accounts: [], transactions: [] });
     toast(t("toastDisconnected"), "trash-2");
@@ -279,7 +293,7 @@ function BankingPageInner() {
     trackEvent(
       action === "imported" ? (expenseId ? "bank_txn_linked" : "bank_txn_imported") : "bank_txn_dismissed"
     );
-    await authedFetch(user.id, "/api/banking/resolve", {
+    await bankFetch("/api/banking/resolve", {
       method: "POST",
       body: JSON.stringify({ transactionId: txnId, action, expenseId }),
     }).catch(() => {});

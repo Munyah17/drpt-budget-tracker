@@ -3,6 +3,7 @@
  * Never import this from client components.
  */
 import crypto from "crypto";
+import { ADMIN_EMAIL } from "./admin";
 
 const b64url = (s: string) =>
   Buffer.from(s.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
@@ -28,7 +29,9 @@ export function verifySupabaseJwt(token: string, secret: string): Record<string,
   }
 }
 
-export type SessionCheck = { claims: Record<string, unknown> } | { error: string; status: number };
+export type SessionCheck =
+  | { claims: Record<string, unknown>; admin?: boolean }
+  | { error: string; status: number };
 
 /**
  * Require a valid Supabase session for `uid`.
@@ -46,4 +49,21 @@ export function requireSession(req: Request, uid: string): SessionCheck {
     return { error: "Unauthorized", status: 401 };
   }
   return { claims };
+}
+
+/**
+ * Session check for routes that must also work for the hardcoded demo/admin
+ * accounts (non-UUID ids like "admin-001", which have no Supabase session).
+ * Those prove themselves with the same x-admin-email header the /api/admin
+ * routes trust; real users still go through the JWT path.
+ */
+export function requireSessionOrAdmin(req: Request, uid: string): SessionCheck {
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uid)) {
+    return requireSession(req, uid);
+  }
+  const headerEmail = (req.headers.get("x-admin-email") ?? "").toLowerCase();
+  if (headerEmail && headerEmail === ADMIN_EMAIL) {
+    return { claims: { sub: uid, aud: "authenticated" }, admin: true };
+  }
+  return { error: "Unauthorized", status: 401 };
 }

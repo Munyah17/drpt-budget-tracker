@@ -1,6 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { markProfilePaid, recordPayment } from "@/lib/server/payments";
-import { notifyAdmin } from "@/lib/server/notify";
+import { notifyAdmin, sendUserEmail } from "@/lib/server/notify";
+import { detailTable } from "@/lib/server/emailTemplate";
+import { sbGet } from "@/lib/server/supabaseAdmin";
+
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
+
+/** Branded receipt email — fire-and-forget, never blocks verification. */
+function receiptEmail(to: string, amount: number | null, currency: string, method: string, reference: string) {
+  void sendUserEmail({
+    to,
+    subject: "Payment received — thank you!",
+    heading: "Payment confirmed",
+    emoji: "✅",
+    badge: "Receipt",
+    badgeColor: "#15803d",
+    bodyHtml:
+      `<p>We've received your payment. Your WellSpend subscription is active — ` +
+      `enjoy the full experience.</p>` +
+      detailTable([
+        ["Amount", amount != null ? `${currency.toUpperCase()} ${amount.toFixed(2)}` : "—"],
+        ["Method", method],
+        ["Reference", reference],
+      ]),
+    cta: { label: "Open WellSpend", url: APP_URL },
+  }).catch(() => {});
+}
 
 /**
  * GET /api/verify-payment?provider=stripe&session_id=...&uid=...
@@ -42,6 +68,10 @@ export async function GET(req: NextRequest) {
           currency: (session.currency as string) ?? "usd",
           reference: sessionId,
         });
+        const email = customer?.email ?? (session.customer_email as string) ?? "";
+        if (email) {
+          receiptEmail(email, typeof session.amount_total === "number" ? session.amount_total / 100 : null, (session.currency as string) ?? "usd", "Card", sessionId);
+        }
       }
       return NextResponse.json({ paid });
     }
@@ -67,6 +97,11 @@ export async function GET(req: NextRequest) {
           meta: { paynowreference: data.get("paynowreference") ?? "", status },
         });
         await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${uid}` });
+        const prof = await sbGet<{ email: string | null }>("profiles", `id=eq.${encodeURIComponent(uid)}&select=email&limit=1`);
+        const email = prof[0]?.email;
+        if (email) {
+          receiptEmail(email, data.get("amount") ? Number(data.get("amount")) : null, "usd", "Paynow", data.get("reference") ?? uid);
+        }
       } else if (!paid && !dry && (status === "cancelled" || status === "failed" || status === "disputed")) {
         await notifyAdmin("payment_failed", { method: "paynow", detail: `status "${status}", uid ${uid}` });
       }

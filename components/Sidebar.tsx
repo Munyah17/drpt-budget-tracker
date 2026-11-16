@@ -19,9 +19,9 @@ export default function Sidebar() {
   const freeTier = useFreeTier();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const rtl = textDirection(useLocale()) === "rtl";
-  const navNs =
-    user?.role === "admin"
-      ? "admin"
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+  const navNs = isAdmin
+    ? "admin"
       : user?.role === "corporate"
         ? "corporate"
         : user?.role === "employee"
@@ -31,18 +31,16 @@ export default function Sidebar() {
   const tShell = useTranslations("Shell");
   const labelFor = (id: string, fallback: string) => (tNav.has(id) ? tNav(id) : fallback);
 
-  const navItems =
-    user?.role === "admin"
-      ? ADMIN_NAV_ITEMS
+  const navItems = isAdmin
+    ? ADMIN_NAV_ITEMS
       : user?.role === "corporate"
         ? CORPORATE_NAV_ITEMS
         : user?.role === "employee"
           ? EMPLOYEE_NAV_ITEMS
           : NAV_ITEMS;
 
-  const rolePrefix =
-    user?.role === "admin"
-      ? "/admin"
+  const rolePrefix = isAdmin
+    ? "/admin"
       : user?.role === "corporate"
         ? "/corporate"
         : "";

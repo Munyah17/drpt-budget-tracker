@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendMail, notifyAdmin } from "@/lib/server/notify";
+import { sendUserEmail, notifyAdmin } from "@/lib/server/notify";
+import { detailTable } from "@/lib/server/emailTemplate";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -103,16 +104,18 @@ export async function POST(req: NextRequest) {
     // already confirmed). Client gets a welcome note; admin gets the event.
     // Web signups are provisioned AFTER payment, so the account is already
     // activated — the email just welcomes them in.
-    void sendMail({
+    void sendUserEmail({
       to: cleanEmail,
-      subject: "Welcome to WellSpend",
-      text:
-        `Hi ${name || cleanEmail.split("@")[0]},\n\n` +
-        `Your WellSpend account (${cleanEmail}) is ready and fully activated — ` +
-        `just sign in with your email and password at ${APP_URL}.\n\n` +
-        `Every feature is unlocked: transactions, budgets, savings goals, reports ` +
-        `and banking. Welcome aboard!\n\n` +
-        `WellSpend`,
+      subject: "Welcome to WellSpend — your account is ready",
+      heading: `Welcome aboard, ${name || cleanEmail.split("@")[0]}!`,
+      emoji: "🎉",
+      badge: "Account",
+      badgeColor: "#15803d",
+      bodyHtml:
+        `<p>Your WellSpend account is <strong>fully activated</strong> — ` +
+        `sign in with your email and password to get started.</p>` +
+        detailTable([["Email", cleanEmail], ["Sign in at", APP_URL]]),
+      cta: { label: "Open WellSpend", url: APP_URL },
     }).catch(() => {});
 
     void notifyAdmin("signup_success", {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireSession } from "@/lib/server/jwt";
+import { requireSessionOrAdmin } from "@/lib/server/jwt";
 import { requireBankingAccess, accessError } from "@/lib/server/gate";
 import { syncBankTransactions } from "@/lib/server/bankSync";
 
@@ -9,11 +9,11 @@ import { syncBankTransactions } from "@/lib/server/bankSync";
  */
 export async function POST(req: NextRequest) {
   const uid = req.nextUrl.searchParams.get("uid") ?? "";
-  const session = requireSession(req, uid);
+  const session = requireSessionOrAdmin(req, uid);
   if ("error" in session) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
-  const access = await requireBankingAccess(uid);
+  const access = await requireBankingAccess(uid, { admin: session.admin });
   if (!("ok" in access)) return accessError(access);
 
   try {

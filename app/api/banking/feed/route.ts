@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireSession } from "@/lib/server/jwt";
+import { requireSessionOrAdmin } from "@/lib/server/jwt";
 import { requireFeatureAccess, accessError } from "@/lib/server/gate";
 import { sbGet } from "@/lib/server/supabaseAdmin";
 
@@ -13,7 +13,7 @@ import { sbGet } from "@/lib/server/supabaseAdmin";
  */
 export async function GET(req: NextRequest) {
   const uid = req.nextUrl.searchParams.get("uid") ?? "";
-  const session = requireSession(req, uid);
+  const session = requireSessionOrAdmin(req, uid);
   if ("error" in session) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   // Access: paid plans & corporate roles see everything; free users need a
   // per-institution unlock matching the CONNECTED bank.
-  const access = await requireFeatureAccess(uid);
+  const access = await requireFeatureAccess(uid, { admin: session.admin });
   let unlocked = "ok" in access;
   if (!("ok" in access) && access.status === 402) {
     const rows = await sbGet<{ id: number }>(

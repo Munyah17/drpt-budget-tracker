@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireSession } from "@/lib/server/jwt";
+import { requireSessionOrAdmin } from "@/lib/server/jwt";
 import { requireFeatureAccess, accessError } from "@/lib/server/gate";
 import { sbGet } from "@/lib/server/supabaseAdmin";
 import { bankingUnlockCheckout } from "@/lib/server/checkout";
@@ -14,12 +14,12 @@ import { bankingPriceLabel } from "@/lib/pricing";
  */
 export async function POST(req: NextRequest) {
   const uid = req.nextUrl.searchParams.get("uid") ?? "";
-  const session = requireSession(req, uid);
+  const session = requireSessionOrAdmin(req, uid);
   if ("error" in session) {
     return NextResponse.json({ error: session.error }, { status: session.status });
   }
 
-  const access = await requireFeatureAccess(uid);
+  const access = await requireFeatureAccess(uid, { admin: session.admin });
   if ("ok" in access) return NextResponse.json({ unlocked: true });
   if (access.status !== 402) return accessError(access);
 

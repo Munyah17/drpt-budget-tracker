@@ -1,16 +1,18 @@
 import nodemailer from "nodemailer";
+import { emailLayout, detailTable, BRAND } from "./emailTemplate";
 
 /**
- * Admin event notifications — sends to NOTIFY_TO via the SMTP relay on
- * SMTP_HOST. Every signup/payment event is funnelled through notifyAdmin().
+ * Email notifications — admin event alerts (notifyAdmin) and client-facing
+ * mail (sendUserEmail), both through the SMTP relay on SMTP_HOST.
  *
  * Env (Vercel + .env.local):
  *   SMTP_HOST   e.g. c3.my-control-panel.com
  *   SMTP_PORT   465 (SSL) default
  *   SMTP_USER   mailbox login, e.g. munya@globalspaceweb.co.zw
  *   SMTP_PASS   mailbox password
- *   NOTIFY_TO   recipient (defaults to SMTP_USER)
+ *   NOTIFY_TO   admin recipient (defaults to SMTP_USER)
  *   NOTIFY_FROM optional From: address (defaults to SMTP_USER)
+ *   APP_URL     public site URL used in email buttons (defaults to localhost)
  */
 
 export type NotifyEvent =
@@ -21,14 +23,16 @@ export type NotifyEvent =
   | "transfer_intent"
   | "support_message";
 
-const EVENT_META: Record<NotifyEvent, { emoji: string; label: string }> = {
-  signup_success:  { emoji: "🆕", label: "New signup" },
-  signup_failed:   { emoji: "🚫", label: "Signup failed" },
-  payment_success: { emoji: "✅", label: "Payment received" },
-  payment_failed:  { emoji: "❌", label: "Payment failed" },
-  transfer_intent: { emoji: "🏦", label: "Direct transfer started" },
-  support_message: { emoji: "💬", label: "Support message" },
+const EVENT_META: Record<NotifyEvent, { emoji: string; label: string; badge: string; color: string }> = {
+  signup_success:  { emoji: "🆕", label: "New signup",              badge: "Signup",   color: BRAND.green },
+  signup_failed:   { emoji: "🚫", label: "Signup failed",           badge: "Failed",   color: BRAND.red },
+  payment_success: { emoji: "✅", label: "Payment received",        badge: "Payment",  color: BRAND.green },
+  payment_failed:  { emoji: "❌", label: "Payment failed",          badge: "Failed",   color: BRAND.red },
+  transfer_intent: { emoji: "🏦", label: "Direct transfer started", badge: "Transfer", color: BRAND.amber },
+  support_message: { emoji: "💬", label: "Support message",         badge: "Support",  color: BRAND.rose },
 };
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000";
 
 /** Shared SMTP transport — null when SMTP_* env is not configured. */
 function mailTransport() {
@@ -45,6 +49,11 @@ function mailTransport() {
     greetingTimeout: 10000,
     socketTimeout: 15000,
   });
+}
+
+function fromAddress(): string {
+  const user = process.env.SMTP_USER ?? "";
+  return process.env.NOTIFY_FROM || `WellSpend <${user}>`;
 }
 
 /**
@@ -65,7 +74,7 @@ export async function sendMail(opts: {
   }
   try {
     await transport.sendMail({
-      from: process.env.NOTIFY_FROM || `WellSpend <${user}>`,
+      from: fromAddress(),
       to: opts.to,
       subject: opts.subject,
       text: opts.text,
@@ -81,9 +90,6 @@ export async function sendMail(opts: {
 const clip = (v: unknown, max = 160): string =>
   String(v ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, max);
 
-const esc = (s: string): string =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
 export async function notifyAdmin(
   event: NotifyEvent,
   details: { email?: string; name?: string; method?: string; detail?: string } = {},
@@ -98,45 +104,66 @@ export async function notifyAdmin(
 
   const meta = EVENT_META[event];
   const fields: Array<[string, string]> = [
-    ["Event", `${meta.emoji} ${meta.label}`],
     ["User", clip(details.name) || "—"],
     ["Email", clip(details.email) || "—"],
     ["Method", clip(details.method) || "—"],
     ["Details", clip(details.detail, 300) || "—"],
-    ["Time", new Date().toISOString()],
-    ["Host", clip(process.env.VERCEL_URL || process.env.NEXT_PUBLIC_APP_URL || "local", 80)],
+    ["Time", new Date().toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })],
+    ["Host", clip(process.env.VERCEL_URL || APP_URL, 80)],
   ];
 
   const subject = `[WellSpend] ${meta.emoji} ${meta.label} — ${clip(details.email) || clip(details.detail, 60) || "event"}`;
 
-  const html = `
-    <div style="font-family:Segoe UI,Arial,sans-serif;max-width:520px">
-      <h2 style="color:#c81057;margin:0 0 12px">${meta.emoji} ${esc(meta.label)}</h2>
-      <table style="border-collapse:collapse;width:100%">
-        ${fields
-          .map(
-            ([k, v]) =>
-              `<tr><td style="padding:6px 10px;color:#666;width:110px;vertical-align:top">${esc(k)}</td>` +
-              `<td style="padding:6px 10px;font-weight:600">${esc(v)}</td></tr>`,
-          )
-          .join("")}
-      </table>
-      <p style="color:#999;font-size:12px;margin-top:16px">WellSpend Budget Tracker — automatic notification</p>
-    </div>`;
+  const html = emailLayout({
+    badge: meta.badge,
+    badgeColor: meta.color,
+    emoji: meta.emoji,
+    title: meta.label,
+    bodyHtml: detailTable(fields),
+    cta: { label: "Open admin console", url: `${APP_URL}/admin` },
+    footerNote: "WellSpend Budget Tracker — automatic admin notification",
+  });
 
   const text = fields.map(([k, v]) => `${k}: ${v}`).join("\n");
 
   try {
-    await transport.sendMail({
-      from: process.env.NOTIFY_FROM || `WellSpend <${user}>`,
-      to,
-      subject,
-      text,
-      html,
-    });
+    await transport.sendMail({ from: fromAddress(), to, subject, text, html });
     return true;
   } catch (err) {
     console.error("[notify] send failed:", err);
     return false;
   }
+}
+
+/**
+ * Client-facing branded email. `bodyHtml` is trusted markup built by the
+ * caller (use detailTable/highlightBox helpers or plain <p> tags).
+ */
+export async function sendUserEmail(opts: {
+  to: string;
+  subject: string;
+  /** Card heading. */
+  heading: string;
+  emoji?: string;
+  bodyHtml: string;
+  /** Plain-text fallback — auto-derived from bodyHtml if omitted. */
+  text?: string;
+  cta?: { label: string; url: string };
+  badge?: string;
+  badgeColor?: string;
+}): Promise<boolean> {
+  if (!opts.to) return false;
+  const html = emailLayout({
+    badge: opts.badge,
+    badgeColor: opts.badgeColor,
+    emoji: opts.emoji,
+    title: opts.heading,
+    bodyHtml: opts.bodyHtml,
+    cta: opts.cta,
+    footerNote: "WellSpend Budget Tracker",
+  });
+  const text =
+    opts.text ??
+    `${opts.heading}\n\n${opts.bodyHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()}`;
+  return sendMail({ to: opts.to, subject: opts.subject, text, html });
 }

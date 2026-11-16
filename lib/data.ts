@@ -81,7 +81,8 @@ export const ADMIN_NAV_ITEMS = [
     icon: "users",
     subItems: [
       { id: "individuals", label: "Individual Clients" },
-      { id: "employees", label: "Corporate Employees" }
+      { id: "employees", label: "Corporate Employees" },
+      { id: "pending", label: "Pending Approvals" }
     ]
   },
   {

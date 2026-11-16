@@ -16,9 +16,11 @@ export type AccessCheck = { ok: true } | { error: string; status: number };
  * corporate, admin) — the employer pays on their behalf. Mirrors the
  * `isUnpaid` rule in app/(app)/layout.tsx: only role "user" can be unpaid.
  */
-export async function requireFeatureAccess(uid: string): Promise<AccessCheck> {
+export async function requireFeatureAccess(uid: string, opts: { admin?: boolean } = {}): Promise<AccessCheck> {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) return { error: "Not configured", status: 500 };
+  // Hardcoded admin/demo accounts have no profiles row — full access.
+  if (opts.admin) return { ok: true };
 
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=is_paid,role,paid_until`,
@@ -48,8 +50,8 @@ export async function requireFeatureAccess(uid: string): Promise<AccessCheck> {
  * users who bought at least one per-bank unlock. Returns {ok} or an error to
  * forward — use for feed/sync/resolve/disconnect (connect gates per-bank).
  */
-export async function requireBankingAccess(uid: string): Promise<AccessCheck> {
-  const feat = await requireFeatureAccess(uid);
+export async function requireBankingAccess(uid: string, opts: { admin?: boolean } = {}): Promise<AccessCheck> {
+  const feat = await requireFeatureAccess(uid, opts);
   if ("ok" in feat || feat.status !== 402) return feat;
   const unlocks = await sbGet<{ id: number }>(
     "banking_unlocks",
