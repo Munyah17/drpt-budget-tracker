@@ -79,6 +79,7 @@ export const ICON_SVGS: Record<string, string> = {
   'git-branch':'<line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
   'chevron-down':'<polyline points="6 9 12 15 18 9"/>',
   'eye':'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  'eye-off':'<path d="M9.9 4.24A9.5 9.5 0 0 1 12 4c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.16 4.36"/><path d="M6.61 6.61A17.6 17.6 0 0 0 2 11s3.5 7 10 7a9.5 9.5 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>',
   'edit':'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
   'refresh-cw':'<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10"/><path d="M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/>',
   'check':'<polyline points="20 6 9 17 4 12"/>',

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { priceUsdFor } from "@/lib/pricing";
-import { sbGet } from "@/lib/server/supabaseAdmin";
+import { sbGet, sbInsert } from "@/lib/server/supabaseAdmin";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
 const INITIATE_URL = "https://www.paynow.co.zw/interface/initiatetransaction";
 
@@ -15,6 +16,11 @@ function paynowHash(values: (string | undefined)[], key: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Public endpoint — cap checkout-session creation per IP.
+  if (rateLimited(`paynow-init:${clientIp(req)}`, 20, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests — try again later" }, { status: 429 });
+  }
+
   const id = process.env.PAYNOW_INTEGRATION_ID;
   const key = process.env.PAYNOW_INTEGRATION_KEY;
   if (!id || !key) {
@@ -74,6 +80,20 @@ export async function POST(req: NextRequest) {
       { status: 502 }
     );
   }
+
+  // Record the intent as a pending ledger row — /api/verify-payment uses it
+  // to bind the confirmed payment to this exact account (anti-replay).
+  await sbInsert("payments", {
+    user_id: userId ? String(userId) : null,
+    user_email: email ? String(email) : null,
+    provider: "paynow",
+    method: "paynow",
+    amount: priceUsdFor("paynow", region),
+    currency: "usd",
+    reference,
+    status: "pending",
+    meta: { initiated: true },
+  });
 
   return NextResponse.json({
     url: data.get("browserurl"),

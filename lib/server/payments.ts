@@ -3,6 +3,7 @@
  * Never import this from client components.
  */
 import { nextPaidUntil } from "@/lib/paid";
+import { sbGet, sbPatch } from "./supabaseAdmin";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -103,4 +104,51 @@ export async function recordPayment(p: PaymentRecord): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Apply a confirmed payment exactly once: extends paid_until, then writes the
+ * ledger row. If a PAID ledger row already exists for provider+reference the
+ * call is a no-op ("duplicate") — this stops verify-payment/webhook replays
+ * from rolling paid_until forward forever. If a PENDING row exists for the
+ * same reference (e.g. a direct-transfer or paynow initiation), it is flipped
+ * to paid instead of inserting a duplicate.
+ */
+export async function applyPayment(p: PaymentRecord): Promise<"paid" | "duplicate" | "failed"> {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey || !p.userId) return "failed";
+
+  if (p.reference) {
+    const paid = await sbGet<{ id: number }>(
+      "payments",
+      `provider=eq.${encodeURIComponent(p.provider)}&reference=eq.${encodeURIComponent(p.reference)}&status=eq.paid&select=id&limit=1`
+    );
+    if (paid.length > 0) return "duplicate";
+  }
+
+  const marked = await markProfilePaid(p.userId);
+
+  // Ledger: flip an existing pending row for this reference, else insert.
+  let ledgerOk = false;
+  if (p.reference) {
+    const existing = await sbGet<{ id: number }>(
+      "payments",
+      `provider=eq.${encodeURIComponent(p.provider)}&reference=eq.${encodeURIComponent(p.reference)}&select=id&limit=1`
+    );
+    if (existing.length > 0) {
+      ledgerOk = await sbPatch("payments", `id=eq.${existing[0].id}`, {
+        user_id: p.userId,
+        user_email: p.userEmail || null,
+        method: p.method || null,
+        amount: p.amount ?? null,
+        currency: p.currency || "usd",
+        status: "paid",
+        paid_at: new Date().toISOString(),
+        meta: p.meta ?? {},
+      });
+    }
+  }
+  if (!ledgerOk) ledgerOk = await recordPayment({ ...p, status: "paid" });
+
+  return marked || ledgerOk ? "paid" : "failed";
 }

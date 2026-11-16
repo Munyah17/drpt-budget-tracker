@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { sbGet, sbUpsert } from "@/lib/server/supabaseAdmin";
 import { recordPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 import { priceUsdFor, type PaymentChannel } from "@/lib/pricing";
 
 export const runtime = "nodejs";
@@ -28,8 +29,18 @@ export async function POST(req: NextRequest) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) return NextResponse.json({ error: "Not configured" }, { status: 500 });
 
+  // Public endpoint that creates auth accounts — throttle hard per IP and
+  // per email so it can't be used to mass-provision temp accounts.
+  const ip = clientIp(req);
+  if (rateLimited(`dt-ip:${ip}`, 10, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests — try again later" }, { status: 429 });
+  }
+
   const body = await req.json().catch(() => null);
   const email = String(body?.email ?? "").trim().toLowerCase();
+  if (rateLimited(`dt-email:${email}`, 3, 24 * 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests for this email — try again later" }, { status: 429 });
+  }
   const method = String(body?.method ?? "").toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return NextResponse.json({ error: "Valid email required" }, { status: 400 });
@@ -41,6 +52,16 @@ export async function POST(req: NextRequest) {
   const name = typeof body?.name === "string" ? body.name.trim() : "";
   const phone = typeof body?.phone === "string" ? body.phone.trim() : "";
   const country = typeof body?.country === "string" ? body.country.trim().toLowerCase() : "";
+  // Mandatory proof fields: the client's own transaction reference, plus the
+  // mobile-money sender/agent name for EcoCash & InnBucks.
+  const transactionRef = typeof body?.transactionRef === "string" ? body.transactionRef.trim().slice(0, 100) : "";
+  const senderName = typeof body?.senderName === "string" ? body.senderName.trim().slice(0, 120) : "";
+  if (!transactionRef) {
+    return NextResponse.json({ error: "Transaction reference is required" }, { status: 400 });
+  }
+  if (method === "ecocash" && !senderName) {
+    return NextResponse.json({ error: "Sender name is required for EcoCash / InnBucks" }, { status: 400 });
+  }
   const password = typeof body?.password === "string" && body.password.length >= 6
     ? body.password
     : crypto.randomBytes(9).toString("base64url"); // temp — user resets after approval if unknown
@@ -111,14 +132,18 @@ export async function POST(req: NextRequest) {
       currency: "usd",
       reference,
       status: "pending",
-      meta: { name, phone, country, channel: method, signup: body?.signup === true },
+      meta: {
+        name, phone, country, channel: method, signup: body?.signup === true,
+        transaction_ref: transactionRef,
+        sender_name: method === "ecocash" ? senderName : undefined,
+      },
     });
 
     void notifyAdmin("transfer_intent", {
       email,
       name: name || undefined,
       method: method === "bank" ? "Bank transfer" : "EcoCash / InnBucks",
-      detail: `Pending approval · ref ${reference} · $${amount.toFixed(2)}`,
+      detail: `Pending approval · ref ${reference} · txn ${transactionRef}${senderName ? ` · sender ${senderName}` : ""} · $${amount.toFixed(2)}`,
     }).catch(() => {});
 
     return NextResponse.json({ ok: true, pending: true, reference });

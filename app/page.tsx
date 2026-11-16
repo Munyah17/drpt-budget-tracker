@@ -101,12 +101,9 @@ export default function LandingPage() {
           <a href="#pricing" className="nav-link">{t("nav.pricing")}</a>
           <LanguageSelect compact />
           <AuthLink mode="login" className="btn btn-ghost btn-sm nav-signin">{t("nav.signIn")}</AuthLink>
-          <AuthLink mode="signup" className="btn btn-primary btn-sm">
-            <span className="nav-cta-full">{t("nav.getStarted")}</span>
-            <span className="nav-cta-short">{t("nav.startShort")}</span>
-          </AuthLink>
+          <AuthLink mode="signup" className="btn btn-primary btn-sm">{t("nav.signUp")}</AuthLink>
         </div>
-        {/* Mobile header: hamburger far left, language + Get Started far right */}
+        {/* Mobile header: hamburger far left, language + Log In far right */}
         <button
           className="icon-btn hamburger landing-burger"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -117,7 +114,7 @@ export default function LandingPage() {
         </button>
         <div className="landing-nav-mobile">
           <LanguageSelect compact />
-          <AuthLink mode="signup" className="btn btn-primary btn-sm">{t("nav.getStarted")}</AuthLink>
+          <AuthLink mode="login" className="btn btn-primary btn-sm">{t("nav.signIn")}</AuthLink>
         </div>
         {menuOpen && (
           <div className="landing-mobile-menu">

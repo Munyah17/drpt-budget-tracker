@@ -130,6 +130,8 @@ export default function PendingApprovalsPage() {
                 const metaPhone = typeof p.meta?.phone === "string" ? p.meta.phone : "";
                 const stalled = p.meta?.stalled === true;
                 const stallNote = typeof p.meta?.stall_note === "string" ? p.meta.stall_note : "";
+                const txnRef = typeof p.meta?.transaction_ref === "string" ? p.meta.transaction_ref : "";
+                const senderName = typeof p.meta?.sender_name === "string" ? p.meta.sender_name : "";
                 return (
                 <tr key={p.id} style={{ borderBottom: "1px solid var(--card-border)" }}>
                   <td style={{ padding: "12px 8px" }}>
@@ -137,6 +139,16 @@ export default function PendingApprovalsPage() {
                     <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{p.user_email || p.profile?.email}</div>
                     {(p.profile?.phone || metaPhone) && (
                       <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{p.profile?.phone ?? metaPhone}</div>
+                    )}
+                    {txnRef && (
+                      <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
+                        {t("txnRefLabel")}: <span style={{ fontFamily: "monospace" }}>{txnRef}</span>
+                      </div>
+                    )}
+                    {senderName && (
+                      <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
+                        {t("senderLabel")}: <strong>{senderName}</strong>
+                      </div>
                     )}
                     {stalled && (
                       <div style={{ marginTop: 4 }}>

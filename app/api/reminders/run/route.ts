@@ -28,10 +28,14 @@ interface ReminderRow {
  */
 function authorised(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
-  if (!secret) return true;
-  const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
-  const query = req.nextUrl.searchParams.get("secret") ?? "";
-  return bearer === secret || query === secret;
+  if (secret) {
+    const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+    const query = req.nextUrl.searchParams.get("secret") ?? "";
+    return bearer === secret || query === secret;
+  }
+  // No cron secret configured — don't leave a mail-sending endpoint public.
+  const adminEmail = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
+  return (req.headers.get("x-admin-email") ?? "").toLowerCase() === adminEmail;
 }
 
 /** Send an SMS or WhatsApp message via Twilio REST (no SDK dependency). */

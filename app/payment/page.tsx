@@ -29,6 +29,9 @@ function PaymentInner() {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
   const [popSent, setPopSent] = useState(false);
+  // Direct-transfer proof fields — mandatory before the transfer request is sent.
+  const [txnRef, setTxnRef] = useState("");
+  const [senderName, setSenderName] = useState("");
   const [pending, setPending] = useState<{ userId: string; email: string; name: string; country?: string } | null>(null);
   // Pay-first signup: registration details stashed by /register, account is
   // created only after the payment is confirmed.
@@ -137,6 +140,16 @@ function PaymentInner() {
 
       // Direct transfers: provision a temporary inactive account for admin
       // review (Approve/Reject), then the user pays manually and sends PoP.
+      if (!txnRef.trim()) {
+        toast(t("missingTxnRef"), "x");
+        setProcessing(false);
+        return;
+      }
+      if (selectedMethod === "ecocash" && !senderName.trim()) {
+        toast(t("missingSenderName"), "x");
+        setProcessing(false);
+        return;
+      }
       try {
         const dtRes = await fetch("/api/payment/direct-transfer", {
           method: "POST",
@@ -149,6 +162,8 @@ function PaymentInner() {
             country: region,
             method: selectedMethod,
             signup: signupMode,
+            transactionRef: txnRef.trim(),
+            senderName: senderName.trim(),
           }),
         });
         const dtData = await dtRes.json().catch(() => null);
@@ -398,6 +413,41 @@ function PaymentInner() {
               {detailRow(t("labelUsdAccount"), "6870465460146")}
               {detailRow(t("labelAmount"), `$${total.toFixed(2)}`)}
             </div>
+          </div>
+        )}
+
+        {/* Direct transfer proof fields — required before requesting approval */}
+        {isDirect && !popSent && (
+          <div style={{ marginBottom: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "var(--ink-500)", marginBottom: 6, textTransform: "uppercase", letterSpacing: ".05em" }}>
+                {t("labelTxnRef")} <span style={{ color: "var(--rose-600)" }}>*</span>
+              </label>
+              <input
+                className="settings-select"
+                style={{ width: "100%", padding: "12px 14px", fontSize: 14 }}
+                placeholder={t("txnRefPh")}
+                value={txnRef}
+                onChange={(e) => setTxnRef(e.target.value)}
+                maxLength={100}
+              />
+            </div>
+            {selectedMethod === "ecocash" && (
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "var(--ink-500)", marginBottom: 6, textTransform: "uppercase", letterSpacing: ".05em" }}>
+                  {t("labelSenderName")} <span style={{ color: "var(--rose-600)" }}>*</span>
+                </label>
+                <input
+                  className="settings-select"
+                  style={{ width: "100%", padding: "12px 14px", fontSize: 14 }}
+                  placeholder={t("senderNamePh")}
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  maxLength={120}
+                />
+                <p style={{ fontSize: 11.5, color: "var(--ink-500)", marginTop: 5, marginBottom: 0 }}>{t("senderNameHint")}</p>
+              </div>
+            )}
           </div>
         )}
 

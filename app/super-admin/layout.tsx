@@ -9,32 +9,29 @@ import Icon from "@/components/Icon";
 
 const NAV = [
   { id: "command", href: "/super-admin", icon: "layout-dashboard" },
-  { id: "clientAccess", href: "/super-admin/client-access", icon: "user" },
 ] as const;
 
 /**
  * Super-admin console shell. Guards every /super-admin/* route: only the
- * founder (role super_admin, not shifted into client nature) gets in.
- * The login page renders bare.
+ * founder (role super_admin) gets in. The login page renders bare.
  */
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, authReady, user, shifted, logout } = useAppData();
+  const { isAuthenticated, authReady, user, logout } = useAppData();
   const t = useTranslations("SuperAdmin");
 
   const isLogin = pathname === "/super-admin/login";
-  const allowed = authReady && isAuthenticated && user?.role === "super_admin" && !shifted;
+  const allowed = authReady && isAuthenticated && user?.role === "super_admin";
 
   useEffect(() => {
     if (isLogin || !authReady) return;
     if (!isAuthenticated) {
       router.replace("/super-admin/login");
-    } else if (shifted || user?.role !== "super_admin") {
-      // Wrong nature or wrong role — send them to their own home.
-      router.replace(shifted ? "/dashboard" : "/");
+    } else if (user?.role !== "super_admin") {
+      router.replace("/");
     }
-  }, [isLogin, authReady, isAuthenticated, user, shifted, router]);
+  }, [isLogin, authReady, isAuthenticated, user, router]);
 
   if (isLogin) return <>{children}</>;
   if (!authReady || !allowed) return null;

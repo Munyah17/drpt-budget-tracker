@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { markProfilePaid, recordPayment } from "@/lib/server/payments";
+import { applyPayment } from "@/lib/server/payments";
 import { notifyAdmin, sendUserEmail } from "@/lib/server/notify";
 import { detailTable } from "@/lib/server/emailTemplate";
 import { sbGet } from "@/lib/server/supabaseAdmin";
@@ -55,20 +55,21 @@ export async function GET(req: NextRequest) {
       });
       const session = await res.json();
       const paid = res.ok && session.payment_status === "paid";
-      const userId = uid || session.client_reference_id || "";
-      if (paid && !dry) {
-        await markProfilePaid(userId);
+      // Bind to the checkout session's own reference — never trust a uid
+      // supplied by the caller (one payment must not activate other accounts).
+      const userId = (session.client_reference_id as string) ?? "";
+      if (paid && !dry && userId) {
         const customer = session.customer_details as Record<string, string> | undefined;
-        await recordPayment({
+        const email = customer?.email ?? (session.customer_email as string) ?? "";
+        await applyPayment({
           userId,
-          userEmail: customer?.email ?? (session.customer_email as string) ?? "",
+          userEmail: email,
           provider: "stripe",
           method: "card",
           amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
           currency: (session.currency as string) ?? "usd",
           reference: sessionId,
         });
-        const email = customer?.email ?? (session.customer_email as string) ?? "";
         if (email) {
           receiptEmail(email, typeof session.amount_total === "number" ? session.amount_total / 100 : null, (session.currency as string) ?? "usd", "Card", sessionId);
         }
@@ -86,21 +87,37 @@ export async function GET(req: NextRequest) {
       const status = (data.get("status") ?? "").toLowerCase();
       const paid = status === "paid" || status === "awaiting delivery" || status === "delivered";
       if (paid && !dry) {
-        await markProfilePaid(uid);
-        await recordPayment({
-          userId: uid,
-          provider: "paynow",
-          method: "paynow",
-          amount: data.get("amount") ? Number(data.get("amount")) : null,
-          currency: "usd",
-          reference: data.get("reference") ?? undefined,
-          meta: { paynowreference: data.get("paynowreference") ?? "", status },
-        });
-        await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${uid}` });
-        const prof = await sbGet<{ email: string | null }>("profiles", `id=eq.${encodeURIComponent(uid)}&select=email&limit=1`);
+        // Bind the payment to the account it was initiated for: the pending
+        // ledger row written by /api/paynow/initiate carries the owner.
+        const reference = data.get("reference") ?? "";
+        const pending = reference
+          ? await sbGet<{ id: number; user_id: string | null; user_email: string | null }>(
+              "payments",
+              `provider=eq.paynow&reference=eq.${encodeURIComponent(reference)}&select=id,user_id,user_email&limit=1`
+            )
+          : [];
+        const ownerId = pending[0]?.user_id ?? "";
+        if (ownerId && uid && uid !== ownerId) {
+          return NextResponse.json({ paid: false, error: "Account mismatch" }, { status: 403 });
+        }
+        const effectiveUid = ownerId || uid;
+        if (effectiveUid) {
+          await applyPayment({
+            userId: effectiveUid,
+            userEmail: pending[0]?.user_email ?? undefined,
+            provider: "paynow",
+            method: "paynow",
+            amount: data.get("amount") ? Number(data.get("amount")) : null,
+            currency: "usd",
+            reference: reference || undefined,
+            meta: { paynowreference: data.get("paynowreference") ?? "", status },
+          });
+        }
+        await notifyAdmin("payment_success", { method: "paynow", detail: `status "${status}", uid ${effectiveUid}` });
+        const prof = await sbGet<{ email: string | null }>("profiles", `id=eq.${encodeURIComponent(effectiveUid)}&select=email&limit=1`);
         const email = prof[0]?.email;
         if (email) {
-          receiptEmail(email, data.get("amount") ? Number(data.get("amount")) : null, "usd", "Paynow", data.get("reference") ?? uid);
+          receiptEmail(email, data.get("amount") ? Number(data.get("amount")) : null, "usd", "Paynow", reference || effectiveUid);
         }
       } else if (!paid && !dry && (status === "cancelled" || status === "failed" || status === "disputed")) {
         await notifyAdmin("payment_failed", { method: "paynow", detail: `status "${status}", uid ${uid}` });

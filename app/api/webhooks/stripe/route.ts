@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { markProfilePaid, recordPayment } from "@/lib/server/payments";
+import { applyPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
 import { sbUpsert } from "@/lib/server/supabaseAdmin";
 
@@ -95,9 +95,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (uid && paid) {
-      await markProfilePaid(uid);
       const customer = session.customer_details as Record<string, string> | undefined;
-      await recordPayment({
+      // applyPayment dedupes on provider+reference — a replayed or duplicated
+      // webhook can't extend paid_until twice for the same session.
+      await applyPayment({
         userId: uid,
         userEmail: customer?.email ?? (session.customer_email as string) ?? "",
         provider: "stripe",

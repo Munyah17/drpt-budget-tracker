@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { priceCentsFor } from "@/lib/pricing";
 import { sbGet } from "@/lib/server/supabaseAdmin";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
 /** Checkout country: the picker's choice wins; profile country is the fallback. */
 async function countryFor(userId: string, preferred: string): Promise<string> {
@@ -21,6 +22,10 @@ async function countryFor(userId: string, preferred: string): Promise<string> {
  * No stripe SDK needed — plain REST.
  */
 export async function POST(req: NextRequest) {
+  if (rateLimited(`stripe-checkout:${clientIp(req)}`, 20, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests — try again later" }, { status: 429 });
+  }
+
   const secret = process.env.STRIPE_SECRET_KEY;
   if (!secret) {
     return NextResponse.json({ error: "Stripe is not configured" }, { status: 500 });

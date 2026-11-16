@@ -26,7 +26,6 @@ import { DEFAULT_CURRENCY, formatCurrency, setActiveCurrency } from "./format";
 import { paidActive } from "./paid";
 import { isUnpaidExpired } from "./unpaid";
 import { clearSessionStamp, sessionStale, touchSession } from "./session";
-import { isShifted, setShifted } from "./shift";
 
 export interface ToastItem {
   id: number;
@@ -42,12 +41,6 @@ interface AppDataContextValue {
   user: UserProfile | null;
   /** True while browsing with the throwaway demo account — nothing is persisted */
   isDemo: boolean;
-  /** Client shift: super admin is currently living as a full regular user */
-  shifted: boolean;
-  /** Shift into the full regular-user nature (super admin only) */
-  shiftToClient: () => void;
-  /** Shift back into the super-admin console nature */
-  shiftToConsole: () => void;
   login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; role?: UserRole; error?: string }>;
   /** One-click demo sign-in for prospective customers — in-memory only */
   loginDemo: () => void;
@@ -174,7 +167,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isDemo, setIsDemo] = useState(false);
-  const [shifted, setShiftedState] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [month, setMonth] = useState(() => new Date().toLocaleString("en-GB", { month: "long", year: "numeric" }));
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -194,10 +186,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("drpatie-theme");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from browser storage on mount
     if (saved === "dark" || saved === "light") setTheme(saved);
-
-    // Restore an active client shift (sessionStorage survives reloads)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync from browser storage on mount
-    setShiftedState(isShifted());
 
     // Restore chosen display currency
     const savedCurrency = localStorage.getItem("drpatie-currency");
@@ -745,8 +733,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     if (!isDemo) await supabase.auth.signOut();
-    setShifted(false);
-    setShiftedState(false);
     if (isDemo) {
       // Sample data must never leak into the next real session.
       setIncome(INITIAL_INCOME);
@@ -765,34 +751,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     tokenRef.current = null;
   }, [isDemo]);
 
-  // Client shift: while active, the super admin experiences the app as a
-  // full regular user — role "user" with unlimited (paid) access. The real
-  // profile is untouched; this is a presentation-layer identity swap.
-  const effectiveUser = useMemo<UserProfile | null>(() => {
-    if (shifted && user?.role === "super_admin") {
-      return { ...user, role: "user", isPaid: true };
-    }
-    return user;
-  }, [user, shifted]);
-
-  const shiftToClient = useCallback(() => {
-    setShifted(true);
-    setShiftedState(true);
-  }, []);
-
-  const shiftToConsole = useCallback(() => {
-    setShifted(false);
-    setShiftedState(false);
-  }, []);
-
   const value: AppDataContextValue = {
     isAuthenticated,
     authReady,
-    user: effectiveUser,
+    user,
     isDemo,
-    shifted,
-    shiftToClient,
-    shiftToConsole,
     login,
     loginDemo,
     logout,

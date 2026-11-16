@@ -11,6 +11,7 @@ import { trackEvent } from "@/lib/analytics";
 import { COUNTRIES } from "@/lib/countries";
 import { UserRole } from "@/lib/types";
 import { useIsNative } from "@/lib/native";
+import Icon from "@/components/Icon";
 
 const rolePath = (role?: UserRole) =>
   role === "super_admin" || role === "admin"
@@ -31,6 +32,7 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [showPw, setShowPw] = useState(false);
   const native = useIsNative();
   const [isSignup, setIsSignup] = useState(forceSignup || searchParams.get("signup") === "1");
   // Signup is allowed everywhere. On the web it continues to the $1
@@ -71,6 +73,11 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
     setSubmitting(true);
 
     if (signup) {
+      if (password.length < 8) {
+        setSubmitting(false);
+        toast(t("pwTooShort"), "x");
+        return;
+      }
       if (password !== confirmPassword) {
         setSubmitting(false);
         toast(t("pwMismatch"), "x");
@@ -162,6 +169,14 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
     >
       <div className="login-card fade-up">
         <div className="login-visual">
+          <span className="login-visual-blob b1" />
+          <span className="login-visual-blob b2" />
+          <span className="login-visual-blob b3" />
+          <div className="login-visual-card">
+            <div className="lvc-row"><span>{t("visualCardSpent")}</span><strong>$486.20</strong></div>
+            <div className="lvc-bar"><i style={{ width: "62%" }} /></div>
+            <div className="lvc-row"><span>{t("visualCardBudget")}</span><strong>62%</strong></div>
+          </div>
           <div className="login-visual-caption">
             <h3>
               {t("visualTitle")}
@@ -169,8 +184,15 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
             <p>{t("visualText")}</p>
           </div>
         </div>
+        <div className="login-visual-mobile">
+          <h3>{t("visualTitle")}</h3>
+          <p>{t("visualText")}</p>
+        </div>
         <div className="login-form">
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <Link href="/" className="login-logo" style={{ marginBottom: 0, textDecoration: "none" }}>
+              WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
+            </Link>
             <LanguageSelect compact />
           </div>
           <h2>{signup ? (native ? t("signupTitleFree") : t("signupTitle")) : t("signinTitle")}</h2>
@@ -265,29 +287,45 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("emailPh")}
                 required
+                autoFocus
+                autoComplete="email"
               />
             </div>
             <div className="field">
               <label htmlFor="password">{t("password")}</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("passwordPh")}
-                required
-              />
+              <div className="pw-wrap">
+                <input
+                  id="password"
+                  type={showPw ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={t("passwordPh")}
+                  required
+                  minLength={signup ? 8 : undefined}
+                  autoComplete={signup ? "new-password" : "current-password"}
+                />
+                <button
+                  type="button"
+                  className="pw-toggle"
+                  onClick={() => setShowPw((v) => !v)}
+                  aria-label={showPw ? t("hidePw") : t("showPw")}
+                >
+                  <Icon name={showPw ? "eye-off" : "eye"} size={17} />
+                </button>
+              </div>
             </div>
             {signup && (
               <div className="field">
                 <label htmlFor="confirm-password">{t("confirmPassword")}</label>
                 <input
                   id="confirm-password"
-                  type="password"
+                  type={showPw ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder={t("confirmPasswordPh")}
                   required
+                  minLength={8}
+                  autoComplete="new-password"
                 />
               </div>
             )}
@@ -296,7 +334,7 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
                 <label className="remember">
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ accentColor: "var(--rose-500)" }} /> {t("remember")}
                 </label>
-                <a href="#">{t("forgot")}</a>
+                <Link href="/reset-password">{t("forgot")}</Link>
               </div>
             )}
             <button type="submit" className="btn btn-primary" style={{ opacity: submitting ? 0.75 : 1 }} disabled={submitting}>

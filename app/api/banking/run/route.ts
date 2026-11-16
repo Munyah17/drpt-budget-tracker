@@ -7,10 +7,14 @@ const MAX_SYNCS_PER_RUN = 200;
 /** Same guard as /api/reminders/run — Vercel Cron sends Bearer $CRON_SECRET. */
 function authorised(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
-  if (!secret) return true;
-  const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
-  const query = req.nextUrl.searchParams.get("secret") ?? "";
-  return bearer === secret || query === secret;
+  if (secret) {
+    const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+    const query = req.nextUrl.searchParams.get("secret") ?? "";
+    return bearer === secret || query === secret;
+  }
+  // No cron secret configured — don't leave the sync endpoint public.
+  const adminEmail = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
+  return (req.headers.get("x-admin-email") ?? "").toLowerCase() === adminEmail;
 }
 
 /**

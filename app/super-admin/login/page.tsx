@@ -13,15 +13,15 @@ import Icon from "@/components/Icon";
  */
 export default function SuperAdminLoginPage() {
   const router = useRouter();
-  const { login, logout, toast, isAuthenticated, authReady, user, shifted } = useAppData();
+  const { login, logout, toast, isAuthenticated, authReady, user } = useAppData();
   const t = useTranslations("SuperAdmin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Already signed in as super admin (and not shifted into client nature)?
-  if (authReady && isAuthenticated && user?.role === "super_admin" && !shifted) {
+  // Already signed in as super admin?
+  if (authReady && isAuthenticated && user?.role === "super_admin") {
     router.replace("/super-admin");
     return null;
   }
