@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { adminHeaders } from "@/lib/adminClient";
 import { supabase } from "@/lib/supabase";
 import CountUp from "@/components/CountUp";
 import Icon from "@/components/Icon";
@@ -25,6 +26,36 @@ interface AnalyticsData {
   recent: { event: string; path: string | null; user_email: string | null; created_at: string }[];
 }
 
+interface AiVariance {
+  metrics: {
+    windowDays: number;
+    activeDefinition: string;
+    registeredUsers: number;
+    paidUsers: number;
+    activeUsers: number;
+    paidAndActive: number;
+    paidButInactive: number;
+    activeButUnpaid: number;
+    registeredOnlyNoPaidNoActivity: number;
+    newUsersInWindow: number;
+    rates: {
+      paidRate: number;
+      activeRate: number;
+      paidToActiveRate: number;
+      activeToPaidRate: number;
+      paidInactiveRate: number;
+    };
+  };
+  ai: {
+    summary: string;
+    insights: string[];
+    risks: string[];
+    recommendations: string[];
+  } | null;
+  aiError: string | null;
+  generatedAt: string;
+}
+
 const EVENT_COLOR: Record<string, string> = {
   payment: "var(--green)",
   signup: "var(--rose-600)",
@@ -39,6 +70,9 @@ export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [ai, setAi] = useState<AiVariance | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -67,6 +101,24 @@ export default function AdminAnalyticsPage() {
   useEffect(() => {
     queueMicrotask(() => void load());
   }, [load]);
+
+  async function runAiVariance() {
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const res = await fetch("/api/admin/ai-variance", {
+        headers: await adminHeaders(user?.email),
+        cache: "no-store",
+      });
+      const json = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(json?.error || `HTTP ${res.status}`);
+      setAi(json as AiVariance);
+    } catch (e) {
+      setAiError(e instanceof Error ? e.message : t("aiFailed"));
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   const totals = data?.totals;
   const conversion = totals && totals.visitors14d > 0 ? Math.round((totals.signups14d / totals.visitors14d) * 100) : 0;
@@ -177,6 +229,67 @@ export default function AdminAnalyticsPage() {
           <span className="stat-label">{t("statVisitorToPaid")}</span>
           <div className="stat-value"><CountUp end={visitorToPaid} decimals={0} suffix="%" /></div>
         </div>
+      </div>
+
+      {/* AI variance report */}
+      <div className="glass-card card-pad" style={{ marginBottom: 20 }}>
+        <div className="card-head" style={{ flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h3>{t("aiVarianceTitle")}</h3>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--ink-500)" }}>{t("aiVarianceSub")}</p>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={runAiVariance} disabled={aiLoading}>
+            <Icon name="sparkles" size={14} style={{ marginRight: 6 }} />
+            {aiLoading ? t("aiRunning") : t("runAi")}
+          </button>
+        </div>
+
+        {aiError && (
+          <div style={{ fontSize: 13, color: "var(--red)", marginBottom: 12 }}>{t("aiError", { error: aiError })}</div>
+        )}
+
+        {ai && (
+          <>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
+              {[
+                [t("metricRegistered"), ai.metrics.registeredUsers],
+                [t("metricPaid"), ai.metrics.paidUsers],
+                [t("metricActive"), ai.metrics.activeUsers],
+                [t("metricPaidActive"), ai.metrics.paidAndActive],
+                [t("metricPaidInactive"), ai.metrics.paidButInactive],
+                [t("metricActiveUnpaid"), ai.metrics.activeButUnpaid],
+              ].map(([label, value]) => (
+                <span key={String(label)} className="chip" style={{ padding: "8px 12px" }}>
+                  <strong>{value}</strong> {label}
+                </span>
+              ))}
+            </div>
+            <p style={{ fontSize: 12.5, color: "var(--ink-500)", marginBottom: 14 }}>{ai.metrics.activeDefinition}</p>
+
+            {ai.ai?.summary && (
+              <p style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 14 }}>{ai.ai.summary}</p>
+            )}
+            {!ai.ai && ai.aiError && (
+              <p style={{ fontSize: 13, color: "var(--ink-500)", marginBottom: 14 }}>{t("aiUnavailable", { error: ai.aiError })}</p>
+            )}
+
+            <div className="grid grid-3">
+              {[
+                [t("insights"), ai.ai?.insights ?? []],
+                [t("risks"), ai.ai?.risks ?? []],
+                [t("recommendations"), ai.ai?.recommendations ?? []],
+              ].map(([title, items]) => (
+                <div key={String(title)}>
+                  <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>{title}</div>
+                  <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: "var(--ink-500)" }}>
+                    {(items as string[]).length === 0 && <li>{t("noAiItems")}</li>}
+                    {(items as string[]).map((item, i) => <li key={i}>{item}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: "1.4fr 1fr", marginBottom: 20 }}>
