@@ -52,6 +52,28 @@ export async function createAdminAccount(
   return { id: data.id };
 }
 
+export interface AdminUserPatch {
+  id: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Manual override for any profile field the admin API allows
+ * (role, paid status/expiry, currency, contact and org fields).
+ */
+export async function updateAdminUser(
+  adminEmail: string | undefined | null,
+  patch: AdminUserPatch
+): Promise<void> {
+  const res = await fetch("/api/admin/users", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...(await adminHeaders(adminEmail)) },
+    body: JSON.stringify(patch),
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(data?.error || "Update failed");
+}
+
 /* ── "View as client" engineer preview ────────────────────────────────────── */
 
 const STASH_KEY = "drpt-impersonate-backup";

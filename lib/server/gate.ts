@@ -39,7 +39,7 @@ export async function requireFeatureAccess(uid: string, opts: { admin?: boolean 
   if (!profile) return { error: "Unauthorized", status: 401 };
   // Allowlist only: paid accounts or roles provisioned by an organisation.
   // (role !== "user" would wrongly admit null/unexpected role values.)
-  if (paidActive(profile) || ["employee", "corporate", "admin"].includes(profile.role)) {
+  if (paidActive(profile) || ["employee", "corporate", "admin", "super_admin"].includes(profile.role)) {
     return { ok: true };
   }
   return { error: "Payment required", status: 402 };

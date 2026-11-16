@@ -22,7 +22,7 @@ export default function SuperAdminLoginPage() {
 
   // Already signed in as super admin?
   if (authReady && isAuthenticated && user?.role === "super_admin") {
-    router.replace("/super-admin");
+    router.replace("/admin");
     return null;
   }
 
@@ -31,7 +31,7 @@ export default function SuperAdminLoginPage() {
     setSubmitting(true);
     const result = await login(email, password, remember);
     if (result.success && result.role === "super_admin") {
-      router.push("/super-admin");
+      router.push("/admin");
       return;
     }
     setSubmitting(false);

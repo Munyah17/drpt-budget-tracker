@@ -20,6 +20,7 @@ export default function Sidebar() {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const rtl = textDirection(useLocale()) === "rtl";
   const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+  const isSuperAdmin = user?.role === "super_admin";
   const navNs = isAdmin
     ? "admin"
       : user?.role === "corporate"
@@ -31,8 +32,13 @@ export default function Sidebar() {
   const tShell = useTranslations("Shell");
   const labelFor = (id: string, fallback: string) => (tNav.has(id) ? tNav(id) : fallback);
 
-  const navItems = isAdmin
-    ? ADMIN_NAV_ITEMS
+  const navItems = isSuperAdmin
+    ? [
+        { id: "command", label: "Command Centre", icon: "layout-dashboard", href: "/super-admin" },
+        ...ADMIN_NAV_ITEMS,
+      ]
+    : isAdmin
+      ? ADMIN_NAV_ITEMS
       : user?.role === "corporate"
         ? CORPORATE_NAV_ITEMS
         : user?.role === "employee"
