@@ -20,6 +20,14 @@ interface PaymentRow {
   status: string;
   paid_at: string;
   created_at: string;
+  meta: Record<string, unknown> | null;
+}
+
+interface ProfileRow {
+  id: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
 }
 
 /**
@@ -35,8 +43,17 @@ export async function GET(req: NextRequest) {
 
   const rows = (await sbGet<PaymentRow>(
     "payments",
-    "select=id,user_id,user_email,provider,method,amount,currency,reference,status,paid_at,created_at&order=paid_at.desc&limit=1000"
+    "select=id,user_id,user_email,provider,method,amount,currency,reference,status,paid_at,created_at,meta&order=paid_at.desc&limit=1000"
   )) as PaymentRow[];
+
+  const userIds = [...new Set(rows.map((r) => r.user_id).filter((v): v is string => !!v))];
+  const profiles = userIds.length
+    ? await sbGet<ProfileRow>(
+        "profiles",
+        `id=in.(${userIds.join(",")})&select=id,name,email,phone&limit=1000`
+      )
+    : [];
+  const profileById = new Map(profiles.map((p) => [p.id, p]));
 
   // ---- Aggregates -------------------------------------------------------
   const paid = rows.filter((r) => r.status === "paid");
@@ -95,7 +112,13 @@ export async function GET(req: NextRequest) {
     days,
   };
 
-  return NextResponse.json({ payments: rows, stats });
+  return NextResponse.json({
+    payments: rows.map((r) => ({
+      ...r,
+      profile: r.user_id ? profileById.get(r.user_id) ?? null : null,
+    })),
+    stats,
+  });
 }
 
 const PROVIDERS = new Set(["stripe", "paynow", "ecocash", "bank", "admin", "manual"]);

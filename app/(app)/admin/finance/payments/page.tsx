@@ -21,6 +21,13 @@ interface PaymentRow {
   status: string;
   paid_at: string;
   created_at: string;
+  meta: Record<string, unknown> | null;
+  profile: {
+    id: string;
+    name: string | null;
+    email: string | null;
+    phone: string | null;
+  } | null;
 }
 
 interface DayStat {
@@ -56,9 +63,15 @@ function money(amount: number | null, currency: string) {
   return `${currency.toUpperCase()} ${amount.toFixed(2)}`;
 }
 
+function metaString(meta: Record<string, unknown> | null, key: string): string {
+  const v = meta?.[key];
+  return typeof v === "string" ? v : "";
+}
+
 export default function AdminPaymentsPage() {
   const t = useTranslations("Pages.adm_finance_payments");
   const { user, toast } = useAppData();
+  const adminEmail = user?.email;
   const [payments, setPayments] = useState<PaymentRow[]>([]);
   const [stats, setStats] = useState<PaymentStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -82,7 +95,7 @@ export default function AdminPaymentsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/payments", { headers: await adminHeaders(user?.email) });
+      const res = await fetch("/api/admin/payments", { headers: await adminHeaders(adminEmail) });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
       setPayments(data?.payments ?? []);
@@ -92,10 +105,10 @@ export default function AdminPaymentsPage() {
     } finally {
       setLoading(false);
     }
-  }, [user?.email, t]);
+  }, [adminEmail, t]);
 
   useEffect(() => {
-    refresh();
+    queueMicrotask(() => void refresh());
   }, [refresh]);
 
   const providers = useMemo(
@@ -327,14 +340,37 @@ export default function AdminPaymentsPage() {
                   </td>
                 </tr>
               )}
-              {filtered.map((p) => (
+              {filtered.map((p) => {
+                const meta = p.meta ?? {};
+                const metaName = typeof meta.name === "string" ? meta.name : "";
+                const metaPhone = typeof meta.phone === "string" ? meta.phone : "";
+                const txnRef = typeof meta.transaction_ref === "string" ? meta.transaction_ref : "";
+                const senderName = typeof meta.sender_name === "string" ? meta.sender_name : "";
+                const customerName = p.profile?.name || metaName || "";
+                const customerEmail = p.user_email || p.profile?.email || "";
+                const customerPhone = p.profile?.phone || metaPhone || "";
+                return (
                 <tr
                   key={p.id}
                   style={{ borderBottom: "1px solid var(--card-border)", cursor: "pointer" }}
                   onClick={() => setViewing(p)}
                 >
-                  <td style={{ padding: "12px 8px", fontSize: 13, fontFamily: "monospace" }}>{p.reference || `#${p.id}`}</td>
-                  <td style={{ padding: "12px 8px", fontWeight: 600, fontSize: 13 }}>{p.user_email || "—"}</td>
+                  <td style={{ padding: "12px 8px", fontSize: 13, fontFamily: "monospace" }}>
+                    {txnRef || p.reference || `#${p.id}`}
+                    {txnRef && p.reference && txnRef !== p.reference && (
+                      <div style={{ fontSize: 11, color: "var(--ink-500)", fontFamily: "inherit" }}>internal: {p.reference}</div>
+                    )}
+                  </td>
+                  <td style={{ padding: "12px 8px" }}>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{customerName || customerEmail || "—"}</div>
+                    {customerEmail && <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{customerEmail}</div>}
+                    {customerPhone && <div style={{ fontSize: 12, color: "var(--ink-500)" }}>{customerPhone}</div>}
+                    {senderName && (
+                      <div style={{ fontSize: 12, color: "var(--ink-500)" }}>
+                        Sender: <strong>{senderName}</strong>
+                      </div>
+                    )}
+                  </td>
                   <td style={{ padding: "12px 8px", fontSize: 13, textTransform: "capitalize" }}>
                     {p.provider}{p.method ? ` · ${p.method}` : ""}
                   </td>
@@ -346,7 +382,8 @@ export default function AdminPaymentsPage() {
                   </td>
                   <td style={{ padding: "12px 8px", fontSize: 13 }}>{new Date(p.paid_at).toLocaleString("en-GB")}</td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -356,8 +393,12 @@ export default function AdminPaymentsPage() {
         <Modal title={t("paymentDetails")} onClose={() => setViewing(null)}>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14 }}>
             {[
+              ["Txn ref", metaString(viewing.meta, "transaction_ref") || "—"],
               [t("thReference"), viewing.reference || `#${viewing.id}`],
-              [t("thCustomer"), viewing.user_email || "—"],
+              [t("thCustomer"), viewing.profile?.name || metaString(viewing.meta, "name") || viewing.user_email || viewing.profile?.email || "—"],
+              ["Email", viewing.user_email || viewing.profile?.email || "—"],
+              ["Phone", viewing.profile?.phone || metaString(viewing.meta, "phone") || "—"],
+              ["Sender", metaString(viewing.meta, "sender_name") || "—"],
               [t("thProvider"), `${viewing.provider}${viewing.method ? ` (${viewing.method})` : ""}`],
               [t("thAmount"), money(viewing.amount, viewing.currency)],
               [t("thStatus"), viewing.status],
