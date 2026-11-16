@@ -21,7 +21,8 @@ export type NotifyEvent =
   | "payment_success"
   | "payment_failed"
   | "transfer_intent"
-  | "support_message";
+  | "support_message"
+  | "feedback";
 
 const EVENT_META: Record<NotifyEvent, { emoji: string; label: string; badge: string; color: string }> = {
   signup_success:  { emoji: "🆕", label: "New signup",              badge: "Signup",   color: BRAND.green },
@@ -30,6 +31,7 @@ const EVENT_META: Record<NotifyEvent, { emoji: string; label: string; badge: str
   payment_failed:  { emoji: "❌", label: "Payment failed",          badge: "Failed",   color: BRAND.red },
   transfer_intent: { emoji: "🏦", label: "Direct transfer started", badge: "Transfer", color: BRAND.amber },
   support_message: { emoji: "💬", label: "Support message",         badge: "Support",  color: BRAND.rose },
+  feedback:        { emoji: "💡", label: "Customer feedback",       badge: "Feedback", color: BRAND.amber },
 };
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000";

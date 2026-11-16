@@ -36,6 +36,7 @@ export default function Sidebar() {
     ? [
         ...ADMIN_NAV_ITEMS.filter((n) => n.id !== "settings"),
         { id: "pricing", label: "Pricing", icon: "tag" },
+        { id: "feedback", label: "Feedback", icon: "message-square" },
         ...ADMIN_NAV_ITEMS.filter((n) => n.id === "settings"),
       ]
     : isAdmin

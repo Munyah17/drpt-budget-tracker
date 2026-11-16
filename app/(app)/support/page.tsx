@@ -8,6 +8,8 @@ import { supabase } from "@/lib/supabase";
 import Icon from "@/components/Icon";
 
 const SUBJECTS = ["account", "payment", "bank", "bug", "feature", "other"] as const;
+const FEEDBACK_KINDS = ["suggestion", "feedback", "bug"] as const;
+type FeedbackKind = (typeof FEEDBACK_KINDS)[number];
 
 export default function SupportPage() {
   const t = useTranslations("Pages.support");
@@ -19,6 +21,10 @@ export default function SupportPage() {
   const [email, setEmail] = useState(user?.email ?? "");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [fbKind, setFbKind] = useState<FeedbackKind>("suggestion");
+  const [fbMessage, setFbMessage] = useState("");
+  const [fbSending, setFbSending] = useState(false);
+  const [fbSent, setFbSent] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -51,6 +57,41 @@ export default function SupportPage() {
       toast(t("toastError"), "x");
     }
     setSending(false);
+  }
+
+  async function handleFeedbackSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (fbSending) return;
+    setFbSending(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-email": user?.email ?? "",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({
+          kind: fbKind,
+          message: fbMessage.trim(),
+          page: typeof window !== "undefined" ? window.location.pathname : "",
+          appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? "web",
+          name: name.trim(),
+          email: email.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.ok) {
+        setFbSent(true);
+        toast(t("feedbackToastSent"), "check-circle");
+      } else {
+        toast(data?.error || t("feedbackToastError"), "x");
+      }
+    } catch {
+      toast(t("feedbackToastError"), "x");
+    }
+    setFbSending(false);
   }
 
   return (
@@ -118,6 +159,68 @@ export default function SupportPage() {
             </button>
             <p style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 12, textAlign: "center" }}>
               {t("replyNote")}
+            </p>
+          </form>
+        )}
+      </div>
+
+      <div className="glass-card card-pad" style={{ maxWidth: 640, marginTop: 20 }}>
+        <div className="card-head" style={{ marginBottom: 12 }}>
+          <div>
+            <h3>{t("feedbackTitle")}</h3>
+            <p className="section-sub" style={{ marginTop: 4 }}>{t("feedbackSubtitle")}</p>
+          </div>
+        </div>
+        {fbSent ? (
+          <div style={{ textAlign: "center", padding: "24px 12px" }}>
+            <Icon name="check-circle" size={36} style={{ color: "var(--rose-500)" }} />
+            <h3 style={{ margin: "12px 0 6px" }}>{t("feedbackSentTitle")}</h3>
+            <p style={{ color: "var(--ink-500)", fontSize: 13.5, marginBottom: 16 }}>
+              {t("feedbackSentBody")}
+            </p>
+            <button
+              className="btn btn-ghost"
+              onClick={() => {
+                setFbSent(false);
+                setFbMessage("");
+                setFbKind("suggestion");
+              }}
+            >
+              {t("feedbackAnother")}
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleFeedbackSubmit}>
+            <div className="field">
+              <label>{t("fKind")}</label>
+              <select
+                className="settings-select"
+                style={{ width: "100%" }}
+                value={fbKind}
+                onChange={(e) => setFbKind(e.target.value as FeedbackKind)}
+              >
+                {FEEDBACK_KINDS.map((k) => (
+                  <option key={k} value={k}>{t(`feedbackKinds.${k}`)}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label>{t("fMessage")}</label>
+              <textarea
+                required
+                rows={5}
+                value={fbMessage}
+                onChange={(e) => setFbMessage(e.target.value)}
+                maxLength={4000}
+                placeholder={t("feedbackMessagePh")}
+              />
+            </div>
+            <button className="btn btn-primary btn-block" disabled={fbSending} type="submit">
+              <Icon name="send" size={14} style={{ marginRight: 6 }} />
+              {fbSending ? t("sending") : t("feedbackSend")}
+            </button>
+            <p style={{ fontSize: 12, color: "var(--ink-500)", marginTop: 12, textAlign: "center" }}>
+              {t("feedbackNote")}
             </p>
           </form>
         )}

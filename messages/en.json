@@ -63,7 +63,8 @@
       "risk-security_access": "Access Control",
       "risk-security_incidents": "Incidents",
       "settings": "Settings",
-      "support": "Support"
+      "support": "Support",
+      "feedback": "Feedback"
     },
     "corporate": {
       "overview": "Dashboard",
@@ -1564,6 +1565,40 @@
       "statusInProgress": "In progress",
       "statusResolved": "Resolved",
       "statusClosed": "Closed",
+      "toastSaved": "Status updated.",
+      "toastError": "Update failed — try again."
+    },
+    "adm_feedback": {
+      "title": "Customer Feedback",
+      "subtitle": "Super Admin inbox for suggestions, feedback and bug reports",
+      "total": "Total",
+      "newCount": "New",
+      "bugs": "Bugs",
+      "suggestions": "Suggestions",
+      "inboxTitle": "Feedback Inbox",
+      "kindFilterAll": "All types",
+      "statusFilterAll": "All statuses",
+      "colKind": "Type",
+      "colFrom": "From",
+      "colStatus": "Status",
+      "colPage": "Page",
+      "colCreated": "Created",
+      "colActions": "Actions",
+      "emptyState": "No feedback yet.",
+      "refresh": "Refresh",
+      "detailFrom": "From",
+      "detailKind": "Type",
+      "detailPage": "Page",
+      "detailReceived": "Received",
+      "update": "Update",
+      "statusNew": "New",
+      "statusReviewed": "Reviewed",
+      "statusPlanned": "Planned",
+      "statusShipped": "Shipped",
+      "statusDeclined": "Declined",
+      "kind_suggestion": "Suggestion",
+      "kind_feedback": "Feedback",
+      "kind_bug": "Bug report",
       "toastSaved": "Status updated.",
       "toastError": "Update failed — try again."
     },
@@ -3748,7 +3783,23 @@
       "sentBody": "Thanks — we have received your message and will reply by email shortly.",
       "backHome": "Back to dashboard",
       "toastSent": "Message sent — we will reply by email.",
-      "toastError": "Could not send — please try again."
+      "toastError": "Could not send — please try again.",
+      "feedbackTitle": "Suggestions & feedback",
+      "feedbackSubtitle": "Share an idea, report a bug, or tell us what to improve.",
+      "fKind": "Type",
+      "feedbackKinds": {
+        "suggestion": "Suggestion",
+        "feedback": "Feedback",
+        "bug": "Bug report"
+      },
+      "feedbackMessagePh": "What should we build, fix, or change?",
+      "feedbackSend": "Send feedback",
+      "feedbackNote": "Sent to the WellSpend team — visible to Super Admin only.",
+      "feedbackSentTitle": "Feedback sent",
+      "feedbackSentBody": "Thanks — the team reviews every submission.",
+      "feedbackAnother": "Send another",
+      "feedbackToastSent": "Feedback sent — thank you.",
+      "feedbackToastError": "Could not send feedback — please try again."
     }
   },
   "Native": {
