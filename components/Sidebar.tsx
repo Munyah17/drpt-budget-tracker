@@ -34,7 +34,6 @@ export default function Sidebar() {
 
   const navItems = isSuperAdmin
     ? [
-        { id: "command", label: "Command Centre", icon: "layout-dashboard", href: "/super-admin" },
         ...ADMIN_NAV_ITEMS.filter((n) => n.id !== "settings"),
         { id: "pricing", label: "Pricing", icon: "tag" },
         ...ADMIN_NAV_ITEMS.filter((n) => n.id === "settings"),

@@ -608,7 +608,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       }
 
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        // Founder / super admin login — console is their only home.
+        // Founder / super admin login — same admin console as admins.
         const userProfile: UserProfile = {
           id: "admin-001",
           email: ADMIN_EMAIL,
