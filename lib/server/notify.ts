@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { emailLayout, detailTable, BRAND } from "./emailTemplate";
+import { emailLayout, detailTable, highlightBox, BRAND } from "./emailTemplate";
 
 /**
  * Email notifications — admin event alerts (notifyAdmin) and client-facing
@@ -135,6 +135,53 @@ export async function notifyAdmin(
     console.error("[notify] send failed:", err);
     return false;
   }
+}
+
+const PORTAL_LABELS: Record<string, string> = {
+  admin: "Admin console",
+  super_admin: "Admin console",
+  corporate: "Corporate portal",
+  employee: "Employee portal",
+  user: "Dashboard",
+};
+
+/**
+ * Onboarding/credentials email for accounts provisioned by an admin or API
+ * consumer (the person never chose the password themselves). Sends the
+ * sign-in email, the password that was set for them, and a sign-in button.
+ * Returns true when SMTP accepted the message — callers should surface a
+ * false result so a silent delivery failure is visible.
+ */
+export async function sendAccountCredentials(opts: {
+  to: string;
+  name?: string;
+  password?: string;
+  role?: string;
+}): Promise<boolean> {
+  const loginUrl = `${APP_URL}/login`;
+  const portal = PORTAL_LABELS[opts.role ?? "user"] ?? "Dashboard";
+  const rows: Array<[string, string]> = [
+    ["Sign-in email", opts.to],
+    ["Portal", portal],
+  ];
+  if (opts.password) rows.splice(1, 0, ["Password", opts.password]);
+  return sendUserEmail({
+    to: opts.to,
+    subject: "Your WellSpend account is ready — sign-in details",
+    heading: "Your account is ready",
+    emoji: "🎉",
+    badge: "Welcome",
+    badgeColor: BRAND.green,
+    bodyHtml:
+      `<p>Hi${opts.name ? ` ${opts.name.replace(/[<>&]/g, "")}` : ""}, an account has been ` +
+      `created for you on <strong>WellSpend</strong>. Your email is already confirmed — ` +
+      `you can sign in right away with the details below.</p>` +
+      detailTable(rows) +
+      (opts.password
+        ? highlightBox("Keep these details safe. To change your password later, use “Forgot password” on the sign-in page.")
+        : highlightBox("Forgot your password? Use “Forgot password” on the sign-in page to set a new one.")),
+    cta: { label: "Sign in to WellSpend", url: loginUrl },
+  });
 }
 
 /**

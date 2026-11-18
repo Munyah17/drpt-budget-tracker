@@ -1,5 +1,6 @@
 import { sbGet, sbInsert } from "@/lib/server/supabaseAdmin";
 import { apiError, apiOk, dispatchWebhook, pagination, withApi } from "@/lib/server/api";
+import { sendAccountCredentials } from "@/lib/server/notify";
 
 export const runtime = "nodejs";
 
@@ -75,5 +76,14 @@ export const POST = withApi("write", async (req) => {
     return apiError(502, "upstream_error", "Profile insert failed — auth user exists without a profile");
   }
   void dispatchWebhook("employee.created", profile);
-  return apiOk(profile);
+
+  // Send the employee their sign-in details — delivery result is returned
+  // in the response so API consumers can tell when the email didn't go out.
+  const emailed = await sendAccountCredentials({
+    to: email,
+    name: typeof body?.name === "string" ? body.name : undefined,
+    password,
+    role: "employee",
+  });
+  return apiOk({ ...(profile as Record<string, unknown>), emailed });
 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbInsert, sbPatch, sbDelete } from "@/lib/server/supabaseAdmin";
 import { isAdminRequest } from "@/lib/server/admin";
 import { dispatchWebhook } from "@/lib/server/api";
+import { sendAccountCredentials } from "@/lib/server/notify";
 
 export const runtime = "nodejs";
 
@@ -94,7 +95,19 @@ export async function POST(req: NextRequest) {
           currency: "USD",
           corporate_id: (row as { id?: string }).id,
         });
-        if (!profile) accountError = "profile insert failed — account exists without a profile";
+        if (!profile) {
+          accountError = "profile insert failed — account exists without a profile";
+        } else {
+          // Email the client their portal credentials — awaited so a failed
+          // send is visible instead of silently dropped.
+          const emailed = await sendAccountCredentials({
+            to: email,
+            name: typeof body.contact_name === "string" ? body.contact_name : undefined,
+            password,
+            role: "corporate",
+          });
+          if (!emailed) accountError = "account created but the credentials email could not be sent";
+        }
       }
     }
   }

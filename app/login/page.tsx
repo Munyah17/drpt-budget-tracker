@@ -51,10 +51,17 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
   // Localized display names for the picker; the ISO alpha-2 code is what
   // gets stored on the profile (drives regional pricing at checkout).
   const countryOptions = useMemo(() => {
-    const localized = new Intl.DisplayNames([locale], { type: "region" });
+    // Intl.DisplayNames is missing on some older WebViews — fall back to
+    // the ISO codes rather than crashing the whole login/register page.
+    let localized: Intl.DisplayNames | null = null;
+    try {
+      localized = new Intl.DisplayNames([locale], { type: "region" });
+    } catch {
+      localized = null;
+    }
     return COUNTRIES.map((code) => ({
       code,
-      label: localized.of(code) ?? code,
+      label: localized?.of(code) ?? code,
     })).sort((a, b) => a.label.localeCompare(b.label));
   }, [locale]);
 

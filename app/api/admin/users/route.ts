@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sbDelete, sbGet, sbInsert, sbPatch } from "@/lib/server/supabaseAdmin";
 import { ADMIN_EMAIL, isAdminRequest, isSuperAdminRequest } from "@/lib/server/admin";
 import { dispatchWebhook } from "@/lib/server/api";
+import { sendAccountCredentials } from "@/lib/server/notify";
 
 export const runtime = "nodejs";
 
@@ -150,7 +151,17 @@ export async function POST(req: NextRequest) {
 
   if (role === "employee") void dispatchWebhook("employee.created", profile);
 
-  return NextResponse.json({ ok: true, id: created.id, profile });
+  // Send the person their sign-in details — admin-set passwords are the only
+  // way they can get in, and this is awaited so delivery failures surface
+  // to the admin UI instead of vanishing.
+  const emailed = await sendAccountCredentials({
+    to: email,
+    name: typeof body?.name === "string" ? body.name : undefined,
+    password,
+    role,
+  });
+
+  return NextResponse.json({ ok: true, id: created.id, profile, emailed });
 }
 
 /**
