@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/lib/server/notify";
+import { markProfilePaid } from "@/lib/server/payments";
+import { sbGet } from "@/lib/server/supabaseAdmin";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -109,6 +111,14 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify(base),
         });
       }
+
+      // If the profile was missing but the ledger already has a completed
+      // payment (e.g. an approved direct transfer), restore paid access.
+      const paidRows = await sbGet<{ id: number }>(
+        "payments",
+        `user_id=eq.${encodeURIComponent(uid)}&status=eq.paid&select=id&limit=1`
+      );
+      if (paidRows.length) await markProfilePaid(uid);
 
       // Welcome email — the only channel where we can legally talk about
       // activation (the iOS app must stay silent about payment). Fire and

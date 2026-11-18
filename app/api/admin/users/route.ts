@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sbGet, sbInsert, sbPatch } from "@/lib/server/supabaseAdmin";
+import { sbDelete, sbGet, sbInsert, sbPatch } from "@/lib/server/supabaseAdmin";
 import { ADMIN_EMAIL, isAdminRequest, isSuperAdminRequest } from "@/lib/server/admin";
 import { dispatchWebhook } from "@/lib/server/api";
 
@@ -138,8 +138,17 @@ export async function POST(req: NextRequest) {
   if (!profile && Object.keys(optional).length) {
     profile = await sbInsert("profiles", base);
   }
+  if (!profile) {
+    // Never leave a login-capable auth user without the profile row that
+    // drives role routing and paid access.
+    await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(created.id)}`, {
+      method: "DELETE",
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    }).catch(() => {});
+    return NextResponse.json({ error: "Profile creation failed" }, { status: 502 });
+  }
 
-  if (profile && role === "employee") void dispatchWebhook("employee.created", profile);
+  if (role === "employee") void dispatchWebhook("employee.created", profile);
 
   return NextResponse.json({ ok: true, id: created.id, profile });
 }
@@ -231,5 +240,51 @@ export async function PATCH(req: NextRequest) {
 
   const ok = await sbPatch("profiles", `id=eq.${encodeURIComponent(id)}`, patch);
   if (!ok) return NextResponse.json({ error: "Update failed" }, { status: 502 });
+  return NextResponse.json({ ok: true });
+}
+
+/**
+ * DELETE /api/admin/users { id } — permanently remove an account.
+ * Deletes the Supabase auth user (so the profile cannot be resurrected by a
+ * later login/session restore) and then removes the profiles row. Payment
+ * ledger rows are detached first so FK constraints cannot block deletion.
+ */
+export async function DELETE(req: NextRequest) {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) return NextResponse.json({ error: "Not configured" }, { status: 500 });
+  if (!(await isAdminRequest(req, serviceKey))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json().catch(() => null);
+  const id = typeof body?.id === "string" ? body.id.trim() : "";
+  if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+
+  const rows = await sbGet<{ role?: string }>(
+    "profiles",
+    `id=eq.${encodeURIComponent(id)}&select=role&limit=1`
+  );
+  const role = rows[0]?.role;
+  if ((role === "super_admin" || role === "admin") && !(await callerIsSuperAdmin(req, serviceKey))) {
+    return NextResponse.json({ error: "Super admin required" }, { status: 403 });
+  }
+
+  // Keep the payment ledger but detach it from the account being removed.
+  // Pending direct-transfer requests are effectively rejected by the delete.
+  await sbPatch("payments", `user_id=eq.${encodeURIComponent(id)}&status=eq.pending`, {
+    status: "rejected",
+    user_id: null,
+  });
+  await sbPatch("payments", `user_id=eq.${encodeURIComponent(id)}`, { user_id: null });
+
+  const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+  });
+  if (!authRes.ok && authRes.status !== 404) {
+    return NextResponse.json({ error: "Delete failed" }, { status: 502 });
+  }
+
+  await sbDelete("profiles", `id=eq.${encodeURIComponent(id)}`);
   return NextResponse.json({ ok: true });
 }

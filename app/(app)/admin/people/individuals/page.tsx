@@ -60,6 +60,17 @@ export default function AdminIndividualsPage() {
   const crud = useCrud<Person>([], t("entityName"), ["name", "email", "plan", "expiry", "status"], {
     extraFields: ["password"],
     readonlyFields: ["paymentMethod", "paidOn", "amount", "reference"],
+    onDelete: async (record) => {
+      const id = typeof record.id === "string" ? record.id : "";
+      if (!id) throw new Error("Missing user id");
+      const res = await fetch("/api/admin/users", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+    },
     onCreate: async (v) => {
       await createAdminAccount(user?.email, {
         email: v.email,
@@ -139,6 +150,25 @@ export default function AdminIndividualsPage() {
       await refresh();
     } catch (e) {
       toast(e instanceof Error ? e.message : t("activateFailed"), "x");
+    }
+  }
+
+  async function rejectPending(person: Person) {
+    if (!person.pendingPaymentId) return;
+    const ok = window.confirm(t("confirmReject", { name: person.name }));
+    if (!ok) return;
+    try {
+      const res = await fetch("/api/admin/approvals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
+        body: JSON.stringify({ paymentId: person.pendingPaymentId, action: "reject" }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      toast(t("toastRejected"), "trash-2");
+      await refresh();
+    } catch (e) {
+      toast(e instanceof Error ? e.message : t("rejectFailed"), "x");
     }
   }
 
@@ -231,9 +261,14 @@ export default function AdminIndividualsPage() {
                     <Icon name="user-circle" size={14} style={{ marginRight: 4 }} />{tc("viewAs")}
                   </button>
                   {person.pendingPaymentId ? (
-                    <button className="btn btn-primary" style={{ padding: "4px 10px", fontSize: 12 }} onClick={() => approvePending(person)}>
-                      <Icon name="check-circle" size={14} style={{ marginRight: 4 }} />{t("approve")}
-                    </button>
+                    <>
+                      <button className="btn btn-primary" style={{ padding: "4px 10px", fontSize: 12 }} onClick={() => approvePending(person)}>
+                        <Icon name="check-circle" size={14} style={{ marginRight: 4 }} />{t("approve")}
+                      </button>
+                      <button className="btn btn-ghost" style={{ padding: "4px 10px", fontSize: 12, color: "var(--red)" }} onClick={() => rejectPending(person)}>
+                        <Icon name="x" size={14} style={{ marginRight: 4 }} />{t("reject")}
+                      </button>
+                    </>
                   ) : person.status !== "Active" ? (
                     <button className="btn btn-primary" style={{ padding: "4px 10px", fontSize: 12 }} onClick={() => setPaidOverride(person, true)}>
                       <Icon name="check-circle" size={14} style={{ marginRight: 4 }} />{t("activate")}

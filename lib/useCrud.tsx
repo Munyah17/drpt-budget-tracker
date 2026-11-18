@@ -24,6 +24,10 @@ export interface UseCrudOptions<T> {
    * (e.g. a server-generated id).
    */
   onCreate?: (values: RowRecord) => Promise<Partial<T> | void>;
+  /** Runs before a viewed row is removed — e.g. deleting a real account.
+   *  Throw to abort: the message is toasted, the row stays and the modal
+   *  remains open. */
+  onDelete?: (record: RowRecord, index: number) => Promise<void> | void;
   /** Record keys that are display-only — shown read-only even in edit mode
    *  (e.g. fetched payment details that aren't editable). */
   readonlyFields?: string[];
@@ -79,8 +83,14 @@ export function useCrud<T extends object>(
     setModal(null);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!modal) return;
+    try {
+      await options.onDelete?.(modal.record, modal.index);
+    } catch (err) {
+      toast(err instanceof Error && err.message ? err.message : "Delete failed", "x");
+      return; // keep the modal open so the admin can retry or close
+    }
     setItems((prev) => prev.filter((_, i) => i !== modal.index));
     toast(t("crud_deleted", { label }), "trash-2");
     setModal(null);

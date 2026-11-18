@@ -30,6 +30,7 @@
       "support": "Support"
     },
     "admin": {
+      "dashboard": "Dashboard",
       "overview": "Overview",
       "command": "Command Centre",
       "analytics": "Analytics",
@@ -857,7 +858,7 @@
       "toastRenewing": "Renewing {item}..."
     },
     "adm_home": {
-      "title": "Operations Dashboard",
+      "title": "Dashboard",
       "subtitle": "Platform-wide metrics and system health",
       "adminBadge": "Admin: {name}",
       "statRegisteredUsers": "Registered Users",
@@ -1239,13 +1240,17 @@
       "statusPending": "Pending",
       "statusExpired": "Expired",
       "approve": "Approve",
+      "reject": "Reject",
       "activate": "Activate",
       "deactivate": "Deactivate",
       "toastActivated": "User activated",
       "toastDeactivated": "User deactivated",
+      "toastRejected": "User rejected",
       "activateFailed": "Activation failed",
+      "rejectFailed": "Reject failed",
       "confirmActivate": "Activate {name}? This grants paid access.",
       "confirmDeactivate": "Deactivate {name}? This removes paid access.",
+      "confirmReject": "Reject {name}? This deletes their pending account.",
       "thName": "Name",
       "thEmail": "Email",
       "thPlan": "Plan",

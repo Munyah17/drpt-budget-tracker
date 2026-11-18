@@ -662,11 +662,31 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       }
 
       if (data.user) {
-        const { data: profile } = await supabase
+        let { data: profile } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', data.user.id)
           .single();
+
+        // Older approvals/provisioning failures can leave an auth user with
+        // no profiles row. Heal it once via the service route, then re-read
+        // so role/paid state are correct instead of signing the user out.
+        if (!profile) {
+          await fetch("/api/auth/confirm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: data.user.id,
+              email: data.user.email,
+              name: typeof data.user.user_metadata?.name === "string" ? data.user.user_metadata.name : undefined,
+            }),
+          }).catch(() => null);
+          ({ data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single());
+        }
 
         const userRole: UserRole = profile?.role || 'user';
         const isPaid = paidActive(profile);
@@ -676,7 +696,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
         // Unpaid accounts are temporary — once the grace window lapses with
         // no payment, discard the account instead of letting them in.
-        if (isUnpaidExpired({ isPaid, paidUntil, createdAt, platform })) {
+        if (isUnpaidExpired({ isPaid, paidUntil, createdAt, platform, paidOverride: profile?.paid_override ?? null })) {
           await deleteOwnAccount(data.user.id);
           await supabase.auth.signOut();
           clearStoredUser();
