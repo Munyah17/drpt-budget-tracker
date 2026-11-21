@@ -43,7 +43,7 @@ const env = (k) => process.env[k] ?? fileEnv[k] ?? "";
 const SUPABASE_URL =
   env("NEXT_PUBLIC_SUPABASE_URL") || "https://lboanbhltmblyyefzvzr.supabase.co";
 const SERVICE_KEY = env("SUPABASE_SERVICE_ROLE_KEY");
-const APP_URL = env("NEXT_PUBLIC_APP_URL") || env("APP_URL") || "https://drpt-budget-tracker.vercel.app";
+const APP_URL = env("NEXT_PUBLIC_APP_URL") || env("APP_URL") || "https://wellspend.site";
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");

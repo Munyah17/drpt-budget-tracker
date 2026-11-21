@@ -99,7 +99,7 @@ function SuccessInner() {
     trackEvent("payment", { provider: searchParams.get("provider") }, user);
     setPhase("paid");
     toast(t("confirmedToast"), "check-circle");
-    setTimeout(() => router.push("/dashboard"), 1600);
+    setTimeout(() => router.push(`/confirmed?type=${signup ? "signup" : "payment"}`), 1600);
     return true;
   }
 
@@ -136,7 +136,7 @@ function SuccessInner() {
           trackEvent("payment", { provider: searchParams.get("provider") }, user);
           setPhase("paid");
           toast(t("confirmedToast"), "check-circle");
-          setTimeout(() => router.push("/dashboard"), 1600);
+          setTimeout(() => router.push(`/confirmed?type=${signup ? "signup" : "payment"}`), 1600);
         } else {
           setPhase("pending");
         }
@@ -171,7 +171,7 @@ function SuccessInner() {
         updateUser({ isPaid: true });
         trackEvent("payment", { provider: searchParams.get("provider") }, user);
         setPhase("paid");
-        setTimeout(() => router.push("/dashboard"), 1600);
+        setTimeout(() => router.push(`/confirmed?type=${signup ? "signup" : "payment"}`), 1600);
       } else {
         setPhase("pending");
       }

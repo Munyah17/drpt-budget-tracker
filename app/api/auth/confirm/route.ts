@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/lib/server/notify";
 import { markProfilePaid } from "@/lib/server/payments";
 import { sbGet } from "@/lib/server/supabaseAdmin";
+import { APP_URL } from "@/lib/server/appUrl";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
-
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
 
 /**
  * POST /api/auth/confirm { userId?, email, name? }

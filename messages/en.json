@@ -3377,12 +3377,36 @@
       "fee_municipal": "Municipal & state levies",
       "countryLabel": "Country"
     },
+    "confirmed": {
+      "signup": {
+        "badge": "Account activated",
+        "title": "Welcome to WellSpend",
+        "text": "Your account is created and fully activated. Everything is unlocked and ready for you."
+      },
+      "payment": {
+        "badge": "Payment received",
+        "title": "Payment confirmed",
+        "text": "Thank you. Your subscription is active and every feature is unlocked."
+      },
+      "account": {
+        "badge": "Confirmed",
+        "title": "You are all set",
+        "text": "Your WellSpend account is confirmed and ready to use."
+      },
+      "ctaDashboard": "Go to my dashboard",
+      "ctaSignIn": "Sign in to continue",
+      "ctaHome": "Back to home",
+      "nextTitle": "What to do next",
+      "stepBudget": "Set your monthly budget",
+      "stepTrack": "Record your income and spending",
+      "stepGoal": "Create your first savings goal"
+    },
     "payment_success": {
       "confirmedToast": "Payment confirmed — welcome aboard!",
       "verifyingTitle": "Confirming your payment…",
       "verifyingText": "Hold tight, we''re checking with the payment provider.",
       "paidTitle": "Payment confirmed 🎉",
-      "paidText": "Full access unlocked. Taking you to your dashboard…",
+      "paidText": "Full access unlocked. One moment…",
       "pendingTitle": "Payment still processing",
       "pendingText": "Your provider hasn''t confirmed yet — it can take a minute. Check again below.",
       "errorTitle": "We couldn''t confirm that payment",

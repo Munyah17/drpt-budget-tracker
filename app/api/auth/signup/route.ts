@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendUserEmail, notifyAdmin } from "@/lib/server/notify";
 import { detailTable } from "@/lib/server/emailTemplate";
+import { APP_URL, confirmationUrl } from "@/lib/server/appUrl";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
-
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
 
 /**
  * POST /api/auth/signup
@@ -115,7 +113,7 @@ export async function POST(req: NextRequest) {
         `<p>Your WellSpend account is <strong>fully activated</strong> — ` +
         `sign in with your email and password to get started.</p>` +
         detailTable([["Email", cleanEmail], ["Sign in at", APP_URL]]),
-      cta: { label: "Open WellSpend", url: APP_URL },
+      cta: { label: "Open WellSpend", url: confirmationUrl("signup") },
     }).catch(() => {});
 
     void notifyAdmin("signup_success", {

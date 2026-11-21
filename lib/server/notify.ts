@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { emailLayout, detailTable, highlightBox, BRAND } from "./emailTemplate";
+import { APP_URL } from "./appUrl";
 
 /**
  * Email notifications — admin event alerts (notifyAdmin) and client-facing
@@ -12,7 +13,7 @@ import { emailLayout, detailTable, highlightBox, BRAND } from "./emailTemplate";
  *   SMTP_PASS   mailbox password
  *   NOTIFY_TO   admin recipient (defaults to SMTP_USER)
  *   NOTIFY_FROM optional From: address (defaults to SMTP_USER)
- *   APP_URL     public site URL used in email buttons (defaults to localhost)
+ *   APP_URL     public site URL used in email buttons (defaults to https://wellspend.site)
  */
 
 export type NotifyEvent =
@@ -34,10 +35,6 @@ const EVENT_META: Record<NotifyEvent, { emoji: string; label: string; badge: str
   feedback:        { emoji: "💡", label: "Customer feedback",       badge: "Feedback", color: BRAND.amber },
 };
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ||
-  process.env.APP_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 /** Shared SMTP transport — null when SMTP_* env is not configured. */
 function mailTransport() {

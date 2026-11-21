@@ -4,13 +4,12 @@ import { isAdminRequest } from "@/lib/server/admin";
 import { markProfilePaid } from "@/lib/server/payments";
 import { notifyAdmin, sendUserEmail } from "@/lib/server/notify";
 import { detailTable, highlightBox } from "@/lib/server/emailTemplate";
+import { APP_URL } from "@/lib/server/appUrl";
 
 export const runtime = "nodejs";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
 
 const DIRECT_PROVIDERS = "ecocash,bank";
 

@@ -310,6 +310,47 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .fade-up{ animation:fadeUp .5s cubic-bezier(.2,.8,.2,1) backwards; }
 
 /* ============================================================
+   CONFIRMATION PAGE
+   ============================================================ */
+.confirm-wrap{
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px 16px;
+  background:
+    radial-gradient(900px 480px at 50% -10%, rgba(233,30,99,.16), transparent 70%),
+    radial-gradient(600px 360px at 100% 100%, rgba(26,156,109,.10), transparent 70%);
+}
+.confirm-card{
+  width:100%; max-width:460px; text-align:center; padding:34px 30px 28px;
+  background:var(--card-solid); border:1px solid var(--card-border);
+  border-radius:28px; box-shadow:var(--shadow-lg);
+}
+.confirm-card .confirm-logo{ justify-content:center; margin-bottom:26px; text-decoration:none; }
+.confirm-check{
+  width:84px; height:84px; margin:0 auto 26px; border-radius:50%; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg, var(--green), #35c48f);
+  box-shadow:0 0 0 10px rgba(26,156,109,.12), 0 16px 30px -10px rgba(26,156,109,.6);
+  animation:confirmPop .6s cubic-bezier(.2,1.4,.4,1) .15s backwards;
+}
+@keyframes confirmPop{ from{ opacity:0; transform:scale(.4); } to{ opacity:1; transform:scale(1); } }
+.confirm-card h1{ font-family:var(--font-display); font-size:28px; line-height:1.2; margin:14px 0 8px; color:var(--ink-900); }
+.confirm-text{ margin:0 auto 24px; max-width:340px; font-size:15px; line-height:1.6; color:var(--ink-500); }
+.confirm-actions{ display:flex; flex-direction:column; gap:10px; }
+.confirm-actions .btn{ width:100%; padding:14px 20px; font-size:15px; text-decoration:none; }
+.confirm-next{ margin-top:24px; padding-top:20px; border-top:1px solid var(--card-border); text-align:start; }
+.confirm-next-title{ font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-500); margin-bottom:12px; }
+.confirm-next ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.confirm-next li{ display:flex; align-items:center; gap:12px; font-size:14px; font-weight:600; color:var(--ink-700); }
+.confirm-next-icon{
+  flex:0 0 34px; height:34px; display:flex; align-items:center; justify-content:center;
+  border-radius:11px; background:var(--pink-100); color:var(--rose-600);
+}
+@media (max-width:520px){
+  .confirm-card{ padding:28px 20px 24px; border-radius:24px; }
+  .confirm-card h1{ font-size:24px; }
+}
+@media (prefers-reduced-motion:reduce){ .confirm-check{ animation:none; } }
+
+/* ============================================================
    LOGIN SCREEN
    ============================================================ */
 .login-wrap{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }

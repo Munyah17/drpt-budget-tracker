@@ -48,6 +48,7 @@ export type TrackEventName =
   | "login"
   | "payment"
   | "payment_failed"
+  | "confirmation_view"
   | "import_open"
   | "import_extracted"
   | "import_confirmed"

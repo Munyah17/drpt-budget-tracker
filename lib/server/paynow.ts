@@ -3,11 +3,8 @@ import { applyPayment } from "./payments";
 import { notifyAdmin, sendUserEmail } from "./notify";
 import { detailTable } from "./emailTemplate";
 import { sbGet } from "./supabaseAdmin";
+import { confirmationUrl } from "./appUrl";
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ||
-  process.env.APP_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://drpt-budget-tracker.vercel.app");
 const PAYNOW_POLL_PREFIX = "https://www.paynow.co.zw/";
 
 export function isPaynowPollUrl(url: string): boolean {
@@ -96,7 +93,7 @@ function receiptEmail(
         ["Method", method],
         ["Reference", reference],
       ]),
-    cta: { label: "Open WellSpend", url: APP_URL },
+    cta: { label: "Open WellSpend", url: confirmationUrl("payment") },
   }).catch(() => {});
 }
 

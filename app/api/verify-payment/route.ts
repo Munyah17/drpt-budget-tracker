@@ -9,9 +9,7 @@ import {
   pollPaynow,
   settlePaynowPayment,
 } from "@/lib/server/paynow";
-
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
+import { confirmationUrl } from "@/lib/server/appUrl";
 
 /** Branded receipt email — fire-and-forget, never blocks verification. */
 function receiptEmail(to: string, amount: number | null, currency: string, method: string, reference: string) {
@@ -30,7 +28,7 @@ function receiptEmail(to: string, amount: number | null, currency: string, metho
         ["Method", method],
         ["Reference", reference],
       ]),
-    cta: { label: "Open WellSpend", url: APP_URL },
+    cta: { label: "Open WellSpend", url: confirmationUrl("payment") },
   }).catch(() => {});
 }
 
