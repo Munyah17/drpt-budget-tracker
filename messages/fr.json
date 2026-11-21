@@ -111,6 +111,8 @@
     "overview": "Voici ton aperçu financier",
     "search": "Rechercher des transactions, des factures…",
     "toggleTheme": "Changer de thème",
+    "themeDark": "Sombre",
+    "themeLight": "Clair",
     "profile": "Profil",
     "settings": "Paramètres",
     "exitDemo": "Quitter la démo",

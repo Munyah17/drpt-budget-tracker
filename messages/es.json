@@ -111,6 +111,8 @@
     "overview": "Aquí tienes tu resumen financiero",
     "search": "Buscar transacciones, facturas…",
     "toggleTheme": "Cambiar tema",
+    "themeDark": "Oscuro",
+    "themeLight": "Claro",
     "profile": "Perfil",
     "settings": "Ajustes",
     "exitDemo": "Salir de la Demo",

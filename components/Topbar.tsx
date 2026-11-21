@@ -6,12 +6,13 @@ import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { initials } from "@/lib/format";
 import LanguageSelect from "./LanguageSelect";
+import ThemeSwitch from "./ThemeSwitch";
 import Icon from "./Icon";
 
 export default function Topbar() {
   const router = useRouter();
   const t = useTranslations("Shell");
-  const { sidebarOpen, setSidebarOpen, theme, toggleTheme, toast, user, isDemo, logout } = useAppData();
+  const { sidebarOpen, setSidebarOpen, toast, user, isDemo, logout } = useAppData();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -76,9 +77,7 @@ export default function Topbar() {
           <input placeholder={t("search")} />
         </div>
         <LanguageSelect compact />
-        <button className="icon-btn" data-tip={t("toggleTheme")} onClick={toggleTheme}>
-          <Icon name={theme === "dark" ? "sun" : "moon"} />
-        </button>
+        <ThemeSwitch />
         <div className="avatar-dropdown" style={{ position: "relative" }} ref={dropdownRef}>
           <div 
             className="avatar" 

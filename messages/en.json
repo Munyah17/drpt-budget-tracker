@@ -118,6 +118,8 @@
     "overview": "Here''s your financial overview",
     "search": "Search transactions, bills…",
     "toggleTheme": "Toggle theme",
+    "themeDark": "Dark",
+    "themeLight": "Light",
     "profile": "Profile",
     "settings": "Settings",
     "exitDemo": "Exit Demo",

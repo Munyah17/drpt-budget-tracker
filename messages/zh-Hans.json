@@ -111,6 +111,8 @@
     "overview": "这是您的财务概览",
     "search": "搜索交易、账单…",
     "toggleTheme": "切换主题",
+    "themeDark": "深色",
+    "themeLight": "浅色",
     "profile": "个人资料",
     "settings": "设置",
     "exitDemo": "退出演示",

@@ -9,6 +9,7 @@ import { useAppData } from "@/lib/AppDataContext";
 import { useFreeTier, FREE_TIER_ROUTES } from "@/lib/native";
 import { textDirection } from "@/lib/i18n/config";
 import Icon from "./Icon";
+import LanguageSelect from "./LanguageSelect";
 
 const FREE_IDS = new Set(FREE_TIER_ROUTES.map((r) => r.slice(1)));
 
@@ -80,6 +81,10 @@ export default function Sidebar() {
           <Icon name="x" size={18} />
         </button>
       </div>
+      <label className="sidebar-lang" htmlFor="sidebar-language">
+        <Icon name="globe" />
+        <LanguageSelect id="sidebar-language" compact />
+      </label>
       <nav className="nav-group">
         {navItems.map((n) => {
           const href = (n as { href?: string }).href ?? `${rolePrefix}/${n.id}`;
