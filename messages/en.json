@@ -1155,7 +1155,11 @@
       "ewaApprovalTitle": "Early Pay — WellSpend approval",
       "ewaApprovalSub": "Approve the connected corporate workspace to offer salary advances to its employees.",
       "ewaApproved": "Approved",
-      "ewaPending": "Pending"
+      "ewaPending": "Pending",
+      "generateTrial": "Generate 7-day trial link",
+      "toastTrialSent": "Trial link sent to {name}",
+      "toastTrialCopied": "Trial link copied to clipboard",
+      "toastTrialError": "Failed to generate trial link"
     },
     "adm_orgs_onboarding": {
       "entityName": "Onboarding Item",
@@ -2097,6 +2101,11 @@
       "quickAdd_account": "Account",
       "quickAdd_save": "Save Transaction",
       "quickAdd_toastSaved": "Transaction saved",
+      "TrialBanner": {
+        "trialActive": "🎉 {days} days left in your trial",
+        "expiringSoon": "⚠️ Trial expires in {days} days",
+        "upgrade": "Upgrade Now"
+      },
       "record_create": "Create",
       "record_save": "Save Changes",
       "record_delete": "Delete",
@@ -2936,7 +2945,29 @@
       "fieldPayrollDay": "Payroll Day of Month",
       "fieldCurrency": "Currency",
       "saveChanges": "Save Changes",
-      "toastSaved": "Settings saved"
+      "toastSaved": "Settings saved",
+      "themeColor": "Theme Color",
+      "themeColorDesc": "Choose a color theme for your corporate portal. This only affects your organisation's view, not the personal budgeting app.",
+      "customColor": "Custom Color",
+      "saveTheme": "Save Theme",
+      "resetDefault": "Reset to Default",
+      "saving": "Saving...",
+      "toastError": "Failed to save theme",
+      "toastReset": "Theme reset to default"
+    },
+    "corp_trial": {
+      "validating": "Validating your trial link...",
+      "invalidTitle": "Invalid Trial Link",
+      "invalidLink": "This trial link is invalid or has expired.",
+      "missingParams": "Missing trial parameters.",
+      "validationError": "Failed to validate trial link.",
+      "expiredTitle": "Trial Expired",
+      "expiredMessage": "Your 7-day trial for {company} has expired. Contact us to continue using the Unified HR Solution.",
+      "contactSales": "Contact Sales",
+      "goToLogin": "Go to Login",
+      "trialActivated": "Trial Activated for {company}!",
+      "trialDaysLeft": "You have {days} days left in your trial.",
+      "redirecting": "Redirecting to login..."
     },
     "corp_staff_loans": {
       "title": "Staff Loans & Advances",

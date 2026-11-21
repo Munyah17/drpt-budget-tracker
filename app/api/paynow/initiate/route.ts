@@ -81,8 +81,10 @@ export async function POST(req: NextRequest) {
   const status = paynowParam(params, "status").toLowerCase();
 
   if (!res.ok || status !== "ok") {
+    // Log the full error server-side but return a generic message to the client
+    console.error("Paynow initiate error:", paynowParam(params, "error") || `Paynow initiate failed (${status || res.status})`);
     return NextResponse.json(
-      { error: paynowParam(params, "error") || `Paynow initiate failed (${status || res.status})` },
+      { error: "Payment could not be initiated. Please try again or contact support." },
       { status: 502 }
     );
   }

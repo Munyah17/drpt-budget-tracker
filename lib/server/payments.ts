@@ -47,6 +47,29 @@ export async function markProfilePaid(userId: string): Promise<boolean> {
   }
 }
 
+/**
+ * Resolve the profile id for a paid Stripe Checkout Session.
+ * Order: client_reference_id → session metadata.user_id → payer-email lookup.
+ * The email fallback covers pay-first signup, where no account existed at
+ * checkout time so no reference id was set; the account created after payment
+ * carries the same email. The caller-supplied uid is never trusted — identity
+ * always comes from the Stripe session itself.
+ */
+export async function stripeSessionUserId(session: Record<string, unknown>): Promise<string> {
+  const ref = (session.client_reference_id as string) ?? "";
+  if (ref) return ref;
+  const meta = (session.metadata as Record<string, string> | undefined) ?? {};
+  if (meta.user_id) return meta.user_id;
+  const customer = session.customer_details as Record<string, string> | undefined;
+  const email = String(customer?.email ?? session.customer_email ?? "").trim().toLowerCase();
+  if (!email) return "";
+  const rows = await sbGet<{ id: string }>(
+    "profiles",
+    `email=eq.${encodeURIComponent(email)}&select=id&limit=1`
+  );
+  return rows[0]?.id ?? "";
+}
+
 export interface PaymentRecord {
   userId?: string;
   userEmail?: string;

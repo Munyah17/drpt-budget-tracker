@@ -67,6 +67,18 @@ interface AppDataContextValue {
   syncIntervalMin: number;
   setSyncIntervalMin: (m: number) => void;
 
+  /** Corporate org settings (theme color, trial status) — only for corporate role */
+  corporateSettings: {
+    themeColor: string | null;
+    trialActive: boolean;
+    trialDaysLeft: number;
+    plan: string;
+    seats: number;
+    status: string;
+  } | null;
+  /** Update corporate theme color */
+  updateCorporateTheme: (color: string) => Promise<boolean>;
+
   accounts: Account[];
   addAccount: (account: Account) => void;
   updateUser: (patch: Partial<UserProfile>) => void;
@@ -175,6 +187,14 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   const [syncIntervalMin, setSyncIntervalMinState] = useState(15);
+  const [corporateSettings, setCorporateSettings] = useState<{
+    themeColor: string | null;
+    trialActive: boolean;
+    trialDaysLeft: number;
+    plan: string;
+    seats: number;
+    status: string;
+  } | null>(null);
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS);
   const [income, setIncome] = useState<IncomeEntry[]>(INITIAL_INCOME);
   const [expenses, setExpenses] = useState<ExpenseEntry[]>(INITIAL_EXPENSES);
@@ -288,6 +308,79 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     };
     checkSession();
   }, []);
+
+  // Fetch corporate settings when user is corporate role
+  useEffect(() => {
+    if (!user || user.role !== "corporate") {
+      setCorporateSettings(null);
+      return;
+    }
+
+    const fetchCorporateSettings = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        const headers: Record<string, string> = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+        if (user.email === "hr@acme.com") headers["x-admin-email"] = "admin@drpatie.com";
+
+        const res = await fetch(`/api/corporate/settings?uid=${encodeURIComponent(user.id)}`, { headers });
+        if (res.ok) {
+          const data = await res.json();
+          setCorporateSettings({
+            themeColor: data.theme_color ?? null,
+            trialActive: data.trial_active ?? false,
+            trialDaysLeft: data.trial_days_left ?? 0,
+            plan: data.plan ?? "Growth",
+            seats: data.seats ?? 25,
+            status: data.status ?? "Onboarding",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch corporate settings:", err);
+      }
+    };
+
+    fetchCorporateSettings();
+  }, [user]);
+
+  // Apply corporate theme color via CSS variables
+  useEffect(() => {
+    if (!corporateSettings?.themeColor) {
+      // Reset to default rose theme
+      document.documentElement.style.removeProperty("--rose-600");
+      document.documentElement.style.removeProperty("--rose-500");
+      document.documentElement.style.removeProperty("--rose-400");
+      document.documentElement.style.removeProperty("--rose-300");
+      document.documentElement.style.removeProperty("--rose-200");
+      document.documentElement.style.removeProperty("--rose-100");
+      document.documentElement.style.removeProperty("--rose-50");
+      document.documentElement.style.removeProperty("--pink-100");
+      document.documentElement.style.removeProperty("--pink-50");
+      return;
+    }
+
+    // Convert hex to RGB for CSS variables
+    const hex = corporateSettings.themeColor.replace("#", "");
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    // Generate shade variations (simplified - just use the base color for all shades)
+    const color = `rgb(${r}, ${g}, ${b})`;
+    const colorLight = `rgb(${Math.min(r + 40, 255)}, ${Math.min(g + 40, 255)}, ${Math.min(b + 40, 255)})`;
+    const colorDark = `rgb(${Math.max(r - 40, 0)}, ${Math.max(g - 40, 0)}, ${Math.max(b - 40, 0)})`;
+
+    document.documentElement.style.setProperty("--rose-600", color);
+    document.documentElement.style.setProperty("--rose-500", color);
+    document.documentElement.style.setProperty("--rose-400", colorLight);
+    document.documentElement.style.setProperty("--rose-300", colorLight);
+    document.documentElement.style.setProperty("--rose-200", `rgba(${r}, ${g}, ${b}, 0.2)`);
+    document.documentElement.style.setProperty("--rose-100", `rgba(${r}, ${g}, ${b}, 0.1)`);
+    document.documentElement.style.setProperty("--rose-50", `rgba(${r}, ${g}, ${b}, 0.05)`);
+    document.documentElement.style.setProperty("--pink-100", `rgba(${r}, ${g}, ${b}, 0.1)`);
+    document.documentElement.style.setProperty("--pink-50", `rgba(${r}, ${g}, ${b}, 0.05)`);
+  }, [corporateSettings?.themeColor]);
 
   // DB-truth sync: once booted, pull is_paid/role straight from the profiles
   // table (service-role endpoint) so a locally tampered drpatie-user can never
@@ -427,6 +520,20 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
+
+  // No explicit choice saved → mirror the device's light/dark preference.
+  // toggleTheme writes drpatie-theme, which always wins over the OS setting.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      const saved = localStorage.getItem("drpatie-theme");
+      if (saved === "dark" || saved === "light") return;
+      setTheme(mq.matches ? "dark" : "light");
+    };
+    mq.addEventListener("change", apply);
+    apply();
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   // Keep module-level active currency in sync for the shorthand formatters
   useEffect(() => {
@@ -772,6 +879,35 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     tokenRef.current = null;
   }, [isDemo]);
 
+  const updateCorporateTheme = useCallback(async (color: string): Promise<boolean> => {
+    if (!user || user.role !== "corporate") return false;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      if (user.email === "hr@acme.com") headers["x-admin-email"] = "admin@drpatie.com";
+
+      const res = await fetch("/api/corporate/settings", {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify({ uid: user.id, theme_color: color }),
+      });
+
+      if (res.ok) {
+        setCorporateSettings((prev) => prev ? { ...prev, themeColor: color || null } : null);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Failed to update corporate theme:", err);
+      return false;
+    }
+  }, [user]);
+
   const value: AppDataContextValue = {
     isAuthenticated,
     authReady,
@@ -793,6 +929,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     fmt,
     syncIntervalMin,
     setSyncIntervalMin,
+    corporateSettings,
+    updateCorporateTheme,
     accounts,
     addAccount,
     updateUser,

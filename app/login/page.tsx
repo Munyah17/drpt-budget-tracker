@@ -228,7 +228,7 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
                     required
                   />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div className="field-grid-2">
                   <div className="field">
                     <label htmlFor="gender">{t("gender")}</label>
                     <select

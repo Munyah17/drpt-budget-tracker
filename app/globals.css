@@ -372,9 +372,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* ============================================================
    LOGIN SCREEN
    ============================================================ */
-.login-wrap{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+.login-wrap{ min-height:100vh; min-height:100dvh; display:flex; justify-content:center; align-items:flex-start; padding:24px; }
 .login-card{
-  width:100%; max-width:740px; display:grid; grid-template-columns:1fr 1fr;
+  margin:auto; width:100%; max-width:740px; display:grid; grid-template-columns:1fr 1fr;
   background:var(--card-solid); border-radius:28px; overflow:hidden; box-shadow:var(--shadow-lg);
   border:1px solid var(--card-border);
 }
@@ -441,11 +441,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .login-footer{ text-align:center; margin-top:22px; font-size:13px; color:var(--ink-500); }
 .login-footer a{ color:var(--rose-600); font-weight:700; }
 .login-visual-mobile{ display:none; }
+.field-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 @media (max-width:760px){
+  .login-wrap{ padding:12px; }
   .login-card{ grid-template-columns:1fr; max-width:460px; }
   .login-visual{ display:none; }
   .login-visual-mobile{
-    display:block; margin:-34px -22px 22px; padding:30px 22px 34px;
+    display:block; margin:0 -22px 22px; padding:28px 22px 32px;
     background:linear-gradient(160deg, var(--rose-600), var(--rose-400) 65%, var(--pink-300));
     color:#fff; position:relative; overflow:hidden;
   }
@@ -454,7 +456,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
   .login-visual-mobile h3{ font-family:var(--font-display); font-size:19px; margin:0 0 4px; position:relative; }
   .login-visual-mobile p{ margin:0; font-size:12.5px; opacity:.88; position:relative; }
-  .login-form{ padding:34px 22px; }
+  .login-form{ padding:30px 20px; }
+  .field input, .field select, .field textarea{ font-size:16px; }
+}
+@media (max-width:420px){
+  .field-grid-2{ grid-template-columns:1fr; }
 }
 
 /* ============================================================

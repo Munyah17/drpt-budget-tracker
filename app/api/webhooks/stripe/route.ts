@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { applyPayment } from "@/lib/server/payments";
+import { applyPayment, stripeSessionUserId } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
 import { sbGet, sbPatch, sbUpsert } from "@/lib/server/supabaseAdmin";
 
@@ -71,10 +71,12 @@ export async function POST(req: NextRequest) {
   ) {
     const session = event.data?.object ?? {};
     const meta = (session.metadata as Record<string, string> | undefined) ?? {};
-    const uid =
-      (session.client_reference_id as string) ?? meta.user_id ?? "";
     const paidStatus = session.payment_status as string | undefined;
     const paid = paidStatus === "paid" || event.type === "checkout.session.async_payment_succeeded";
+    // Identity comes from the session itself (reference id → metadata → payer
+    // email for pay-first signup); the email fallback covers accounts created
+    // after checkout. Only resolve for paid sessions to avoid needless lookups.
+    const uid = paid ? await stripeSessionUserId(session) : "";
 
     // Per-bank unlock (free-tier users) — records the entitlement WITHOUT
     // marking the whole profile paid.

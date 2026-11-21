@@ -79,4 +79,11 @@ export interface UserProfile {
   organisation?: string;
   /** ISO timestamp — when the account was created (drives the unpaid grace period) */
   createdAt?: string;
+  /** Corporate org ID for corporate-role users */
+  corporateId?: string;
+  /** Corporate org theme color (hex) — overrides default rose/pink theme */
+  themeColor?: string;
+  /** Corporate trial status */
+  trialActive?: boolean;
+  trialDaysLeft?: number;
 }

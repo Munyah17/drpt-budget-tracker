@@ -103,7 +103,9 @@ export async function POST(req: NextRequest) {
           // is impossible without the id; surface a clear error instead.
           return NextResponse.json({ error: "An account with this email already exists — please log in to pay" }, { status: 409 });
         }
-        return NextResponse.json({ error: msg }, { status: 502 });
+        // Log the full error server-side but return a generic message to the client
+        console.error("Direct transfer account creation error:", msg);
+        return NextResponse.json({ error: "Account creation failed. Please try again or contact support." }, { status: 502 });
       }
       userId = created?.id ?? null;
       if (!userId) return NextResponse.json({ error: "Account creation failed" }, { status: 502 });
@@ -148,7 +150,9 @@ export async function POST(req: NextRequest) {
     }).catch(() => {});
 
     return NextResponse.json({ ok: true, pending: true, reference });
-  } catch {
-    return NextResponse.json({ error: "Direct transfer registration failed" }, { status: 500 });
+  } catch (err) {
+    // Log the full error server-side but return a generic message to the client
+    console.error("Direct transfer error:", err instanceof Error ? err.message : "Unknown error");
+    return NextResponse.json({ error: "Direct transfer registration failed. Please try again or contact support." }, { status: 500 });
   }
 }

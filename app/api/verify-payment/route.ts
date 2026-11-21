@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { applyPayment } from "@/lib/server/payments";
+import { applyPayment, stripeSessionUserId } from "@/lib/server/payments";
 import { sendUserEmail } from "@/lib/server/notify";
 import { detailTable } from "@/lib/server/emailTemplate";
 import {
@@ -59,9 +59,11 @@ export async function GET(req: NextRequest) {
       });
       const session = await res.json();
       const paid = res.ok && session.payment_status === "paid";
-      // Bind to the checkout session's own reference — never trust a uid
+      // Bind to the checkout session's own identity — never trust a uid
       // supplied by the caller (one payment must not activate other accounts).
-      const userId = (session.client_reference_id as string) ?? "";
+      // Falls back to the payer email for pay-first signup, where no account
+      // existed at checkout time.
+      const userId = paid && !dry ? await stripeSessionUserId(session) : "";
       if (paid && !dry && userId) {
         const customer = session.customer_details as Record<string, string> | undefined;
         const email = customer?.email ?? (session.customer_email as string) ?? "";
@@ -74,6 +76,22 @@ export async function GET(req: NextRequest) {
           currency: (session.currency as string) ?? "usd",
           reference: sessionId,
         });
+        // Pay-first signup: the subscription was created before the account
+        // existed, so its metadata has no user_id — stamp it now so future
+        // invoice.paid renewal webhooks can attribute the payment.
+        if (!session.client_reference_id && session.subscription) {
+          void fetch(
+            `https://api.stripe.com/v1/subscriptions/${encodeURIComponent(String(session.subscription))}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${secret}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({ "metadata[user_id]": userId, "metadata[email]": email }),
+            }
+          ).catch(() => {});
+        }
         if (email) {
           receiptEmail(email, typeof session.amount_total === "number" ? session.amount_total / 100 : null, (session.currency as string) ?? "usd", "Card", sessionId);
         }
@@ -97,8 +115,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ paid: false, error: "Unknown provider" }, { status: 400 });
   } catch (err) {
+    // Log the full error server-side but return a generic message to the client
+    console.error("Payment verification error:", err instanceof Error ? err.message : "Unknown error");
     return NextResponse.json(
-      { paid: false, error: err instanceof Error ? err.message : "Verification failed" },
+      { paid: false, error: "Payment verification failed. Please try again or contact support." },
       { status: 500 }
     );
   }

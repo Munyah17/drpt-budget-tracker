@@ -45,12 +45,15 @@ export async function POST(req: NextRequest) {
     "line_items[0][price_data][unit_amount]": String(amountCents),
     "line_items[0][price_data][recurring][interval]": "month",
     "line_items[0][price_data][product_data][name]": "WellSpend — Monthly Access",
-    client_reference_id: userId ?? "",
     "subscription_data[metadata][user_id]": userId ?? "",
     "subscription_data[metadata][email]": email ?? "",
     "subscription_data[metadata][country]": region,
     "payment_method_types[0]": "card",
   });
+  // Only include client_reference_id when userId is non-empty — Stripe rejects empty strings
+  if (userId) {
+    body.set("client_reference_id", userId);
+  }
   if (email) body.set("customer_email", email);
 
   const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
@@ -64,8 +67,10 @@ export async function POST(req: NextRequest) {
   const data = await res.json();
 
   if (!res.ok) {
+    // Log the full error server-side but return a generic message to the client
+    console.error("Stripe checkout error:", data?.error?.message ?? "Unknown error");
     return NextResponse.json(
-      { error: data?.error?.message ?? "Stripe checkout failed" },
+      { error: "Payment could not be initiated. Please try again or contact support." },
       { status: 502 }
     );
   }

@@ -62,8 +62,10 @@ export async function POST(req: NextRequest) {
     if (!create.ok) {
       const msg = String(created?.msg ?? created?.message ?? created?.error_description ?? "Signup failed");
       const exists = /already|exists|registered/i.test(msg);
+      // Log the full error server-side but return a generic message to the client
+      console.error("Signup error:", msg);
       return NextResponse.json(
-        { error: exists ? "An account with this email already exists" : msg },
+        { error: exists ? "An account with this email already exists" : "Signup failed. Please try again or contact support." },
         { status: exists ? 409 : 502 }
       );
     }

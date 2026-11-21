@@ -182,6 +182,31 @@ export default function AdminCorporatesPage() {
     navigator.clipboard.writeText(msg).then(() => toast(t("toastCopied"), "link"));
   }
 
+  async function generateTrialLink(o: Corporate) {
+    try {
+      const res = await fetch("/api/admin/corporates/trial", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await adminHeaders(user?.email)) },
+        body: JSON.stringify({ corporate_id: o.id, email: o.contact_email }),
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        toast(t("toastTrialSent", { name: o.name }), "check-circle");
+        // Copy trial link to clipboard
+        if (data.trial_link) {
+          navigator.clipboard.writeText(data.trial_link).then(() => {
+            toast(t("toastTrialCopied"), "link");
+          });
+        }
+      } else {
+        toast(data.error || t("toastTrialError"), "x");
+      }
+    } catch (err) {
+      toast(t("toastTrialError"), "x");
+    }
+  }
+
   const field = (k: keyof typeof f, label: string, opts?: { type?: string; ph?: string; required?: boolean }) => (
     <div className="field" key={k}>
       <label>{label}{opts?.required ? " *" : ""}</label>
@@ -290,6 +315,9 @@ export default function AdminCorporatesPage() {
                   </button>
                   <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => copyInvite(o)} title={t("invite")}>
                     <Icon name="link" size={14} />
+                  </button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12, color: "var(--green)" }} onClick={() => generateTrialLink(o)} title={t("generateTrial")}>
+                    <Icon name="gift" size={14} />
                   </button>
                   {o.status === "Suspended" ? (
                     <button className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 12 }} onClick={() => setStatus(o, "Active")} title={t("activate")}>
