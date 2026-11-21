@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { applyPayment } from "@/lib/server/payments";
+import { applyPayment, profileIdForEmail, recordPayment } from "@/lib/server/payments";
 import { notifyAdmin } from "@/lib/server/notify";
 import { sbGet, sbPatch, sbUpsert } from "@/lib/server/supabaseAdmin";
 
@@ -103,13 +103,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true }, { status: 200 });
     }
 
-    if (uid && paid) {
-      const customer = session.customer_details as Record<string, string> | undefined;
+    const customer = session.customer_details as Record<string, string> | undefined;
+    const sessionEmail =
+      customer?.email ?? (session.customer_email as string) ?? meta.email ?? "";
+
+    if (paid) {
       // applyPayment dedupes on provider+reference — a replayed or duplicated
-      // webhook can't extend paid_until twice for the same session.
-      await applyPayment({
+      // webhook can't extend paid_until twice for the same session. When uid
+      // is empty (pay-first signup checkout) it resolves via the payer email.
+      const applied = await applyPayment({
         userId: uid,
-        userEmail: customer?.email ?? (session.customer_email as string) ?? "",
+        userEmail: sessionEmail,
         provider: "stripe",
         method: "card",
         amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
@@ -117,8 +121,22 @@ export async function POST(req: NextRequest) {
         reference: String(session.id ?? ""),
         meta: { subscription: String(session.subscription ?? "") },
       });
+      if (applied === "failed" && sessionEmail) {
+        // Account not created yet (webhook beat the success page) — record
+        // the paid row keyed by email so /api/auth/signup picks it up.
+        await recordPayment({
+          userEmail: sessionEmail,
+          provider: "stripe",
+          method: "card",
+          amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
+          currency: (session.currency as string) ?? "usd",
+          reference: String(session.id ?? ""),
+          status: "paid",
+          meta: { subscription: String(session.subscription ?? ""), orphan: true },
+        });
+      }
       await notifyAdmin("payment_success", {
-        email: customer?.email ?? (session.customer_email as string) ?? "",
+        email: sessionEmail,
         name: customer?.name ?? "",
         method: "stripe",
         detail: `session ${session.id ?? ""}`,
@@ -154,11 +172,16 @@ export async function POST(req: NextRequest) {
         const sub = await stripeGet(stripeSecret, `/subscriptions/${encodeURIComponent(subId)}`);
         meta = (sub?.metadata as Record<string, string> | undefined) ?? {};
       }
-      const uid = meta.user_id ?? "";
+      // user_id is empty on subscriptions sold before account creation —
+      // resolve through the stored/customer email instead.
+      let uid = meta.user_id ?? "";
+      const invoiceEmail =
+        meta.email ?? (invoice.customer_email as string) ?? "";
+      if (!uid && invoiceEmail) uid = await profileIdForEmail(invoiceEmail);
       if (uid) {
         await applyPayment({
           userId: uid,
-          userEmail: meta.email ?? "",
+          userEmail: invoiceEmail,
           provider: "stripe",
           method: "card",
           amount: typeof invoice.amount_paid === "number" ? invoice.amount_paid / 100 : null,
@@ -167,7 +190,7 @@ export async function POST(req: NextRequest) {
           meta: { subscription: subId, billing_reason: billingReason },
         });
         await notifyAdmin("payment_success", {
-          email: meta.email ?? "",
+          email: invoiceEmail,
           name: "",
           method: "stripe",
           detail: `renewal invoice ${invoice.id ?? ""}`,
@@ -189,7 +212,8 @@ export async function POST(req: NextRequest) {
   if (event.type === "customer.subscription.deleted") {
     const sub = event.data?.object ?? {};
     const meta = (sub.metadata as Record<string, string> | undefined) ?? {};
-    const uid = meta.user_id ?? "";
+    let uid = meta.user_id ?? "";
+    if (!uid && meta.email) uid = await profileIdForEmail(meta.email);
     if (uid) {
       const rows = await sbGet<{ paid_until: string | null }>(
         "profiles",

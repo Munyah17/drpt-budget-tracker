@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendUserEmail, notifyAdmin } from "@/lib/server/notify";
 import { detailTable } from "@/lib/server/emailTemplate";
+import { markProfilePaid } from "@/lib/server/payments";
+import { sbGet, sbPatch } from "@/lib/server/supabaseAdmin";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -98,6 +100,22 @@ export async function POST(req: NextRequest) {
         headers: { ...headers, Prefer: "resolution=merge-duplicates" },
         body: JSON.stringify(base),
       });
+    }
+
+    // A payment may already be on the ledger keyed by email only — the Stripe
+    // webhook can confirm a pay-first signup before this account exists.
+    // Claim those rows and mark the fresh profile paid.
+    const orphanPaid = await sbGet<{ id: number }>(
+      "payments",
+      `user_email=eq.${encodeURIComponent(cleanEmail)}&status=eq.paid&user_id=is.null&select=id`
+    );
+    if (orphanPaid.length) {
+      await markProfilePaid(uid);
+      await sbPatch(
+        "payments",
+        `user_email=eq.${encodeURIComponent(cleanEmail)}&user_id=is.null`,
+        { user_id: uid }
+      );
     }
 
     // Notifications — pure FYI emails, no confirmation links (the account is
