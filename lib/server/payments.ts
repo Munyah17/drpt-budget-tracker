@@ -47,6 +47,20 @@ export async function markProfilePaid(userId: string): Promise<boolean> {
   }
 }
 
+/**
+ * Resolve a profile id from its email — used to bind payments created before
+ * the account exists (pay-first Stripe signups arrive with no user id).
+ */
+export async function profileIdForEmail(email: string): Promise<string> {
+  const clean = String(email ?? "").trim().toLowerCase();
+  if (!clean) return "";
+  const rows = await sbGet<{ id: string }>(
+    "profiles",
+    `email=eq.${encodeURIComponent(clean)}&select=id&limit=1`
+  );
+  return rows[0]?.id ?? "";
+}
+
 export interface PaymentRecord {
   userId?: string;
   userEmail?: string;
@@ -116,6 +130,9 @@ export async function recordPayment(p: PaymentRecord): Promise<boolean> {
  */
 export async function applyPayment(p: PaymentRecord): Promise<"paid" | "duplicate" | "failed"> {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Resolve a missing user id from the payer email — pay-first signups have
+  // no account yet when checkout is created, so nothing else identifies them.
+  if (!p.userId && p.userEmail) p.userId = await profileIdForEmail(p.userEmail);
   if (!serviceKey || !p.userId) return "failed";
 
   if (p.reference) {

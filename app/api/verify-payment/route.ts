@@ -61,12 +61,15 @@ export async function GET(req: NextRequest) {
       });
       const session = await res.json();
       const paid = res.ok && session.payment_status === "paid";
-      // Bind to the checkout session's own reference — never trust a uid
-      // supplied by the caller (one payment must not activate other accounts).
+      // Bind to the checkout session's own reference/email — never trust a
+      // uid supplied by the caller (one payment must not activate other
+      // accounts). Signup checkouts carry no reference id, so applyPayment
+      // resolves the profile through the session's customer/metadata email.
       const userId = (session.client_reference_id as string) ?? "";
-      if (paid && !dry && userId) {
+      if (paid && !dry) {
         const customer = session.customer_details as Record<string, string> | undefined;
-        const email = customer?.email ?? (session.customer_email as string) ?? "";
+        const meta = (session.metadata as Record<string, string> | undefined) ?? {};
+        const email = customer?.email ?? (session.customer_email as string) ?? meta.email ?? "";
         await applyPayment({
           userId,
           userEmail: email,

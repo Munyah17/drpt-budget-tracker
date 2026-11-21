@@ -46,6 +46,11 @@ export async function POST(req: NextRequest) {
     "line_items[0][price_data][recurring][interval]": "month",
     "line_items[0][price_data][product_data][name]": "WellSpend — Monthly Access",
     client_reference_id: userId ?? "",
+    // Session-level metadata too — the webhook reads session.metadata on
+    // checkout.session.completed; subscription_data only reaches invoices.
+    "metadata[user_id]": userId ?? "",
+    "metadata[email]": email ?? "",
+    "metadata[country]": region,
     "subscription_data[metadata][user_id]": userId ?? "",
     "subscription_data[metadata][email]": email ?? "",
     "subscription_data[metadata][country]": region,

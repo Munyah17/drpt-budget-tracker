@@ -80,6 +80,17 @@ function SuccessInner() {
     }).catch(() => null);
     const data = res ? await res.json().catch(() => ({})) : {};
     if (!res?.ok || !data.userId) {
+      if (res?.status === 409) {
+        // Account already exists — a retry after a partial run (e.g. the page
+        // reloaded after the account was created). Recover its id and finish.
+        const conf = await fetch("/api/auth/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: signup.email }),
+        }).catch(() => null);
+        const confData = conf ? await conf.json().catch(() => ({})) : {};
+        if (confData?.uid) return confData.uid as string;
+      }
       setErrorMsg(data?.error || t("signupFailed"));
       return null;
     }
