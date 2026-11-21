@@ -5,7 +5,9 @@ import { detailTable } from "./emailTemplate";
 import { sbGet } from "./supabaseAdmin";
 
 const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://drpt-budget-tracker.vercel.app";
+  process.env.NEXT_PUBLIC_APP_URL ||
+  process.env.APP_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://drpt-budget-tracker.vercel.app");
 const PAYNOW_POLL_PREFIX = "https://www.paynow.co.zw/";
 
 export function isPaynowPollUrl(url: string): boolean {

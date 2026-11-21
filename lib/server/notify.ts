@@ -34,7 +34,10 @@ const EVENT_META: Record<NotifyEvent, { emoji: string; label: string; badge: str
   feedback:        { emoji: "💡", label: "Customer feedback",       badge: "Feedback", color: BRAND.amber },
 };
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000";
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  process.env.APP_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 /** Shared SMTP transport — null when SMTP_* env is not configured. */
 function mailTransport() {
