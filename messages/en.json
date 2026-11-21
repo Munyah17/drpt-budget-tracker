@@ -3373,7 +3373,8 @@
       "fee_telecom": "Telecoms regulatory levy",
       "regionPrompt": "Select your country to see prices and payment methods",
       "countryPh": "Select country",
-      "methodStripeAlt": "Pay securely with Stripe — Visa, Mastercard, Amex and more",
+      "methodStripeAlt": "Pay securely with Stripe — Visa, Mastercard, Amex, Apple Pay and Google Pay",
+      "methodPaynowAlt": "Pay with Paynow — Visa, Mastercard, ZIPIT, InnBucks, EcoCash and O’mari",
       "fee_municipal": "Municipal & state levies",
       "countryLabel": "Country"
     },

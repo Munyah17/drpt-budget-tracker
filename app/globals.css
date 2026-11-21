@@ -310,6 +310,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .fade-up{ animation:fadeUp .5s cubic-bezier(.2,.8,.2,1) backwards; }
 
 /* ============================================================
+   CHECKOUT — provider banner buttons
+   ============================================================ */
+.payment-banner{
+  position:relative; display:block; width:100%; padding:14px 16px 10px; cursor:pointer;
+  background:#fff; border:1.5px solid var(--card-border); border-radius:14px; font-family:inherit;
+  transition:border-color .15s, box-shadow .15s, transform .1s;
+}
+.payment-banner:hover{ border-color:var(--rose-400); }
+.payment-banner:active{ transform:scale(.99); }
+.payment-banner.selected{ border-color:var(--rose-500); box-shadow:0 0 0 3px rgba(233,30,99,.14); }
+.payment-banner img{ display:block; width:100%; height:auto; }
+.payment-banner-sub{ display:block; margin-top:8px; font-size:12.5px; font-weight:600; color:#6b6272; text-align:center; }
+.payment-banner-check{
+  position:absolute; top:-8px; inset-inline-end:-8px; width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; color:#fff; background:var(--rose-500);
+  box-shadow:0 0 0 2px var(--card-solid);
+}
+
+/* ============================================================
    CONFIRMATION PAGE
    ============================================================ */
 .confirm-wrap{

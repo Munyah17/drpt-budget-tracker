@@ -238,6 +238,7 @@ function PaymentInner() {
         background: selectedMethod === id ? "var(--pink-100)" : "var(--card-solid)",
         cursor: "pointer",
         width: "100%",
+        color: "var(--ink-900)",
         textAlign: "left",
         transition: "border-color .15s, background .15s, transform .1s",
         fontFamily: "inherit",
@@ -269,6 +270,25 @@ function PaymentInner() {
       >
         {selectedMethod === id && <Icon name="check" size={12} style={{ color: "#fff" }} />}
       </div>
+    </button>
+  );
+
+  /** Provider banner (Paynow / Stripe) used as the method button. */
+  const bannerBtn = (id: PaymentMethod, src: string, alt: string, sub: string) => (
+    <button
+      type="button"
+      className={`payment-method payment-banner ${selectedMethod === id ? "selected" : ""}`}
+      aria-pressed={selectedMethod === id}
+      onClick={() => setSelectedMethod(id)}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} />
+      <span className="payment-banner-sub">{sub}</span>
+      {selectedMethod === id && (
+        <span className="payment-banner-check">
+          <Icon name="check" size={12} />
+        </span>
+      )}
     </button>
   );
 
@@ -371,31 +391,10 @@ function PaymentInner() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-          {isZimbabwe && methodBtn("paynow", "smartphone", t("methodPaynow"), t("paynowSub", { price: labelFor("paynow") }))}
+          {isZimbabwe && bannerBtn("paynow", "/paynow-banner.png", t("methodPaynowAlt"), t("paynowSub", { price: labelFor("paynow") }))}
           {isZimbabwe && methodBtn("ecocash", "banknote", t("methodEcocash"), t("ecocashSub", { price: labelFor("ecocash") }))}
           {isZimbabwe && methodBtn("bank", "landmark", t("methodBank"), t("bankSub", { price: labelFor("bank") }))}
-          <button
-            className={`payment-method ${selectedMethod === "stripe" ? "selected" : ""}`}
-            onClick={() => setSelectedMethod("stripe")}
-            style={{
-              display: "block",
-              padding: selectedMethod === "stripe" ? 3 : 0,
-              border: `1.5px solid ${selectedMethod === "stripe" ? "var(--rose-500)" : "var(--card-border)"}`,
-              borderRadius: 14,
-              background: "var(--card-solid)",
-              cursor: "pointer",
-              width: "100%",
-              transition: "border-color .15s",
-              fontFamily: "inherit",
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/stripe-banner.png"
-              alt={t("methodStripeAlt")}
-              style={{ display: "block", width: "100%", borderRadius: 10 }}
-            />
-          </button>
+          {bannerBtn("stripe", "/stripe-banner.png", t("methodStripeAlt"), t("stripeSub", { price: labelFor("stripe") }))}
         </div>
 
         {/* Itemised total — $1 principal plus regional levies and processing */}
