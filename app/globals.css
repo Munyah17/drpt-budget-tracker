@@ -659,7 +659,6 @@ tbody tr:hover{ background:var(--pink-100); }
   .topbar-actions{ width:auto; margin-inline-start:auto; }
   html[dir="rtl"] .sidebar{ transform:translateX(100%); }
   html[dir="rtl"] .sidebar.open{ transform:translateX(0); }
-  .topbar-actions .icon-btn{ display:none; }
   .grid-4, .grid-3, .grid-2{ grid-template-columns:1fr !important; }
   .card-head{ flex-direction:column; align-items:flex-start; gap:12px; }
   .card-head button{ width:100%; }
