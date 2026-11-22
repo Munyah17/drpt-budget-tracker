@@ -196,7 +196,7 @@ export function LoginForm({ forceSignup = false }: { forceSignup?: boolean } = {
           <p>{t("visualText")}</p>
         </div>
         <div className="login-form">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px 12px", marginBottom: 12 }}>
             <Link href="/" className="login-logo" style={{ marginBottom: 0, textDecoration: "none" }}>
               WellSpend <span style={{ color: "var(--rose-500)" }}>❤</span>
             </Link>

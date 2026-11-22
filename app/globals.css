@@ -415,8 +415,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .login-logo{ display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-weight:600; font-size:22px; color:var(--rose-600); margin-bottom:6px; }
 .login-form h2{ font-size:14.5px; color:var(--ink-500); font-weight:500; margin:0 0 20px; }
 .login-form .field{ margin-bottom:12px; }
-.login-form .field-row{ margin:-4px 0 14px; }
+.login-form .field-row{ margin:-4px 0 14px; flex-wrap:wrap; row-gap:6px; }
 .login-form .login-footer{ margin-top:16px; }
+.login-form .btn-primary{ white-space:normal; line-height:1.3; }
 .field{ margin-bottom:18px; }
 .field label{ display:block; font-size:12.5px; font-weight:700; color:var(--ink-700); margin-bottom:7px; }
 .field input, .field select, .field textarea{
