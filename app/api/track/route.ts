@@ -12,6 +12,22 @@ const ALLOWED_EVENTS = new Set([
   "login",
   "payment",
   "payment_failed",
+  // Product signals the client already emits — kept so the growth agent
+  // and analytics see intent beyond the core funnel.
+  "corp_interest",
+  "confirmation_view",
+  "import_open",
+  "import_extracted",
+  "import_confirmed",
+  "import_failed",
+  "bank_connect_start",
+  "bank_paywall",
+  "bank_unlock_paid",
+  "bank_connected",
+  "bank_sync",
+  "bank_txn_imported",
+  "bank_txn_linked",
+  "bank_txn_dismissed",
 ]);
 
 const clip = (v: unknown, max = 200): string | null =>

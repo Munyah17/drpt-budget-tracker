@@ -11,6 +11,10 @@
     {
       "path": "/api/cleanup/unpaid",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/growth/run",
+      "schedule": "0 8 * * *"
     }
   ]
 }

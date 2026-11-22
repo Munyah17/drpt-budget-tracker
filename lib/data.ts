@@ -65,6 +65,7 @@ export const NAV_ITEMS = [
 export const ADMIN_NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: "layout-dashboard", href: "/admin" },
   { id: "analytics", label: "Analytics", icon: "bar-chart-3" },
+  { id: "growth", label: "Growth Agent", icon: "zap" },
   { 
     id: "organisations", 
     label: "Organisations", 
