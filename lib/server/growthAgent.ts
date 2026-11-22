@@ -14,6 +14,7 @@ import { sendMail } from "./notify";
 import { emailLayout, detailTable, highlightBox, BRAND } from "./emailTemplate";
 import { APP_URL } from "./appUrl";
 import { paidActive } from "../paid";
+import { devinConfigured, devinCreateSession, devinGetSession } from "./devinResearch";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "openai/gpt-oss-120b";
@@ -55,6 +56,9 @@ interface OutreachRow {
   created_at: string;
 }
 
+/** Pipeline segmentation — who the lead is to the business. */
+export type LeadTier = "customer" | "warm" | "dormant" | "anonymous";
+
 export interface ScoredLead {
   key: string;
   email: string | null;
@@ -63,6 +67,7 @@ export interface ScoredLead {
   signals: string[];
   paid: boolean;
   role: string | null;
+  tier: LeadTier;
   /** No email on file — can be chased by the digest but not auto-emailed. */
   anonymous: boolean;
   lastSeen: string;
@@ -76,6 +81,10 @@ export interface AgentState {
   last_digest_at: string | null;
   sent_today: number;
   sent_today_date: string | null;
+  research_session_id?: string | null;
+  research_launched_at?: string | null;
+  research_status?: string | null;
+  research_last_digest_at?: string | null;
 }
 
 /* ------------------------------------------------------------------ */
@@ -254,10 +263,51 @@ export async function collectLeads(): Promise<{ leads: ScoredLead[]; funnel24h: 
     byKey.set(o.lead_key, cur);
   }
 
+  // Dormant sweep — registered users whose account exists but who have no
+  // funnel events in the window: they signed up once, then went quiet.
+  // The win-back segment — listed for the digest, kept under the send
+  // threshold on purpose (a cold "we miss you" needs human judgement).
+  const dormantProfiles = await sbGet<ProfileRow>(
+    "profiles",
+    `select=id,email,name,role,is_paid,paid_until,paid_override,created_at` +
+      `&role=eq.user&created_at=gte.${encodeURIComponent(new Date(Date.now() - 120 * DAY).toISOString())}` +
+      `&order=created_at.desc&limit=500`
+  );
+  const bucketUserIds = new Set(
+    [...buckets.values()].map((b) => b.userId).filter((x): x is string => !!x)
+  );
+  const dormantKeys = new Set<string>();
+  for (const p of dormantProfiles) {
+    if (bucketUserIds.has(p.id) || paidActive(p)) continue;
+    const key = `u:${p.id}`;
+    dormantKeys.add(key);
+    buckets.set(key, {
+      key,
+      email: p.email?.toLowerCase() ?? null,
+      name: p.name ?? null,
+      userId: p.id,
+      visitorId: null,
+      score: 45,
+      signals: ["Signed up but never came back"],
+      seen: new Set(),
+      viewCount: 0,
+      lastSeen: p.created_at ?? new Date(0).toISOString(),
+      profile: p,
+    });
+  }
+
   const leads: ScoredLead[] = [...buckets.values()].map((b) => {
     const paid = b.profile ? paidActive(b.profile) : false;
     const role = b.profile?.role ?? null;
     const hist = byKey.get(b.key);
+    const anonymous = !b.email;
+    const tier: LeadTier = paid
+      ? "customer"
+      : anonymous
+        ? "anonymous"
+        : dormantKeys.has(b.key)
+          ? "dormant"
+          : "warm";
     return {
       key: b.key,
       email: b.email,
@@ -266,7 +316,8 @@ export async function collectLeads(): Promise<{ leads: ScoredLead[]; funnel24h: 
       signals: [...new Set(b.signals)].slice(0, 6),
       paid,
       role,
-      anonymous: !b.email,
+      tier,
+      anonymous,
       lastSeen: b.lastSeen,
       touches: hist?.touches ?? 0,
       lastContactAt: hist?.last ?? null,
@@ -364,13 +415,196 @@ function templateSalesCopy(l: ScoredLead): { subject: string; body: string } {
 }
 
 /* ------------------------------------------------------------------ */
+/* Devin Cloud market research                                         */
+/* ------------------------------------------------------------------ */
+
+const RESEARCH_INTERVAL = 7 * DAY;
+
+const RESEARCH_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  properties: {
+    summary: { type: "string", description: "2-3 sentence market summary" },
+    threads: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          platform: { type: "string" },
+          title: { type: "string" },
+          url: { type: "string" },
+          pain_point: { type: "string" },
+          relevance: { type: "string" },
+          draft_reply: { type: "string" },
+        },
+        required: ["platform", "title", "url", "pain_point"],
+      },
+    },
+    communities: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          url: { type: "string" },
+          why: { type: "string" },
+        },
+        required: ["name", "why"],
+      },
+    },
+    competitor_insights: { type: "array", items: { type: "string" } },
+    content_ideas: { type: "array", items: { type: "string" } },
+  },
+  required: ["summary", "threads"],
+};
+
+const RESEARCH_PROMPT = `You are a market researcher for WellSpend (wellspend.site), a personal budget tracker web app with a low-cost monthly subscription, aimed at ordinary consumers.
+
+Research the PUBLIC internet for the last 7 days and find prospective customers — people who have NOT necessarily heard of WellSpend yet:
+
+1. THREADS: public posts/comments where people ask for budgeting help, recommend budgeting apps, complain about existing apps (Mint shutdown, YNAB cost, EveryDollar, spreadsheets), or describe money-management pain. Check Reddit (r/personalfinance, r/budgeting, r/povertyfinance, r/finanzen, country subs), X/Twitter, public Facebook group posts, TikTok/YouTube comments, app store reviews. For each: platform, title, URL, the pain point, why WellSpend is relevant, and a DRAFT reply the founder could post (genuinely helpful, no spam, no links unless the community allows them).
+2. COMMUNITIES: budgeting/money forums, subreddits, Facebook groups, Discord servers worth joining — name, URL, why.
+3. COMPETITOR INSIGHTS: what users complain about in rival budgeting apps this week.
+4. CONTENT IDEAS: 3 short-form content ideas (TikTok/Reels/Shorts) that would attract budget-conscious users.
+
+Research only — do NOT post, comment, message, or sign up anywhere. Update the structured output as you find things.`;
+
+/**
+ * Weekly rhythm inside the daily run: launch a Devin session when none is
+ * active and the last launch is >7 days old; collect + email findings when
+ * a session finishes. Devin sessions take minutes–hours so this is
+ * deliberately two-phase across runs.
+ */
+async function researchTick(
+  state: AgentState | null,
+  now: Date
+): Promise<{ note?: string; findingsEmailed?: boolean }> {
+  if (!devinConfigured()) return {};
+
+  const sid = state?.research_session_id ?? null;
+  if (sid) {
+    const s = await devinGetSession(sid);
+    if (!s) return { note: "research_check_failed" };
+    if (!["finished", "blocked", "expired", "suspend"].includes(s.status_enum)) {
+      return { note: `research_${s.status_enum}` };
+    }
+    if (s.status_enum === "finished" && s.structured_output) {
+      const to = process.env.NOTIFY_TO || process.env.SMTP_USER || "";
+      if (to) {
+        const f = s.structured_output;
+        const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
+        const threads = arr(f.threads).slice(0, 12);
+        const communities = arr(f.communities).slice(0, 8);
+        const insights = arr(f.competitor_insights).slice(0, 8);
+        const ideas = arr(f.content_ideas).slice(0, 5);
+
+        const escH = (v: unknown) => esc(String(v ?? ""));
+        const link = (u: unknown, label: unknown) =>
+          typeof u === "string" && u.startsWith("http")
+            ? `<a href="${escH(u)}" style="color:${BRAND.rose}">${escH(label || u)}</a>`
+            : escH(label || u);
+
+        const threadRows = threads.length
+          ? threads
+              .map((t) => {
+                const o = t as Record<string, unknown>;
+                return `<tr>
+                  <td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12.5px">${escH(o.platform)}</td>
+                  <td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12.5px">${link(o.url, o.title)}<br><span style="color:${BRAND.inkFaint};font-size:11.5px">${escH(o.pain_point)}</span></td>
+                  <td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12px;color:${BRAND.inkSoft}">${escH(o.draft_reply ?? "—")}</td>
+                </tr>`;
+              })
+              .join("")
+          : `<tr><td colspan="3" style="padding:10px;font-size:13px;color:${BRAND.inkFaint}">No threads found this week.</td></tr>`;
+
+        const listHtml = (items: unknown[]) =>
+          items.length
+            ? `<ul style="margin:6px 0;padding-left:18px;font-size:13px;line-height:1.7;color:${BRAND.inkSoft}">${items
+                .map((i) => `<li>${escH(typeof i === "string" ? i : JSON.stringify(i))}</li>`)
+                .join("")}</ul>`
+            : `<p style="font-size:13px;color:${BRAND.inkFaint}">None this week.</p>`;
+
+        const html = emailLayout({
+          badge: "Devin Research",
+          emoji: "🛰️",
+          title: "Weekly prospect research",
+          bodyHtml:
+            `<p>${escH(f.summary)}</p>` +
+            `<p style="margin:18px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${BRAND.inkFaint}">Threads to engage</p>` +
+            `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${BRAND.border};border-radius:10px;overflow:hidden">${threadRows}</table>` +
+            `<p style="margin:18px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${BRAND.inkFaint}">Communities</p>` +
+            listHtml(communities.map((c) => {
+              const o = c as Record<string, unknown>;
+              return `${link(o.url, o.name)} — ${o.why ?? ""}`;
+            })) +
+            `<p style="margin:18px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${BRAND.inkFaint}">Competitor insights</p>` +
+            listHtml(insights) +
+            `<p style="margin:18px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${BRAND.inkFaint}">Content ideas</p>` +
+            listHtml(ideas),
+          cta: { label: "Open Devin session", url: s.url || `${APP_URL}/admin/growth` },
+          footerNote: "WellSpend Growth Agent — Devin Cloud prospect research",
+          preheader: "Weekly prospecting findings from Devin Cloud.",
+        });
+
+        const ok = await sendMail({
+          to,
+          subject: `[WellSpend] Prospect research — ${threads.length} threads, ${communities.length} communities`,
+          text:
+            `Devin research digest\n\n${String(f.summary ?? "")}\n\n` +
+            threads.map((t) => `- [${(t as Record<string, unknown>).platform}] ${(t as Record<string, unknown>).title} — ${(t as Record<string, unknown>).url}`).join("\n"),
+          html,
+        });
+        await sbPatch("sales_agent_state", "id=eq.1", {
+          research_session_id: null,
+          research_status: "finished",
+          research_last_digest_at: now.toISOString(),
+          updated_at: now.toISOString(),
+        });
+        return { note: ok ? "research_digest_sent" : "research_digest_failed", findingsEmailed: ok };
+      }
+      await sbPatch("sales_agent_state", "id=eq.1", {
+        research_session_id: null,
+        research_status: "finished",
+        updated_at: now.toISOString(),
+      });
+      return { note: "research_no_smtp" };
+    }
+    await sbPatch("sales_agent_state", "id=eq.1", {
+      research_session_id: null,
+      research_status: s.status_enum,
+      updated_at: now.toISOString(),
+    });
+    return { note: `research_${s.status_enum}` };
+  }
+
+  const lastLaunch = state?.research_launched_at ? Date.parse(state.research_launched_at) : 0;
+  if (now.getTime() - lastLaunch >= RESEARCH_INTERVAL) {
+    const session = await devinCreateSession({
+      prompt: RESEARCH_PROMPT,
+      title: "WellSpend weekly prospect research",
+      schema: RESEARCH_SCHEMA,
+    });
+    if (session) {
+      await sbPatch("sales_agent_state", "id=eq.1", {
+        research_session_id: session.session_id,
+        research_launched_at: now.toISOString(),
+        research_status: "launched",
+        updated_at: now.toISOString(),
+      });
+      return { note: "research_launched" };
+    }
+    return { note: "research_launch_failed" };
+  }
+  return {};
+}
+
+/* ------------------------------------------------------------------ */
 /* State                                                               */
 /* ------------------------------------------------------------------ */
 
 async function getState(): Promise<AgentState | null> {
   const rows = await sbGet<AgentState>(
     "sales_agent_state",
-    "select=enabled,last_run_at,last_digest_at,sent_today,sent_today_date&id=eq.1"
+    "select=enabled,last_run_at,last_digest_at,sent_today,sent_today_date,research_session_id,research_launched_at,research_status,research_last_digest_at&id=eq.1"
   );
   return rows[0] ?? null;
 }
@@ -386,6 +620,8 @@ export interface RunResult {
   emailed?: number;
   failed?: number;
   digestSent?: boolean;
+  research?: string;
+  researchEmailed?: boolean;
   cappedBy?: string;
 }
 
@@ -463,15 +699,21 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
   if (digestDue) {
     const to = process.env.NOTIFY_TO || process.env.SMTP_USER || "";
     if (to) {
+      // "In play" = warm prospects and anonymous hot visitors — paying
+      // customers are a separate track and dormant signups get their own
+      // win-back section below.
       const hotUncontacted = leads
-        .filter((l) => l.score >= SEND_THRESHOLD && l.touches < MAX_TOUCHES)
+        .filter((l) => l.tier !== "customer" && l.tier !== "dormant" && l.score >= SEND_THRESHOLD && l.touches < MAX_TOUCHES)
         .slice(0, 10);
+      const dormant = leads.filter((l) => l.tier === "dormant").slice(0, 8);
+      const customerCount = leads.filter((l) => l.tier === "customer").length;
       const funnelRows: Array<[string, string]> = [
         ["Sign-ups (24h)", String(funnel24h.signup ?? 0)],
         ["Demo starts (24h)", String(funnel24h.demo_start ?? 0)],
         ["Failed payments (24h)", String(funnel24h.payment_failed ?? 0)],
         ["Logins (24h)", String(funnel24h.login ?? 0)],
         ["Leads scored", String(leads.length)],
+        ["Paying customers", String(customerCount)],
         ["Emails sent today", String(emailed.length + alreadyToday)],
       ];
 
@@ -487,6 +729,12 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
             .join("")
         : `<tr><td colspan="3" style="padding:10px;font-size:13px;color:${BRAND.inkFaint}">Pipeline is quiet.</td></tr>`;
 
+      const dormantRows = dormant.length
+        ? dormant
+            .map((l) => `<tr><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:13px">${esc(l.email ?? l.key)}</td><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12px;color:${BRAND.inkFaint}">signed up ${l.lastSeen.slice(0, 10)}</td><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12px;color:${BRAND.inkFaint}">${l.touches} touch${l.touches === 1 ? "" : "es"}</td></tr>`)
+            .join("")
+        : `<tr><td colspan="3" style="padding:10px;font-size:13px;color:${BRAND.inkFaint}">No dormant accounts.</td></tr>`;
+
       const table = (head: string, rows: string) =>
         `<p style="margin:18px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${BRAND.inkFaint}">${esc(head)}</p>` +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${BRAND.border};border-radius:10px;overflow:hidden">${rows}</table>`;
@@ -500,6 +748,7 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
           detailTable(funnelRows) +
           table("Emailed today", sentRows) +
           table("Hot leads still in play", hotRows) +
+          table("Dormant — signed up, never returned (win-back)", dormantRows) +
           highlightBox(`Review the full pipeline at <a href="${APP_URL}/admin/growth" style="color:${BRAND.rose}">Admin → Growth Agent</a>.`, BRAND.roseSoft),
         cta: { label: "Open Growth Agent", url: `${APP_URL}/admin/growth` },
         footerNote: "WellSpend Growth Agent — automated sales & marketing admin",
@@ -512,6 +761,8 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
         funnelRows.map(([k, v]) => `${k}: ${v}`).join("\n") +
         `\n\nHot leads still in play:\n` +
         hotUncontacted.map((l) => `- ${l.email ?? l.key} (score ${l.score}) — ${l.signals.slice(0, 2).join("; ") || "—"}`).join("\n") +
+        `\n\nDormant (win-back):\n` +
+        dormant.map((l) => `- ${l.email ?? l.key} — signed up ${l.lastSeen.slice(0, 10)}, ${l.touches} touches`).join("\n") +
         `\n\n${APP_URL}/admin/growth`;
 
       digestSent = await sendMail({
@@ -522,6 +773,9 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
       });
     }
   }
+
+  // ---- Devin Cloud market research (launch / collect) ------------------
+  const research = await researchTick(state, now);
 
   // ---- Persist state ---------------------------------------------------
   await sbPatch("sales_agent_state", "id=eq.1", {
@@ -538,6 +792,8 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
     emailed: emailed.length,
     failed,
     digestSent,
+    research: research.note,
+    researchEmailed: research.findingsEmailed,
     cappedBy: eligible.length > batch.length ? "daily_cap" : undefined,
   };
 }

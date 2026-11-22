@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     const [stateRows, { leads, funnel24h }, outreach] = await Promise.all([
       sbGet<Record<string, unknown>>(
         "sales_agent_state",
-        "select=enabled,last_run_at,last_digest_at,sent_today,sent_today_date&id=eq.1"
+        "select=enabled,last_run_at,last_digest_at,sent_today,sent_today_date,research_session_id,research_launched_at,research_status,research_last_digest_at&id=eq.1"
       ),
       collectLeads(),
       sbGet<OutreachRow>(
@@ -52,6 +52,12 @@ export async function GET(req: NextRequest) {
         scored: leads.length,
         emailable: leads.filter((l) => l.email && !l.paid && (!l.role || l.role === "user")).length,
         anonymousHot: leads.filter((l) => l.anonymous && l.score >= 50).length,
+        tiers: {
+          customer: leads.filter((l) => l.tier === "customer").length,
+          warm: leads.filter((l) => l.tier === "warm").length,
+          dormant: leads.filter((l) => l.tier === "dormant").length,
+          anonymous: leads.filter((l) => l.tier === "anonymous").length,
+        },
       },
     });
   } catch (err) {

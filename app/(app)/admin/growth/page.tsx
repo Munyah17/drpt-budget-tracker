@@ -13,6 +13,10 @@ interface AgentState {
   last_digest_at: string | null;
   sent_today: number;
   sent_today_date: string | null;
+  research_session_id?: string | null;
+  research_launched_at?: string | null;
+  research_status?: string | null;
+  research_last_digest_at?: string | null;
 }
 
 interface ScoredLead {
@@ -23,11 +27,19 @@ interface ScoredLead {
   signals: string[];
   paid: boolean;
   role: string | null;
+  tier?: "customer" | "warm" | "dormant" | "anonymous";
   anonymous: boolean;
   lastSeen: string;
   touches: number;
   lastContactAt: string | null;
 }
+
+const TIER_BADGE: Record<string, string> = {
+  customer: "badge-green",
+  warm: "badge",
+  dormant: "badge-amber",
+  anonymous: "",
+};
 
 interface OutreachRow {
   id: string;
@@ -46,7 +58,12 @@ interface GrowthData {
   leads: ScoredLead[];
   outreach: OutreachRow[];
   funnel24h: Record<string, number>;
-  totals: { scored: number; emailable: number; anonymousHot: number };
+  totals: {
+    scored: number;
+    emailable: number;
+    anonymousHot: number;
+    tiers?: Partial<Record<"customer" | "warm" | "dormant" | "anonymous", number>>;
+  };
 }
 
 function scoreBadge(score: number): string {
@@ -193,12 +210,34 @@ export default function AdminGrowthPage() {
         ))}
       </div>
 
+      {/* Devin Cloud research status */}
+      <div className="glass-card card-pad" style={{ marginBottom: 20, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <Icon name="search" size={16} />
+        <strong style={{ fontSize: 13 }}>{t("researchTitle")}</strong>
+        <span className="chip">
+          {state?.research_session_id
+            ? t("researchRunning", { status: state.research_status ?? "…" })
+            : state?.research_status
+              ? `${state.research_status}${state.research_last_digest_at ? ` · ${ukDate(state.research_last_digest_at)}` : ""}`
+              : t("researchIdle")}
+        </span>
+        <span style={{ fontSize: 12, color: "var(--ink-500)" }}>{t("researchHint")}</span>
+      </div>
+
       <div className="grid grid-2" style={{ marginBottom: 20 }}>
         {/* Hot leads */}
         <div className="glass-card card-pad">
           <div className="card-head">
             <h3>{t("hotLeads")}</h3>
             <span className="chip">{t("chipScored", { count: data?.totals.scored ?? 0 })}</span>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 11.5, color: "var(--ink-500)", marginBottom: 10 }}>
+            {(["customer", "warm", "dormant", "anonymous"] as const).map((tier) => (
+              <span key={tier} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <span className={`badge ${TIER_BADGE[tier]}`} style={{ fontSize: 10 }}>{t(`tier_${tier}`)}</span>
+                <strong>{data?.totals.tiers?.[tier] ?? 0}</strong>
+              </span>
+            ))}
           </div>
           <div className="table-wrap" style={{ maxHeight: 460, overflowY: "auto" }}>
             <table className="data-table">
@@ -215,9 +254,16 @@ export default function AdminGrowthPage() {
                   <tr key={l.key}>
                     <td>
                       <div style={{ fontWeight: 600 }}>{l.email ?? `${l.key.slice(0, 20)}…`}</div>
-                      <div style={{ fontSize: 11, color: "var(--ink-500)" }}>
-                        {l.name ? `${l.name} · ` : ""}
-                        {l.anonymous ? t("anonymous") : l.paid ? t("paid") : t("unpaid")}
+                      <div style={{ fontSize: 11, color: "var(--ink-500)", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                        {l.tier && (
+                          <span className={`badge ${TIER_BADGE[l.tier] ?? ""}`} style={{ fontSize: 10 }}>
+                            {t(`tier_${l.tier}`)}
+                          </span>
+                        )}
+                        <span>
+                          {l.name ? `${l.name} · ` : ""}
+                          {l.anonymous ? t("anonymous") : l.paid ? t("paid") : t("unpaid")}
+                        </span>
                       </div>
                     </td>
                     <td><span className={scoreBadge(l.score)}>{l.score}</span></td>
@@ -289,6 +335,7 @@ export default function AdminGrowthPage() {
           <li>{t("how2")}</li>
           <li>{t("how3")}</li>
           <li>{t("how4")}</li>
+          <li>{t("how5")}</li>
         </ul>
       </div>
     </>

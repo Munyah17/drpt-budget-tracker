@@ -513,7 +513,16 @@
       "how1": "Every day at 08:00 UTC it reads the last 30 days of funnel events (demo starts, failed payments, sign-ups, paywall hits, repeat visits) and scores each prospect 0–100+.",
       "how2": "Leads scoring 50+ with an email on file get a personalised re-engagement email — written by AI, sent through your SMTP relay. Max 10/day, 3 touches per lead, 4-day cooldown.",
       "how3": "Paid users, admins and corporate accounts are never emailed. Anonymous hot visitors (no email) appear in your digest for manual follow-up.",
-      "how4": "Once a day you get a digest email: funnel stats, who it emailed, and the hottest leads still in play."
+      "how4": "Once a day you get a digest email: funnel stats, who it emailed, and the hottest leads still in play.",
+      "researchTitle": "Devin Cloud prospect research",
+      "researchRunning": "running ({status})",
+      "researchIdle": "idle — launches weekly",
+      "researchHint": "Browses Reddit, X, forums & app reviews for budgeting-app intent; emails you threads + draft replies.",
+      "tier_customer": "customer",
+      "tier_warm": "warm",
+      "tier_dormant": "dormant",
+      "tier_anonymous": "anonymous",
+      "how5": "Weekly, a Devin Cloud session hunts the public web for people asking about budgeting apps — you get the threads, the pain points and draft replies to post."
     },
     "adm_analytics": {
       "title": "User Activity Analytics",
