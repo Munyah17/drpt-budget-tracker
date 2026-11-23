@@ -448,7 +448,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .login-card{ grid-template-columns:1fr; max-width:460px; }
   .login-visual{ display:none; }
   .login-visual-mobile{
-    display:block; margin:0 -22px 22px; padding:28px 22px 32px;
+    display:block; margin:0 0 22px; padding:28px 20px 32px;
     background:linear-gradient(160deg, var(--rose-600), var(--rose-400) 65%, var(--pink-300));
     color:#fff; position:relative; overflow:hidden;
   }
@@ -706,6 +706,7 @@ tbody tr:hover{ background:var(--pink-100); }
   .btn{ font-size:13px; padding:10px 16px; }
   .login-card{ border-radius:20px; }
   .login-form{ padding:32px 24px; }
+  .login-visual-mobile{ padding-left:24px; padding-right:24px; }
   .login-visual{ min-height:400px; padding:24px; }
   .modal-overlay{ padding:12px; align-items:flex-start; padding-top:8vh; }
   .modal-box{ border-radius:18px; max-height:84vh; }
