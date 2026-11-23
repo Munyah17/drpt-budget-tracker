@@ -3,11 +3,10 @@ import { sbGet, sbPatch } from "@/lib/server/supabaseAdmin";
 import { isAdminRequest } from "@/lib/server/admin";
 import { sendUserEmail } from "@/lib/server/notify";
 import { detailTable, highlightBox, BRAND } from "@/lib/server/emailTemplate";
+import { APP_URL } from "@/lib/server/appUrl";
 import crypto from "crypto";
 
 export const runtime = "nodejs";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000";
 
 async function denied(req: NextRequest) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
