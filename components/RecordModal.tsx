@@ -90,7 +90,7 @@ function RecordModalInner({
           {mode === "view" && onDelete && !confirmingDelete && (
             <button
               className="btn btn-ghost"
-              style={{ flex: 1, color: "var(--red-500)" }}
+              style={{ flex: 1, color: "var(--red)" }}
               onClick={() => setConfirmingDelete(true)}
             >
               {t("record_delete")}
@@ -99,7 +99,7 @@ function RecordModalInner({
           {mode === "view" && onDelete && confirmingDelete && (
             <button
               className="btn btn-primary"
-              style={{ flex: 1, background: "var(--red-500)" }}
+              style={{ flex: 1, background: "var(--red)" }}
               onClick={onDelete}
             >
               {t("record_confirmDelete")}

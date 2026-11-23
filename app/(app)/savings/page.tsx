@@ -108,7 +108,7 @@ function EditGoalModal({ goal, onClose }: { goal: Goal; onClose: () => void }) {
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button className="btn btn-primary" style={{ flex: 1 }} type="submit">{t("saveBtn")}</button>
-          <button className="btn btn-ghost" style={{ flex: 1, color: "var(--red-500)" }} type="button" onClick={handleDelete}>
+          <button className="btn btn-ghost" style={{ flex: 1, color: "var(--red)" }} type="button" onClick={handleDelete}>
             {t("deleteBtn")}
           </button>
         </div>

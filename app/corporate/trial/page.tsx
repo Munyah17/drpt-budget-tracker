@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -62,20 +62,20 @@ export default function TrialActivationPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "var(--bg)",
+        background: "var(--paper)",
         fontFamily: "system-ui, sans-serif",
       }}>
         <div style={{ textAlign: "center" }}>
           <div style={{
             width: "48px",
             height: "48px",
-            border: "4px solid var(--border)",
+            border: "4px solid var(--card-border)",
             borderTopColor: "var(--rose-500)",
             borderRadius: "50%",
             animation: "spin 1s linear infinite",
             margin: "0 auto 1rem",
           }} />
-          <p style={{ color: "var(--text-muted)" }}>{t("validating")}</p>
+          <p style={{ color: "var(--ink-500)" }}>{t("validating")}</p>
         </div>
       </div>
     );
@@ -88,20 +88,20 @@ export default function TrialActivationPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "var(--bg)",
+        background: "var(--paper)",
         fontFamily: "system-ui, sans-serif",
       }}>
         <div style={{
           maxWidth: "400px",
           padding: "2rem",
-          background: "var(--surface)",
+          background: "var(--card-solid)",
           borderRadius: "12px",
           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
           textAlign: "center",
         }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>❌</div>
-          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>{t("invalidTitle")}</h1>
-          <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>{error}</p>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>?</div>
+          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--ink-900)" }}>{t("invalidTitle")}</h1>
+          <p style={{ color: "var(--ink-500)", marginBottom: "1.5rem" }}>{error}</p>
           <button
             onClick={() => router.push("/login")}
             style={{
@@ -128,20 +128,20 @@ export default function TrialActivationPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "var(--bg)",
+        background: "var(--paper)",
         fontFamily: "system-ui, sans-serif",
       }}>
         <div style={{
           maxWidth: "400px",
           padding: "2rem",
-          background: "var(--surface)",
+          background: "var(--card-solid)",
           borderRadius: "12px",
           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
           textAlign: "center",
         }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏰</div>
-          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>{t("expiredTitle")}</h1>
-          <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>?</div>
+          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--ink-900)" }}>{t("expiredTitle")}</h1>
+          <p style={{ color: "var(--ink-500)", marginBottom: "1.5rem" }}>
             {t("expiredMessage", { company: corporate?.name || "your company" })}
           </p>
           <button
@@ -170,31 +170,31 @@ export default function TrialActivationPage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "var(--bg)",
+      background: "var(--paper)",
       fontFamily: "system-ui, sans-serif",
     }}>
       <div style={{
         maxWidth: "500px",
         padding: "2rem",
-        background: "var(--surface)",
+        background: "var(--card-solid)",
         borderRadius: "12px",
         boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
         textAlign: "center",
       }}>
-        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🎉</div>
-        <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>
+        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>??</div>
+        <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--ink-900)" }}>
           {t("trialActivated", { company: corporate?.name || "your company" })}
         </h1>
-        <p style={{ color: "var(--text-muted)", marginBottom: "1rem" }}>
+        <p style={{ color: "var(--ink-500)", marginBottom: "1rem" }}>
           {t("trialDaysLeft", { days: corporate?.trial_days_left || 7 })}
         </p>
-        <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginBottom: "1.5rem" }}>
+        <p style={{ color: "var(--ink-500)", fontSize: "0.875rem", marginBottom: "1.5rem" }}>
           {t("redirecting")}
         </p>
         <div style={{
           width: "100%",
           height: "4px",
-          background: "var(--border)",
+          background: "var(--card-border)",
           borderRadius: "2px",
           overflow: "hidden",
         }}>

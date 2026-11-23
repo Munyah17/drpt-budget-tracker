@@ -96,9 +96,9 @@ export default function CorporateSettingsPage() {
               onClick={() => setSelectedColor(preset.color)}
               style={{
                 padding: "0.75rem",
-                border: selectedColor === preset.color ? "2px solid var(--rose-500)" : "1px solid var(--border)",
+                border: selectedColor === preset.color ? "2px solid var(--rose-500)" : "1px solid var(--card-border)",
                 borderRadius: "8px",
-                background: "var(--surface)",
+                background: "var(--card-solid)",
                 cursor: "pointer",
                 transition: "all 0.2s",
               }}

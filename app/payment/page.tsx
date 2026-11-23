@@ -310,7 +310,7 @@ function PaymentInner() {
         background:
           "radial-gradient(1200px 600px at 80% -10%, rgba(233,30,99,.18), transparent 60%)," +
           "radial-gradient(900px 500px at -10% 110%, rgba(200,16,87,.14), transparent 55%)," +
-          "var(--bg)",
+          "var(--paper)",
       }}
     >
       <div
