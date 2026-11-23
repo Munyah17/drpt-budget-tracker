@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { applyPayment, stripeSessionUserId } from "@/lib/server/payments";
-import { notifyAdmin } from "@/lib/server/notify";
+import { applyPayment, recordPayment, stripeSessionUserId } from "@/lib/server/payments";
+import { notifyAdmin, sendUserEmail } from "@/lib/server/notify";
 import { sbGet, sbPatch, sbUpsert } from "@/lib/server/supabaseAdmin";
+import { APP_URL } from "@/lib/server/appUrl";
+import { BRAND, detailTable, highlightBox } from "@/lib/server/emailTemplate";
 
 /**
  * POST /api/webhooks/stripe — Stripe sends checkout.session.completed here.
@@ -43,6 +45,96 @@ async function stripeGet(secret: string, path: string): Promise<Record<string, u
   });
   if (!res.ok) return null;
   return res.json();
+}
+
+async function stripePost(
+  secret: string,
+  path: string,
+  params: Record<string, string>
+): Promise<Record<string, unknown> | null> {
+  const res = await fetch(`https://api.stripe.com/v1${path}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${secret}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams(params),
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+/**
+ * Email the customer that a payment failed and how to fix it. Deduped per
+ * provider reference (checkout session / invoice id) via a `failed` row in
+ * the payments ledger — Stripe Smart Retries fire invoice.payment_failed
+ * several times per invoice, and the user must not get spammed.
+ * Returns true only when this call was the first failure for the reference.
+ */
+async function notifyPaymentFailure(opts: {
+  reference: string;
+  userId?: string;
+  userEmail: string;
+  amount?: number | null;
+  currency?: string;
+  kind: "checkout" | "renewal";
+  /** Stripe billing-portal URL when we could mint one (card update). */
+  portalUrl?: string | null;
+  paidUntil?: string | null;
+}): Promise<boolean> {
+  if (!opts.reference || !opts.userEmail) return false;
+
+  const seen = await sbGet<{ id: number }>(
+    "payments",
+    `provider=eq.stripe&reference=eq.${encodeURIComponent(opts.reference)}&status=eq.failed&select=id&limit=1`
+  );
+  if (seen.length > 0) return false;
+
+  await recordPayment({
+    provider: "stripe",
+    userId: opts.userId,
+    userEmail: opts.userEmail,
+    method: "card",
+    amount: opts.amount ?? null,
+    currency: opts.currency ?? "usd",
+    reference: opts.reference,
+    status: "failed",
+    meta: { kind: opts.kind },
+  });
+
+  const amountLine =
+    opts.amount != null ? `${(opts.currency ?? "usd").toUpperCase()} ${opts.amount.toFixed(2)}` : "—";
+  const until = opts.paidUntil ? new Date(opts.paidUntil).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+  const isRenewal = opts.kind === "renewal";
+
+  await sendUserEmail({
+    to: opts.userEmail,
+    subject: isRenewal
+      ? "Your WellSpend renewal didn't go through"
+      : "Your WellSpend payment didn't complete",
+    heading: isRenewal ? "Renewal payment failed" : "Payment didn't complete",
+    emoji: "⚠️",
+    badge: "Payment",
+    badgeColor: BRAND.red,
+    bodyHtml:
+      `<p>Hi, we tried to process your ${isRenewal ? "monthly renewal" : "payment"} but the card was declined.</p>` +
+      detailTable([
+        ["Amount", amountLine],
+        ["Reference", opts.reference],
+        ...(until ? [["Access continues until", until] as [string, string]] : []),
+      ]) +
+      highlightBox(
+        isRenewal
+          ? "No action is needed if this was a temporary issue — we'll retry automatically. To avoid any interruption, update your card now."
+          : "No money was taken. Head back to WellSpend and try again — a different card or mobile-money method often works.",
+        BRAND.amber
+      ),
+    cta: {
+      label: isRenewal ? "Update payment method" : "Try payment again",
+      url: opts.portalUrl || `${APP_URL}/payment`,
+    },
+  });
+  return true;
 }
 
 export async function POST(req: NextRequest) {
@@ -131,11 +223,21 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.session.async_payment_failed") {
     const session = event.data?.object ?? {};
     const customer = session.customer_details as Record<string, string> | undefined;
+    const email = customer?.email ?? (session.customer_email as string) ?? "";
+    const sessionId = String(session.id ?? "");
     await notifyAdmin("payment_failed", {
-      email: customer?.email ?? (session.customer_email as string) ?? "",
+      email,
       name: customer?.name ?? "",
       method: "stripe",
-      detail: `async payment failed — session ${session.id ?? ""}`,
+      detail: `async payment failed — session ${sessionId}`,
+    });
+    // Tell the customer too — the checkout session is dead, they must retry.
+    await notifyPaymentFailure({
+      reference: sessionId,
+      userEmail: email,
+      amount: typeof session.amount_total === "number" ? session.amount_total / 100 : null,
+      currency: (session.currency as string) ?? "usd",
+      kind: "checkout",
     });
   }
 
@@ -180,11 +282,71 @@ export async function POST(req: NextRequest) {
 
   if (event.type === "invoice.payment_failed") {
     const invoice = event.data?.object ?? {};
+    const invoiceId = String(invoice.id ?? "");
+
+    // First-invoice failures are already covered by the checkout.session
+    // events (async_payment_failed / completed) — don't double-email.
+    if (String(invoice.billing_reason ?? "") === "subscription_create") {
+      return NextResponse.json({ received: true }, { status: 200 });
+    }
+
+    // Resolve the subscription for customer identity + a portal link.
+    const parent = invoice.parent as Record<string, unknown> | undefined;
+    const subDetails = parent?.subscription_details as Record<string, unknown> | undefined;
+    const subId = String(invoice.subscription ?? subDetails?.subscription ?? "");
+    let meta: Record<string, string> = {};
+    let customerId = "";
+    if (subId && stripeSecret) {
+      const sub = await stripeGet(stripeSecret, `/subscriptions/${encodeURIComponent(subId)}`);
+      meta = (sub?.metadata as Record<string, string> | undefined) ?? {};
+      customerId = String(sub?.customer ?? "");
+    }
+    // Older subscriptions may lack metadata.email — fall back to the
+    // Stripe customer's own email so the user still gets notified.
+    let userEmail = meta.email ?? "";
+    if (!userEmail && customerId && stripeSecret) {
+      const cust = await stripeGet(stripeSecret, `/customers/${encodeURIComponent(customerId)}`);
+      userEmail = String(cust?.email ?? "");
+    }
+    const uid = meta.user_id ?? "";
+
     await notifyAdmin("payment_failed", {
-      email: "",
+      email: userEmail,
       name: "",
       method: "stripe",
-      detail: `subscription invoice failed — ${invoice.id ?? ""}`,
+      detail: `subscription invoice failed — ${invoiceId}`,
+    });
+
+    // Access runway for the email — paid_until from the profile.
+    let paidUntil: string | null = null;
+    if (uid) {
+      const rows = await sbGet<{ paid_until: string | null }>(
+        "profiles",
+        `id=eq.${encodeURIComponent(uid)}&select=paid_until&limit=1`
+      );
+      paidUntil = rows[0]?.paid_until ?? null;
+    }
+
+    // Stripe billing portal = one click to update the card. Fall back to
+    // our payment page when the portal can't be minted.
+    let portalUrl: string | null = null;
+    if (customerId && stripeSecret) {
+      const portal = await stripePost(stripeSecret, "/billing_portal/sessions", {
+        customer: customerId,
+        return_url: `${APP_URL}/dashboard`,
+      });
+      portalUrl = portal?.url ? String(portal.url) : null;
+    }
+
+    await notifyPaymentFailure({
+      reference: invoiceId,
+      userId: uid || undefined,
+      userEmail,
+      amount: typeof invoice.amount_due === "number" ? invoice.amount_due / 100 : null,
+      currency: String(invoice.currency ?? "usd"),
+      kind: "renewal",
+      portalUrl,
+      paidUntil,
     });
   }
 
