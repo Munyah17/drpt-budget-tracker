@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import LanguageSelect from "@/components/LanguageSelect";
 import AuthLink from "@/components/AuthLink";
+import InstallApp from "@/components/InstallApp";
 import { trackEvent } from "@/lib/analytics";
 import Icon from "@/components/Icon";
 import { useIsNative } from "@/lib/native";
@@ -100,6 +101,7 @@ export default function LandingPage() {
           <a href="#business" className="nav-link">{t("nav.business")}</a>
           <a href="#pricing" className="nav-link">{t("nav.pricing")}</a>
           <LanguageSelect compact />
+          <InstallApp />
           <AuthLink mode="login" className="btn btn-ghost btn-sm nav-signin">{t("nav.signIn")}</AuthLink>
           <AuthLink mode="signup" className="btn btn-primary btn-sm">{t("nav.signUp")}</AuthLink>
         </div>
@@ -122,6 +124,7 @@ export default function LandingPage() {
             <a href="#how" onClick={() => setMenuOpen(false)}>{t("nav.how")}</a>
             <a href="#business" onClick={() => setMenuOpen(false)}>{t("nav.business")}</a>
             <a href="#pricing" onClick={() => setMenuOpen(false)}>{t("nav.pricing")}</a>
+            <InstallApp className="btn btn-ghost btn-block" />
             <AuthLink mode="login" onClick={() => setMenuOpen(false)}>{t("nav.signIn")}</AuthLink>
           </div>
         )}
@@ -156,6 +159,7 @@ export default function LandingPage() {
           >
             {t("hero.seeDemo")}
           </button>
+          <InstallApp className="btn btn-ghost" />
         </div>
         <div className="hero-note">
           {t("hero.note")}
@@ -344,6 +348,7 @@ export default function LandingPage() {
           <AuthLink mode="signup" className="btn btn-white" style={{ padding: "13px 26px" }}>
             {t("cta.button")}
           </AuthLink>
+          <InstallApp className="btn btn-ghost" style={{ padding: "13px 26px", background: "rgba(255,255,255,.14)", color: "#fff", borderColor: "rgba(255,255,255,.25)" }} />
         </div>
       </section>
 
@@ -358,6 +363,7 @@ export default function LandingPage() {
           <a href="#pricing">{t("footer.pricing")}</a>
           <Link href="/privacy">{t("footer.privacy")}</Link>
           <Link href="/terms">{t("footer.terms")}</Link>
+          <InstallApp className="btn btn-ghost btn-sm" />
           <AuthLink mode="login">{t("footer.signIn")}</AuthLink>
         </div>
         <div>{t("footer.rights", { year: String(new Date().getFullYear()) })}</div>
