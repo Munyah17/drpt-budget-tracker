@@ -13,9 +13,33 @@ import { textDirection } from "@/lib/i18n/config";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Meta");
+  const title = t("title");
+  const description = t("description");
   return {
-    title: t("title"),
-    description: t("description"),
+    metadataBase: new URL("https://wellspend.site"),
+    title,
+    description,
+    openGraph: {
+      type: "website",
+      siteName: "WellSpend",
+      title,
+      description,
+      url: "/",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "WellSpend — track income, expenses and savings goals",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
   };
 }
 
