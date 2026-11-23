@@ -198,8 +198,8 @@ export default function AdminGrowthPage() {
       {/* Status strip */}
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         {[
-          [t("stLastRun"), state?.last_run_at ? ukDate(state.last_run_at) : t("never")],
-          [t("stDigest"), state?.last_digest_at ? ukDate(state.last_digest_at) : t("never")],
+          [t("stLastRun"), state?.last_run_at ? ukDate(state.last_run_at.slice(0, 10)) : t("never")],
+          [t("stDigest"), state?.last_digest_at ? ukDate(state.last_digest_at.slice(0, 10)) : t("never")],
           [t("stSentToday"), String(state?.sent_today ?? 0)],
           [t("stHotLeads"), String(data?.totals.scored ?? 0)],
         ].map(([label, value]) => (
@@ -218,7 +218,7 @@ export default function AdminGrowthPage() {
           {state?.research_session_id
             ? t("researchRunning", { status: state.research_status ?? "…" })
             : state?.research_status
-              ? `${state.research_status}${state.research_last_digest_at ? ` · ${ukDate(state.research_last_digest_at)}` : ""}`
+              ? `${state.research_status}${state.research_last_digest_at ? ` · ${ukDate(state.research_last_digest_at.slice(0, 10))}` : ""}`
               : t("researchIdle")}
         </span>
         <span style={{ fontSize: 12, color: "var(--ink-500)" }}>{t("researchHint")}</span>
@@ -272,7 +272,7 @@ export default function AdminGrowthPage() {
                     </td>
                     <td style={{ fontSize: 12, color: "var(--ink-500)" }}>
                       {l.touches}
-                      {l.lastContactAt && <div style={{ fontSize: 10 }}>{ukDate(l.lastContactAt)}</div>}
+                      {l.lastContactAt && <div style={{ fontSize: 10 }}>{ukDate(l.lastContactAt.slice(0, 10))}</div>}
                     </td>
                   </tr>
                 ))}
@@ -318,7 +318,7 @@ export default function AdminGrowthPage() {
                     </span>
                   </div>
                   <div style={{ color: "var(--ink-500)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {o.subject ?? "—"} · {ukDate(o.created_at)}
+                    {o.subject ?? "—"} · {ukDate(o.created_at.slice(0, 10))}
                   </div>
                 </div>
               ))}
