@@ -158,7 +158,8 @@ function PaymentInner() {
         if (!res.ok || !data.url) {
           notifyEvent("payment_failed", {
             email: payerEmail, name: payerName,
-            method: selectedMethod, detail: data.error || t("couldNotStartPayment"),
+            method: selectedMethod,
+            detail: `HTTP ${res.status} ${data.code ?? ""} — ${data.error || t("couldNotStartPayment")}`.replace(/\s+/g, " ").trim(),
           });
           throw new Error(data.error || t("couldNotStartPayment"));
         }

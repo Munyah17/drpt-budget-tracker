@@ -22,7 +22,9 @@ async function countryFor(userId: string, preferred: string): Promise<string> {
  * No stripe SDK needed — plain REST.
  */
 export async function POST(req: NextRequest) {
-  if (rateLimited(`stripe-checkout:${clientIp(req)}`, 20, 60 * 60 * 1000)) {
+  // 60/hr per IP — carrier-grade NAT puts many mobile users behind one IP,
+  // and checkout retries are legitimate. Still curbs session-scraping abuse.
+  if (rateLimited(`stripe-checkout:${clientIp(req)}`, 60, 60 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests — try again later" }, { status: 429 });
   }
 
@@ -32,6 +34,11 @@ export async function POST(req: NextRequest) {
   }
 
   const { userId, email, country } = await req.json().catch(() => ({}));
+  // Reject malformed emails before Stripe sees them — a bad customer_email
+  // comes back as an opaque 502 and looks like a payment failure.
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) {
+    return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+  }
   const origin = req.nextUrl.origin;
   const region = await countryFor(String(userId ?? ""), String(country ?? ""));
   const amountCents = await priceCentsForCountry("stripe", region);
@@ -67,10 +74,15 @@ export async function POST(req: NextRequest) {
   const data = await res.json();
 
   if (!res.ok) {
-    // Log the full error server-side but return a generic message to the client
-    console.error("Stripe checkout error:", data?.error?.message ?? "Unknown error");
+    // Log the full error server-side; return Stripe's error code (safe —
+    // e.g. "parameter_invalid_empty") so failure emails show the real cause.
+    const stripeErr = data?.error as { message?: string; code?: string; type?: string } | undefined;
+    console.error("Stripe checkout error:", stripeErr?.message ?? "Unknown error", stripeErr?.code ?? "");
     return NextResponse.json(
-      { error: "Payment could not be initiated. Please try again or contact support." },
+      {
+        error: "Payment could not be initiated. Please try again or contact support.",
+        code: stripeErr?.code ?? stripeErr?.type ?? "stripe_error",
+      },
       { status: 502 }
     );
   }
