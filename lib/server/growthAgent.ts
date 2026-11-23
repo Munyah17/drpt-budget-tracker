@@ -1,10 +1,13 @@
 /**
- * Growth Agent — the app's autonomous sales/marketing admin.
+ * Growth Agent — the app's sales/marketing copilot.
  *
- * Scores prospects by intent from activity_events + profiles, writes a
- * personalised outreach email per hot lead (Groq, template fallback),
- * sends it through the SMTP relay, logs every touch to sales_outreach,
- * and mails the admin a daily digest of what it did and who's still hot.
+ * Scores prospects by intent from activity_events + profiles, keeps paid
+ * customers in a separate protected tier, and surfaces who's ready to
+ * email. NOTHING sends automatically — the admin clicks "Email" on a
+ * pipeline lead and sendLeadEmail() writes the personalised copy (Groq,
+ * template fallback), sends via SMTP and logs the touch to
+ * sales_outreach. A daily digest + weekly Devin Cloud research keep the
+ * pipeline fed.
  *
  * Runs from /api/growth/run (Vercel cron) or manually via /api/admin/growth.
  * Server-only — never import from client components.
@@ -24,7 +27,6 @@ const EVENT_WINDOW_DAYS = 30;
 const SEND_THRESHOLD = 50;
 const MAX_TOUCHES = 3;
 const COOLDOWN_DAYS = 4;
-const MAX_DAILY = Math.max(1, Number(process.env.SALES_MAX_DAILY ?? 10) || 10);
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -68,7 +70,7 @@ export interface ScoredLead {
   paid: boolean;
   role: string | null;
   tier: LeadTier;
-  /** No email on file — can be chased by the digest but not auto-emailed. */
+  /** No email on file — surfaced in the digest, can't be click-to-send. */
   anonymous: boolean;
   lastSeen: string;
   touches: number;
@@ -296,8 +298,47 @@ export async function collectLeads(): Promise<{ leads: ScoredLead[]; funnel24h: 
     });
   }
 
+  // Paid sweep — existing clients are surfaced for visibility but are
+  // permanently excluded from outreach. We grow NEW users; we never
+  // disturb paying customers with acquisition messaging.
+  const paidProfiles = await sbGet<ProfileRow>(
+    "profiles",
+    `select=id,email,name,role,is_paid,paid_until,paid_override,created_at` +
+      `&and=(or=(is_paid.eq.true,paid_override.eq.paid),or=(role.eq.user,role.eq.corporate,role.is.null))` +
+      `&order=created_at.desc&limit=300`
+  );
+  // Dedupe against event-sourced buckets by user id AND email — a paying
+  // customer must never surface twice (once as prospect, once as client).
+  const seenUserIds = new Set([...buckets.values()].map((b) => b.userId).filter((x): x is string => !!x));
+  const seenEmails = new Set([...buckets.values()].map((b) => b.email?.toLowerCase()).filter((x): x is string => !!x));
+  for (const p of paidProfiles) {
+    if (!paidActive(p)) continue;
+    const pEmail = p.email?.toLowerCase() ?? null;
+    if (seenUserIds.has(p.id) || (pEmail && seenEmails.has(pEmail))) continue;
+    const key = `u:${p.id}`;
+    buckets.set(key, {
+      key,
+      email: p.email?.toLowerCase() ?? null,
+      name: p.name ?? null,
+      userId: p.id,
+      visitorId: null,
+      score: 0,
+      signals: ["Paying customer"],
+      seen: new Set(),
+      viewCount: 0,
+      lastSeen: p.created_at ?? new Date(0).toISOString(),
+      profile: p,
+    });
+  }
+
+  // Emails proven paid — catches prospects whose events carried an email
+  // but no user_id (profile never merged, so paid status was unknown).
+  const paidEmails = new Set(
+    paidProfiles.filter(paidActive).map((p) => p.email?.toLowerCase()).filter((x): x is string => !!x)
+  );
+
   const leads: ScoredLead[] = [...buckets.values()].map((b) => {
-    const paid = b.profile ? paidActive(b.profile) : false;
+    const paid = (b.profile ? paidActive(b.profile) : false) || (!!b.email && paidEmails.has(b.email.toLowerCase()));
     const role = b.profile?.role ?? null;
     const hist = byKey.get(b.key);
     const anonymous = !b.email;
@@ -616,13 +657,21 @@ async function getState(): Promise<AgentState | null> {
 export interface RunResult {
   skipped?: string;
   leadsScored?: number;
-  eligible?: number;
-  emailed?: number;
-  failed?: number;
+  /** Prospects eligible for a manual click-to-send right now. */
+  readyToSend?: number;
   digestSent?: boolean;
   research?: string;
   researchEmailed?: boolean;
-  cappedBy?: string;
+}
+
+/** True when a lead may receive outreach — shared by digest + manual send. */
+function sendEligible(l: ScoredLead, now: Date): boolean {
+  if (!l.email || l.anonymous || l.paid) return false;
+  if (l.role && l.role !== "user") return false;
+  if (l.score < SEND_THRESHOLD) return false;
+  if (l.touches >= MAX_TOUCHES) return false;
+  if (l.lastContactAt && now.getTime() - Date.parse(l.lastContactAt) < COOLDOWN_DAYS * DAY) return false;
+  return true;
 }
 
 export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<RunResult> {
@@ -635,63 +684,10 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
 
+  // No auto-send — outreach is 100% manual (click-to-send in the console).
+  // This list is what the digest surfaces as "ready now".
+  const readyToSend = leads.filter((l) => sendEligible(l, now));
   const alreadyToday = state?.sent_today_date === today ? (state.sent_today ?? 0) : 0;
-  const remaining = Math.max(0, MAX_DAILY - alreadyToday);
-
-  const eligible = leads.filter((l) => {
-    if (!l.email || l.anonymous || l.paid) return false;
-    if (l.role && l.role !== "user") return false;
-    if (l.score < SEND_THRESHOLD) return false;
-    if (l.touches >= MAX_TOUCHES) return false;
-    if (l.lastContactAt && now.getTime() - Date.parse(l.lastContactAt) < COOLDOWN_DAYS * DAY) return false;
-    return true;
-  });
-
-  const batch = eligible.slice(0, remaining);
-  const emailed: ScoredLead[] = [];
-  let failed = 0;
-
-  for (const lead of batch) {
-    const copy = (await groqSalesCopy(lead)) ?? templateSalesCopy(lead);
-    const bodyHtml =
-      `<p>${esc(copy.body).replace(/\n/g, "<br>")}</p>` +
-      highlightBox(
-        `Questions? Just reply to this email — a human reads every message.`,
-        BRAND.roseSoft
-      );
-    const html = emailLayout({
-      badge: "Growth",
-      emoji: "👋",
-      title: copy.subject,
-      bodyHtml,
-      cta: {
-        label: "Open WellSpend",
-        url: lead.role || lead.signals.some((s) => s.includes("account")) ? `${APP_URL}/login` : `${APP_URL}/register`,
-      },
-      footerNote: "You got this because you showed interest in WellSpend.",
-      preheader: copy.subject,
-    });
-
-    const ok = lead.email
-      ? await sendMail({ to: lead.email, subject: copy.subject, text: copy.body, html })
-      : false;
-
-    await sbInsert("sales_outreach", {
-      lead_key: lead.key,
-      email: lead.email,
-      name: lead.name,
-      intent_score: lead.score,
-      signals: lead.signals,
-      channel: "email",
-      subject: copy.subject,
-      body: copy.body,
-      status: ok ? "sent" : "failed",
-      error: ok ? null : "smtp send failed",
-    });
-
-    if (ok) emailed.push(lead);
-    else failed++;
-  }
 
   // ---- Daily digest to the admin -------------------------------------
   let digestSent = false;
@@ -714,14 +710,15 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
         ["Logins (24h)", String(funnel24h.login ?? 0)],
         ["Leads scored", String(leads.length)],
         ["Paying customers", String(customerCount)],
-        ["Emails sent today", String(emailed.length + alreadyToday)],
+        ["Manual emails sent today", String(alreadyToday)],
       ];
 
-      const sentRows = emailed.length
-        ? emailed
-            .map((l) => `<tr><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:13px">${esc(l.email ?? l.key)}</td><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:13px;text-align:right">${l.score}</td><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12px;color:${BRAND.inkFaint}">${esc(l.signals[0] ?? "—")}</td></tr>`)
+      const readyRows = readyToSend.length
+        ? readyToSend
+            .slice(0, 10)
+            .map((l) => `<tr><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:13px">${esc(l.email ?? l.key)}</td><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:13px;text-align:right">${l.score}</td><td style="padding:8px 10px;border-bottom:1px solid ${BRAND.border};font-size:12px;color:${BRAND.inkFaint}">${esc(l.signals.slice(0, 2).join("; ") || "—")}</td></tr>`)
             .join("")
-        : `<tr><td colspan="3" style="padding:10px;font-size:13px;color:${BRAND.inkFaint}">No emails went out this run.</td></tr>`;
+        : `<tr><td colspan="3" style="padding:10px;font-size:13px;color:${BRAND.inkFaint}">Nobody is send-ready right now.</td></tr>`;
 
       const hotRows = hotUncontacted.length
         ? hotUncontacted
@@ -744,30 +741,30 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
         emoji: "📈",
         title: "Daily growth digest",
         bodyHtml:
-          `<p>The agent scored <strong>${leads.length}</strong> prospects and emailed <strong>${emailed.length}</strong> this run${failed ? ` (${failed} failed)` : ""}.</p>` +
+          `<p>The agent scored <strong>${leads.length}</strong> prospects — <strong>${readyToSend.length}</strong> are ready for you to email. Nothing goes out automatically; every send is your click.</p>` +
           detailTable(funnelRows) +
-          table("Emailed today", sentRows) +
+          table("Ready to send now", readyRows) +
           table("Hot leads still in play", hotRows) +
           table("Dormant — signed up, never returned (win-back)", dormantRows) +
           highlightBox(`Review the full pipeline at <a href="${APP_URL}/admin/growth" style="color:${BRAND.rose}">Admin → Growth Agent</a>.`, BRAND.roseSoft),
         cta: { label: "Open Growth Agent", url: `${APP_URL}/admin/growth` },
-        footerNote: "WellSpend Growth Agent — automated sales & marketing admin",
-        preheader: `Growth digest: ${emailed.length} emails sent, ${hotUncontacted.length} hot leads in play.`,
+        footerNote: "WellSpend Growth Agent — sales pipeline, you press send",
+        preheader: `Growth digest: ${readyToSend.length} leads ready to email, ${customerCount} customers protected.`,
       });
 
       const text =
         `Growth Agent daily digest\n\n` +
-        `Scored ${leads.length} prospects; emailed ${emailed.length} this run${failed ? ` (${failed} failed)` : ""}.\n\n` +
+        `Scored ${leads.length} prospects; ${readyToSend.length} ready to email (manual send only).\n\n` +
         funnelRows.map(([k, v]) => `${k}: ${v}`).join("\n") +
-        `\n\nHot leads still in play:\n` +
-        hotUncontacted.map((l) => `- ${l.email ?? l.key} (score ${l.score}) — ${l.signals.slice(0, 2).join("; ") || "—"}`).join("\n") +
+        `\n\nReady to send now:\n` +
+        readyToSend.slice(0, 10).map((l) => `- ${l.email ?? l.key} (score ${l.score}) — ${l.signals.slice(0, 2).join("; ") || "—"}`).join("\n") +
         `\n\nDormant (win-back):\n` +
         dormant.map((l) => `- ${l.email ?? l.key} — signed up ${l.lastSeen.slice(0, 10)}, ${l.touches} touches`).join("\n") +
         `\n\n${APP_URL}/admin/growth`;
 
       digestSent = await sendMail({
         to,
-        subject: `[WellSpend] Growth digest — ${emailed.length} sent, ${hotUncontacted.length} hot leads`,
+        subject: `[WellSpend] Growth digest — ${readyToSend.length} ready to send, ${customerCount} customers`,
         text,
         html,
       });
@@ -781,19 +778,121 @@ export async function runGrowthAgent(opts: { manual?: boolean } = {}): Promise<R
   await sbPatch("sales_agent_state", "id=eq.1", {
     last_run_at: now.toISOString(),
     last_digest_at: digestSent ? now.toISOString() : state?.last_digest_at ?? null,
-    sent_today: alreadyToday + emailed.length,
+    sent_today: alreadyToday,
     sent_today_date: today,
     updated_at: now.toISOString(),
   });
 
   return {
     leadsScored: leads.length,
-    eligible: eligible.length,
-    emailed: emailed.length,
-    failed,
+    readyToSend: readyToSend.length,
     digestSent,
     research: research.note,
     researchEmailed: research.findingsEmailed,
-    cappedBy: eligible.length > batch.length ? "daily_cap" : undefined,
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* Manual click-to-send                                                 */
+/* ------------------------------------------------------------------ */
+
+export interface SendEmailResult {
+  ok: boolean;
+  error?: string;
+  subject?: string;
+}
+
+async function bumpSentToday(): Promise<void> {
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const state = await getState();
+  const already = state?.sent_today_date === today ? (state.sent_today ?? 0) : 0;
+  await sbPatch("sales_agent_state", "id=eq.1", {
+    sent_today: already + 1,
+    sent_today_date: today,
+    updated_at: now.toISOString(),
+  });
+}
+
+/**
+ * Manual outreach � the admin clicks "Email" on a pipeline lead, we write
+ * the personalised copy (Groq ? template fallback), send via SMTP and log
+ * the touch. Nothing sends without this call.
+ *
+ * Guards: paying customers and anonymous visitors can never be mailed;
+ * dormant signups are allowed below the hot-lead score threshold (win-back
+ * is their whole point); touch cap + cooldown still apply so a misclick
+ * can't turn into a spam loop.
+ */
+export async function sendLeadEmail(leadKey: string): Promise<SendEmailResult> {
+  const { leads } = await collectLeads();
+  const lead = leads.find((l) => l.key === leadKey);
+  if (!lead) {
+    return { ok: false, error: "Lead not found � the pipeline may have changed, refresh and retry" };
+  }
+  if (lead.paid || lead.tier === "customer") {
+    return { ok: false, error: "Paying customers are excluded from outreach" };
+  }
+  if (lead.anonymous || !lead.email) {
+    return { ok: false, error: "No email address on file for this lead" };
+  }
+  if (lead.role && lead.role !== "user") {
+    return { ok: false, error: "Not a consumer prospect" };
+  }
+
+  const now = new Date();
+  const scoreOk = lead.score >= SEND_THRESHOLD || lead.tier === "dormant";
+  if (!scoreOk) {
+    return { ok: false, error: `Score ${lead.score} is below the outreach threshold` };
+  }
+  if (lead.touches >= MAX_TOUCHES) {
+    return { ok: false, error: `Touch limit reached (${MAX_TOUCHES})` };
+  }
+  if (lead.lastContactAt) {
+    const waitMs = COOLDOWN_DAYS * DAY - (now.getTime() - Date.parse(lead.lastContactAt));
+    if (waitMs > 0) {
+      return { ok: false, error: `Cooldown � last contact was recent, try again in ~${Math.ceil(waitMs / DAY)}d` };
+    }
+  }
+
+  const copy = (await groqSalesCopy(lead)) ?? templateSalesCopy(lead);
+  const bodyHtml =
+    `<p>${esc(copy.body).replace(/\n/g, "<br>")}</p>` +
+    highlightBox(
+      `Questions? Just reply to this email � a human reads every message.`,
+      BRAND.roseSoft
+    );
+  const html = emailLayout({
+    badge: "Growth",
+    emoji: "??",
+    title: copy.subject,
+    bodyHtml,
+    cta: {
+      label: "Open WellSpend",
+      url: lead.role || lead.signals.some((s) => s.includes("account")) ? `${APP_URL}/login` : `${APP_URL}/register`,
+    },
+    footerNote: "You got this because you showed interest in WellSpend.",
+    preheader: copy.subject,
+  });
+
+  const ok = await sendMail({ to: lead.email, subject: copy.subject, text: copy.body, html });
+
+  await sbInsert("sales_outreach", {
+    lead_key: lead.key,
+    email: lead.email,
+    name: lead.name,
+    intent_score: lead.score,
+    signals: lead.signals,
+    channel: "email",
+    subject: copy.subject,
+    body: copy.body,
+    status: ok ? "sent" : "failed",
+    error: ok ? null : "smtp send failed",
+  });
+
+  if (ok) await bumpSentToday();
+
+  return ok
+    ? { ok: true, subject: copy.subject }
+    : { ok: false, error: "SMTP send failed � check mail server logs" };
 }

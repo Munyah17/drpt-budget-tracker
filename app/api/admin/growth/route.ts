@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/server/admin";
 import { sbGet, sbPatch } from "@/lib/server/supabaseAdmin";
-import { collectLeads, runGrowthAgent } from "@/lib/server/growthAgent";
+import { collectLeads, runGrowthAgent, sendLeadEmail } from "@/lib/server/growthAgent";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -85,6 +85,12 @@ export async function POST(req: NextRequest) {
     if (action === "run") {
       const result = await runGrowthAgent({ manual: true });
       return NextResponse.json({ ok: true, ...result });
+    }
+    if (action === "send") {
+      const leadKey = typeof body.leadKey === "string" ? body.leadKey : "";
+      if (!leadKey) return NextResponse.json({ error: "leadKey required" }, { status: 400 });
+      const result = await sendLeadEmail(leadKey);
+      return NextResponse.json(result, { status: result.ok ? 200 : 422 });
     }
     if (action === "set_enabled") {
       const enabled = body.enabled === true;

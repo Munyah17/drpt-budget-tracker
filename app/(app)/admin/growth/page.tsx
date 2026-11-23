@@ -80,6 +80,9 @@ export default function AdminGrowthPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<"run" | "toggle" | null>(null);
   const [runNote, setRunNote] = useState<string | null>(null);
+  const [confirmKey, setConfirmKey] = useState<string | null>(null);
+  const [sendingKey, setSendingKey] = useState<string | null>(null);
+  const [sendNote, setSendNote] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -122,8 +125,7 @@ export default function AdminGrowthPage() {
       setRunNote(
         t("runResult", {
           scored: Number(r?.leadsScored ?? 0),
-          emailed: Number(r?.emailed ?? 0),
-          failed: Number(r?.failed ?? 0),
+          ready: Number(r?.readyToSend ?? 0),
         })
       );
       await load();
@@ -147,6 +149,39 @@ export default function AdminGrowthPage() {
     }
   }
 
+  /** Click-to-send: first click arms the confirm, second click sends. */
+  async function sendEmail(lead: ScoredLead) {
+    if (sendingKey) return;
+    if (confirmKey !== lead.key) {
+      setConfirmKey(lead.key);
+      setTimeout(() => setConfirmKey((k) => (k === lead.key ? null : k)), 4000);
+      return;
+    }
+    setConfirmKey(null);
+    setSendingKey(lead.key);
+    setSendNote(null);
+    try {
+      const r = await post({ action: "send", leadKey: lead.key });
+      setSendNote(
+        r?.ok
+          ? t("sendOk", { email: lead.email ?? lead.key })
+          : t("sendFailed", { error: String(r?.error ?? "unknown") })
+      );
+    } catch (e) {
+      setSendNote(t("sendFailed", { error: e instanceof Error ? e.message : "?" }));
+    } finally {
+      setSendingKey(null);
+      await load();
+    }
+  }
+
+  /** Mirrors the server guards closely enough to show/hide the button. */
+  const canSend = (l: ScoredLead) =>
+    !!l.email &&
+    !l.anonymous &&
+    !l.paid &&
+    (l.tier === "dormant" || (l.tier === "warm" && l.score >= 50));
+
   const state = data?.state;
   const enabled = state?.enabled !== false;
   const funnel = data?.funnel24h ?? {};
@@ -156,6 +191,16 @@ export default function AdminGrowthPage() {
     [t("fPayFails"), funnel.payment_failed ?? 0],
     [t("fLogins"), funnel.login ?? 0],
   ];
+
+  // Pipeline split — prospects get outreach tools, customers are read-only.
+  const allLeads = data?.leads ?? [];
+  const tierGroups: Record<"warm" | "dormant" | "anonymous" | "customer", ScoredLead[]> = {
+    warm: allLeads.filter((l) => l.tier === "warm").sort((a, b) => b.score - a.score),
+    dormant: allLeads.filter((l) => l.tier === "dormant").sort((a, b) => b.score - a.score),
+    anonymous: allLeads.filter((l) => l.tier === "anonymous").sort((a, b) => b.score - a.score),
+    customer: allLeads.filter((l) => l.tier === "customer").sort((a, b) => b.score - a.score),
+  };
+  const prospectCount = tierGroups.warm.length + tierGroups.dormant.length + tierGroups.anonymous.length;
 
   return (
     <>
@@ -224,67 +269,83 @@ export default function AdminGrowthPage() {
         <span style={{ fontSize: 12, color: "var(--ink-500)" }}>{t("researchHint")}</span>
       </div>
 
+      {sendNote && (
+        <div className="glass-card card-pad" style={{ marginBottom: 20, borderLeft: "3px solid var(--rose-500)" }}>
+          <div style={{ fontSize: 13 }}>{sendNote}</div>
+        </div>
+      )}
+
       <div className="grid grid-2" style={{ marginBottom: 20 }}>
-        {/* Hot leads */}
+        {/* Prospect pipeline — grouped by tier, click-to-send per lead */}
         <div className="glass-card card-pad">
           <div className="card-head">
             <h3>{t("hotLeads")}</h3>
-            <span className="chip">{t("chipScored", { count: data?.totals.scored ?? 0 })}</span>
+            <span className="chip">{t("chipScored", { count: prospectCount })}</span>
           </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 11.5, color: "var(--ink-500)", marginBottom: 10 }}>
-            {(["customer", "warm", "dormant", "anonymous"] as const).map((tier) => (
-              <span key={tier} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <p style={{ margin: "0 0 12px", fontSize: 12, color: "var(--ink-500)" }}>{t("pipelineNote")}</p>
+          {(["warm", "dormant", "anonymous"] as const).map((tier) => (
+            <div key={tier} style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                 <span className={`badge ${TIER_BADGE[tier]}`} style={{ fontSize: 10 }}>{t(`tier_${tier}`)}</span>
-                <strong>{data?.totals.tiers?.[tier] ?? 0}</strong>
-              </span>
-            ))}
-          </div>
-          <div className="table-wrap" style={{ maxHeight: 460, overflowY: "auto" }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>{t("colLead")}</th>
-                  <th>{t("colScore")}</th>
-                  <th>{t("colSignals")}</th>
-                  <th>{t("colTouches")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(data?.leads ?? []).slice(0, 25).map((l) => (
-                  <tr key={l.key}>
-                    <td>
-                      <div style={{ fontWeight: 600 }}>{l.email ?? `${l.key.slice(0, 20)}…`}</div>
-                      <div style={{ fontSize: 11, color: "var(--ink-500)", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                        {l.tier && (
-                          <span className={`badge ${TIER_BADGE[l.tier] ?? ""}`} style={{ fontSize: 10 }}>
-                            {t(`tier_${l.tier}`)}
-                          </span>
-                        )}
-                        <span>
-                          {l.name ? `${l.name} · ` : ""}
-                          {l.anonymous ? t("anonymous") : l.paid ? t("paid") : t("unpaid")}
-                        </span>
-                      </div>
-                    </td>
-                    <td><span className={scoreBadge(l.score)}>{l.score}</span></td>
-                    <td style={{ fontSize: 12, color: "var(--ink-500)", maxWidth: 220 }}>
-                      {l.signals.slice(0, 2).join(" · ") || "—"}
-                    </td>
-                    <td style={{ fontSize: 12, color: "var(--ink-500)" }}>
-                      {l.touches}
-                      {l.lastContactAt && <div style={{ fontSize: 10 }}>{ukDate(l.lastContactAt.slice(0, 10))}</div>}
-                    </td>
-                  </tr>
-                ))}
-                {(data?.leads ?? []).length === 0 && !loading && (
-                  <tr><td colSpan={4} style={{ padding: 16, fontSize: 13, color: "var(--ink-500)" }}>{t("noLeads")}</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                <span style={{ fontSize: 11.5, color: "var(--ink-500)" }}>{t(`tierDesc_${tier}`)}</span>
+                <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--ink-500)" }}>{tierGroups[tier].length}</span>
+              </div>
+              {tierGroups[tier].length === 0 ? (
+                <div style={{ fontSize: 12, color: "var(--ink-500)", padding: "4px 0 8px" }}>{t("tierEmpty")}</div>
+              ) : (
+                <div className="table-wrap" style={{ maxHeight: tier === "warm" ? 320 : 200, overflowY: "auto" }}>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>{t("colLead")}</th>
+                        <th>{t("colScore")}</th>
+                        <th>{t("colSignals")}</th>
+                        <th>{t("colTouches")}</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tierGroups[tier].slice(0, 15).map((l) => (
+                        <tr key={l.key}>
+                          <td>
+                            <div style={{ fontWeight: 600 }}>{l.email ?? `${l.key.slice(0, 20)}…`}</div>
+                            <div style={{ fontSize: 11, color: "var(--ink-500)" }}>
+                              {l.name ? `${l.name} · ` : ""}
+                              {l.anonymous ? t("anonymous") : t("unpaid")}
+                            </div>
+                          </td>
+                          <td><span className={scoreBadge(l.score)}>{l.score}</span></td>
+                          <td style={{ fontSize: 12, color: "var(--ink-500)", maxWidth: 200 }}>
+                            {l.signals.slice(0, 2).join(" · ") || "—"}
+                          </td>
+                          <td style={{ fontSize: 12, color: "var(--ink-500)" }}>
+                            {l.touches}
+                            {l.lastContactAt && <div style={{ fontSize: 10 }}>{ukDate(l.lastContactAt.slice(0, 10))}</div>}
+                          </td>
+                          <td style={{ whiteSpace: "nowrap" }}>
+                            {canSend(l) ? (
+                              <button
+                                className={`btn btn-sm ${confirmKey === l.key ? "btn-primary" : "btn-ghost"}`}
+                                onClick={() => void sendEmail(l)}
+                                disabled={sendingKey !== null}
+                              >
+                                {sendingKey === l.key ? t("sending") : confirmKey === l.key ? t("confirmSend") : t("sendEmail")}
+                              </button>
+                            ) : l.anonymous ? (
+                              <span style={{ fontSize: 11, color: "var(--ink-500)" }}>{t("noEmail")}</span>
+                            ) : null}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Right column: funnel + outreach log */}
+        {/* Right column: funnel + outreach log + customers */}
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div className="glass-card card-pad">
             <div className="card-head"><h3>{t("funnel24h")}</h3><span className="chip">24h</span></div>
@@ -299,6 +360,24 @@ export default function AdminGrowthPage() {
             <p style={{ marginTop: 14, fontSize: 12, color: "var(--ink-500)" }}>
               {t("emailableNote", { count: data?.totals.emailable ?? 0, anon: data?.totals.anonymousHot ?? 0 })}
             </p>
+          </div>
+
+          <div className="glass-card card-pad">
+            <div className="card-head"><h3>{t("customersTitle")}</h3><span className="chip badge-green">{tierGroups.customer.length}</span></div>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--ink-500)" }}>{t("customersNote")}</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 180, overflowY: "auto" }}>
+              {tierGroups.customer.length === 0 && !loading && (
+                <div style={{ fontSize: 13, color: "var(--ink-500)" }}>{t("noCustomers")}</div>
+              )}
+              {tierGroups.customer.slice(0, 15).map((c) => (
+                <div key={c.key} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 12.5 }}>
+                  <span style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {c.email ?? c.key}
+                  </span>
+                  <span style={{ color: "var(--ink-500)", flexShrink: 0 }}>{ukDate(c.lastSeen.slice(0, 10))}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="glass-card card-pad">
