@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendUserEmail, notifyAdmin } from "@/lib/server/notify";
 import { detailTable } from "@/lib/server/emailTemplate";
 import { APP_URL, confirmationUrl } from "@/lib/server/appUrl";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -23,10 +24,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
 
+  // Account creation was unthrottled — cap per IP and per email so it can't
+  // be farmed for mass signups or used as a cheap user-enumeration oracle.
+  const ip = clientIp(req);
+  if (rateLimited(`signup-ip:${ip}`, 10, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many attempts — try again later" }, { status: 429 });
+  }
+
   const { email, password, name, phone, gender, profession, country, referral_code, platform } =
     await req.json().catch(() => ({}));
 
   const cleanEmail = String(email ?? "").trim().toLowerCase();
+  if (rateLimited(`signup-email:${cleanEmail}`, 3, 24 * 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many attempts for this email — try again later" }, { status: 429 });
+  }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
     return NextResponse.json({ error: "Valid email required" }, { status: 400 });
   }
