@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/lib/server/notify";
+import { isAdminRequest } from "@/lib/server/admin";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
@@ -26,16 +27,16 @@ interface ReminderRow {
  * endpoint stays open; abuse is bounded by MAX_SENDS_PER_RUN and by the fact
  * that last_sent_at dedupes sends (a reminder fires once per saved config).
  */
-function authorised(req: NextRequest): boolean {
+async function authorised(req: NextRequest): Promise<boolean> {
   const secret = process.env.CRON_SECRET;
   if (secret) {
     const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
     const query = req.nextUrl.searchParams.get("secret") ?? "";
-    return bearer === secret || query === secret;
+    if (bearer === secret || query === secret) return true;
   }
-  // No cron secret configured — don't leave a mail-sending endpoint public.
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
-  return (req.headers.get("x-admin-email") ?? "").toLowerCase() === adminEmail;
+  // No cron secret matched — require a verified admin JWT, never a header.
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return serviceKey ? isAdminRequest(req, serviceKey) : false;
 }
 
 /** Send an SMS or WhatsApp message via Twilio REST (no SDK dependency). */
@@ -76,7 +77,7 @@ const esc = (s: string) =>
  * triggered manually for testing.
  */
 export async function GET(req: NextRequest) {
-  if (!authorised(req)) {
+  if (!(await authorised(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

@@ -8,11 +8,10 @@ import { notifyAdmin } from "@/lib/server/notify";
  *
  * Callers:
  *  - logged-in users: Bearer JWT → user_key = profile id, verified email
- *  - the local admin:  x-admin-email header
  *  - logged-out visitors: name + email fields in the body (unverified)
+ * Identity headers are never trusted.
  */
 
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -35,12 +34,8 @@ interface Sender {
   verified: boolean;
 }
 
-/** Identity: verified JWT user or admin header; null → anonymous body fields. */
+/** Identity: verified JWT user; otherwise anonymous body fields. */
 function resolveSender(req: NextRequest): Sender | null | "anonymous" {
-  const headerEmail = (req.headers.get("x-admin-email") ?? "").toLowerCase();
-  if (headerEmail && headerEmail === ADMIN_EMAIL) {
-    return { userKey: `admin:${ADMIN_EMAIL}`, email: ADMIN_EMAIL, verified: true };
-  }
   const jwtSecret = process.env.SUPABASE_JWT_SECRET;
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
   if (!token || !jwtSecret) return "anonymous";

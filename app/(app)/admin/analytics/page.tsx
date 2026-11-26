@@ -78,14 +78,8 @@ export default function AdminAnalyticsPage() {
     setLoading(true);
     setError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/admin/analytics", {
-        headers: {
-          // Hardcoded local admin proves itself by email; real Supabase
-          // admins are verified by their JWT server-side.
-          "x-admin-email": user?.email ?? "",
-          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-        },
+        headers: await adminHeaders(user?.email),
         cache: "no-store",
       });
       const json = await res.json();

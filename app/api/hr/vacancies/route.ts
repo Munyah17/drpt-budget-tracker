@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbInsert, sbPatch } from "@/lib/server/supabaseAdmin";
+import { canWriteHr, resolveHrActor } from "@/lib/server/hrAuth";
 
 export const runtime = "nodejs";
 
-/** GET /api/hr/vacancies?id=<uuid> | list all */
+/**
+ * GET stays public — the public /apply job board reads vacancies without an
+ * account. Creating or editing vacancies requires a corporate/admin role.
+ */
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (id) {
@@ -17,6 +21,9 @@ export async function GET(req: NextRequest) {
 
 /** POST /api/hr/vacancies — create */
 export async function POST(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const body = await req.json().catch(() => null);
   if (!body?.title) return NextResponse.json({ error: "title required" }, { status: 400 });
   const row = await sbInsert("vacancies", {
@@ -37,6 +44,9 @@ export async function POST(req: NextRequest) {
 
 /** PATCH /api/hr/vacancies { id, ...patch } */
 export async function PATCH(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const body = await req.json().catch(() => null);
   if (!body?.id) return NextResponse.json({ error: "id required" }, { status: 400 });
   const { id, ...patch } = body;

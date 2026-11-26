@@ -47,8 +47,6 @@ function ReminderModal({
     const { data: { session } } = await supabase.auth.getSession();
     return {
       "Content-Type": "application/json",
-      // Local admin proves itself by email; real users by their JWT.
-      "x-admin-email": user?.email ?? "",
       ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
     };
   }
@@ -204,7 +202,6 @@ export default function BillsPage() {
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/reminders", {
         headers: {
-          "x-admin-email": user?.email ?? "",
           ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
         cache: "no-store",

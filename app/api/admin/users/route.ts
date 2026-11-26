@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sbDelete, sbGet, sbInsert, sbPatch } from "@/lib/server/supabaseAdmin";
-import { ADMIN_EMAIL, isAdminRequest, isSuperAdminRequest } from "@/lib/server/admin";
+import { isAdminRequest, isSuperAdminRequest } from "@/lib/server/admin";
 import { dispatchWebhook } from "@/lib/server/api";
 import { sendAccountCredentials } from "@/lib/server/notify";
 
@@ -68,7 +68,6 @@ const EDITABLE_FIELDS = new Set([
 ]);
 
 async function callerIsSuperAdmin(req: NextRequest, serviceKey: string): Promise<boolean> {
-  if ((req.headers.get("x-admin-email") ?? "").toLowerCase() === ADMIN_EMAIL) return true;
   return isSuperAdminRequest(req, serviceKey);
 }
 

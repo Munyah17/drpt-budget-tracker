@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { supabase } from "@/lib/supabase";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 import { useCorpStore } from "@/lib/corpStore";
@@ -12,6 +13,15 @@ const AUDIENCES = ["allStaff", "management", "payrollTeam", "hrTeam"] as const;
 const CATEGORIES = ["General", "Policy", "Urgent", "Event"] as const;
 const catBadge = (c: string) =>
   c === "Urgent" ? "badge-red" : c === "Policy" ? "badge-blue" : c === "Event" ? "badge-amber" : "badge-green";
+
+/** Notices API requires a verified session (JWT) on every method. */
+async function noticeHeaders(): Promise<Record<string, string>> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return {
+    "Content-Type": "application/json",
+    ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+  };
+}
 
 interface Notice {
   id: string; title: string; body: string; audience: string;
@@ -33,7 +43,7 @@ function PostModal({ postedBy, onClose, onPosted }: { postedBy: string; onClose:
     e.preventDefault();
     setBusy(true);
     const res = await fetch("/api/hr/notices", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST", headers: await noticeHeaders(),
       body: JSON.stringify({ title, body, audience, category, pinned, posted_by: postedBy }),
     });
     const row = await res.json().catch(() => null);
@@ -89,16 +99,18 @@ export default function AnnouncementsPage() {
   const headcount = store.employees.length;
 
   useEffect(() => {
-    fetch("/api/hr/notices").then((r) => r.json()).then((rows) => setNotices(Array.isArray(rows) ? rows : [])).catch(() => {});
+    noticeHeaders()
+      .then((h) => fetch("/api/hr/notices", { headers: h }))
+      .then((r) => r.json()).then((rows) => setNotices(Array.isArray(rows) ? rows : [])).catch(() => {});
   }, []);
 
   async function togglePin(n: Notice) {
-    await fetch("/api/hr/notices", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: n.id, pinned: !n.pinned }) });
+    await fetch("/api/hr/notices", { method: "PATCH", headers: await noticeHeaders(), body: JSON.stringify({ id: n.id, pinned: !n.pinned }) });
     setNotices((p) => [...p.map((x) => (x.id === n.id ? { ...x, pinned: !x.pinned } : x))].sort((a, b) => Number(b.pinned) - Number(a.pinned)));
   }
 
   async function remove(n: Notice) {
-    await fetch(`/api/hr/notices?id=${n.id}`, { method: "DELETE" });
+    await fetch(`/api/hr/notices?id=${n.id}`, { method: "DELETE", headers: await noticeHeaders() });
     setNotices((p) => p.filter((x) => x.id !== n.id));
     toast(t("toastRemoved"), "trash-2");
   }

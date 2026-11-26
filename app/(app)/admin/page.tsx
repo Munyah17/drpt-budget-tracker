@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { supabase } from "@/lib/supabase";
+import { adminHeaders } from "@/lib/adminClient";
 import CountUp from "@/components/CountUp";
 import Icon from "@/components/Icon";
 import BarChart from "@/components/charts/BarChart";
@@ -56,14 +57,8 @@ export default function AdminDashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/admin/analytics", {
-        headers: {
-          // Hardcoded local admin proves itself by email; real Supabase
-          // admins are verified by their JWT server-side.
-          "x-admin-email": user?.email ?? "",
-          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-        },
+        headers: await adminHeaders(user?.email),
         cache: "no-store",
       });
       const json = await res.json();

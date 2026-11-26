@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { authHeaders } from "@/lib/apiAuth";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 import FilterBar from "@/components/FilterBar";
@@ -34,7 +35,7 @@ function GenerateModal({
     e.preventDefault();
     setBusy(true);
     const res = await fetch("/api/hr/contracts", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST", headers: await authHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         template: tpl.id,
         title: `${tpl.label} — ${data.employee || "Employee"}`,
@@ -84,7 +85,7 @@ export default function ContractsPage() {
   const [statusFilter, setStatusFilter] = useState("");
 
   useEffect(() => {
-    fetch("/api/hr/contracts").then((r) => r.json()).then((rows) => setContracts(Array.isArray(rows) ? rows : [])).catch(() => {});
+    authHeaders().then((h) => fetch("/api/hr/contracts", { headers: h })).then((r) => r.json()).then((rows) => setContracts(Array.isArray(rows) ? rows : [])).catch(() => {});
   }, []);
 
   const filtered = contracts.filter((c) =>
@@ -99,7 +100,7 @@ export default function ContractsPage() {
 
   async function advance(c: ContractRow) {
     const next = FLOW[Math.min(FLOW.indexOf(c.status) + 1, FLOW.length - 1)];
-    await fetch("/api/hr/contracts", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: c.id, status: next }) });
+    await fetch("/api/hr/contracts", { method: "PATCH", headers: await authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ id: c.id, status: next }) });
     setContracts((p) => p.map((x) => (x.id === c.id ? { ...x, status: next } : x)));
     toast(t("toastAdvanced", { status: next }), "check-circle");
   }

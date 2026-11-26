@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/server/jwt";
-import { sbDelete, sbGet } from "@/lib/server/supabaseAdmin";
-import { ADMIN_EMAIL } from "@/lib/server/admin";
+import { sbDelete } from "@/lib/server/supabaseAdmin";
 
 export const runtime = "nodejs";
 

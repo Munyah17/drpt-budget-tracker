@@ -30,7 +30,9 @@ export async function POST(req: NextRequest) {
 
   const { userId, email, country } = await req.json().catch(() => ({}));
   const origin = req.nextUrl.origin;
-  const reference = `WSPD-${Date.now()}`;
+  // Unguessable reference — a bare epoch timestamp let anyone enumerate or
+  // collide with other customers' payment references (bug-bounty VULN-12).
+  const reference = `WSPD-${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
 
   // Checkout country: the picker's choice wins; profile country is the fallback.
   let region = String(country ?? "").trim();

@@ -3,7 +3,6 @@ import { verifySupabaseJwt } from "@/lib/server/jwt";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CHANNELS = new Set(["email", "sms", "whatsapp"]);
 
@@ -14,17 +13,11 @@ interface Actor {
 }
 
 /**
- * Identity for the reminders endpoints:
- *  - real Supabase user  → Bearer JWT (sub = profile id); paid from profiles.is_paid
- *  - hardcoded local admin → x-admin-email header; admin is implicitly paid
- * Returns null when neither is present/valid.
+ * Identity for the reminders endpoints: a verified Supabase Bearer JWT
+ * (sub = profile id); paid status comes from profiles.is_paid. Identity
+ * headers are never trusted.
  */
 async function resolveActor(req: NextRequest, serviceKey: string): Promise<Actor | null> {
-  const headerEmail = (req.headers.get("x-admin-email") ?? "").toLowerCase();
-  if (headerEmail && headerEmail === ADMIN_EMAIL) {
-    return { userKey: `admin:${ADMIN_EMAIL}`, email: ADMIN_EMAIL, paid: true };
-  }
-
   const jwtSecret = process.env.SUPABASE_JWT_SECRET;
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
   if (!token || !jwtSecret) return null;

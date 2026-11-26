@@ -1,20 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbPatch } from "@/lib/server/supabaseAdmin";
-import { ADMIN_EMAIL, isSuperAdminRequest } from "@/lib/server/admin";
+import { isSuperAdminRequest } from "@/lib/server/admin";
 
 export const runtime = "nodejs";
 
 /**
- * Super-admin-only customer feedback inbox.
- * The hardcoded founder identity (x-admin-email === ADMIN_EMAIL) is allowed so
- * the local super-admin login can read feedback without a Supabase session.
+ * Super-admin-only customer feedback inbox — verified Supabase JWT with a
+ * super_admin profile role. Client-supplied identity headers are not trusted.
  */
 async function guard(req: NextRequest) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) return { error: NextResponse.json({ error: "Not configured" }, { status: 500 }) };
-  const headerEmail = (req.headers.get("x-admin-email") ?? "").toLowerCase();
-  const ok = headerEmail === ADMIN_EMAIL || (await isSuperAdminRequest(req, serviceKey));
-  if (!ok) return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+  if (!(await isSuperAdminRequest(req, serviceKey))) {
+    return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+  }
   return { serviceKey };
 }
 

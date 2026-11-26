@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbPatch } from "@/lib/server/supabaseAdmin";
 import { syncBankTransactions } from "@/lib/server/bankSync";
+import { isAdminRequest } from "@/lib/server/admin";
 
 const MAX_SYNCS_PER_RUN = 200;
 
-/** Same guard as /api/reminders/run — Vercel Cron sends Bearer $CRON_SECRET. */
-function authorised(req: NextRequest): boolean {
+/** Same guard as /api/reminders/run — cron secret or verified admin JWT. */
+async function authorised(req: NextRequest): Promise<boolean> {
   const secret = process.env.CRON_SECRET;
   if (secret) {
     const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
     const query = req.nextUrl.searchParams.get("secret") ?? "";
-    return bearer === secret || query === secret;
+    if (bearer === secret || query === secret) return true;
   }
-  // No cron secret configured — don't leave the sync endpoint public.
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
-  return (req.headers.get("x-admin-email") ?? "").toLowerCase() === adminEmail;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return serviceKey ? isAdminRequest(req, serviceKey) : false;
 }
 
 /**
@@ -22,7 +22,7 @@ function authorised(req: NextRequest): boolean {
  * Pulls transactions for every active connection and flags expired consent.
  */
 export async function GET(req: NextRequest) {
-  if (!authorised(req)) {
+  if (!(await authorised(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -79,18 +79,11 @@ function BankingPageInner() {
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const browserListener = useRef<{ remove: () => void } | null>(null);
 
-  // Hardcoded admin/demo accounts have no Supabase session — they authenticate
-  // to the banking APIs with the same x-admin-email header the admin routes use.
+  // Banking APIs authenticate via the caller's Supabase Bearer JWT.
   const bankFetch = useCallback(
     (path: string, init: RequestInit = {}) =>
-      authedFetch(user?.id ?? "", path, {
-        ...init,
-        headers: {
-          "x-admin-email": user?.email ?? "",
-          ...(init.headers as Record<string, string> | undefined),
-        },
-      }),
-    [user?.id, user?.email]
+      authedFetch(user?.id ?? "", path, init),
+    [user?.id]
   );
 
   const loadFeed = useCallback(async () => {

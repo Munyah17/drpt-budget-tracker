@@ -322,7 +322,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         const token = session?.access_token;
         const headers: Record<string, string> = {};
         if (token) headers["Authorization"] = `Bearer ${token}`;
-        if (user.email === "hr@acme.com") headers["x-admin-email"] = "admin@drpatie.com";
 
         const res = await fetch(`/api/corporate/settings?uid=${encodeURIComponent(user.id)}`, { headers });
         if (res.ok) {
@@ -672,9 +671,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       // override this identity on the next refresh via checkSession().
       await supabase.auth.signOut();
 
-      // For demo purposes, check hardcoded credentials first
-      const ADMIN_EMAIL = "munyamuzvidziwa19@gmail.com";
-      const ADMIN_PASSWORD = "@@Griezmann177#$";
+      // Demo accounts only — the founder/admin signs in through real Supabase
+      // auth (no credentials are ever hardcoded in the client bundle).
       const DEMO_EMAIL = "user@demo.com";
       const DEMO_PASSWORD = "demo123";
       const CORPORATE_EMAIL = "corp@demo.com";
@@ -712,22 +710,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         setIsAuthenticated(true);
         persistUser(userProfile);
         return { success: true, role: "corporate" };
-      }
-
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        // Founder / super admin login — same admin console as admins.
-        const userProfile: UserProfile = {
-          id: "admin-001",
-          email: ADMIN_EMAIL,
-          name: "Munyah Griezmann",
-          role: "super_admin",
-          currency: DEFAULT_CURRENCY,
-          isPaid: true,
-        };
-        setUser(userProfile);
-        setIsAuthenticated(true);
-        persistUser(userProfile);
-        return { success: true, role: "super_admin" };
       }
 
       if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
@@ -889,7 +871,6 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         "Content-Type": "application/json",
       };
       if (token) headers["Authorization"] = `Bearer ${token}`;
-      if (user.email === "hr@acme.com") headers["x-admin-email"] = "admin@drpatie.com";
 
       const res = await fetch("/api/corporate/settings", {
         method: "PATCH",

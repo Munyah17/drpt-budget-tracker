@@ -3,9 +3,15 @@ import { sendMail } from "@/lib/server/notify";
 import { markProfilePaid } from "@/lib/server/payments";
 import { sbGet } from "@/lib/server/supabaseAdmin";
 import { APP_URL } from "@/lib/server/appUrl";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://lboanbhltmblyyefzvzr.supabase.co";
+
+// Only freshly-created accounts may be auto-confirmed through this public
+// endpoint — confirming arbitrary existing addresses was an account-takeover
+// and user-enumeration vector. Older accounts use the normal email flow.
+const CONFIRM_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 /**
  * POST /api/auth/confirm { userId?, email, name? }
@@ -15,12 +21,19 @@ const SUPABASE_URL =
  * confirmation is enabled and the fresh signup has no session for RLS.
  *
  * This is what makes brand-new signups able to sign in immediately instead of
- * getting "Email not confirmed" errors.
+ * getting "Email not confirmed" errors. Hardened: per-IP/per-email rate
+ * limits, a 24h account-age window, and responses that never reveal whether
+ * an address exists.
  */
 export async function POST(req: NextRequest) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
+  }
+
+  const ip = clientIp(req);
+  if (rateLimited(`confirm-ip:${ip}`, 10, 60 * 60 * 1000)) {
+    return NextResponse.json({ ok: true }); // generic — don't reveal throttling either
   }
 
   const { userId, email, name, phone, gender, profession, country, referral_code } = await req
@@ -29,15 +42,24 @@ export async function POST(req: NextRequest) {
   if (!email && !userId) {
     return NextResponse.json({ error: "email or userId required" }, { status: 400 });
   }
+  const emailNorm = typeof email === "string" ? email.trim().toLowerCase() : "";
+  if (emailNorm && rateLimited(`confirm-email:${emailNorm}`, 3, 24 * 60 * 60 * 1000)) {
+    return NextResponse.json({ ok: true });
+  }
 
   const headers = {
     apikey: serviceKey,
     Authorization: `Bearer ${serviceKey}`,
     "Content-Type": "application/json",
   };
+  const withinWindow = (createdAt: unknown): boolean => {
+    const t = typeof createdAt === "string" ? Date.parse(createdAt) : NaN;
+    return Number.isFinite(t) && Date.now() - t < CONFIRM_WINDOW_MS;
+  };
 
   try {
     let uid: string | null = userId ?? null;
+    let fresh = false;
 
     // No userId (login-retry path): find the user by email — admin API has no
     // email filter, so page through the user list.
@@ -48,14 +70,17 @@ export async function POST(req: NextRequest) {
           cache: "no-store",
         });
         const data = await res.json();
-        const users: { id: string; email?: string }[] = data?.users ?? data ?? [];
+        const users: { id: string; email?: string; created_at?: string }[] = data?.users ?? data ?? [];
         const match = users.find(
-          (u) => u.email?.toLowerCase() === String(email).toLowerCase()
+          (u) => u.email?.toLowerCase() === emailNorm
         );
-        if (match) uid = match.id;
+        if (match) {
+          uid = match.id;
+          fresh = withinWindow(match.created_at);
+        }
         if (users.length < 200) break;
       }
-      if (!uid) return NextResponse.json({ ok: false, found: false });
+      if (!uid || !fresh) return NextResponse.json({ ok: true }); // generic — no enumeration
     } else {
       // Verify the claimed user id actually owns this email before confirming
       const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${uid}`, {
@@ -63,9 +88,11 @@ export async function POST(req: NextRequest) {
         cache: "no-store",
       });
       const u = await res.json();
-      if (email && u?.email && u.email.toLowerCase() !== String(email).toLowerCase()) {
+      if (emailNorm && u?.email && u.email.toLowerCase() !== emailNorm) {
         return NextResponse.json({ error: "email mismatch" }, { status: 403 });
       }
+      fresh = withinWindow(u?.created_at);
+      if (!fresh) return NextResponse.json({ ok: true });
     }
 
     // Mark the email confirmed so signInWithPassword works right away

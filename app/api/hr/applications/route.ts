@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { sbGet, sbInsert, sbPatch, sbUpload } from "@/lib/server/supabaseAdmin";
+import { canWriteHr, resolveHrActor } from "@/lib/server/hrAuth";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -45,8 +47,11 @@ function scoreApplication(opts: {
   };
 }
 
-/** GET /api/hr/applications?vacancy=<id> | all */
+/** GET /api/hr/applications?vacancy=<id> | all — applicant PII, corporate/admin only. */
 export async function GET(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const vacancy = req.nextUrl.searchParams.get("vacancy");
   const q = vacancy ? `vacancy_id=eq.${vacancy}&order=created_at.desc` : "order=created_at.desc";
   return NextResponse.json(await sbGet("applications", q));
@@ -58,6 +63,10 @@ export async function GET(req: NextRequest) {
  * files: any number of File parts, tagged by field name word|pdf|image
  */
 export async function POST(req: NextRequest) {
+  // Public endpoint (external applicants have no account) — cap uploads per IP.
+  if (rateLimited(`hr-apply:${clientIp(req)}`, 10, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many submissions — try again later" }, { status: 429 });
+  }
   const form = await req.formData().catch(() => null);
   if (!form) return NextResponse.json({ error: "multipart required" }, { status: 400 });
 
@@ -112,6 +121,9 @@ export async function POST(req: NextRequest) {
 
 /** PATCH /api/hr/applications { id, stage } */
 export async function PATCH(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const body = await req.json().catch(() => null);
   if (!body?.id || !body?.stage) return NextResponse.json({ error: "id + stage required" }, { status: 400 });
   const ok = await sbPatch("applications", `id=eq.${body.id}`, { stage: body.stage });

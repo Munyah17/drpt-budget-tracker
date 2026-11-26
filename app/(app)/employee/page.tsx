@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAppData } from "@/lib/AppDataContext";
+import { supabase } from "@/lib/supabase";
 import { useCorpStore } from "@/lib/corpStore";
 import { accruedWages } from "@/lib/ewa";
 import { usd } from "@/lib/payslip";
@@ -17,19 +18,27 @@ interface EmpNotice {
   pinned: boolean; acked: boolean; created_at: string;
 }
 
+/** Notices API requires a verified session (JWT) on every method. */
+async function noticeHeaders(): Promise<Record<string, string>> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {};
+}
+
 function NoticeBoard({ employee }: { employee: string }) {
   const t = useTranslations("Pages.emp_home");
   const [notices, setNotices] = useState<EmpNotice[]>([]);
 
   useEffect(() => {
-    fetch(`/api/hr/notices?employee=${encodeURIComponent(employee)}`)
+    noticeHeaders()
+      .then((h) => fetch(`/api/hr/notices?employee=${encodeURIComponent(employee)}`, { headers: h }))
       .then((r) => r.json()).then((rows) => setNotices(Array.isArray(rows) ? rows.slice(0, 4) : []))
       .catch(() => {});
   }, [employee]);
 
   async function ack(n: EmpNotice) {
     await fetch("/api/hr/notices/ack", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(await noticeHeaders()) },
       body: JSON.stringify({ notice_id: n.id, employee_name: employee }),
     });
     setNotices((p) => p.map((x) => (x.id === n.id ? { ...x, acked: true } : x)));

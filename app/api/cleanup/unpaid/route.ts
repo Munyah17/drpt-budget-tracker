@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbDelete } from "@/lib/server/supabaseAdmin";
 import { paidActive } from "@/lib/paid";
+import { isAdminRequest } from "@/lib/server/admin";
 
 export const runtime = "nodejs";
 
@@ -18,16 +19,15 @@ const MAX_PER_RUN = 200;
  * Cron guard — same pattern as /api/reminders/run. Vercel Cron sends
  * `Authorization: Bearer $CRON_SECRET` when configured.
  */
-function authorised(req: NextRequest): boolean {
+async function authorised(req: NextRequest): Promise<boolean> {
   const secret = process.env.CRON_SECRET;
   if (secret) {
     const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
     const query = req.nextUrl.searchParams.get("secret") ?? "";
-    return bearer === secret || query === secret;
+    if (bearer === secret || query === secret) return true;
   }
-  // No cron secret configured — don't leave a destructive endpoint public.
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
-  return (req.headers.get("x-admin-email") ?? "").toLowerCase() === adminEmail;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return serviceKey ? isAdminRequest(req, serviceKey) : false;
 }
 
 interface ProfileRow {
@@ -48,7 +48,7 @@ interface ProfileRow {
  * deleted so no stale unpaid profile lingers.
  */
 export async function GET(req: NextRequest) {
-  if (!authorised(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await authorised(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) return NextResponse.json({ error: "Not configured" }, { status: 500 });
 

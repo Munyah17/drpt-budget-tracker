@@ -36,7 +36,6 @@ export default function SupportPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-email": user?.email ?? "",
           ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
         body: JSON.stringify({
@@ -69,7 +68,6 @@ export default function SupportPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-email": user?.email ?? "",
           ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
         body: JSON.stringify({

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimited, clientIp } from "@/lib/server/rateLimit";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 // Groq retired the llama-3.x chat models — gpt-oss-120b is the current flagship. Override via GROQ_MODEL.
@@ -11,6 +12,10 @@ const MODEL = process.env.GROQ_MODEL ?? "openai/gpt-oss-120b";
  *  - mode "advice": returns JSON array of { type, title, text } advice cards
  */
 export async function POST(req: NextRequest) {
+  // Paid LLM proxy — cap calls per IP so it can't be farmed for free tokens.
+  if (rateLimited(`ai-chat:${clientIp(req)}`, 40, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests — try again later" }, { status: 429 });
+  }
   const key = process.env.GROQ_API_KEY;
   if (!key) {
     return NextResponse.json({ error: "AI is not configured" }, { status: 500 });

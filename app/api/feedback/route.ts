@@ -7,11 +7,10 @@ import { notifyAdmin } from "@/lib/server/notify";
  * POST /api/feedback — customer suggestion / feedback / bug report.
  * Stored in customer_feedback and shown only in the Super Admin console.
  *
- * Identity: verified Supabase JWT when present; otherwise the x-admin-email
- * header (app users send their profile email) or anonymous body fields.
+ * Identity: verified Supabase JWT when present; otherwise anonymous body
+ * fields. Identity headers are never trusted.
  */
 
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const KINDS = new Set(["suggestion", "feedback", "bug"]);
@@ -49,14 +48,6 @@ function resolveSender(req: NextRequest): Sender | null {
     }
   }
 
-  const headerEmail = (req.headers.get("x-admin-email") ?? "").trim().toLowerCase();
-  if (headerEmail && EMAIL_RE.test(headerEmail)) {
-    return {
-      userKey: `email:${headerEmail}`,
-      email: headerEmail,
-      verified: headerEmail === ADMIN_EMAIL,
-    };
-  }
   return null;
 }
 

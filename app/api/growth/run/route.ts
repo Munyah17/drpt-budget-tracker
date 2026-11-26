@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runGrowthAgent } from "@/lib/server/growthAgent";
+import { isAdminRequest } from "@/lib/server/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -7,19 +8,19 @@ export const maxDuration = 60;
 
 /**
  * Cron guard — same pattern as /api/reminders/run and /api/cleanup/unpaid.
- * Vercel Cron sends `Authorization: Bearer $CRON_SECRET` when configured;
- * without a secret the endpoint falls back to the admin-email header so it
- * can still be triggered manually by the admin.
+ * Vercel Cron sends `Authorization: Bearer $CRON_SECRET`; a verified admin
+ * JWT also works so the console can trigger a manual run. Identity headers
+ * are never trusted.
  */
-function authorised(req: NextRequest): boolean {
+async function authorised(req: NextRequest): Promise<boolean> {
   const secret = process.env.CRON_SECRET;
   if (secret) {
     const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
     const query = req.nextUrl.searchParams.get("secret") ?? "";
-    return bearer === secret || query === secret;
+    if (bearer === secret || query === secret) return true;
   }
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "munyamuzvidziwa19@gmail.com").toLowerCase();
-  return (req.headers.get("x-admin-email") ?? "").toLowerCase() === adminEmail;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return serviceKey ? isAdminRequest(req, serviceKey) : false;
 }
 
 /**
@@ -29,7 +30,7 @@ function authorised(req: NextRequest): boolean {
  * Vercel cron calls this daily; ?manual=1 bypasses the enabled flag.
  */
 export async function GET(req: NextRequest) {
-  if (!authorised(req)) {
+  if (!(await authorised(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {

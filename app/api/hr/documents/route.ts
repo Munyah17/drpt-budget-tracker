@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { sbGet, sbInsert, sbPatch, sbUpload } from "@/lib/server/supabaseAdmin";
+import { canWriteHr, resolveHrActor } from "@/lib/server/hrAuth";
 
 export const runtime = "nodejs";
 
+/** Employee documents are sensitive PII — corporate/admin only. */
+async function guard(req: NextRequest) {
+  return canWriteHr(await resolveHrActor(req))
+    ? null
+    : NextResponse.json({ error: "Forbidden" }, { status: 403 });
+}
+
 /** GET /api/hr/documents?employee=<name> */
 export async function GET(req: NextRequest) {
+  const denied = await guard(req);
+  if (denied) return denied;
   const employee = req.nextUrl.searchParams.get("employee");
   const q = employee ? `employee=eq.${encodeURIComponent(employee)}&order=created_at.desc` : "order=created_at.desc";
   return NextResponse.json(await sbGet("hr_documents", q));
@@ -13,6 +23,8 @@ export async function GET(req: NextRequest) {
 
 /** POST /api/hr/documents — multipart: employee, doc_type, expires?, meta(JSON)?, file */
 export async function POST(req: NextRequest) {
+  const denied = await guard(req);
+  if (denied) return denied;
   const form = await req.formData().catch(() => null);
   if (!form) return NextResponse.json({ error: "multipart required" }, { status: 400 });
   const file = form.get("file");
@@ -46,6 +58,8 @@ export async function POST(req: NextRequest) {
 
 /** PATCH /api/hr/documents { id, ...patch } (verify, set expiry) */
 export async function PATCH(req: NextRequest) {
+  const denied = await guard(req);
+  if (denied) return denied;
   const body = await req.json().catch(() => null);
   if (!body?.id) return NextResponse.json({ error: "id required" }, { status: 400 });
   const { id, ...patch } = body;

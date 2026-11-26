@@ -33,14 +33,13 @@ function verifySupabaseJwt(token: string, secret: string): Record<string, unknow
 }
 
 /**
- * Returns true when the request comes from an admin — either the hardcoded
- * local admin (x-admin-email header) or a Supabase user whose profile role
- * is 'admin' (verified by their Bearer JWT + a service-role profile lookup).
+ * Returns true when the request comes from an admin — a Supabase user whose
+ * profile role is 'admin'/'super_admin' (or the founder email), proven by a
+ * verified Bearer JWT. Client-supplied identity headers are NEVER trusted:
+ * x-admin-email was a full auth bypass (anyone could claim the founder
+ * email) and has been removed.
  */
 export async function isAdminRequest(req: NextRequest, serviceKey: string): Promise<boolean> {
-  const headerEmail = (req.headers.get("x-admin-email") ?? "").toLowerCase();
-  if (headerEmail && headerEmail === ADMIN_EMAIL) return true;
-
   const jwtSecret = process.env.SUPABASE_JWT_SECRET;
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
   if (!token || !jwtSecret) return false;

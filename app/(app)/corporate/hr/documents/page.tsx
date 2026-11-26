@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { authHeaders } from "@/lib/apiAuth";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 import FilterBar from "@/components/FilterBar";
@@ -40,7 +41,7 @@ function UploadModal({ onClose, onAdded }: { onClose: () => void; onAdded: (d: H
     fd.append("doc_type", docType);
     if (expires) fd.append("expires", expires);
     if (file) fd.append("file", file);
-    const res = await fetch("/api/hr/documents", { method: "POST", body: fd }).catch(() => null);
+    const res = await fetch("/api/hr/documents", { method: "POST", headers: await authHeaders(), body: fd }).catch(() => null);
     const row = await res?.json().catch(() => null);
     setBusy(false);
     if (!row?.id) { toast(t("toastUploadError"), "x"); return; }
@@ -77,7 +78,7 @@ function FormModal({ form, company, onClose }: { form: HrFormTemplate; company: 
     fd.append("employee", data.employee ?? "");
     fd.append("doc_type", "Signed form");
     fd.append("meta", JSON.stringify({ generated: form.id, title: form.label }));
-    fetch("/api/hr/documents", { method: "POST", body: fd }).catch(() => {});
+    authHeaders().then((h) => fetch("/api/hr/documents", { method: "POST", headers: h, body: fd })).catch(() => {});
     onClose();
   }
 
@@ -112,7 +113,7 @@ export default function DocumentsPage() {
   const [form, setForm] = useState<HrFormTemplate | null>(null);
 
   useEffect(() => {
-    fetch("/api/hr/documents").then((r) => r.json()).then((rows) => setDocs(Array.isArray(rows) ? rows : [])).catch(() => {});
+    authHeaders().then((h) => fetch("/api/hr/documents", { headers: h })).then((r) => r.json()).then((rows) => setDocs(Array.isArray(rows) ? rows : [])).catch(() => {});
   }, []);
 
   const filtered = docs.filter((d) =>
@@ -124,7 +125,7 @@ export default function DocumentsPage() {
 
   async function openFile(d: HrDoc) {
     if (!d.file_path) return;
-    const res = await fetch(`/api/hr/files?bucket=hr-docs&path=${encodeURIComponent(d.file_path)}`);
+    const res = await fetch(`/api/hr/files?bucket=hr-docs&path=${encodeURIComponent(d.file_path)}`, { headers: await authHeaders() });
     const data = await res.json().catch(() => null);
     if (data?.url) window.open(data.url, "_blank");
     else toast(t("toastFileError"), "x");

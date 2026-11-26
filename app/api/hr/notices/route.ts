@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sbGet, sbInsert, sbPatch, sbDelete } from "@/lib/server/supabaseAdmin";
+import { canWriteHr, resolveHrActor } from "@/lib/server/hrAuth";
 
 export const runtime = "nodejs";
 
-/** GET /api/hr/notices?employee=<name> — notices + ack count + whether `employee` acked */
+/**
+ * GET /api/hr/notices?employee=<name> — any signed-in user (employees read
+ * announcements). Writes need a corporate/admin role — this endpoint was
+ * previously fully public, so anyone could read, post, edit or delete HR
+ * announcements.
+ */
 export async function GET(req: NextRequest) {
+  const actor = await resolveHrActor(req);
+  if (!actor) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const employee = req.nextUrl.searchParams.get("employee") ?? "";
   const [notices, acks] = await Promise.all([
     sbGet<{ id: string } & Record<string, unknown>>("notices", "order=pinned.desc,created_at.desc"),
@@ -20,6 +28,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const body = await req.json().catch(() => null);
   if (!body?.title) return NextResponse.json({ error: "title required" }, { status: 400 });
   const row = await sbInsert("notices", {
@@ -36,6 +47,9 @@ export async function POST(req: NextRequest) {
 
 /** PATCH /api/hr/notices { id, ...patch } (pin/unpin, edit) */
 export async function PATCH(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const body = await req.json().catch(() => null);
   if (!body?.id) return NextResponse.json({ error: "id required" }, { status: 400 });
   const { id, ...patch } = body;
@@ -45,6 +59,9 @@ export async function PATCH(req: NextRequest) {
 
 /** DELETE /api/hr/notices?id=<uuid> */
 export async function DELETE(req: NextRequest) {
+  if (!canWriteHr(await resolveHrActor(req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   const ok = await sbDelete("notices", `id=eq.${id}`);

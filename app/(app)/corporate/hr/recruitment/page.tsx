@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
+import { authHeaders } from "@/lib/apiAuth";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 import FilterBar from "@/components/FilterBar";
@@ -95,7 +96,7 @@ function VacancyModal({ sbus, onClose, onCreated }: { sbus: { id: string; name: 
     e.preventDefault();
     setBusy(true);
     const res = await fetch("/api/hr/vacancies", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST", headers: await authHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         title, department, sbu, location, employment_type: etype, description,
         skills: skills.split(",").map((s) => s.trim()).filter(Boolean),
@@ -156,7 +157,7 @@ function ApplicantModal({ app, vacancy, onClose }: { app: Application; vacancy?:
   const { toast } = useAppData();
 
   async function openFile(path: string) {
-    const res = await fetch(`/api/hr/files?bucket=applications&path=${encodeURIComponent(path)}`);
+    const res = await fetch(`/api/hr/files?bucket=applications&path=${encodeURIComponent(path)}`, { headers: await authHeaders() });
     const data = await res.json().catch(() => null);
     if (data?.url) window.open(data.url, "_blank");
     else toast(t("toastFileError"), "x");
@@ -223,9 +224,10 @@ export default function RecruitmentPage() {
   const [viewing, setViewing] = useState<Application | null>(null);
 
   async function refresh() {
+    const h = await authHeaders();
     const [v, a] = await Promise.all([
-      fetch("/api/hr/vacancies").then((r) => r.json()).catch(() => []),
-      fetch("/api/hr/applications").then((r) => r.json()).catch(() => []),
+      fetch("/api/hr/vacancies", { headers: h }).then((r) => r.json()).catch(() => []),
+      fetch("/api/hr/applications", { headers: h }).then((r) => r.json()).catch(() => []),
     ]);
     setVacancies(Array.isArray(v) ? v : []);
     setApps(Array.isArray(a) ? a : []);
@@ -243,7 +245,7 @@ export default function RecruitmentPage() {
 
   async function toggleVacancy(v: Vacancy) {
     const status = v.status === "Open" ? "Closed" : "Open";
-    await fetch("/api/hr/vacancies", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: v.id, status }) });
+    await fetch("/api/hr/vacancies", { method: "PATCH", headers: await authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ id: v.id, status }) });
     setVacancies((p) => p.map((x) => (x.id === v.id ? { ...x, status } : x)));
     toast(t(status === "Closed" ? "toastClosed" : "toastReopened", { title: v.title }), status === "Closed" ? "x" : "check-circle");
   }
@@ -256,13 +258,13 @@ export default function RecruitmentPage() {
 
   async function advanceStage(a: Application) {
     const next = STAGES[Math.min(STAGES.indexOf(a.stage) + 1, STAGES.length - 1)];
-    await fetch("/api/hr/applications", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: a.id, stage: next }) });
+    await fetch("/api/hr/applications", { method: "PATCH", headers: await authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ id: a.id, stage: next }) });
     setApps((p) => p.map((x) => (x.id === a.id ? { ...x, stage: next } : x)));
     toast(t("toastStage", { name: a.applicant_name, stage: next }), "check-circle");
   }
 
   async function reject(a: Application) {
-    await fetch("/api/hr/applications", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: a.id, stage: "Rejected" }) });
+    await fetch("/api/hr/applications", { method: "PATCH", headers: await authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ id: a.id, stage: "Rejected" }) });
     setApps((p) => p.map((x) => (x.id === a.id ? { ...x, stage: "Rejected" } : x)));
     toast(t("toastRejected", { name: a.applicant_name }), "x");
   }
