@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAppData } from "@/lib/AppDataContext";
 import { useFreeTier } from "@/lib/native";
+import { supabase } from "@/lib/supabase";
 import {  fmt, initials , sym } from "@/lib/format";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
@@ -33,6 +34,56 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
           <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <button className="btn btn-primary" style={{ width: "100%" }} type="submit">{t("saveBtn")}</button>
+      </form>
+    </Modal>
+  );
+}
+
+function ChangePasswordModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("Pages.profile");
+  const { toast } = useAppData();
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (password.length < 6) {
+      setError(t("pwTooShort"));
+      return;
+    }
+    if (password !== confirm) {
+      setError(t("pwMismatch"));
+      return;
+    }
+    setBusy(true);
+    setError("");
+    const { error: err } = await supabase.auth.updateUser({ password });
+    setBusy(false);
+    if (err) {
+      setError(err.message);
+      return;
+    }
+    toast(t("pwUpdated"), "check-circle");
+    onClose();
+  }
+
+  return (
+    <Modal title={t("pwTitle")} onClose={onClose}>
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>{t("pwNew")}</label>
+          <input required type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
+        </div>
+        <div className="field">
+          <label>{t("pwConfirm")}</label>
+          <input required type="password" minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" />
+        </div>
+        {error && <p style={{ color: "var(--red)", fontSize: 12.5, margin: "0 0 10px" }}>{error}</p>}
+        <button className="btn btn-primary" style={{ width: "100%" }} type="submit" disabled={busy}>
+          {busy ? t("pwSaving") : t("pwSave")}
+        </button>
       </form>
     </Modal>
   );
@@ -73,6 +124,7 @@ export default function ProfilePage() {
   const { accounts, user } = useAppData();
   const freeTier = useFreeTier();
   const [editOpen, setEditOpen] = useState(false);
+  const [pwOpen, setPwOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const displayName = user?.name ?? t("defaultUser");
   const displayEmail = user?.email ?? "";
@@ -112,9 +164,14 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary" onClick={() => setEditOpen(true)}>
-            {t("editTitle")} <Icon name="pencil" size={14} />
-          </button>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <button className="btn btn-primary" onClick={() => setEditOpen(true)}>
+              {t("editTitle")} <Icon name="pencil" size={14} />
+            </button>
+            <button className="btn btn-ghost" onClick={() => setPwOpen(true)}>
+              {t("changePw")} <Icon name="lock" size={14} />
+            </button>
+          </div>
           <div style={{ marginTop: 24 }}>
             <div className="field">
               <label>{t("profession")}</label>
@@ -149,6 +206,7 @@ export default function ProfilePage() {
         </div>
       </div>
       {editOpen && <EditProfileModal onClose={() => setEditOpen(false)} />}
+      {pwOpen && <ChangePasswordModal onClose={() => setPwOpen(false)} />}
       {addOpen && <AddAccountModal onClose={() => setAddOpen(false)} />}
     </>
   );

@@ -3613,7 +3613,16 @@
       "acctName": "Account name",
       "phAccount": "e.g. Barclays Current",
       "balanceLabel": "Current balance ({sym})",
-      "toastLinked": "{name} account linked"
+      "toastLinked": "{name} account linked",
+      "changePw": "Change password",
+      "pwTitle": "Change password",
+      "pwNew": "New password",
+      "pwConfirm": "Confirm new password",
+      "pwSave": "Update password",
+      "pwSaving": "Updating…",
+      "pwTooShort": "Password must be at least 6 characters",
+      "pwMismatch": "Passwords don't match",
+      "pwUpdated": "Password updated"
     },
     "reports": {
       "title": "Reports",
